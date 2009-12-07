@@ -1,0 +1,224 @@
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package evopaint.entities;
+
+import evopaint.Config;
+import evopaint.Entity;
+import evopaint.Relation;
+import evopaint.interfaces.IAttribute;
+import evopaint.attributes.ColorAttribute;
+import evopaint.attributes.RelationsAttribute;
+import evopaint.attributes.PartsAttribute;
+import evopaint.attributes.SpacialAttribute;
+import evopaint.attributes.TemporalAttribute;
+import evopaint.util.Log;
+import java.awt.Point;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.IdentityHashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
+/**
+ *
+ * @author tam
+ */
+public class World extends System {
+
+    private static Map<Point, Entity> locationsToEntities;
+
+    public static Entity locationToEntity(Point location) {
+        return World.locationsToEntities.get(World.clamp(location));
+    }
+
+    @Override
+    public void add(Entity entity) {
+        super.add(entity);
+
+        // if an entity consists of parts, we might want to add them
+        PartsAttribute partsAttribute = (PartsAttribute) entity.getAttribute(PartsAttribute.class);
+        if (partsAttribute != null) {
+            // add its parts recursively
+            Collection<Entity> parts = partsAttribute.getParts();
+            for (Entity part : parts) {
+                this.add(part);
+            }
+        }
+
+        // can only add entities which have spacial means
+        SpacialAttribute spacialAttribute = (SpacialAttribute) entity.getAttribute(SpacialAttribute.class);
+        if (spacialAttribute == null) {
+            return;
+        }
+
+        Entity target = World.locationToEntity(spacialAttribute.getLocation());
+
+        if (target != null) {
+            ColorAttribute cat = (ColorAttribute) target.getAttribute(ColorAttribute.class);
+            if (cat != null) {
+                java.lang.System.err.println("ERROR: Occupied location chosen for adding (Space.java) " + spacialAttribute.getLocation().x + "/" + spacialAttribute.getLocation().y);
+                java.lang.System.exit(1);
+            }
+        }
+
+        World.locationsToEntities.put(spacialAttribute.getLocation(), entity);
+        return;
+    }
+
+    /**
+     * resets the entity in the location-entity translation table to be empty
+     * removes the entity from the system
+     *
+     * @param entity entity to be removed
+     */
+    @Override
+    public void remove(Entity entity) {
+        SpacialAttribute sa = (SpacialAttribute) entity.getAttribute(SpacialAttribute.class);
+        assert(sa != null);
+        entity.getAttributes().clear();
+        entity.setAttribute(SpacialAttribute.class, sa);
+        //super.remove(entity);
+    }
+
+    private static Point clamp(Point p) {
+        final int sizeX = Config.sizeX;
+        final int sizeY = Config.sizeY;
+
+        while (p.x < 0) {
+            p.x += sizeX;
+        }
+        while (p.x >= sizeX) {
+            p.x -= sizeX;
+        }
+        while (p.y < 0) {
+            p.y += sizeY;
+        }
+        while (p.y >= sizeY) {
+            p.y -= sizeY;
+        }
+        return p;
+    }
+
+    /**
+     * fills the world with colorless, corporeal entities (think: space-slots)
+     */
+    public void clear() {
+        for (int y = 0; y < Config.sizeY; y++) {
+            for (int x = 0; x < Config.sizeX; x++) {
+                Point location = new Point(x, y);
+                SpacialAttribute spacialAttribute = new SpacialAttribute(location);
+                IdentityHashMap<Class,IAttribute> attributesForEntity = new IdentityHashMap<Class,IAttribute>();
+                attributesForEntity.put(SpacialAttribute.class,spacialAttribute);
+                Entity entity = new Entity(attributesForEntity);
+                this.add(entity);
+            }
+        }
+    }
+
+    public void init() {
+        for (int y = 0; y < Config.initialPopulationY; y++) {
+            for (int x = 0; x < Config.initialPopulationX; x++) {
+
+                IdentityHashMap<Class, IAttribute> attributesForEntity =
+                        new IdentityHashMap<Class, IAttribute>();
+
+                int color = Config.randomNumberGenerator.nextPositiveInt();
+                ColorAttribute colorAttribute = new ColorAttribute(color);
+
+                Point location = new Point(
+                        Config.sizeX / 2 - Config.initialPopulationX / 2 + x,
+                        Config.sizeY / 2 - Config.initialPopulationY / 2 + y);
+                SpacialAttribute spacialAttribute = new SpacialAttribute(location);
+
+                Pixel pixie = new Pixel(attributesForEntity, colorAttribute, spacialAttribute);
+
+                this.add(pixie);
+            }
+        }
+    }
+
+    /**
+     * picks random entities and connects them to random entities in their immediate
+     * environment
+     *
+     * TODO:    optimize: pick only relations that are supported by A and B
+     *              to minimize invalid relations
+     */
+    public void relateTheFuckOutOfIt() {
+        RelationsAttribute ra = (RelationsAttribute) this.attributes.get(RelationsAttribute.class);
+        if (ra == null) {
+            java.lang.System.out.println("We accidently the whole world");
+            java.lang.System.exit(1);
+        }
+
+        try {
+            for (int i = 0; i < Config.numRelationsToAdd; i++) {
+
+                // create a relation
+                Relation r = (Relation) Config.pixelRelationTypes.get(
+                        Config.randomNumberGenerator.nextPositiveInt(
+                        Config.pixelRelationTypes.size())).newInstance();
+
+                // set A to something random
+                PartsAttribute p = (PartsAttribute) this.attributes.get(PartsAttribute.class);
+                assert(p != null);
+                List<Entity> parts = p.getParts();
+                r.setA(parts.get(Config.randomNumberGenerator.nextPositiveInt(parts.size())));
+
+                // choose B from a's immediate environment
+                SpacialAttribute sa = (SpacialAttribute) r.getA().getAttribute(SpacialAttribute.class);
+                assert (sa != null);
+                Point newLocation = new Point(sa.getLocation());
+                newLocation.translate(Config.randomNumberGenerator.nextPositiveInt(3) - 1,
+                        Config.randomNumberGenerator.nextPositiveInt(3) - 1);
+                r.setB(World.locationToEntity(newLocation));
+
+                // and add the relation
+                ra.getRelations().add(r);
+            }
+        } catch (InstantiationException e) {
+            e.printStackTrace();
+            java.lang.System.exit(1);
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+            java.lang.System.exit(1);
+        }
+    }
+
+    public void step() {
+
+        // get time and relations
+        TemporalAttribute ta = (TemporalAttribute) this.attributes.get(TemporalAttribute.class);
+        RelationsAttribute ra = (RelationsAttribute) this.attributes.get(RelationsAttribute.class);
+
+        if (ta == null || ra == null) {
+            java.lang.System.out.println("We accidently the whole world");
+            java.lang.System.exit(1);
+        }
+
+        if (Config.logLevel >= Log.Level.INFORMATION) {
+            Config.log.information("");
+            Config.log.information("Time: " + ta + ", Relations: " + ra.getRelations().size());
+        }
+
+        ta.increaseTime();
+        List<Relation> relations = ra.getRelations();
+
+        // relate anything related (pun intended)
+        for (Iterator ii = relations.iterator(); ii.hasNext();) {
+            Relation relation = (Relation) ii.next();
+            if (!relation.relate()) {
+                ii.remove();
+            }
+        }
+    }
+
+    public World(IdentityHashMap<Class, IAttribute> attributes, PartsAttribute pa, RelationsAttribute ra, long time) {
+        super(attributes, pa, ra);
+        this.attributes.put(TemporalAttribute.class, new TemporalAttribute(time));
+        World.locationsToEntities = new HashMap<Point, Entity>();
+    }
+}
