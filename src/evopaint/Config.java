@@ -32,6 +32,7 @@ public class Config {
     public static final int logLevel = Log.Level.WARNING;
     public static final int logVerbosity = Log.Verbosity.VERBOSEVERBOSE;
     public static final int logFormat = Log.Format.COMPACT;
+    public static final int numRelationThreads = 4;
     public static Log log = new ConsoleLog();
     //public static final double mutationRate = 0.0;
 

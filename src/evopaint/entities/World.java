@@ -6,7 +6,9 @@ package evopaint.entities;
 
 import evopaint.Config;
 import evopaint.Entity;
+import evopaint.RandomNumberGeneratorWrapper;
 import evopaint.Relation;
+import evopaint.Relator;
 import evopaint.interfaces.IAttribute;
 import evopaint.attributes.ColorAttribute;
 import evopaint.attributes.RelationsAttribute;
@@ -15,12 +17,14 @@ import evopaint.attributes.SpacialAttribute;
 import evopaint.attributes.TemporalAttribute;
 import evopaint.util.Log;
 import java.awt.Point;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.IdentityHashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import org.uncommons.maths.random.CellularAutomatonRNG;
 
 /**
  *
@@ -202,18 +206,57 @@ public class World extends System {
         if (Config.logLevel >= Log.Level.INFORMATION) {
             Config.log.information("");
             Config.log.information("Time: " + ta + ", Relations: " + ra.getRelations().size());
-        }
+        }java.lang.System.out.println(ta);
 
         ta.increaseTime();
         List<Relation> relations = ra.getRelations();
 
-        // relate anything related (pun intended)
-        for (Iterator ii = relations.iterator(); ii.hasNext();) {
-            Relation relation = (Relation) ii.next();
-            if (!relation.relate()) {
-                ii.remove();
+        Collections.shuffle(relations, Config.randomNumberGenerator.getRandom());
+
+        List<List<Relation>> partitionedRelations = this.partition(relations, Config.numRelationThreads);
+
+        // make threads
+        List<Thread> relatorThreads = new ArrayList<Thread>();
+        for (List<Relation> part : partitionedRelations) {
+
+            // get random seed out of our rng
+            byte [] seed = new byte[4];
+            Config.randomNumberGenerator.getRandom().nextBytes(seed);
+
+            // and seed a new rng for each thread, so they can do random shit in
+            // a well defined order (without race conditions on the main rng)
+            Thread relator = new Relator(part, new RandomNumberGeneratorWrapper(new CellularAutomatonRNG(seed)));
+            relatorThreads.add(relator);
+            relator.start();
+        }
+
+        // join threads
+        for (Thread relatorThread : relatorThreads) {
+            try {
+                relatorThread.join();
+            }
+            catch (InterruptedException ex) {
+                Config.log.warning("Exception during Relating" + ex.getMessage());
             }
         }
+    }
+
+    private List<List<Relation>> partition(List<Relation> relations, int numChunks) {
+
+        List<List<Relation>> ret = new ArrayList<List<Relation>>();
+
+        int chunkSize = relations.size() / numChunks;
+        for (int i = 0; i < numChunks; i++) {
+            List subList = relations.subList(i * chunkSize, (i + 1) * chunkSize);
+            ret.add(subList);
+        }
+
+        int rest = relations.size() % numChunks;
+        for (int i = 0; i < rest; i++) {
+            ret.get(i).add(relations.get(relations.size() - i - 1));
+        }
+
+        return ret;
     }
 
     public World(IdentityHashMap<Class, IAttribute> attributes, PartsAttribute pa, RelationsAttribute ra, long time) {
