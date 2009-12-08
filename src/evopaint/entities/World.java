@@ -206,13 +206,43 @@ public class World extends System {
         if (Config.logLevel >= Log.Level.INFORMATION) {
             Config.log.information("");
             Config.log.information("Time: " + ta + ", Relations: " + ra.getRelations().size());
-        }java.lang.System.out.println(ta);
+        }
 
         ta.increaseTime();
         List<Relation> relations = ra.getRelations();
 
         Collections.shuffle(relations, Config.randomNumberGenerator.getRandom());
 
+        if (Config.numRelationThreads > 1) {
+            this.parallel(relations);
+        } else {
+            this.serial(relations);
+        }
+        
+    }
+
+    private void reset(Relation relation) {
+        // pick random A
+        relation.setA(World.locationToEntity((Config.randomNumberGenerator.nextLocation())));
+
+        // choose B from a's immediate environment
+        SpacialAttribute sa = (SpacialAttribute) relation.getA().getAttribute(SpacialAttribute.class);
+        assert (sa != null);
+        Point newLocation = new Point(sa.getLocation());
+        newLocation.translate(Config.randomNumberGenerator.nextPositiveInt(3) - 1,
+                Config.randomNumberGenerator.nextPositiveInt(3) - 1);
+        relation.setB(World.locationToEntity(newLocation));
+    }
+
+    private void serial(List<Relation> relations) {
+        for (Relation relation :relations) {
+            if (!relation.relate()) {
+                this.reset(relation);
+            }
+        }
+    }
+
+    private void parallel(List<Relation> relations) {
         List<List<Relation>> partitionedRelations = this.partition(relations, Config.numRelationThreads);
 
         // make threads

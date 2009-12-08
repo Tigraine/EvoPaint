@@ -20,19 +20,19 @@ import org.uncommons.maths.random.SeedGenerator;
  */
 public class Config {
 
-    public static final int nrRenderings = 0;
+    public static final int nrRenderings = 50;
     public static final int nrStepsPerRendering = 1;
-    public static final int sizeX = 100;
-    public static final int sizeY = 100;
-    public static final int initialPopulationX = 100;
-    public static final int initialPopulationY = 100;
-    public static final int zoom = 4;
+    public static final int sizeX = 300;
+    public static final int sizeY = 300;
+    public static final int initialPopulationX = 300;
+    public static final int initialPopulationY = 300;
+    public static final int zoom = 1;
     public static final int minNumOfRelations = sizeX*sizeY;
     public static final int numRelationsToAdd = sizeX*sizeY;
     public static final int logLevel = Log.Level.WARNING;
     public static final int logVerbosity = Log.Verbosity.VERBOSEVERBOSE;
     public static final int logFormat = Log.Format.COMPACT;
-    public static final int numRelationThreads = 4;
+    public static final int numRelationThreads = 1;
     public static Log log = new ConsoleLog();
     //public static final double mutationRate = 0.0;
 
