@@ -48,7 +48,6 @@ public class EvoPaint extends JPanel {
         RelationsAttribute ra = new RelationsAttribute(relations);
         long time = 0;
         this.world = new World(new IdentityHashMap<Class, IAttribute>(), pa, ra, time);
-        this.world.clear();
         this.world.init();
 
         // create observer
@@ -78,10 +77,6 @@ public class EvoPaint extends JPanel {
         
         if (Config.nrRenderings == 0) {
             while (true) {
-                RelationsAttribute ra = (RelationsAttribute) this.world.attributes.get(RelationsAttribute.class);
-                if (ra.getRelations().size() < Config.minNumOfRelations) {
-                    this.world.relateTheFuckOutOfIt();
-                }
                 this.world.step();
                 boolean ret = this.perception.relate();
                 assert (ret);
@@ -89,10 +84,6 @@ public class EvoPaint extends JPanel {
             }
         } else {
             for (int i = 0; i < Config.nrRenderings; i++) {
-                RelationsAttribute ra = (RelationsAttribute) this.world.attributes.get(RelationsAttribute.class);
-                if (ra.getRelations().size() < Config.minNumOfRelations) {
-                    this.world.relateTheFuckOutOfIt();
-                }
                 this.world.step();
                 boolean ret = this.perception.relate();
                 assert (ret);

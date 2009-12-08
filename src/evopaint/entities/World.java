@@ -34,6 +34,12 @@ public class World extends System {
 
     private static Map<Point, Entity> locationsToEntities;
 
+    public void init() {
+        this.clear();
+        this.createEntities();
+        this.createRelations();
+    }
+
     public static Entity locationToEntity(Point location) {
         return World.locationsToEntities.get(World.clamp(location));
     }
@@ -87,111 +93,6 @@ public class World extends System {
         //super.remove(entity);
     }
 
-    private static Point clamp(Point p) {
-        final int sizeX = Config.sizeX;
-        final int sizeY = Config.sizeY;
-
-        while (p.x < 0) {
-            p.x += sizeX;
-        }
-        while (p.x >= sizeX) {
-            p.x -= sizeX;
-        }
-        while (p.y < 0) {
-            p.y += sizeY;
-        }
-        while (p.y >= sizeY) {
-            p.y -= sizeY;
-        }
-        return p;
-    }
-
-    /**
-     * fills the world with colorless, corporeal entities (think: space-slots)
-     */
-    public void clear() {
-        for (int y = 0; y < Config.sizeY; y++) {
-            for (int x = 0; x < Config.sizeX; x++) {
-                Point location = new Point(x, y);
-                SpacialAttribute spacialAttribute = new SpacialAttribute(location);
-                IdentityHashMap<Class,IAttribute> attributesForEntity = new IdentityHashMap<Class,IAttribute>();
-                attributesForEntity.put(SpacialAttribute.class,spacialAttribute);
-                Entity entity = new Entity(attributesForEntity);
-                this.add(entity);
-            }
-        }
-    }
-
-    public void init() {
-        for (int y = 0; y < Config.initialPopulationY; y++) {
-            for (int x = 0; x < Config.initialPopulationX; x++) {
-
-                IdentityHashMap<Class, IAttribute> attributesForEntity =
-                        new IdentityHashMap<Class, IAttribute>();
-
-                int color = Config.randomNumberGenerator.nextPositiveInt();
-                ColorAttribute colorAttribute = new ColorAttribute(color);
-
-                Point location = new Point(
-                        Config.sizeX / 2 - Config.initialPopulationX / 2 + x,
-                        Config.sizeY / 2 - Config.initialPopulationY / 2 + y);
-                SpacialAttribute spacialAttribute = new SpacialAttribute(location);
-
-                Pixel pixie = new Pixel(attributesForEntity, colorAttribute, spacialAttribute);
-
-                this.add(pixie);
-            }
-        }
-    }
-
-    /**
-     * picks random entities and connects them to random entities in their immediate
-     * environment
-     *
-     * TODO:    optimize: pick only relations that are supported by A and B
-     *              to minimize invalid relations
-     */
-    public void relateTheFuckOutOfIt() {
-        RelationsAttribute ra = (RelationsAttribute) this.attributes.get(RelationsAttribute.class);
-        if (ra == null) {
-            java.lang.System.out.println("We accidently the whole world");
-            java.lang.System.exit(1);
-        }
-
-        try {
-            for (int i = 0; i < Config.numRelationsToAdd; i++) {
-
-                // create a relation
-                Relation r = (Relation) Config.pixelRelationTypes.get(
-                        Config.randomNumberGenerator.nextPositiveInt(
-                        Config.pixelRelationTypes.size())).newInstance();
-
-                // set A to something random
-                PartsAttribute p = (PartsAttribute) this.attributes.get(PartsAttribute.class);
-                assert(p != null);
-                List<Entity> parts = p.getParts();
-                r.setA(parts.get(Config.randomNumberGenerator.nextPositiveInt(parts.size())));
-
-                // choose B from a's immediate environment
-                SpacialAttribute sa = (SpacialAttribute) r.getA().getAttribute(SpacialAttribute.class);
-                assert (sa != null);
-                Point newLocation = new Point(sa.getLocation());
-                newLocation.translate(Config.randomNumberGenerator.nextPositiveInt(3) - 1,
-                        Config.randomNumberGenerator.nextPositiveInt(3) - 1);
-                r.setB(World.locationToEntity(newLocation));
-
-                // and add the relation
-                ra.getRelations().add(r);
-            }
-        } catch (InstantiationException e) {
-            e.printStackTrace();
-            java.lang.System.exit(1);
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-            java.lang.System.exit(1);
-        }
-    }
-
     public void step() {
 
         // get time and relations
@@ -218,10 +119,93 @@ public class World extends System {
         } else {
             this.serial(relations);
         }
-        
+
     }
 
-    private void reset(Relation relation) {
+    private static Point clamp(Point p) {
+        final int sizeX = Config.sizeX;
+        final int sizeY = Config.sizeY;
+
+        while (p.x < 0) {
+            p.x += sizeX;
+        }
+        while (p.x >= sizeX) {
+            p.x -= sizeX;
+        }
+        while (p.y < 0) {
+            p.y += sizeY;
+        }
+        while (p.y >= sizeY) {
+            p.y -= sizeY;
+        }
+        return p;
+    }
+
+
+    /**
+     * fills the world with colorless, corporeal entities (think: space-slots)
+     */
+    private void clear() {
+        for (int y = 0; y < Config.sizeY; y++) {
+            for (int x = 0; x < Config.sizeX; x++) {
+                Point location = new Point(x, y);
+                SpacialAttribute spacialAttribute = new SpacialAttribute(location);
+                IdentityHashMap<Class,IAttribute> attributesForEntity = new IdentityHashMap<Class,IAttribute>();
+                attributesForEntity.put(SpacialAttribute.class,spacialAttribute);
+                Entity entity = new Entity(attributesForEntity);
+                this.add(entity);
+            }
+        }
+    }
+
+    private void createEntities() {
+        for (int y = 0; y < Config.initialPopulationY; y++) {
+            for (int x = 0; x < Config.initialPopulationX; x++) {
+
+                IdentityHashMap<Class, IAttribute> attributesForEntity =
+                        new IdentityHashMap<Class, IAttribute>();
+
+                int color = Config.randomNumberGenerator.nextPositiveInt();
+                ColorAttribute colorAttribute = new ColorAttribute(color);
+
+                Point location = new Point(
+                        Config.sizeX / 2 - Config.initialPopulationX / 2 + x,
+                        Config.sizeY / 2 - Config.initialPopulationY / 2 + y);
+                SpacialAttribute spacialAttribute = new SpacialAttribute(location);
+
+                Pixel pixie = new Pixel(attributesForEntity, colorAttribute, spacialAttribute);
+
+                this.add(pixie);
+            }
+        }
+    }
+
+    private void createRelations() {
+        RelationsAttribute ra = (RelationsAttribute) this.attributes.get(RelationsAttribute.class);
+        if (ra == null) {
+            java.lang.System.out.println("We accidently the whole world");
+            java.lang.System.exit(1);
+        }
+
+        try {
+            for (Class pixelRelationType : Config.pixelRelationTypes) {
+                int numRels = Config.numPixelRelations.get(pixelRelationType);
+                for (int i = 0; i < numRels; i++) {
+                    Relation r = (Relation) pixelRelationType.newInstance();
+                    this.resetRelation(r);
+                    ra.getRelations().add(r);
+                }
+            }
+        } catch (InstantiationException e) {
+            e.printStackTrace();
+            java.lang.System.exit(1);
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+            java.lang.System.exit(1);
+        }
+    }
+
+    private void resetRelation(Relation relation) {
         // pick random A
         relation.setA(World.locationToEntity((Config.randomNumberGenerator.nextLocation())));
 
@@ -237,7 +221,7 @@ public class World extends System {
     private void serial(List<Relation> relations) {
         for (Relation relation :relations) {
             if (!relation.relate()) {
-                this.reset(relation);
+                this.resetRelation(relation);
             }
         }
     }

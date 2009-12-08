@@ -20,7 +20,6 @@ import java.awt.Point;
  */
 public class CopyColorRelation extends Relation {
     public static final int maxDistance = 5;
-    public static final int maxNoAction = 10;
 
     public boolean relate() {
 
