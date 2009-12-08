@@ -11,6 +11,7 @@ import evopaint.attributes.ColorAttribute;
 import evopaint.Relation;
 import evopaint.attributes.RelationChoosingAttribute;
 import evopaint.attributes.SpacialAttribute;
+import evopaint.interfaces.IRandomNumberGenerator;
 import evopaint.util.Log;
 import java.awt.Point;
 
@@ -18,11 +19,17 @@ import java.awt.Point;
  *
  * @author tam
  */
-public class CopyColorRelation extends Relation {
+public class ColorCopyRelation extends Relation {
     public static final int maxDistance = 5;
 
-    public boolean relate() {
-
+    public boolean relate(IRandomNumberGenerator rng) {
+        if (this.b == null) {
+            if (Config.logLevel >= Log.Level.INFORMATION) {
+                Config.log.information("relation invalid (no partner)" + this);
+            }
+            return false;
+        }
+        
         // a and b both need spacial means for this relation to work
         SpacialAttribute sa = (SpacialAttribute) a.getAttribute(SpacialAttribute.class);
         if (sa == null) {
@@ -45,7 +52,7 @@ public class CopyColorRelation extends Relation {
         double distance = Point.distance(locationA.x, locationA.y, locationB.x, locationB.y);
         // TODO: fix distance for clamped world
 
-        if (distance > CopyColorRelation.maxDistance) {
+        if (distance > ColorCopyRelation.maxDistance) {
             if (Config.logLevel >= Log.Level.INFORMATION) {
                 Config.log.information("invalid relation (distance between A and B exceeded tolerance) " + this);
             }
@@ -53,7 +60,7 @@ public class CopyColorRelation extends Relation {
         }
 
         // radius of influence decreases radial (exponent 2)
-        if (Config.randomNumberGenerator.nextDouble() < Math.pow(distance / CopyColorRelation.maxDistance, 2)) {
+        if (rng.nextDouble() < Math.pow(distance / ColorCopyRelation.maxDistance, 2)) {
             if (Config.logLevel >= Log.Level.INFORMATION) {
                 Config.log.information("not relating (simulating radial decrease in power) " + this);
             }
@@ -96,9 +103,9 @@ public class CopyColorRelation extends Relation {
         return true;
     }
 
-    public CopyColorRelation(Entity a, Entity b) {
+    public ColorCopyRelation(Entity a, Entity b) {
         super(a, b);
     }
 
-    public CopyColorRelation() {}
+    public ColorCopyRelation() {}
 }

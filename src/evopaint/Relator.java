@@ -24,23 +24,14 @@ public class Relator extends Thread {
     public void run() {
         // relate anything related (pun intended)
         for (Relation relation : this.myShare) {
-            if (!relation.relate()) {
-                this.reset(relation);
+            if (!relation.relate(this.rng)) {
+                if (Config.oneRelationPerEntity == true) {
+                    relation.resetB(rng);
+                } else {
+                    relation.reset(rng);
+                }
             }
         }
-    }
-
-    private void reset(Relation relation) {
-        // pick random A
-        relation.setA(World.locationToEntity((this.rng.nextLocation())));
-
-        // choose B from a's immediate environment
-        SpacialAttribute sa = (SpacialAttribute) relation.getA().getAttribute(SpacialAttribute.class);
-        assert (sa != null);
-        Point newLocation = new Point(sa.getLocation());
-        newLocation.translate(Config.randomNumberGenerator.nextPositiveInt(3) - 1,
-                Config.randomNumberGenerator.nextPositiveInt(3) - 1);
-        relation.setB(World.locationToEntity(newLocation));
     }
 
     public Relator(List<Relation> myShare, IRandomNumberGenerator rng) {

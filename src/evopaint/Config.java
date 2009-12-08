@@ -6,7 +6,8 @@ package evopaint;
 
 import evopaint.util.Log;
 import evopaint.interfaces.IRandomNumberGenerator;
-import evopaint.relations.pixel.CopyColorRelation;
+import evopaint.relations.pixel.ColorAssimilationRelation;
+import evopaint.relations.pixel.ColorCopyRelation;
 import evopaint.util.ConsoleLog;
 import java.util.ArrayList;
 import java.util.IdentityHashMap;
@@ -24,24 +25,35 @@ public class Config {
 
     public static final int nrRenderings = 0;
     public static final int nrStepsPerRendering = 1;
-    public static final int sizeX = 100;
-    public static final int sizeY = 100;
-    public static final int initialPopulationX = 100;
-    public static final int initialPopulationY = 100;
-    public static final int zoom = 4;
+    public static final int zoom = 3;
+
+    public static final int sizeX = 150;
+    public static final int sizeY = 150;
+    public static final int initialPopulationX = 150;
+    public static final int initialPopulationY = 150;
+    
+    public static final int numRelationThreads = 1;
+
     public static final int logLevel = Log.Level.WARNING;
     public static final int logVerbosity = Log.Verbosity.VERBOSEVERBOSE;
     public static final int logFormat = Log.Format.COMPACT;
-    public static final int numRelationThreads = 1;
     public static Log log = new ConsoleLog();
+
+    // if true, this option will override each and every setting for how
+    // many relations of what type are used and run exactly one of each avtive
+    // relations per entity at all times.
+    public static final boolean oneRelationPerEntity = true;
+
     //public static final double mutationRate = 0.0;
 
     public static ArrayList<Class> pixelRelationTypes = new ArrayList<Class>() {{
-        add(CopyColorRelation.class);
+        //add(ColorCopyRelation.class);
+        add(ColorAssimilationRelation.class);
     }};
 
     public static Map<Class,Integer> numPixelRelations = new IdentityHashMap<Class,Integer>() {{
-        put(CopyColorRelation.class, Config.sizeX*Config.sizeY);
+        //put(ColorCopyRelation.class, Config.sizeX*Config.sizeY);
+        put(ColorAssimilationRelation.class, Config.sizeX*Config.sizeY);
     }};
 
     // initialized by init()

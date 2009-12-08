@@ -11,10 +11,12 @@ import evopaint.Relation;
 import evopaint.Relator;
 import evopaint.interfaces.IAttribute;
 import evopaint.attributes.ColorAttribute;
+import evopaint.attributes.PartnerSelectionAttribute;
 import evopaint.attributes.RelationsAttribute;
 import evopaint.attributes.PartsAttribute;
 import evopaint.attributes.SpacialAttribute;
 import evopaint.attributes.TemporalAttribute;
+import evopaint.matchers.RGBMatcher;
 import evopaint.util.Log;
 import java.awt.Point;
 import java.util.ArrayList;
@@ -22,6 +24,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.IdentityHashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import org.uncommons.maths.random.CellularAutomatonRNG;
@@ -119,7 +122,6 @@ public class World extends System {
         } else {
             this.serial(relations);
         }
-
     }
 
     private static Point clamp(Point p) {
@@ -166,14 +168,17 @@ public class World extends System {
                         new IdentityHashMap<Class, IAttribute>();
 
                 int color = Config.randomNumberGenerator.nextPositiveInt();
-                ColorAttribute colorAttribute = new ColorAttribute(color);
+                attributesForEntity.put(ColorAttribute.class, new ColorAttribute(color));
 
                 Point location = new Point(
                         Config.sizeX / 2 - Config.initialPopulationX / 2 + x,
                         Config.sizeY / 2 - Config.initialPopulationY / 2 + y);
-                SpacialAttribute spacialAttribute = new SpacialAttribute(location);
+                attributesForEntity.put(SpacialAttribute.class, new SpacialAttribute(location));
 
-                Pixel pixie = new Pixel(attributesForEntity, colorAttribute, spacialAttribute);
+                Pixel pixie = new Pixel(attributesForEntity);
+
+                attributesForEntity.put(PartnerSelectionAttribute.class,
+                        new PartnerSelectionAttribute(new RGBMatcher(), 0.1f, 0.9f));
 
                 this.add(pixie);
             }
@@ -181,18 +186,29 @@ public class World extends System {
     }
 
     private void createRelations() {
+        if (Config.oneRelationPerEntity == true) {
+            this.createOneRelationPerEntity();
+        } else {
+            this.createRandomRelations();
+        }
+    }
+
+    private void createOneRelationPerEntity() {
         RelationsAttribute ra = (RelationsAttribute) this.attributes.get(RelationsAttribute.class);
         if (ra == null) {
             java.lang.System.out.println("We accidently the whole world");
             java.lang.System.exit(1);
         }
 
+        PartsAttribute pa = (PartsAttribute) this.attributes.get(PartsAttribute.class);
+        List<Entity> entities = pa.getParts();
+
         try {
             for (Class pixelRelationType : Config.pixelRelationTypes) {
-                int numRels = Config.numPixelRelations.get(pixelRelationType);
-                for (int i = 0; i < numRels; i++) {
+                for (Entity e : entities) {
                     Relation r = (Relation) pixelRelationType.newInstance();
-                    this.resetRelation(r);
+                    r.setA(e);
+                    r.resetB(Config.randomNumberGenerator);
                     ra.getRelations().add(r);
                 }
             }
@@ -205,23 +221,39 @@ public class World extends System {
         }
     }
 
-    private void resetRelation(Relation relation) {
-        // pick random A
-        relation.setA(World.locationToEntity((Config.randomNumberGenerator.nextLocation())));
+    private void createRandomRelations() {
+        RelationsAttribute ra = (RelationsAttribute) this.attributes.get(RelationsAttribute.class);
+        if (ra == null) {
+            java.lang.System.out.println("We accidently the whole world");
+            java.lang.System.exit(1);
+        }
 
-        // choose B from a's immediate environment
-        SpacialAttribute sa = (SpacialAttribute) relation.getA().getAttribute(SpacialAttribute.class);
-        assert (sa != null);
-        Point newLocation = new Point(sa.getLocation());
-        newLocation.translate(Config.randomNumberGenerator.nextPositiveInt(3) - 1,
-                Config.randomNumberGenerator.nextPositiveInt(3) - 1);
-        relation.setB(World.locationToEntity(newLocation));
+        try {
+            for (Class pixelRelationType : Config.pixelRelationTypes) {
+                int numRels = Config.numPixelRelations.get(pixelRelationType);
+                for (int i = 0; i < numRels; i++) {
+                    Relation r = (Relation) pixelRelationType.newInstance();
+                    r.reset(Config.randomNumberGenerator);
+                    ra.getRelations().add(r);
+                }
+            }
+        } catch (InstantiationException e) {
+            e.printStackTrace();
+            java.lang.System.exit(1);
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+            java.lang.System.exit(1);
+        }
     }
 
     private void serial(List<Relation> relations) {
-        for (Relation relation :relations) {
-            if (!relation.relate()) {
-                this.resetRelation(relation);
+        for (Relation relation : relations) {
+            if (!relation.relate(Config.randomNumberGenerator)) {
+                if (Config.oneRelationPerEntity == true) {
+                    relation.resetB(Config.randomNumberGenerator);
+                } else {
+                    relation.reset(Config.randomNumberGenerator);
+                }
             }
         }
     }
@@ -260,15 +292,19 @@ public class World extends System {
         List<List<Relation>> ret = new ArrayList<List<Relation>>();
 
         int chunkSize = relations.size() / numChunks;
+        int rest = relations.size() % numChunks;
         for (int i = 0; i < numChunks; i++) {
-            List subList = relations.subList(i * chunkSize, (i + 1) * chunkSize);
+            List subList = relations.subList(i * chunkSize, (i + 1) * chunkSize + (i < rest ? 1 : 0));
             ret.add(subList);
         }
 
-        int rest = relations.size() % numChunks;
-        for (int i = 0; i < rest; i++) {
-            ret.get(i).add(relations.get(relations.size() - i - 1));
-        }
+        ///* do not ever try to do it this way. the ternary is just fine...
+        // * adding the rest like this will cause concurrent modification exceptions
+        // * in parallel operation mode
+        // */
+        // for (int i = 0; i < rest; i++) {
+        //    ret.get(i).add(relations.get(relations.size() - i - 1));
+        // }
 
         return ret;
     }

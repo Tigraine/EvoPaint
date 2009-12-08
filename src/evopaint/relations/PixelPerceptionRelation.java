@@ -12,6 +12,7 @@ import evopaint.attributes.ColorAttribute;
 import evopaint.attributes.PixelPerceptionAttribute;
 import evopaint.attributes.PartsAttribute;
 import evopaint.attributes.SpacialAttribute;
+import evopaint.interfaces.IRandomNumberGenerator;
 import java.util.Collection;
 
 /**
@@ -20,7 +21,7 @@ import java.util.Collection;
  */
 public class PixelPerceptionRelation extends Relation {
 
-    public boolean relate() {
+    public boolean relate(IRandomNumberGenerator rng) {
         PixelPerceptionAttribute ppa = (PixelPerceptionAttribute)a.getAttribute(PixelPerceptionAttribute.class);
         assert (ppa != null);
         

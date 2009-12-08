@@ -28,12 +28,12 @@ public class ColorAttribute implements IAttribute {
         this.color = color | 0xFF000000; // XXX cheating Alpha here
     }
 
-    public byte [] getARGB() {
-        byte [] ret = new byte[4];
-        ret[0] = (byte) ((this.color >> 24) & 0xFF);
-        ret[1] = (byte) ((this.color >> 16) & 0xFF);
-        ret[2] = (byte) ((this.color >> 8) & 0xFF);
-        ret[3] = (byte) (this.color & 0xFF);
+    public short [] getARGB() {
+        short [] ret = new short[4];
+        ret[0] = (short) ((this.color >> 24) & 0xFF);
+        ret[1] = (short) ((this.color >> 16) & 0xFF);
+        ret[2] = (short) ((this.color >> 8) & 0xFF);
+        ret[3] = (short) (this.color & 0xFF);
         return ret;
     }
 

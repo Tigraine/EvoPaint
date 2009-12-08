@@ -78,14 +78,14 @@ public class EvoPaint extends JPanel {
         if (Config.nrRenderings == 0) {
             while (true) {
                 this.world.step();
-                boolean ret = this.perception.relate();
+                boolean ret = this.perception.relate(Config.randomNumberGenerator);
                 assert (ret);
                 repaint();
             }
         } else {
             for (int i = 0; i < Config.nrRenderings; i++) {
                 this.world.step();
-                boolean ret = this.perception.relate();
+                boolean ret = this.perception.relate(Config.randomNumberGenerator);
                 assert (ret);
                 repaint();
             }

@@ -16,9 +16,11 @@ import java.util.IdentityHashMap;
  */
 public class Pixel extends Entity {
 
-    public Pixel(IdentityHashMap<Class, IAttribute> attributes, ColorAttribute pa, SpacialAttribute sa) {
+    public Pixel(IdentityHashMap<Class, IAttribute> attributes) {
         super(attributes);
-        this.attributes.put(ColorAttribute.class, pa);
-        this.attributes.put(SpacialAttribute.class, sa);
+        IAttribute a = attributes.get(ColorAttribute.class);
+        assert (a != null);
+        a = attributes.get(SpacialAttribute.class);
+        assert (a != null);
     }
 }
