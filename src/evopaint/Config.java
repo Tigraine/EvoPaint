@@ -87,4 +87,13 @@ public class Config {
         }
         Config.randomNumberGenerator = new RandomNumberGeneratorWrapper(new CellularAutomatonRNG(seed));
     }
+
+    /*
+    TODO: Talk through with TAM
+    public static Log getLogger(Object object) {
+        //Only a sample of what can be done with this.
+        if (object instanceof Entity)
+            return new NullLog();
+        return log;
+    } */
 }
