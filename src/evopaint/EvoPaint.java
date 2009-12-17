@@ -31,6 +31,16 @@ public class EvoPaint extends JPanel {
     private Observer observer;
     private Relation perception;
 
+    public boolean isRunning() {
+        return running;
+    }
+
+    public void setRunning(boolean running) {
+        this.running = running;
+    }
+
+    private boolean running = true;
+
     @Override
     public void paint(Graphics g) {
         //g.clearRect(0, 0, Config.sizeX*Config.zoom, Config.sizeY*Config.zoom);
@@ -76,14 +86,14 @@ public class EvoPaint extends JPanel {
     public void work() {
         
         if (Config.nrRenderings == 0) {
-            while (true) {
+            while (running) {
                 this.world.step();
                 boolean ret = this.perception.relate(Config.randomNumberGenerator);
                 assert (ret);
                 repaint();
             }
         } else {
-            for (int i = 0; i < Config.nrRenderings; i++) {
+            for (int i = 0; i < Config.nrRenderings && running; i++) {
                 this.world.step();
                 boolean ret = this.perception.relate(Config.randomNumberGenerator);
                 assert (ret);
