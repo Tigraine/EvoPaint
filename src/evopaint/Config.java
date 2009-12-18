@@ -12,6 +12,8 @@ import evopaint.util.ConsoleLog;
 import java.util.ArrayList;
 import java.util.IdentityHashMap;
 import java.util.Map;
+
+import evopaint.util.LogLevel;
 import org.uncommons.maths.random.CellularAutomatonRNG;
 import org.uncommons.maths.random.DefaultSeedGenerator;
 import org.uncommons.maths.random.SeedException;
@@ -34,7 +36,7 @@ public class Config {
     
     public static final int numRelationThreads = 1;
 
-    public static final int logLevel = Log.Level.DEBUG;
+    public static final int logLevel = LogLevel.DEBUG;
     public static final int logVerbosity = Log.Verbosity.VERBOSEVERBOSE;
     public static final int logFormat = Log.Format.COMPACT;
     public static Log log = new ConsoleLog(logLevel);

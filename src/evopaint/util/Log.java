@@ -4,22 +4,11 @@ import evopaint.interfaces.IObjectRenderer;
 
 import java.util.Hashtable;
 
-/**
- * Created by IntelliJ IDEA.
- * User: daniel
- * Date: 18.11.2009
- * Time: 19:49:53
- * To change this template use File | Settings | File Templates.
- */
 public abstract class Log {
     private final int logLevel;
 
     public Log(int logLevel) {
         this.logLevel = logLevel;
-    }
-
-    public class Level {
-        public static final int DEBUG = 5, INFORMATION = 4, WARNING = 3, ERROR = 2, NOTHING = 0;
     }
 
     public class Verbosity {
@@ -34,7 +23,7 @@ public abstract class Log {
         information(message, new Object[]{parameter});
     }
     public void information(String message, Object[] parameters) {
-        if (logLevel >= Log.Level.INFORMATION) {
+        if (logLevel >= LogLevel.INFORMATION) {
             String text = createLogText(message, parameters);
             writeInformation(text);
         }
@@ -44,7 +33,7 @@ public abstract class Log {
         warning(message, new Object[]{parameter});
     }
     public void warning(String message, Object[] parameters) {
-        if (logLevel >= Log.Level.WARNING) {
+        if (logLevel >= LogLevel.WARNING) {
             String text = createLogText(message, parameters);
             writeWarning(text);
         }
@@ -54,7 +43,7 @@ public abstract class Log {
         error(message, new Object[]{parameter});
     }
     public void error(String message, Object[] parameters) {
-        if (logLevel >= Log.Level.ERROR) {
+        if (logLevel >= LogLevel.ERROR) {
             String text = createLogText(message, parameters);
             writeError(text);
         }
@@ -64,7 +53,7 @@ public abstract class Log {
         debug(message, new Object[]{parameter});
     }
     public void debug(String message, Object[] parameters) {
-        if (logLevel >= Log.Level.DEBUG) {
+        if (logLevel >= LogLevel.DEBUG) {
             String text = createLogText(message, parameters);
             writeDebug(text);
         }
