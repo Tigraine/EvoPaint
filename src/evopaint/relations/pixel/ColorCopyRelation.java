@@ -25,7 +25,7 @@ public class ColorCopyRelation extends Relation {
     public boolean relate(IRandomNumberGenerator rng) {
         if (this.b == null) {
             if (Config.logLevel >= Log.Level.INFORMATION) {
-                Config.log.information("relation invalid (no partner)" + this);
+                Config.log.information("relation invalid (no partner) %s",  this);
             }
             return false;
         }
@@ -34,15 +34,13 @@ public class ColorCopyRelation extends Relation {
         SpacialAttribute sa = (SpacialAttribute) a.getAttribute(SpacialAttribute.class);
         if (sa == null) {
             if (Config.logLevel >= Log.Level.INFORMATION) {
-                Config.log.information("invalid relation (A has no spacial means) " + this);
+                Config.log.information("invalid relation (A has no spacial means) %s", this);
             }
             return false;
         }
         SpacialAttribute sb = (SpacialAttribute) b.getAttribute(SpacialAttribute.class);
         if (sb == null) {
-            if (Config.logLevel >= Log.Level.INFORMATION) {
-                Config.log.information("invalid relation (has no spacial means) " + this);
-            }
+            Config.log.information("invalid relation (has no spacial means) %s", this);
             return false;
         }
 
@@ -53,25 +51,19 @@ public class ColorCopyRelation extends Relation {
         // TODO: fix distance for clamped world
 
         if (distance > ColorCopyRelation.maxDistance) {
-            if (Config.logLevel >= Log.Level.INFORMATION) {
-                Config.log.information("invalid relation (distance between A and B exceeded tolerance) " + this);
-            }
+            Config.log.information("invalid relation (distance between A and B exceeded tolerance) %s", this);
             return false;
         }
 
         // radius of influence decreases radial (exponent 2)
         if (rng.nextDouble() < Math.pow(distance / ColorCopyRelation.maxDistance, 2)) {
-            if (Config.logLevel >= Log.Level.INFORMATION) {
-                Config.log.information("not relating (simulating radial decrease in power) " + this);
-            }
+            Config.log.information("not relating (simulating radial decrease in power) %s", this);
         }
 
         // now let us get to copying colors, therefore a needs a color
         ColorAttribute ca = (ColorAttribute) a.getAttribute(ColorAttribute.class);
         if (ca == null) {
-            if (Config.logLevel >= Log.Level.INFORMATION) {
-                Config.log.information("invalid relation (A has no color) " + this);
-            }
+            Config.log.information("invalid relation (A has no color) %s", this);
             return false;
         }
         
@@ -82,9 +74,7 @@ public class ColorCopyRelation extends Relation {
             b.setAttribute(ColorAttribute.class, cb);
         } else {
             if (ca.getColor() == cb.getColor()) {
-                 if (Config.logLevel >= Log.Level.INFORMATION) {
-                     Config.log.information("invalid relation (target of same color) " + this);
-                 }
+                 Config.log.information("invalid relation (target of same color) %s", this);
                  return false;
             }
             cb.setColor(ca.getColor());
@@ -97,9 +87,7 @@ public class ColorCopyRelation extends Relation {
             rca.promote(this.getClass());
         }
 
-        if (Config.logLevel >= Log.Level.INFORMATION) {
-            Config.log.information("relating " + this);
-        }
+        Config.log.information("relating %s", this);
         return true;
     }
 

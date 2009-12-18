@@ -1,8 +1,5 @@
 package evopaint.util;
 
-import evopaint.Config;
-import evopaint.Relation;
-
 /**
  * Created by IntelliJ IDEA.
  * User: daniel
@@ -12,26 +9,27 @@ import evopaint.Relation;
  */
 public class ConsoleLog extends Log {
 
-    public void information(String message) {
-        if (Config.logLevel >= Log.Level.INFORMATION) {
-            writeToConsole("[INFO] " + message);
-        }
+    public ConsoleLog(int logLevel) {
+        super(logLevel);
     }
 
-    public void warning(String message) {
-        if (Config.logLevel >= Log.Level.WARNING) {
-            writeToConsole("[WARN] " + message);
-        }
+    @Override
+    protected void writeInformation(String message) {
+        System.out.println("[INFO] " + message);
     }
 
-    public void error(String message) {
-        if (Config.logLevel >= Log.Level.ERROR) {
-            System.err.println("[ERR]  " + message); // XXX needs unbuffered stream
-        }
+    @Override
+    protected void writeWarning(String message) {
+        System.out.println("[WARN] " + message);
     }
-    
-    private void writeToConsole(String message)
-    {
-        System.out.println(message);
+
+    @Override
+    protected void writeError(String message) {
+        System.err.println("[ERR]  " + message); // XXX needs unbuffered stream
+    }
+
+    @Override
+    protected void writeDebug(String message) {
+        System.out.println("[DBG]  " + message);
     }
 }

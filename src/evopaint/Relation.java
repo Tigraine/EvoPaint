@@ -8,6 +8,8 @@ package evopaint;
 import evopaint.attributes.PartnerSelectionAttribute;
 import evopaint.attributes.SpacialAttribute;
 import evopaint.entities.World;
+import evopaint.interfaces.IDefinesObjectRenderer;
+import evopaint.interfaces.IObjectRenderer;
 import evopaint.interfaces.IRandomNumberGenerator;
 import evopaint.util.Log;
 import java.awt.Point;

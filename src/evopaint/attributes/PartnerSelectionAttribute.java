@@ -30,9 +30,7 @@ public class PartnerSelectionAttribute implements IAttribute {
         // check if we exist in space
         SpacialAttribute sa = (SpacialAttribute) us.getAttribute(SpacialAttribute.class);
         if (sa == null) {
-            if (Config.logLevel >= Log.Level.INFORMATION) {
-                Config.log.information("cannot find partner (we have no spacial means) " + this);
-            }
+            Config.log.information("cannot find partner (we have no spacial means) %s", this);
             return null;
         }
 

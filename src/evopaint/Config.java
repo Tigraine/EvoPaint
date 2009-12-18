@@ -34,10 +34,10 @@ public class Config {
     
     public static final int numRelationThreads = 1;
 
-    public static final int logLevel = Log.Level.WARNING;
+    public static final int logLevel = Log.Level.DEBUG;
     public static final int logVerbosity = Log.Verbosity.VERBOSEVERBOSE;
     public static final int logFormat = Log.Format.COMPACT;
-    public static Log log = new ConsoleLog();
+    public static Log log = new ConsoleLog(logLevel);
 
     // if true, this option will override each and every setting for how
     // many relations of what type are used and run exactly one of each avtive

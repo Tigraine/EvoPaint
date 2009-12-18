@@ -21,6 +21,8 @@ public class PauseCommand extends AbstractCommand {
 
     public void execute() {
         //evoPaint.setRunning(false);
+        ResumeCommand resumeCommand = new ResumeCommand(null);
+        resumeCommand.execute();
     }
 }
 

@@ -10,6 +10,7 @@ import evopaint.Entity;
 import evopaint.Relation;
 import evopaint.attributes.ColorAttribute;
 import evopaint.attributes.PartnerSelectionAttribute;
+import evopaint.interfaces.IObjectRenderer;
 import evopaint.interfaces.IRandomNumberGenerator;
 import evopaint.util.Log;
 import java.awt.Color;
@@ -23,9 +24,7 @@ public class ColorAssimilationRelation extends Relation {
         this.resetB(rng);
 
         if (this.b == null) {
-            if (Config.logLevel >= Log.Level.INFORMATION) {
-                Config.log.information("relation invalid (no partner)" + this);
-            }
+            Config.log.information("relation invalid (no partner) %s", this);
             return false;
         }
 
@@ -33,18 +32,13 @@ public class ColorAssimilationRelation extends Relation {
         ColorAttribute caa = (ColorAttribute) a.getAttribute(ColorAttribute.class);
         ColorAttribute cab = (ColorAttribute) b.getAttribute(ColorAttribute.class);
         if (caa == null || cab == null) {
-            if (Config.logLevel >= Log.Level.INFORMATION) {
-                Config.log.information("relation invalid (color gone)" + this);
-            }
+            Config.log.information("relation invalid (color gone) %s", this);
             return false;
         }
 
         // mix A's colors into B
         cab.setColor(this.hsbMix(caa, cab, 0.5f)); // XXX there is some hard coding right here
-
-        if (Config.logLevel >= Log.Level.INFORMATION) {
-                Config.log.information("relating " + this);
-        }
+        Config.log.information("relating %s", this);
         return true;
     }
 

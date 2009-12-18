@@ -107,10 +107,7 @@ public class World extends System {
             java.lang.System.exit(1);
         }
 
-        if (Config.logLevel >= Log.Level.INFORMATION) {
-            Config.log.information("");
-            Config.log.information("Time: " + ta + ", Relations: " + ra.getRelations().size());
-        }
+        Config.log.information("Time: %s, Relations: %s", new Object[]{ta, ra.getRelations().size()});
 
         ta.increaseTime();
         List<Relation> relations = ra.getRelations();
@@ -282,7 +279,7 @@ public class World extends System {
                 relatorThread.join();
             }
             catch (InterruptedException ex) {
-                Config.log.warning("Exception during Relating" + ex.getMessage());
+                Config.log.warning("Exception during Relating %s", ex.getMessage());
             }
         }
     }
