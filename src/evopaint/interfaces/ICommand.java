@@ -1,5 +1,7 @@
 package evopaint.interfaces;
 
+import java.awt.event.ActionListener;
+
 /**
  * Created by IntelliJ IDEA.
  * User: daniel
@@ -10,3 +12,4 @@ package evopaint.interfaces;
 public interface ICommand {
     void execute();
 }
+

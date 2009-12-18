@@ -4,6 +4,7 @@
 
 package evopaint;
 
+import evopaint.commands.PauseCommand;
 import evopaint.entities.World;
 import evopaint.interfaces.IAttribute;
 import evopaint.attributes.PartsAttribute;
@@ -11,16 +12,16 @@ import evopaint.attributes.PixelPerceptionAttribute;
 import evopaint.attributes.RelationsAttribute;
 import evopaint.entities.Observer;
 import evopaint.relations.PixelPerceptionRelation;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Graphics;
+
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.IdentityHashMap;
 import java.util.List;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
+import javax.swing.*;
 
 /**
  * The main class of the application.
@@ -73,10 +74,19 @@ public class EvoPaint extends JPanel {
 
     public static void main(String[] args) {
         JFrame frame = new JFrame();
+        frame.setLayout(new BorderLayout());
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        EvoPaint app = new EvoPaint();
+        final EvoPaint app = new EvoPaint();
+
+        JButton button = new JButton();
+        button.setText("Stop");
+        button.addActionListener(new PauseCommand(app));
+        frame.add(button, BorderLayout.NORTH);
+
+
+
         app.setPreferredSize(new Dimension(Config.sizeX*Config.zoom, Config.sizeY*Config.zoom));
-        frame.add(app);
+        frame.add(app, BorderLayout.CENTER);
         frame.pack();
         frame.setVisible(true);
         app.work();

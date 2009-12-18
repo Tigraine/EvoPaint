@@ -2,6 +2,7 @@ package evopaint.commands;
 
 import evopaint.EvoPaint;
 import evopaint.entities.World;
+import evopaint.interfaces.AbstractCommand;
 import evopaint.interfaces.ICommand;
 
 /**
@@ -11,11 +12,10 @@ import evopaint.interfaces.ICommand;
  * Time: 00:32:15
  * To change this template use File | Settings | File Templates.
  */
-public class PauseCommand implements ICommand {
+public class PauseCommand extends AbstractCommand {
     private EvoPaint evoPaint;
 
     public PauseCommand(EvoPaint evoPaint) {
-
         this.evoPaint = evoPaint;
     }
 
@@ -23,3 +23,4 @@ public class PauseCommand implements ICommand {
         evoPaint.setRunning(false);
     }
 }
+
