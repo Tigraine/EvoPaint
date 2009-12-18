@@ -62,21 +62,32 @@ public abstract class Log {
     protected abstract void writeDebug(String message);
 
     private Hashtable<Class, IObjectRenderer> renderers = new Hashtable<Class, IObjectRenderer>();
+    private DefaultRenderer defaultRenderer = new DefaultRenderer();
+    private IObjectRenderer FindSuitableRenderer(Class<? extends Object> target) {
+        if (renderers.contains(target))
+            return renderers.get(target);
 
-    private IObjectRenderer FindSuitableRenderer(Object message) {
-        Class<? extends Object> aClass = message.getClass();
-        if (renderers.contains(aClass))
-            return renderers.get(aClass);
-        return new DefaultRenderer();
+        Class<?> superclass = target.getSuperclass();
+        if (superclass == null) return defaultRenderer;
+
+        //Recursive finding of higher renderer
+        if (renderers.contains(superclass)) {
+            IObjectRenderer renderer = renderers.get(superclass);
+            renderers.put(target, renderer);
+        }
+        return FindSuitableRenderer(superclass);
     }
 
     private String WriteObject(Object message) {
-        IObjectRenderer iObjectRenderer = FindSuitableRenderer(message);
+        IObjectRenderer iObjectRenderer = FindSuitableRenderer(message.getClass());
         return iObjectRenderer.render(message);
     }
 
     public void addRenderer(IObjectRenderer renderer, Class target) {
         renderers.put(target, renderer);
+    }
+    public void clearRenderers() {
+        renderers.clear();
     }
 
     private class DefaultRenderer implements IObjectRenderer {
