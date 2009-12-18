@@ -25,21 +25,6 @@ public abstract class Relation {
     protected int failCounter = 0;
 
     public abstract boolean relate(IRandomNumberGenerator rng);
-
-    @Override
-    public String toString() {
-        String ret = this.getClass().getSimpleName();
-
-        if (Config.logVerbosity >= Log.Verbosity.VERBOSE) {
-            ret += "(" + this.hashCode() + ")";
-        }
-        
-        if  (Config.logVerbosity >= Log.Verbosity.VERBOSE) {
-                ret += " A={" + this.a + "}, B={" + this.b + "}";
-        }
-
-        return ret;
-    }
     
     public void reset(IRandomNumberGenerator rng) {
         this.a = World.locationToEntity(rng.nextLocation());

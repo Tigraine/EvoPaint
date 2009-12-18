@@ -2,6 +2,7 @@ package evopaint.util;
 
 import evopaint.interfaces.IObjectRenderer;
 
+import java.util.HashMap;
 import java.util.Hashtable;
 
 public abstract class Log {
@@ -61,17 +62,17 @@ public abstract class Log {
 
     protected abstract void writeDebug(String message);
 
-    private Hashtable<Class, IObjectRenderer> renderers = new Hashtable<Class, IObjectRenderer>();
+    private HashMap<Class<? extends Object>, IObjectRenderer> renderers = new HashMap<Class<? extends Object>, IObjectRenderer>();
     private DefaultRenderer defaultRenderer = new DefaultRenderer();
     private IObjectRenderer FindSuitableRenderer(Class<? extends Object> target) {
-        if (renderers.contains(target))
+        if (renderers.containsKey(target))
             return renderers.get(target);
 
-        Class<?> superclass = target.getSuperclass();
+        Class<? extends Object> superclass = target.getSuperclass();
         if (superclass == null) return defaultRenderer;
 
         //Recursive finding of higher renderer
-        if (renderers.contains(superclass)) {
+        if (renderers.containsKey(superclass)) {
             IObjectRenderer renderer = renderers.get(superclass);
             renderers.put(target, renderer);
         }
@@ -83,7 +84,7 @@ public abstract class Log {
         return iObjectRenderer.render(message);
     }
 
-    public void addRenderer(IObjectRenderer renderer, Class target) {
+    public void addRenderer(Class target, IObjectRenderer renderer) {
         renderers.put(target, renderer);
     }
     public void clearRenderers() {

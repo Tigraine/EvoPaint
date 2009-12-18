@@ -32,7 +32,7 @@ public class ColorAssimilationRelation extends Relation {
         ColorAttribute caa = (ColorAttribute) a.getAttribute(ColorAttribute.class);
         ColorAttribute cab = (ColorAttribute) b.getAttribute(ColorAttribute.class);
         if (caa == null || cab == null) {
-            Config.log.information("relation invalid (color gone) %s", this);
+            Config.log.information("relation invalid (color gone) A={%s}, B={%s}", this.a, this.b);
             return false;
         }
 

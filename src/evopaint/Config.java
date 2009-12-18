@@ -7,13 +7,15 @@ package evopaint;
 import evopaint.util.Log;
 import evopaint.interfaces.IRandomNumberGenerator;
 import evopaint.relations.pixel.ColorAssimilationRelation;
-import evopaint.relations.pixel.ColorCopyRelation;
 import evopaint.util.ConsoleLog;
 import java.util.ArrayList;
 import java.util.IdentityHashMap;
 import java.util.Map;
 
 import evopaint.util.LogLevel;
+import evopaint.util.objectrenderers.EntityRenderer;
+import evopaint.util.objectrenderers.RelationRenderer;
+import evopaint.util.objectrenderers.VerboseEntityRenderer;
 import org.uncommons.maths.random.CellularAutomatonRNG;
 import org.uncommons.maths.random.DefaultSeedGenerator;
 import org.uncommons.maths.random.SeedException;
@@ -36,8 +38,8 @@ public class Config {
     
     public static final int numRelationThreads = 1;
 
-    public static final int logLevel = LogLevel.ERROR;
-    public static final int logVerbosity = Log.Verbosity.VERBOSEVERBOSE;
+    public static final int logLevel = LogLevel.DEBUG;
+    public static final int logVerbosity = Log.Verbosity.VERBOSE;
     public static Log log = new ConsoleLog(logLevel);
 
     // if true, this option will override each and every setting for how
@@ -61,7 +63,19 @@ public class Config {
     public static IRandomNumberGenerator randomNumberGenerator;
 
     public static void init() {
+        Config.initLogger(logLevel, logVerbosity);
         Config.initRNG();
+    }
+
+    private static void initLogger(int logLevel, int logVerbosity) {
+        log = new ConsoleLog(logLevel);
+        if (logVerbosity == Log.Verbosity.VERBOSEVERBOSE) {
+            log.addRenderer(Entity.class, new VerboseEntityRenderer());
+        }
+        else {
+            log.addRenderer(Entity.class, new EntityRenderer());
+        }
+        log.addRenderer(Relation.class, new RelationRenderer());
     }
 
     private static void initRNG() {
