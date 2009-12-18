@@ -288,7 +288,7 @@ public class InitGui extends JFrame {
 
 	private void jPWorldMouseWheelMoved(java.awt.event.MouseWheelEvent evt) {
 		// TODO add your handling code here:
-        ZoomCommand zoomCommand = new ZoomCommand(evt.getWheelRotation() * -1);
+        ZoomCommand zoomCommand = new ZoomCommand(this.observer, evt.getWheelRotation() * -1);
         zoomCommand.execute();
     }
 
