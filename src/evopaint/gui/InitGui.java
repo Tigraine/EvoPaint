@@ -34,10 +34,10 @@ public class InitGui extends JFrame {
 		
 
 		// create empty world
-		List parts = new ArrayList<Entity>();
+		List<Entity> parts = new ArrayList<Entity>();
 		PartsAttribute pa = new PartsAttribute(parts);
 
-		List relations = new ArrayList<Relation>();
+		List<Relation> relations = new ArrayList<Relation>();
 		RelationsAttribute ra = new RelationsAttribute(relations);
 		long time = 0;
 		this.world = new World(new IdentityHashMap<Class, IAttribute>(), pa,
