@@ -43,6 +43,10 @@ public class Entity {
         return attributes;
     }
 
+    public void setAttributes(IdentityHashMap<Class, IAttribute> attributes) {
+        this.attributes = attributes;
+    }
+
     public void setAttribute(Class attributeType, IAttribute attribute) {
         this.attributes.put(attributeType, attribute);
     }
