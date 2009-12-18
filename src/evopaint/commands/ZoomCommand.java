@@ -4,18 +4,14 @@ import evopaint.Config;
 import evopaint.interfaces.AbstractCommand;
 
 public class ZoomCommand extends AbstractCommand {
-    private boolean in;
+    private int zoomAmount;
 
-    public ZoomCommand(boolean in) {
-        this.in = in;
+    public ZoomCommand(int zoomAmount) {
+        this.zoomAmount = zoomAmount;
     }
 
     public void execute() {
-        if (in) {
-            Config.zoom++;
-        } else {
-            Config.zoom = Math.max(0, Config.zoom - 1);
-        }
+        Config.zoom = Math.max(0, Config.zoom + zoomAmount);
     }
 }
 

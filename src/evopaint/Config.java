@@ -38,7 +38,7 @@ public class Config {
     
     public static final int numRelationThreads = 1;
 
-    public static final int logLevel = LogLevel.DEBUG;
+    public static final int logLevel = LogLevel.ERROR;
     public static final int logVerbosity = Log.Verbosity.VERBOSE;
     public static Log log = new ConsoleLog(logLevel);
 

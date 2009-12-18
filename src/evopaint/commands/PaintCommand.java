@@ -1,5 +1,6 @@
 package evopaint.commands;
 
+import evopaint.Config;
 import evopaint.Entity;
 import evopaint.attributes.ColorAttribute;
 import evopaint.attributes.SpacialAttribute;
@@ -13,26 +14,28 @@ public class PaintCommand extends AbstractCommand {
     private World world;
     private Point location;
     private int radius;
-    private IdentityHashMap<Class,IAttribute> newAttributes;
 
     public PaintCommand(World world, Point location, int radius) {
         this.world = world;
-        this.location = location;
+        this.location = new Point(location.x / Config.zoom, location.y / Config.zoom);
         this.radius = radius;
 
         // TODO: make the new attributes a parameter
-        this.newAttributes = new IdentityHashMap<Class,IAttribute>();
-        this.newAttributes.put(ColorAttribute.class, new ColorAttribute(0xFFF0000));
-        this.newAttributes.put(SpacialAttribute.class, new SpacialAttribute(new Point(location)));
     }
 
     public void execute() {
         //Config.log.debug(this);
-        for (int i = 0; i < this.radius; i++) {
-            for (int j = 0; j < this.radius; j++) {
-                Point target = new Point(this.location.x, this.location.y);
-                Entity entity = this.world.locationToEntity(target);
-                entity.setAttributes(this.newAttributes);
+        Config.log.information("Executing Paint command on x: %s y: %s", location.x, location.y);
+        for (int i = 0 - this.radius / 2; i < radius / 2; i++) {
+            for (int j = 0 - this.radius / 2; j < this.radius / 2; j++) {
+                Point point = new Point(this.location.x + i, this.location.y + j);
+
+
+                IdentityHashMap<Class,IAttribute> newAttributes = new IdentityHashMap<Class,IAttribute>();
+                newAttributes.put(ColorAttribute.class, new ColorAttribute(0xFFFF0000));
+                newAttributes.put(SpacialAttribute.class, new SpacialAttribute(point));
+                Entity entity = this.world.locationToEntity(point);
+                entity.setAttributes(newAttributes);
             }
         }
     }

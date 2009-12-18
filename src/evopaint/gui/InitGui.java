@@ -3,6 +3,8 @@ package evopaint.gui;
 import evopaint.Config;
 import evopaint.Entity;
 import evopaint.Relation;
+import evopaint.commands.PaintCommand;
+import evopaint.commands.ZoomCommand;
 import evopaint.entities.World;
 import evopaint.interfaces.IAttribute; //import evopaint.EvoPaint.MyDraw;
 import evopaint.attributes.PartsAttribute;
@@ -11,14 +13,9 @@ import evopaint.attributes.RelationsAttribute;
 import evopaint.entities.Observer;
 import evopaint.relations.PixelPerceptionRelation;
 
-import java.awt.AlphaComposite;
-import java.awt.Color;
-import java.awt.Composite;
-import java.awt.Dimension;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.GridLayout;
+import java.awt.*;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseWheelEvent;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -291,18 +288,19 @@ public class InitGui extends JFrame {
 
 	private void jPWorldMouseWheelMoved(java.awt.event.MouseWheelEvent evt) {
 		// TODO add your handling code here:
-		System.out.println("EVENT MOUSE WHEEL");
-
-	}
+        ZoomCommand zoomCommand = new ZoomCommand(evt.getWheelRotation() * -1);
+        zoomCommand.execute();
+    }
 
 	private void jPWorldMousePressed(java.awt.event.MouseEvent evt) {
 		// TODO add your handling code here:
 
 		if (evt.getButton() == MouseEvent.BUTTON1) {
 
-			System.out.println("EVENT MOUSE PRESSED Left");
+            PaintCommand command = new PaintCommand(this.world, new Point(evt.getX(), evt.getY()), 20);
+            command.execute();
 
-		} else if (evt.getButton() == MouseEvent.BUTTON2) {
+        } else if (evt.getButton() == MouseEvent.BUTTON2) {
 
 			System.out.println("EVENT MOUSE PRESSED Center");
 
