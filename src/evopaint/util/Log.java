@@ -15,51 +15,35 @@ public abstract class Log {
         public static final int BRIEF = 0, VERBOSE = 1, VERBOSEVERBOSE = 2;
     }
 
-    public class Format {
-        public static final int COMPACT = 0, LONG = 1;
-    }
-
-    public void information(String message, Object parameter) {
-        information(message, new Object[]{parameter});
-    }
-    public void information(String message, Object[] parameters) {
+    public void information(String message, Object... parameters) {
         if (logLevel >= LogLevel.INFORMATION) {
             String text = createLogText(message, parameters);
             writeInformation(text);
         }
     }
 
-    public void warning(String message, Object parameter) {
-        warning(message, new Object[]{parameter});
-    }
-    public void warning(String message, Object[] parameters) {
+    public void warning(String message, Object... parameters) {
         if (logLevel >= LogLevel.WARNING) {
             String text = createLogText(message, parameters);
             writeWarning(text);
         }
     }
 
-    public void error(String message, Object parameter) {
-        error(message, new Object[]{parameter});
-    }
-    public void error(String message, Object[] parameters) {
+    public void error(String message, Object... parameters) {
         if (logLevel >= LogLevel.ERROR) {
             String text = createLogText(message, parameters);
             writeError(text);
         }
     }
 
-    public void debug(String message, Object parameter) {
-        debug(message, new Object[]{parameter});
-    }
-    public void debug(String message, Object[] parameters) {
+    public void debug(String message, Object... parameters) {
         if (logLevel >= LogLevel.DEBUG) {
             String text = createLogText(message, parameters);
             writeDebug(text);
         }
     }
 
-    private String createLogText(String message, Object[] parameters) {
+    private String createLogText(String message, Object... parameters) {
         String[] params = new String[parameters.length];
         int i = 0;
         for(Object o : parameters) {

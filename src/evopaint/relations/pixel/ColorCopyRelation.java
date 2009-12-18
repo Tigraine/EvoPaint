@@ -24,18 +24,14 @@ public class ColorCopyRelation extends Relation {
 
     public boolean relate(IRandomNumberGenerator rng) {
         if (this.b == null) {
-            if (Config.logLevel >= Log.Level.INFORMATION) {
-                Config.log.information("relation invalid (no partner) %s",  this);
-            }
+            Config.log.information("relation invalid (no partner) %s",  this);
             return false;
         }
         
         // a and b both need spacial means for this relation to work
         SpacialAttribute sa = (SpacialAttribute) a.getAttribute(SpacialAttribute.class);
         if (sa == null) {
-            if (Config.logLevel >= Log.Level.INFORMATION) {
-                Config.log.information("invalid relation (A has no spacial means) %s", this);
-            }
+            Config.log.information("invalid relation (A has no spacial means) %s", this);
             return false;
         }
         SpacialAttribute sb = (SpacialAttribute) b.getAttribute(SpacialAttribute.class);
