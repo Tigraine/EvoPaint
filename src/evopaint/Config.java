@@ -29,7 +29,7 @@ public class Config {
 
     public static final int nrRenderings = 0;
     public static final int nrStepsPerRendering = 1;
-    public static final int zoom = 3;
+    public static int zoom = 3;
 
     public static final int sizeX = 150;
     public static final int sizeY = 150;
