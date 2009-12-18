@@ -20,7 +20,7 @@ public class PauseCommand extends AbstractCommand {
     }
 
     public void execute() {
-        evoPaint.setRunning(false);
+        //evoPaint.setRunning(false);
     }
 }
 

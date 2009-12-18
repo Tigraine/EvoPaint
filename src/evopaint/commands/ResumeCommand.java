@@ -18,6 +18,6 @@ public class ResumeCommand implements ICommand {
     }
 
     public void execute() {
-        evoPaint.setRunning(true);
+        //evoPaint.setRunning(true);
     }
 }
