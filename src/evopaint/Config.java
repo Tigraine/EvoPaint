@@ -82,7 +82,7 @@ public class Config {
             try {
                 seed = sg.generateSeed(4);
             } catch (SeedException e) {
-                java.lang.System.err.println("got seed exception from default seed generator. this should not have happened.");
+                log.error("got seed exception from default seed generator. this should not have happened.");
                 java.lang.System.exit(1);
             }
         }
