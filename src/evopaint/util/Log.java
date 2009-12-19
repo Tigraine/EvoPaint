@@ -17,31 +17,27 @@ public abstract class Log {
     }
 
     public void information(String message, Object... parameters) {
-        if (logLevel >= LogLevel.INFORMATION) {
-            String text = createLogText(message, parameters);
-            writeInformation(text);
-        }
+        if (logLevel < LogLevel.INFORMATION) return; 
+        String text = createLogText(message, parameters);
+        writeInformation(text);
     }
 
     public void warning(String message, Object... parameters) {
-        if (logLevel >= LogLevel.WARNING) {
-            String text = createLogText(message, parameters);
-            writeWarning(text);
-        }
+        if (logLevel < LogLevel.WARNING) return;
+        String text = createLogText(message, parameters);
+        writeWarning(text);
     }
 
     public void error(String message, Object... parameters) {
-        if (logLevel >= LogLevel.ERROR) {
-            String text = createLogText(message, parameters);
-            writeError(text);
-        }
+        if (logLevel < LogLevel.ERROR) return;
+        String text = createLogText(message, parameters);
+        writeError(text);
     }
 
     public void debug(String message, Object... parameters) {
-        if (logLevel >= LogLevel.DEBUG) {
-            String text = createLogText(message, parameters);
-            writeDebug(text);
-        }
+        if (logLevel >= LogLevel.DEBUG);
+        String text = createLogText(message, parameters);
+        writeDebug(text);
     }
 
     private String createLogText(String message, Object... parameters) {
