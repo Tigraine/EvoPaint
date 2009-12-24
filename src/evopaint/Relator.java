@@ -5,10 +5,8 @@
 
 package evopaint;
 
-import evopaint.attributes.SpacialAttribute;
 import evopaint.entities.World;
 import evopaint.interfaces.IRandomNumberGenerator;
-import java.awt.Point;
 import java.util.List;
 
 /**
@@ -17,8 +15,9 @@ import java.util.List;
  */
 public class Relator extends Thread {
 
-    List<Relation> myShare;
-    IRandomNumberGenerator rng;
+    private World world;
+    private List<Relation> myShare;
+    private IRandomNumberGenerator rng;
 
     @Override
     public void run() {
@@ -26,15 +25,16 @@ public class Relator extends Thread {
         for (Relation relation : this.myShare) {
             if (!relation.relate(this.rng)) {
                 if (Config.oneRelationPerEntity == true) {
-                    relation.resetB(rng);
+                    relation.resetB(this.world, this.rng);
                 } else {
-                    relation.reset(rng);
+                    relation.reset(this.world, this.rng);
                 }
             }
         }
     }
 
-    public Relator(List<Relation> myShare, IRandomNumberGenerator rng) {
+    public Relator(World world, List<Relation> myShare, IRandomNumberGenerator rng) {
+        this.world = world;
         this.myShare = myShare;
         this.rng = rng;
     }

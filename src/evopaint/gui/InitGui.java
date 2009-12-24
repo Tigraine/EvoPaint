@@ -10,6 +10,8 @@ import evopaint.interfaces.IAttribute; //import evopaint.EvoPaint.MyDraw;
 import evopaint.attributes.PartsAttribute;
 import evopaint.attributes.PixelPerceptionAttribute;
 import evopaint.attributes.RelationsAttribute;
+import evopaint.attributes.SpacialAttribute;
+import evopaint.attributes.TemporalAttribute;
 import evopaint.entities.Observer;
 import evopaint.relations.PixelPerceptionRelation;
 
@@ -39,14 +41,15 @@ public class InitGui extends JFrame {
 
 		List<Relation> relations = new ArrayList<Relation>();
 		RelationsAttribute ra = new RelationsAttribute(relations);
-		long time = 0;
+                SpacialAttribute sa = new SpacialAttribute(new Point(0,0), new Dimension(Config.defaultDimension));
+                TemporalAttribute ta = new TemporalAttribute(0);
 		this.world = new World(new IdentityHashMap<Class, IAttribute>(), pa,
-				ra, time);
+				ra, sa, ta);
 		this.world.init();
 
 		// create observer
 		PixelPerceptionAttribute ppa = new PixelPerceptionAttribute(
-				Config.sizeX, Config.sizeY, BufferedImage.TYPE_INT_ARGB,
+				sa.getDimension().width, sa.getDimension().height, BufferedImage.TYPE_INT_ARGB,
 				Config.zoom);
 		this.observer = new Observer(new IdentityHashMap<Class, IAttribute>(),
 				ppa);
@@ -149,12 +152,15 @@ public class InitGui extends JFrame {
 
 		GroupLayout jPWorldLayout = new GroupLayout(jPWorld);
 		jPWorld.setLayout(jPWorldLayout);
+
+                int width = this.observer.getPerception().getWidth();
+                int height = this.observer.getPerception().getHeight();
 		jPWorldLayout.setHorizontalGroup(jPWorldLayout.createParallelGroup(
 				GroupLayout.Alignment.LEADING).addGap(0,
-				Config.sizeX * Config.zoom, Short.MAX_VALUE));
+				width, Short.MAX_VALUE));
 		jPWorldLayout.setVerticalGroup(jPWorldLayout.createParallelGroup(
 				GroupLayout.Alignment.LEADING).addGap(0,
-				Config.sizeY * Config.zoom, Short.MAX_VALUE));
+				height, Short.MAX_VALUE));
 
 		jFile.setText("File");
 		jMenu.add(jFile);

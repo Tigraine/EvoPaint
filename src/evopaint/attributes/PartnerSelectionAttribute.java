@@ -25,7 +25,7 @@ public class PartnerSelectionAttribute implements IAttribute {
     private float minScore;
     private float maxScore;
 
-    public Entity findPartner(Entity us, int radius, IRandomNumberGenerator rng) {
+    public Entity findPartner(World world, Entity us, int radius, IRandomNumberGenerator rng) {
 
         // check if we exist in space
         SpacialAttribute sa = (SpacialAttribute) us.getAttribute(SpacialAttribute.class);
@@ -36,7 +36,7 @@ public class PartnerSelectionAttribute implements IAttribute {
 
         // get the possible matches from the environment of our entity
         List<Entity> environment = new ArrayList<Entity>((2*radius+1)*(2*radius+1)-1);
-        Point loc = sa.getLocation();
+        Point loc = sa.getOrigin();
         for (int y = loc.y - radius; y <= loc.y + radius; y++) {
             for (int x = loc.x - radius; x <= loc.x + radius; x++) {
 
@@ -45,7 +45,7 @@ public class PartnerSelectionAttribute implements IAttribute {
                     continue;
                 }
 
-                environment.add(World.locationToEntity(new Point(x, y)));
+                environment.add(world.locationToEntity(new Point(x, y)));
             }
         }
 

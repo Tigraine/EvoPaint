@@ -7,6 +7,7 @@
 package evopaint;
 
 import evopaint.interfaces.IRandomNumberGenerator;
+import java.awt.Dimension;
 import java.awt.Point;
 import java.util.Random;
 
@@ -49,9 +50,9 @@ public class RandomNumberGeneratorWrapper implements IRandomNumberGenerator {
         return this.rng.nextBoolean();
     }
 
-    public Point nextLocation() {
-        return new Point(this.rng.nextInt(Config.sizeX),
-                    this.rng.nextInt(Config.sizeY));
+    public Point nextLocation(Dimension dimension) {
+        return new Point(this.rng.nextInt(dimension.width),
+                    this.rng.nextInt(dimension.height));
     }
 
     public Random getRandom() {

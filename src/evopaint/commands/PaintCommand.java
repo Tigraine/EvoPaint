@@ -7,6 +7,7 @@ import evopaint.attributes.SpacialAttribute;
 import evopaint.entities.World;
 import evopaint.interfaces.AbstractCommand;
 import evopaint.interfaces.IAttribute;
+import java.awt.Dimension;
 import java.awt.Point;
 import java.util.IdentityHashMap;
 
@@ -33,7 +34,7 @@ public class PaintCommand extends AbstractCommand {
 
                 IdentityHashMap<Class,IAttribute> newAttributes = new IdentityHashMap<Class,IAttribute>();
                 newAttributes.put(ColorAttribute.class, new ColorAttribute(0xFFFF0000));
-                newAttributes.put(SpacialAttribute.class, new SpacialAttribute(point));
+                newAttributes.put(SpacialAttribute.class, new SpacialAttribute(point, new Dimension(1,1)));
                 Entity entity = this.world.locationToEntity(point);
                 entity.setAttributes(newAttributes);
             }

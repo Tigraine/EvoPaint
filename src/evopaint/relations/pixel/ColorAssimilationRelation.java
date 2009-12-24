@@ -21,7 +21,7 @@ import java.awt.Color;
  */
 public class ColorAssimilationRelation extends Relation {
     public boolean relate(IRandomNumberGenerator rng) {
-        this.resetB(rng);
+        //this.resetB(rng);
 
         if (this.b == null) {
             Config.log.information("relation invalid (no partner) %s", this);

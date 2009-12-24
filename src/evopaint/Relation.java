@@ -8,10 +8,7 @@ package evopaint;
 import evopaint.attributes.PartnerSelectionAttribute;
 import evopaint.attributes.SpacialAttribute;
 import evopaint.entities.World;
-import evopaint.interfaces.IDefinesObjectRenderer;
-import evopaint.interfaces.IObjectRenderer;
 import evopaint.interfaces.IRandomNumberGenerator;
-import evopaint.util.Log;
 import java.awt.Point;
 
 /**
@@ -21,42 +18,40 @@ import java.awt.Point;
 public abstract class Relation {
     protected Entity a;
     protected Entity b;
-    protected int radiusOfInfluence = 1;
-    protected int failCounter = 0;
+    protected static int radiusOfInfluence = 1;
 
     public abstract boolean relate(IRandomNumberGenerator rng);
     
-    public void reset(IRandomNumberGenerator rng) {
-        this.a = World.locationToEntity(rng.nextLocation());
-        this.resetB(rng);
+    public void reset(World world, IRandomNumberGenerator rng) {
+        SpacialAttribute sa = (SpacialAttribute) world.getAttribute(SpacialAttribute.class);
+        assert(sa != null);
+        Point location = rng.nextLocation(sa.getDimension());
+        this.a = world.locationToEntity(location);
+        this.resetB(world, rng);
     }
 
-    public void resetB(IRandomNumberGenerator rng) {
+    public void resetB(World world, IRandomNumberGenerator rng) {
         // if A has the ability to select its own partner, do it
         PartnerSelectionAttribute psa =
                 (PartnerSelectionAttribute) this.a.getAttribute(PartnerSelectionAttribute.class);
         if (psa != null) {
-            this.b = psa.findPartner(a, radiusOfInfluence, rng);
-            if (this.b == null) {
-                this.failCounter++;
-            }
+            this.b = psa.findPartner(world, a, radiusOfInfluence, rng);
         } else {
             // else choose B from A's environment
             SpacialAttribute sa = (SpacialAttribute) this.a.getAttribute(SpacialAttribute.class);
             assert (sa != null);
-            Point newLocation = new Point(sa.getLocation());
+            Point newLocation = new Point(sa.getOrigin());
+
+            // TODO: points close to A need a quadratically higher chance
+            // to be chosen
             newLocation.translate(rng.nextPositiveInt(2*radiusOfInfluence+1) - radiusOfInfluence,
                     rng.nextPositiveInt(2*radiusOfInfluence+1) - radiusOfInfluence);
-            this.b = World.locationToEntity(newLocation);
+            this.b = world.locationToEntity(newLocation);
         }
     }
 
     public void setA(Entity a) {
         this.a = a;
-    }
-
-    public int getFailCounter() {
-        return this.failCounter;
     }
 
     public Relation(Entity a, Entity b) {

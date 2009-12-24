@@ -16,6 +16,7 @@ import evopaint.util.LogLevel;
 import evopaint.util.objectrenderers.EntityRenderer;
 import evopaint.util.objectrenderers.RelationRenderer;
 import evopaint.util.objectrenderers.VerboseEntityRenderer;
+import java.awt.Dimension;
 import org.uncommons.maths.random.CellularAutomatonRNG;
 import org.uncommons.maths.random.DefaultSeedGenerator;
 import org.uncommons.maths.random.SeedException;
@@ -31,10 +32,9 @@ public class Config {
     public static final int nrStepsPerRendering = 1;
     public static int zoom = 3;
 
-    public static final int sizeX = 150;
-    public static final int sizeY = 150;
-    public static final int initialPopulationX = 150;
-    public static final int initialPopulationY = 150;
+    public static final Dimension defaultDimension = new Dimension(100,100);
+    public static final int initialPopulationX = 100;
+    public static final int initialPopulationY = 100;
     
     public static final int numRelationThreads = 1;
 
@@ -56,7 +56,7 @@ public class Config {
 
     public static Map<Class,Integer> numPixelRelations = new IdentityHashMap<Class,Integer>() {{
         //put(ColorCopyRelation.class, Config.sizeX*Config.sizeY);
-        put(ColorAssimilationRelation.class, Config.sizeX*Config.sizeY);
+        put(ColorAssimilationRelation.class, Config.defaultDimension.width*Config.defaultDimension.height);
     }};
 
     // initialized by init()

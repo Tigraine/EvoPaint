@@ -17,10 +17,9 @@ public class ZoomCommand extends AbstractCommand {
     }
 
     public void execute() {
-        int zoom = Math.max(0, Config.zoom + zoomAmount);
-        Config.zoom = zoom;
-        observer.setAttribute(PixelPerceptionAttribute.class,
-                new PixelPerceptionAttribute(Config.sizeX, Config.sizeY, BufferedImage.TYPE_INT_RGB, zoom));
+        PixelPerceptionAttribute ppa = (PixelPerceptionAttribute) this.observer.getAttribute(PixelPerceptionAttribute.class);
+        assert(ppa != null);
+        ppa.setZoom(Math.max(0, ppa.getZoom() + zoomAmount));
     }
 }
 

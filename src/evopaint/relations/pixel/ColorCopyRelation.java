@@ -11,8 +11,8 @@ import evopaint.attributes.ColorAttribute;
 import evopaint.Relation;
 import evopaint.attributes.RelationChoosingAttribute;
 import evopaint.attributes.SpacialAttribute;
+import evopaint.entities.World;
 import evopaint.interfaces.IRandomNumberGenerator;
-import evopaint.util.Log;
 import java.awt.Point;
 
 /**
@@ -20,7 +20,6 @@ import java.awt.Point;
  * @author tam
  */
 public class ColorCopyRelation extends Relation {
-    public static final int maxDistance = 5;
 
     public boolean relate(IRandomNumberGenerator rng) {
         if (this.b == null) {
@@ -41,20 +40,9 @@ public class ColorCopyRelation extends Relation {
         }
 
         // a and b need to stay within a maximum distance to each other
-        Point locationA = sa.getLocation();
-        Point locationB = sb.getLocation();
-        double distance = Point.distance(locationA.x, locationA.y, locationB.x, locationB.y);
-        // TODO: fix distance for clamped world
+        Point locationA = sa.getOrigin();
+        Point locationB = sb.getOrigin();
 
-        if (distance > ColorCopyRelation.maxDistance) {
-            Config.log.information("invalid relation (distance between A and B exceeded tolerance) %s", this);
-            return false;
-        }
-
-        // radius of influence decreases radial (exponent 2)
-        if (rng.nextDouble() < Math.pow(distance / ColorCopyRelation.maxDistance, 2)) {
-            Config.log.information("not relating (simulating radial decrease in power) %s", this);
-        }
 
         // now let us get to copying colors, therefore a needs a color
         ColorAttribute ca = (ColorAttribute) a.getAttribute(ColorAttribute.class);

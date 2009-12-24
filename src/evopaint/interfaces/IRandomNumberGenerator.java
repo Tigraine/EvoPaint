@@ -5,6 +5,7 @@
 
 package evopaint.interfaces;
 
+import java.awt.Dimension;
 import java.awt.Point;
 import java.util.Random;
 
@@ -19,6 +20,6 @@ public interface IRandomNumberGenerator {
     double nextDouble();
     float nextFloat();
     boolean nextBoolean();
-    Point nextLocation();
+    Point nextLocation(Dimension dimension);
     Random getRandom();
 }

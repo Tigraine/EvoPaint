@@ -17,14 +17,13 @@ import evopaint.attributes.PartsAttribute;
 import evopaint.attributes.SpacialAttribute;
 import evopaint.attributes.TemporalAttribute;
 import evopaint.matchers.RGBMatcher;
-import evopaint.util.Log;
+import java.awt.Dimension;
 import java.awt.Point;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.IdentityHashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import org.uncommons.maths.random.CellularAutomatonRNG;
@@ -35,7 +34,8 @@ import org.uncommons.maths.random.CellularAutomatonRNG;
  */
 public class World extends System {
 
-    private static Map<Point, Entity> locationsToEntities;
+    private Dimension cachedDimension;
+    private Map<Point, Entity> locationsToEntities;
 
     public void init() {
         this.clear();
@@ -43,8 +43,8 @@ public class World extends System {
         this.createRelations();
     }
 
-    public static Entity locationToEntity(Point location) {
-        return World.locationsToEntities.get(World.clamp(location));
+    public Entity locationToEntity(Point location) {
+        return this.locationsToEntities.get(this.clamp(location));
     }
 
     @Override
@@ -67,17 +67,17 @@ public class World extends System {
             return;
         }
 
-        Entity target = World.locationToEntity(spacialAttribute.getLocation());
+        Entity target = this.locationToEntity(spacialAttribute.getOrigin());
 
         if (target != null) {
             ColorAttribute cat = (ColorAttribute) target.getAttribute(ColorAttribute.class);
             if (cat != null) {
-                java.lang.System.err.println("ERROR: Occupied location chosen for adding (Space.java) " + spacialAttribute.getLocation().x + "/" + spacialAttribute.getLocation().y);
+                java.lang.System.err.println("ERROR: Occupied location chosen for adding (Space.java) " + spacialAttribute.getOrigin().x + "/" + spacialAttribute.getOrigin().y);
                 java.lang.System.exit(1);
             }
         }
 
-        World.locationsToEntities.put(spacialAttribute.getLocation(), entity);
+        this.locationsToEntities.put(spacialAttribute.getOrigin(), entity);
         return;
     }
 
@@ -121,9 +121,9 @@ public class World extends System {
         }
     }
 
-    private static Point clamp(Point p) {
-        final int sizeX = Config.sizeX;
-        final int sizeY = Config.sizeY;
+    private Point clamp(Point p) {
+        int sizeX = this.cachedDimension.width;
+        int sizeY = this.cachedDimension.height;
 
         while (p.x < 0) {
             p.x += sizeX;
@@ -145,10 +145,11 @@ public class World extends System {
      * fills the world with colorless, corporeal entities (think: space-slots)
      */
     private void clear() {
-        for (int y = 0; y < Config.sizeY; y++) {
-            for (int x = 0; x < Config.sizeX; x++) {
-                Point location = new Point(x, y);
-                SpacialAttribute spacialAttribute = new SpacialAttribute(location);
+        for (int y = 0; y < this.cachedDimension.height; y++) {
+            for (int x = 0; x < this.cachedDimension.width; x++) {
+                Point origin = new Point(x, y);
+                Dimension dimension = new Dimension(1, 1);
+                SpacialAttribute spacialAttribute = new SpacialAttribute(origin, dimension);
                 IdentityHashMap<Class,IAttribute> attributesForEntity = new IdentityHashMap<Class,IAttribute>();
                 attributesForEntity.put(SpacialAttribute.class,spacialAttribute);
                 Entity entity = new Entity(attributesForEntity);
@@ -167,10 +168,11 @@ public class World extends System {
                 int color = Config.randomNumberGenerator.nextPositiveInt();
                 attributesForEntity.put(ColorAttribute.class, new ColorAttribute(color));
 
-                Point location = new Point(
-                        Config.sizeX / 2 - Config.initialPopulationX / 2 + x,
-                        Config.sizeY / 2 - Config.initialPopulationY / 2 + y);
-                attributesForEntity.put(SpacialAttribute.class, new SpacialAttribute(location));
+                Point origin = new Point(
+                        this.cachedDimension.width / 2 - Config.initialPopulationX / 2 + x,
+                        this.cachedDimension.height / 2 - Config.initialPopulationY / 2 + y);
+                Dimension dimension = new Dimension(1, 1);
+                attributesForEntity.put(SpacialAttribute.class, new SpacialAttribute(origin, dimension));
 
                 Pixel pixie = new Pixel(attributesForEntity);
 
@@ -205,7 +207,7 @@ public class World extends System {
                 for (Entity e : entities) {
                     Relation r = (Relation) pixelRelationType.newInstance();
                     r.setA(e);
-                    r.resetB(Config.randomNumberGenerator);
+                    r.resetB(this, Config.randomNumberGenerator);
                     ra.getRelations().add(r);
                 }
             }
@@ -230,7 +232,7 @@ public class World extends System {
                 int numRels = Config.numPixelRelations.get(pixelRelationType);
                 for (int i = 0; i < numRels; i++) {
                     Relation r = (Relation) pixelRelationType.newInstance();
-                    r.reset(Config.randomNumberGenerator);
+                    r.reset(this, Config.randomNumberGenerator);
                     ra.getRelations().add(r);
                 }
             }
@@ -247,9 +249,9 @@ public class World extends System {
         for (Relation relation : relations) {
             if (!relation.relate(Config.randomNumberGenerator)) {
                 if (Config.oneRelationPerEntity == true) {
-                    relation.resetB(Config.randomNumberGenerator);
+                    relation.resetB(this, Config.randomNumberGenerator);
                 } else {
-                    relation.reset(Config.randomNumberGenerator);
+                    relation.reset(this, Config.randomNumberGenerator);
                 }
             }
         }
@@ -268,7 +270,7 @@ public class World extends System {
 
             // and seed a new rng for each thread, so they can do random shit in
             // a well defined order (without race conditions on the main rng)
-            Thread relator = new Relator(part, new RandomNumberGeneratorWrapper(new CellularAutomatonRNG(seed)));
+            Thread relator = new Relator(this, part, new RandomNumberGeneratorWrapper(new CellularAutomatonRNG(seed)));
             relatorThreads.add(relator);
             relator.start();
         }
@@ -306,9 +308,12 @@ public class World extends System {
         return ret;
     }
 
-    public World(IdentityHashMap<Class, IAttribute> attributes, PartsAttribute pa, RelationsAttribute ra, long time) {
+    public World(IdentityHashMap<Class, IAttribute> attributes, PartsAttribute pa,
+            RelationsAttribute ra, SpacialAttribute sa, TemporalAttribute ta) {
         super(attributes, pa, ra);
-        this.attributes.put(TemporalAttribute.class, new TemporalAttribute(time));
-        World.locationsToEntities = new HashMap<Point, Entity>();
+        this.attributes.put(SpacialAttribute.class, sa);
+        this.attributes.put(TemporalAttribute.class, ta);
+        this.locationsToEntities = new HashMap<Point, Entity>();
+        this.cachedDimension = sa.getDimension();
     }
 }

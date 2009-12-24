@@ -5,7 +5,6 @@
 
 package evopaint.relations;
 
-import evopaint.Config;
 import evopaint.Relation;
 import evopaint.Entity;
 import evopaint.attributes.ColorAttribute;
@@ -50,7 +49,7 @@ public class PixelPerceptionRelation extends Relation {
         ColorAttribute cab = (ColorAttribute) b.getAttribute(ColorAttribute.class);
         SpacialAttribute sab = (SpacialAttribute) b.getAttribute(SpacialAttribute.class);
         if (cab != null && sab != null) {
-            ppa.setPixel(cab.getColor(), sab.getLocation());
+            ppa.setPixel(cab.getColor(), sab.getOrigin());
             return true;
         }
 

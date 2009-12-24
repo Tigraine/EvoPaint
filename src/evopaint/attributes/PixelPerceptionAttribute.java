@@ -19,7 +19,6 @@ public class PixelPerceptionAttribute implements IAttribute {
 
     private BufferedImage perception;
     private int backgroundColor;
-    private int type;
     private int zoom;
 
     @Override
@@ -52,11 +51,18 @@ public class PixelPerceptionAttribute implements IAttribute {
     }
 
     public int getType() {
-        return type;
+        return this.perception.getType();
     }
 
     public int getZoom() {
         return zoom;
+    }
+
+    public void setZoom(int zoom) {
+        int newWidth = this.perception.getWidth() / this.zoom * zoom;
+        int newHeight = this.perception.getHeight() / this.zoom * zoom;
+        this.perception = new BufferedImage(newWidth, newHeight, this.perception.getType());
+        this.zoom = zoom;
     }
 
     public int getBackgroundColor() {
@@ -64,7 +70,6 @@ public class PixelPerceptionAttribute implements IAttribute {
     }
 
     public PixelPerceptionAttribute(int width, int height, int type, int zoom) {
-        this.type = type;
         this.zoom = zoom;
         if (type != BufferedImage.TYPE_INT_RGB &&
                 type != BufferedImage.TYPE_INT_ARGB) {
