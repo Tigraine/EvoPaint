@@ -7,6 +7,7 @@ package evopaint;
 import evopaint.util.Log;
 import evopaint.interfaces.IRandomNumberGenerator;
 import evopaint.relations.pixel.ColorAssimilationRelation;
+import evopaint.relations.pixel.ColorCopyRelation;
 import evopaint.util.ConsoleLog;
 import java.util.ArrayList;
 import java.util.IdentityHashMap;
@@ -45,17 +46,17 @@ public class Config {
     // if true, this option will override each and every setting for how
     // many relations of what type are used and run exactly one of each avtive
     // relations per entity at all times.
-    public static final boolean oneRelationPerEntity = true;
+    public static final boolean oneRelationPerEntity = false;
 
     //public static final double mutationRate = 0.0;
 
     public static ArrayList<Class> pixelRelationTypes = new ArrayList<Class>() {{
-        //add(ColorCopyRelation.class);
+        add(ColorCopyRelation.class);
         add(ColorAssimilationRelation.class);
     }};
 
     public static Map<Class,Integer> numPixelRelations = new IdentityHashMap<Class,Integer>() {{
-        //put(ColorCopyRelation.class, Config.sizeX*Config.sizeY);
+        put(ColorCopyRelation.class, Config.defaultDimension.width*Config.defaultDimension.height);
         put(ColorAssimilationRelation.class, Config.defaultDimension.width*Config.defaultDimension.height);
     }};
 
