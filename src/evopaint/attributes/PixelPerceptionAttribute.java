@@ -22,8 +22,6 @@ public class PixelPerceptionAttribute implements IAttribute {
     private Dimension dim;
     private BufferedImage perception;
     private int backgroundColor;
-    private Point viewOffset;
-    private AffineTransform at = new AffineTransform();
 
     @Override
     public String toString() {
@@ -32,9 +30,9 @@ public class PixelPerceptionAttribute implements IAttribute {
 
     public synchronized void setPixel(int color, Point origin) {
         Point location = new Point(origin);
-        location.x += this.viewOffset.x;
-        location.y += this.viewOffset.y;
-        location = this.clamp(location);
+        //location.x += this.viewOffset.x;
+        //location.y += this.viewOffset.y;
+        //location = this.clamp(location);
         this.perception.setRGB(location.x, location.y, color);
     }
 
@@ -57,16 +55,16 @@ public class PixelPerceptionAttribute implements IAttribute {
     public int getType() {
         return this.perception.getType();
     }
-
+/*
     public void translateViewOffset(int dx, int dy) {
         this.viewOffset.x += dx;
         this.viewOffset.y += dy;
     }
-
+*/
     public int getBackgroundColor() {
         return backgroundColor;
     }
-
+/*
     private Point clamp(Point p) {
         int sizeX = this.dim.width;
         int sizeY = this.dim.height;
@@ -85,7 +83,7 @@ public class PixelPerceptionAttribute implements IAttribute {
         }
         return p;
     }
-
+*/
     public PixelPerceptionAttribute(int width, int height, int type) {
         if (type != BufferedImage.TYPE_INT_RGB &&
                 type != BufferedImage.TYPE_INT_ARGB) {
@@ -95,7 +93,7 @@ public class PixelPerceptionAttribute implements IAttribute {
             System.exit(1);
         }
         this.perception = new BufferedImage(width, height, type);
-        this.viewOffset = new Point(0,0);
+        //this.viewOffset = new Point(0,0);
         this.dim = new Dimension(width, height);
     }
 }

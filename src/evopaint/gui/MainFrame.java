@@ -33,6 +33,7 @@ public class MainFrame extends JFrame {
     public MainFrame(final EvoPaint evopaint) {
         this.setBackground(Color.WHITE);
         this.setDefaultCloseOperation(this.EXIT_ON_CLOSE);
+        this.setCursor(new Cursor(Cursor.MOVE_CURSOR));
 
         this.activeTool = MoveCommand.class;
 
@@ -70,9 +71,13 @@ public class MainFrame extends JFrame {
 
         setJMenuBar(menuBar);
 
-        GroupLayout layout = new GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(layout.createParallelGroup(
+        //BorderLayout layout = new BorderLayout();
+        //layout.addLayoutComponent(showcase, BorderLayout.CENTER);
+        //getContentPane().add(showcase);
+        //getContentPane().setLayout(layout);
+
+        
+       /* layout.setHorizontalGroup(layout.createParallelGroup(
                 GroupLayout.Alignment.LEADING).addComponent(showcase,
                 GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE,
                 Short.MAX_VALUE));
@@ -80,12 +85,13 @@ public class MainFrame extends JFrame {
                 GroupLayout.Alignment.LEADING).addComponent(showcase,
                 GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE,
                 Short.MAX_VALUE));
-        
+       */
         // XXX workaround to update size of toolmenu so it is displayed
         // at the correct coordinates later
         this.toolMenu.setVisible(true);
         this.toolMenu.setVisible(false);
-        
+
+        add(showcase);
         this.pack();
         this.setVisible(true);
     }
@@ -103,6 +109,10 @@ public class MainFrame extends JFrame {
 
     public void hideToolMenu() {
         toolMenu.setVisible(false);
+    }
+
+    public void resize() {
+        this.pack();
     }
 
 }

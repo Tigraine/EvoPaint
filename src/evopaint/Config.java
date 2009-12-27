@@ -31,7 +31,6 @@ public class Config {
 
     public static final int nrRenderings = 0;
     public static final int nrStepsPerRendering = 1;
-    public static int zoom = 4;
 
     public static final Dimension defaultDimension = new Dimension(100,100);
     public static final int initialPopulationX = 100;

@@ -8,18 +8,26 @@ import evopaint.entities.World;
 import evopaint.interfaces.IAttribute;
 import java.awt.Dimension;
 import java.awt.Point;
+import java.awt.geom.AffineTransform;
+import java.awt.geom.NoninvertibleTransformException;
 import java.util.IdentityHashMap;
 
 public class PaintCommand extends AbstractCommand {
     private World world;
-    private Point location;
     private int radius;
+    private Point location;
 
-    public PaintCommand(World world, Point location, int radius) {
+    public PaintCommand(World world, Point location, AffineTransform at, int radius) {
         this.world = world;
-        this.location = new Point(location.x / Config.zoom, location.y / Config.zoom);
         this.radius = radius;
 
+        this.location = new Point(location);
+        try {
+            this.location = (Point)at.inverseTransform(this.location, this.location);
+        } catch(NoninvertibleTransformException e) {
+            Config.log.error("Non convertable transformation created. This should not be possible");
+        }
+        
         // TODO: make the new attributes a parameter
     }
 

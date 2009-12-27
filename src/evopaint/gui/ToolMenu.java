@@ -7,6 +7,7 @@ package evopaint.gui;
 
 import evopaint.commands.MoveCommand;
 import evopaint.commands.PaintCommand;
+import java.awt.Cursor;
 import java.awt.GridLayout;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
@@ -40,7 +41,7 @@ public class ToolMenu extends JPopupMenu {
             @Override
             public void mouseEntered(MouseEvent e) {
                 mainFrame.setActiveTool(MoveCommand.class);
-                System.out.println("selected move command");
+                mainFrame.setCursor(new Cursor(Cursor.MOVE_CURSOR));
             }
 
             /*// bugged
@@ -58,7 +59,7 @@ public class ToolMenu extends JPopupMenu {
             @Override
             public void mouseEntered(MouseEvent e) {
                 mainFrame.setActiveTool(PaintCommand.class);
-                System.out.println("selected paint command");
+                mainFrame.setCursor(new Cursor(Cursor.HAND_CURSOR));
             }
         });
 
