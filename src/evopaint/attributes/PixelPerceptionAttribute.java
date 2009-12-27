@@ -7,8 +7,10 @@ package evopaint.attributes;
 
 import evopaint.interfaces.IAttribute;
 import java.awt.AlphaComposite;
+import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.Point;
+import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 
 /**
@@ -17,16 +19,23 @@ import java.awt.image.BufferedImage;
  */
 public class PixelPerceptionAttribute implements IAttribute {
 
+    private Dimension dim;
     private BufferedImage perception;
     private int backgroundColor;
     private int zoom;
+    private Point viewOffset;
+    private AffineTransform at = new AffineTransform();
 
     @Override
     public String toString() {
         return "TODO: implement me in PixelPerceptionAttribute.java";
     }
 
-    public void setPixel(int color, Point location) {
+    public synchronized void setPixel(int color, Point origin) {
+        Point location = new Point(origin);
+        location.x += this.viewOffset.x;
+        location.y += this.viewOffset.y;
+        location = this.clamp(location);
         for (int zy = 0; zy < zoom; zy++) {
             for (int zx = 0; zx < zoom; zx++) {
                 this.perception.setRGB(zoom * location.x + zx, zoom * location.y + zy, color);
@@ -46,7 +55,7 @@ public class PixelPerceptionAttribute implements IAttribute {
         //        this.perception.getHeight(), this.type);
     }
 
-    public BufferedImage getPerception() {
+    public synchronized BufferedImage getPerception() {
         return this.perception;
     }
 
@@ -58,15 +67,39 @@ public class PixelPerceptionAttribute implements IAttribute {
         return zoom;
     }
 
+    public void setViewOffset(int dx, int dy) {
+        this.viewOffset.x = (dx * this.zoom);
+        this.viewOffset.y = (dy * this.zoom);
+    }
+
     public void setZoom(int zoom) {
-        int newWidth = this.perception.getWidth() / this.zoom * zoom;
-        int newHeight = this.perception.getHeight() / this.zoom * zoom;
+        int newWidth = this.dim.width * zoom;
+        int newHeight = this.dim.height * zoom;
         this.perception = new BufferedImage(newWidth, newHeight, this.perception.getType());
         this.zoom = zoom;
     }
 
     public int getBackgroundColor() {
         return backgroundColor;
+    }
+
+    private Point clamp(Point p) {
+        int sizeX = this.dim.width;
+        int sizeY = this.dim.height;
+
+        while (p.x < 0) {
+            p.x += sizeX;
+        }
+        while (p.x >= sizeX) {
+            p.x -= sizeX;
+        }
+        while (p.y < 0) {
+            p.y += sizeY;
+        }
+        while (p.y >= sizeY) {
+            p.y -= sizeY;
+        }
+        return p;
     }
 
     public PixelPerceptionAttribute(int width, int height, int type, int zoom) {
@@ -79,5 +112,7 @@ public class PixelPerceptionAttribute implements IAttribute {
             System.exit(1);
         }
         this.perception = new BufferedImage(width * zoom, height * zoom, type);
+        this.viewOffset = new Point(0,0);
+        this.dim = new Dimension(width, height);
     }
 }

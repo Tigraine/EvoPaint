@@ -1,5 +1,6 @@
-package evopaint.interfaces;
+package evopaint.commands;
 
+import evopaint.interfaces.ICommand;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 

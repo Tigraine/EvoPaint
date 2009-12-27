@@ -5,7 +5,6 @@ import evopaint.Entity;
 import evopaint.attributes.ColorAttribute;
 import evopaint.attributes.SpacialAttribute;
 import evopaint.entities.World;
-import evopaint.interfaces.AbstractCommand;
 import evopaint.interfaces.IAttribute;
 import java.awt.Dimension;
 import java.awt.Point;
