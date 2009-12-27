@@ -31,7 +31,6 @@ public class Showcase extends JPanel {
 
     private MainFrame mainFrame;
     private EvoPaint evopaint;
-    private double scale;
     private Point viewport;
     private AffineTransform affineTransform = new AffineTransform();
     private Point lastMousePoint;
@@ -44,22 +43,29 @@ public class Showcase extends JPanel {
         Graphics2D g2 = (Graphics2D) g;
         //g2.clip(cliptangle);
         //g2.
-        //g2.drawRenderedImage(image, this.affineTransform);
+        g2.drawRenderedImage(image, this.affineTransform);
         //g2.drawImage(image, 0-image.getWidth()+this.viewPort.x, 0, null);
         //this.affineTransform.
-        g.drawImage(image, 0, 0, null);
+        //g.drawImage(image, 0, 0, null);
     }
 
     public void setViewport(Point viewport) {
         this.viewport = viewport;
     }
 
-    public void setScale(double scale) {
-        this.scale = scale;
+    public void incrementScale() {
+        double scale = 1.1;
+        this.affineTransform.scale(scale, scale);
+    }
+
+    public void decrementScale() {
+        double scale = 0.9;
+        this.affineTransform.scale(scale, scale);
     }
 
     private void mouseWheel(MouseWheelEvent e) {
-        ZoomCommand zoomCommand = new ZoomCommand(this, evopaint.getObserver(), e.getWheelRotation() * -1);
+        ZoomCommand zoomCommand = new ZoomCommand(this,
+                (e.getWheelRotation() < 0 ? true :false));
         zoomCommand.execute();
     }
 

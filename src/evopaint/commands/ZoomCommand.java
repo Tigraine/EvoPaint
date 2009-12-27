@@ -1,27 +1,23 @@
 package evopaint.commands;
 
-import evopaint.attributes.PixelPerceptionAttribute;
-import evopaint.entities.Observer;
 
 import evopaint.gui.Showcase;
-import java.awt.Dimension;
 
 public class ZoomCommand extends AbstractCommand {
-    private final Observer observer;
-    private int zoomAmount;
+    private boolean zoomIn;
     private Showcase showcase;
 
-    public ZoomCommand(Showcase showcase, Observer observer, int zoomAmount) {
-        this.observer = observer;
-        this.zoomAmount = zoomAmount;
+    public ZoomCommand(Showcase showcase, boolean zoomIn) {
+        this.zoomIn = zoomIn;
         this.showcase = showcase;
     }
 
     public void execute() {
-        PixelPerceptionAttribute ppa = (PixelPerceptionAttribute) this.observer.getAttribute(PixelPerceptionAttribute.class);
-        assert(ppa != null);
-        ppa.setZoom(Math.max(0, ppa.getZoom() + zoomAmount));
-        this.showcase.setPreferredSize(new Dimension(ppa.getPerception().getWidth(), ppa.getPerception().getHeight()));
+         if (this.zoomIn) {
+            this.showcase.incrementScale();
+        } else {
+            this.showcase.decrementScale();
+        }
     }
 }
 

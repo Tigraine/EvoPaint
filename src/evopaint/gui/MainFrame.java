@@ -51,10 +51,10 @@ public class MainFrame extends JFrame {
 
             public void keyPressed(KeyEvent e) {
                 if (e.getKeyCode() == KeyEvent.VK_PLUS) {
-                    ZoomCommand zoomCommand = new ZoomCommand(showcase, evopaint.getObserver(), 1);
+                    ZoomCommand zoomCommand = new ZoomCommand(showcase, true);
                     zoomCommand.execute();
                 } else if (e.getKeyCode() == KeyEvent.VK_MINUS) {
-                    ZoomCommand zoomCommand = new ZoomCommand(showcase, evopaint.getObserver(), -1);
+                    ZoomCommand zoomCommand = new ZoomCommand(showcase, false);
                     zoomCommand.execute();
                 }
                 //System.out.println("foo");
