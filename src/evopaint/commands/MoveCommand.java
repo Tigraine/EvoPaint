@@ -32,7 +32,7 @@ public class MoveCommand extends AbstractCommand {
         int dy = dst.y - src.y;
         System.out.println("" + String.format("Executing Move command %s / %s", dx, dy));
 
-        ppa.setViewOffset(dx, dy);
+        ppa.translateViewOffset(dx, dy);
     }
 }
 

@@ -108,8 +108,18 @@ public class Showcase extends JPanel {
             public void mouseReleased(MouseEvent e) {
                 if (e.getButton() == MouseEvent.BUTTON1) {
                     if (mainFrame.getActiveTool() == MoveCommand.class) {
-                        lastMousePoint = e.getPoint();
                         ICommand command = new ResumeCommand(evopaint);
+                        command.execute();
+                        Point lastPointTrans = new Point();
+                        lastPointTrans.x = (int)(lastMousePoint.x / affineTransform.getScaleX());
+                        lastPointTrans.y = (int)(lastMousePoint.y / affineTransform.getScaleY());
+
+                        Point newPointTrans = new Point();
+                        newPointTrans.x = (int)(e.getPoint().x / affineTransform.getScaleX());
+                        newPointTrans.y = (int)(e.getPoint().y / affineTransform.getScaleY());
+
+
+                        command = new MoveCommand(evopaint.getObserver(), lastPointTrans, newPointTrans);
                         command.execute();
                     }
                 } else if (e.getButton() == MouseEvent.BUTTON3) {
@@ -127,8 +137,7 @@ public class Showcase extends JPanel {
 
                 if (mainFrame.getActiveTool() == MoveCommand.class) {
                     System.out.println("draggin away");
-                    //ICommand command = new MoveCommand(observer, lastMousePosition, e.getPoint());
-                    //command.execute();
+                    
                     //Point src =
                     //      Point dst = e.getPoint();
                     //int dx = dst.x - src.x;

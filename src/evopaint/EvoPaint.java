@@ -50,8 +50,7 @@ public class EvoPaint {
 
         // create observer
         PixelPerceptionAttribute ppa = new PixelPerceptionAttribute(
-                sa.getDimension().width, sa.getDimension().height, BufferedImage.TYPE_INT_ARGB,
-                Config.zoom);
+                sa.getDimension().width, sa.getDimension().height, BufferedImage.TYPE_INT_ARGB);
         this.observer = new Observer(new IdentityHashMap<Class, IAttribute>(),
                 ppa);
 

@@ -22,7 +22,6 @@ public class PixelPerceptionAttribute implements IAttribute {
     private Dimension dim;
     private BufferedImage perception;
     private int backgroundColor;
-    private int zoom;
     private Point viewOffset;
     private AffineTransform at = new AffineTransform();
 
@@ -36,11 +35,7 @@ public class PixelPerceptionAttribute implements IAttribute {
         location.x += this.viewOffset.x;
         location.y += this.viewOffset.y;
         location = this.clamp(location);
-        for (int zy = 0; zy < zoom; zy++) {
-            for (int zx = 0; zx < zoom; zx++) {
-                this.perception.setRGB(zoom * location.x + zx, zoom * location.y + zy, color);
-            }
-        }
+        this.perception.setRGB(location.x, location.y, color);
     }
 
     public void clear() {
@@ -63,20 +58,9 @@ public class PixelPerceptionAttribute implements IAttribute {
         return this.perception.getType();
     }
 
-    public int getZoom() {
-        return zoom;
-    }
-
-    public void setViewOffset(int dx, int dy) {
-        this.viewOffset.x = (dx * this.zoom);
-        this.viewOffset.y = (dy * this.zoom);
-    }
-
-    public void setZoom(int zoom) {
-        int newWidth = this.dim.width * zoom;
-        int newHeight = this.dim.height * zoom;
-        this.perception = new BufferedImage(newWidth, newHeight, this.perception.getType());
-        this.zoom = zoom;
+    public void translateViewOffset(int dx, int dy) {
+        this.viewOffset.x += dx;
+        this.viewOffset.y += dy;
     }
 
     public int getBackgroundColor() {
@@ -102,8 +86,7 @@ public class PixelPerceptionAttribute implements IAttribute {
         return p;
     }
 
-    public PixelPerceptionAttribute(int width, int height, int type, int zoom) {
-        this.zoom = zoom;
+    public PixelPerceptionAttribute(int width, int height, int type) {
         if (type != BufferedImage.TYPE_INT_RGB &&
                 type != BufferedImage.TYPE_INT_ARGB) {
             System.out.println("ERROR: Unsupported image type: " + type + "," +
@@ -111,7 +94,7 @@ public class PixelPerceptionAttribute implements IAttribute {
                     BufferedImage.TYPE_INT_ARGB);
             System.exit(1);
         }
-        this.perception = new BufferedImage(width * zoom, height * zoom, type);
+        this.perception = new BufferedImage(width, height, type);
         this.viewOffset = new Point(0,0);
         this.dim = new Dimension(width, height);
     }
