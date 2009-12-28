@@ -14,9 +14,9 @@ public class ZoomCommand extends AbstractCommand {
 
     public void execute() {
          if (this.zoomIn) {
-            this.showcase.incrementScale();
+            this.showcase.zoomIn();
         } else {
-            this.showcase.decrementScale();
+            this.showcase.zoomOut();
         }
     }
 }

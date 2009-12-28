@@ -33,6 +33,7 @@ public class Showcase extends JPanel implements MouseInputListener, MouseWheelLi
     private AffineTransform affineTransform = new AffineTransform();
     private Point draggedPoint;
     private boolean leftButtonPressed = false;
+    private int zoom = 10;
 
     @Override
     public void paintComponent(Graphics g) {
@@ -74,18 +75,25 @@ public class Showcase extends JPanel implements MouseInputListener, MouseWheelLi
         g2.drawRenderedImage(image, this.affineTransform);
     }
 
-    public void incrementScale() {
-        double scale = 1.1;
-        this.affineTransform.scale(scale, scale);
-        setPreferredSize(new Dimension(
-                (int) (evopaint.getImage().getWidth() * this.affineTransform.getScaleX()),
-                (int) (evopaint.getImage().getHeight() * this.affineTransform.getScaleY())));
-        mainFrame.pack();
+    public void zoomIn() {
+        this.zoom += 1;
+        this.rescale();
     }
 
-    public void decrementScale() {
-        double scale = 0.9;
-        this.affineTransform.scale(scale, scale);
+    public void zoomOut() {
+        if (zoom <= 1) {
+            return;
+        }
+        
+        this.zoom -= 1;
+        this.rescale();
+    }
+
+    private void rescale() {
+        this.affineTransform.scale(1 / this.affineTransform.getScaleX(),
+                1 / this.affineTransform.getScaleY());
+        this.affineTransform.scale((double)this.zoom / 10, (double)this.zoom / 10);
+
         setPreferredSize(new Dimension(
                 (int) (evopaint.getImage().getWidth() * this.affineTransform.getScaleX()),
                 (int) (evopaint.getImage().getHeight() * this.affineTransform.getScaleY())));
