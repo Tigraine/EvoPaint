@@ -10,10 +10,10 @@ public class MoveCommand extends AbstractCommand {
     private AffineTransform at;
     private BufferedImage img;
 
-    public MoveCommand(Point src, Point dst, AffineTransform at, BufferedImage img) {
+    public MoveCommand(Point src, Point dst, int zoom, AffineTransform at, BufferedImage img) {
         this.at = at;
-        this.dxtrans = (dst.x - src.x) / at.getScaleX();
-        this.dytrans = (dst.y - src.y) / at.getScaleY();
+        this.dxtrans = (dst.x - src.x) / ((double)zoom / 10);
+        this.dytrans = (dst.y - src.y) / ((double)zoom / 10);
         this.img = img;
     }
 

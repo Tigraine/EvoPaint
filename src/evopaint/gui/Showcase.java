@@ -40,38 +40,42 @@ public class Showcase extends JPanel implements MouseInputListener, MouseWheelLi
         BufferedImage image = this.evopaint.getImage();
 
         Graphics2D g2 = (Graphics2D) g;
-      
+        g2.scale((double)this.zoom / 10, (double)this.zoom / 10);
+
         // paint 9 tiles of the origininal image
         // clip it
-        g2.clip(new Rectangle(0, 0, (int) ((double) image.getWidth() * affineTransform.getScaleX()),
-                (int) ((double) image.getHeight() * affineTransform.getScaleY())));
+        this.affineTransform.setToTranslation(this.affineTransform.getTranslateX(), this.affineTransform.getTranslateY());
+        g2.clip(new Rectangle(0, 0, (int) ((double) image.getWidth() * ((double)this.zoom / 10)),
+                (int) ((double) image.getHeight() * ((double)this.zoom / 10))));
 
+        double w = image.getWidth();
+        double h = image.getHeight();
         // paint NW
-        affineTransform.translate((-1) * image.getWidth(), (-1) * image.getHeight());
+        affineTransform.translate((-1) * w, (-1) * h);
         g2.drawRenderedImage(image, this.affineTransform);
         // paint N
-        affineTransform.translate(image.getWidth(), 0);
+        affineTransform.translate(w, 0);
         g2.drawRenderedImage(image, this.affineTransform);
         // paint NE
-        affineTransform.translate(image.getWidth(), 0);
+        affineTransform.translate(w, 0);
         g2.drawRenderedImage(image, this.affineTransform);
         // paint E
-        affineTransform.translate(0, image.getHeight());
+        affineTransform.translate(0, h);
         g2.drawRenderedImage(image, this.affineTransform);
         // paint SE
-        affineTransform.translate(0, image.getHeight());
+        affineTransform.translate(0, h);
         g2.drawRenderedImage(image, this.affineTransform);
         // paint S
-        affineTransform.translate((-1) * image.getWidth(), 0);
+        affineTransform.translate((-1) * w, 0);
         g2.drawRenderedImage(image, this.affineTransform);
         // paint SW
-        affineTransform.translate((-1) * image.getWidth(), 0);
+        affineTransform.translate((-1) * w, 0);
         g2.drawRenderedImage(image, this.affineTransform);
         // paint W
-        affineTransform.translate(0, (-1) * image.getHeight());
+        affineTransform.translate(0, (-1) * h);
         g2.drawRenderedImage(image, this.affineTransform);
         // back to normal
-        affineTransform.translate(image.getWidth(), 0);
+        affineTransform.translate(w, 0);
         g2.drawRenderedImage(image, this.affineTransform);
     }
 
@@ -90,13 +94,9 @@ public class Showcase extends JPanel implements MouseInputListener, MouseWheelLi
     }
 
     private void rescale() {
-        this.affineTransform.scale(1 / this.affineTransform.getScaleX(),
-                1 / this.affineTransform.getScaleY());
-        this.affineTransform.scale((double)this.zoom / 10, (double)this.zoom / 10);
-
         setPreferredSize(new Dimension(
-                (int) (evopaint.getImage().getWidth() * this.affineTransform.getScaleX()),
-                (int) (evopaint.getImage().getHeight() * this.affineTransform.getScaleY())));
+                (int) (evopaint.getImage().getWidth() * (double)this.zoom / 10),
+                (int) (evopaint.getImage().getHeight() * (double)this.zoom / 10)));
         mainFrame.pack();
     }
 
@@ -110,7 +110,8 @@ public class Showcase extends JPanel implements MouseInputListener, MouseWheelLi
         if (e.getButton() == MouseEvent.BUTTON1) {
             leftButtonPressed = true;
             if (mainFrame.getActiveTool() == PaintCommand.class) {
-                ICommand command = new PaintCommand(this.evopaint.getWorld(), e.getPoint(), affineTransform, 10);
+                ICommand command = new PaintCommand(this.evopaint.getWorld(),
+                        e.getPoint(), this.zoom, affineTransform, 10);
                 command.execute();
             } else if (mainFrame.getActiveTool() == MoveCommand.class) {
                 this.draggedPoint = e.getPoint();
@@ -134,11 +135,12 @@ public class Showcase extends JPanel implements MouseInputListener, MouseWheelLi
         if (leftButtonPressed == true) {
             if (mainFrame.getActiveTool() == PaintCommand.class) {
                 // TODO: paint pixels between mouse drags
-                ICommand command = new PaintCommand(this.evopaint.getWorld(), e.getPoint(), affineTransform, 10);
+                ICommand command = new PaintCommand(this.evopaint.getWorld(),
+                        e.getPoint(), this.zoom, affineTransform, 10);
                 command.execute();
             } else if (mainFrame.getActiveTool() == MoveCommand.class) {
                 ICommand command = new MoveCommand(draggedPoint, e.getPoint(),
-                        affineTransform, evopaint.getImage());
+                        this.zoom, affineTransform, evopaint.getImage());
                 command.execute();
 
                 draggedPoint = e.getPoint();
