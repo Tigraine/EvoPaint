@@ -110,7 +110,7 @@ public class Showcase extends JPanel implements MouseInputListener, MouseWheelLi
         if (e.getButton() == MouseEvent.BUTTON1) {
             leftButtonPressed = true;
             if (mainFrame.getActiveTool() == PaintCommand.class) {
-                ICommand command = new PaintCommand(this.evopaint.getWorld(), e.getPoint(), affineTransform, 20);
+                ICommand command = new PaintCommand(this.evopaint.getWorld(), e.getPoint(), affineTransform, 10);
                 command.execute();
             } else if (mainFrame.getActiveTool() == MoveCommand.class) {
                 this.draggedPoint = e.getPoint();
@@ -131,14 +131,19 @@ public class Showcase extends JPanel implements MouseInputListener, MouseWheelLi
     }
 
     public void mouseDragged(MouseEvent e) {
-        if (leftButtonPressed == true
-                && mainFrame.getActiveTool() == MoveCommand.class) {
-            ICommand command = new MoveCommand(draggedPoint, e.getPoint(),
-                    affineTransform, evopaint.getImage());
-            command.execute();
+        if (leftButtonPressed == true) {
+            if (mainFrame.getActiveTool() == PaintCommand.class) {
+                // TODO: paint pixels between mouse drags
+                ICommand command = new PaintCommand(this.evopaint.getWorld(), e.getPoint(), affineTransform, 10);
+                command.execute();
+            } else if (mainFrame.getActiveTool() == MoveCommand.class) {
+                ICommand command = new MoveCommand(draggedPoint, e.getPoint(),
+                        affineTransform, evopaint.getImage());
+                command.execute();
 
-            draggedPoint = e.getPoint();
-            repaint();
+                draggedPoint = e.getPoint();
+                repaint();
+            }
         }
     }
 
