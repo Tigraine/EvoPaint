@@ -17,13 +17,13 @@ public class PaintCommand extends AbstractCommand {
     private int radius;
     private Point location;
 
-    public PaintCommand(World world, Point location, int zoom, AffineTransform at, int radius) {
+    public PaintCommand(World world, Point location, double scale, AffineTransform at, int radius) {
         this.world = world;
         this.radius = radius;
 
         this.location = new Point(location);
-        this.location.x /= ((double)zoom / 10);
-        this.location.y /= ((double)zoom / 10);
+        this.location.x /= scale;
+        this.location.y /= scale;
         try {
             this.location = (Point)at.inverseTransform(this.location , this.location);
         } catch(NoninvertibleTransformException e) {
