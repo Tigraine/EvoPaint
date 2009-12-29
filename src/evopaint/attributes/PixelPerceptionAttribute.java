@@ -10,8 +10,8 @@ import java.awt.AlphaComposite;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.Point;
-import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
+import java.awt.image.DataBufferInt;
 
 /**
  *
@@ -19,9 +19,9 @@ import java.awt.image.BufferedImage;
  */
 public class PixelPerceptionAttribute implements IAttribute {
 
-    private Dimension dim;
     private BufferedImage perception;
     private int backgroundColor;
+    private int[] internalPerception;
 
     @Override
     public String toString() {
@@ -29,23 +29,16 @@ public class PixelPerceptionAttribute implements IAttribute {
     }
 
     public synchronized void setPixel(int color, Point origin) {
-        Point location = new Point(origin);
-        //location.x += this.viewOffset.x;
-        //location.y += this.viewOffset.y;
-        //location = this.clamp(location);
-        this.perception.setRGB(location.x, location.y, color);
+        this.internalPerception[origin.y * this.perception.getWidth() + origin.x] = color;
     }
 
     public void clear() {
-
         // clear bufferedImage (by setting it to transparent)
         Graphics2D g = (Graphics2D)this.perception.getGraphics();
         g.setComposite(AlphaComposite.Clear);
         g.fillRect(0,0,this.perception.getWidth(),this.perception.getHeight());
         g.setComposite(AlphaComposite.SrcOver);
         g.dispose();
-        //this.perception = new BufferedImage(this.perception.getWidth(),
-        //        this.perception.getHeight(), this.type);
     }
 
     public synchronized BufferedImage getPerception() {
@@ -55,35 +48,11 @@ public class PixelPerceptionAttribute implements IAttribute {
     public int getType() {
         return this.perception.getType();
     }
-/*
-    public void translateViewOffset(int dx, int dy) {
-        this.viewOffset.x += dx;
-        this.viewOffset.y += dy;
-    }
-*/
+
     public int getBackgroundColor() {
         return backgroundColor;
     }
-/*
-    private Point clamp(Point p) {
-        int sizeX = this.dim.width;
-        int sizeY = this.dim.height;
 
-        while (p.x < 0) {
-            p.x += sizeX;
-        }
-        while (p.x >= sizeX) {
-            p.x -= sizeX;
-        }
-        while (p.y < 0) {
-            p.y += sizeY;
-        }
-        while (p.y >= sizeY) {
-            p.y -= sizeY;
-        }
-        return p;
-    }
-*/
     public PixelPerceptionAttribute(int width, int height, int type) {
         if (type != BufferedImage.TYPE_INT_RGB &&
                 type != BufferedImage.TYPE_INT_ARGB) {
@@ -93,7 +62,6 @@ public class PixelPerceptionAttribute implements IAttribute {
             System.exit(1);
         }
         this.perception = new BufferedImage(width, height, type);
-        //this.viewOffset = new Point(0,0);
-        this.dim = new Dimension(width, height);
+        this.internalPerception = ((DataBufferInt)this.perception.getRaster().getDataBuffer()).getData();
     }
 }
