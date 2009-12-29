@@ -3,8 +3,11 @@ package evopaint.gui;
 
 import evopaint.EvoPaint;
 import evopaint.commands.MoveCommand;
+import evopaint.commands.PauseCommand;
+import evopaint.commands.ResumeCommand;
 import evopaint.commands.ZoomCommand;
 
+import evopaint.interfaces.ICommand;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
@@ -52,14 +55,20 @@ public class MainFrame extends JFrame {
 
             public void keyPressed(KeyEvent e) {
                 if (e.getKeyCode() == KeyEvent.VK_PLUS) {
-                    ZoomCommand zoomCommand = new ZoomCommand(showcase, true);
-                    zoomCommand.execute();
+                    ICommand command = new ZoomCommand(showcase, true);
+                    command.execute();
                 } else if (e.getKeyCode() == KeyEvent.VK_MINUS) {
-                    ZoomCommand zoomCommand = new ZoomCommand(showcase, false);
-                    zoomCommand.execute();
+                    ICommand command = new ZoomCommand(showcase, false);
+                    command.execute();
+                } else if (e.getKeyCode() == KeyEvent.VK_SPACE) {
+                    if (evopaint.isRunning()) {
+                        ICommand command = new PauseCommand(evopaint);
+                        command.execute();
+                    } else {
+                        ICommand command = new ResumeCommand(evopaint);
+                        command.execute();
+                    }
                 }
-                //System.out.println("foo");
-                //throw new UnsupportedOperationException("Not supported yet.");
             }
 
             public void keyReleased(KeyEvent e) {

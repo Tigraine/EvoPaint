@@ -91,6 +91,10 @@ public class EvoPaint {
         this.running = running;
     }
 
+    public boolean isRunning() {
+        return running;
+    }
+
     public static void main(String args[]) {
         EvoPaint evopaint = new EvoPaint();
         evopaint.work();
