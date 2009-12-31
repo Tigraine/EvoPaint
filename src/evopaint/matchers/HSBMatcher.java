@@ -27,6 +27,9 @@ public class HSBMatcher implements IMatcher {
         float deltaSum = 0;
         for (int i = 0; i < 3; i++) {
             float delta = Math.abs(c1hsb[i] - c2hsb[i]);
+            if (i == 0) {
+                delta = Math.min(delta, 1 - delta);
+            }
             deltaSum += delta;
         }
 
