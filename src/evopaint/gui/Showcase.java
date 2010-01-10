@@ -135,6 +135,7 @@ public class Showcase extends JPanel implements MouseInputListener, MouseWheelLi
         if (leftButtonPressed == true) {
             if (mainFrame.getActiveTool() == PaintCommand.class) {
                 // TODO: paint pixels between mouse drags
+                // TODO: Maybe refactor state into PaintCommand
                 ICommand command = new PaintCommand(this.evopaint.getWorld(),
                         e.getPoint(), this.scale, affineTransform, 10);
                 command.execute();

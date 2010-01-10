@@ -7,7 +7,6 @@ import evopaint.commands.PauseCommand;
 import evopaint.commands.ResumeCommand;
 import evopaint.commands.ZoomCommand;
 
-import evopaint.interfaces.ICommand;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
@@ -20,6 +19,10 @@ public class MainFrame extends JFrame {
     private JPopupMenu toolMenu;
 
     private Class activeTool = null;
+    private ResumeCommand resumeCommand;
+    private PauseCommand pauseCommand;
+    private ZoomCommand zoomOutCommand;
+    private ZoomCommand zoomInCommand;
 
     public Class getActiveTool() {
         return activeTool;
@@ -44,6 +47,8 @@ public class MainFrame extends JFrame {
         this.showcase = new Showcase(this, evopaint);
         this.menuBar = new MenuBar();
 
+        initializeCommands(evopaint);
+
         addKeyListener(new KeyListener() {
 
             public void keyTyped(KeyEvent e) {
@@ -55,18 +60,14 @@ public class MainFrame extends JFrame {
 
             public void keyPressed(KeyEvent e) {
                 if (e.getKeyCode() == KeyEvent.VK_PLUS) {
-                    ICommand command = new ZoomCommand(showcase, true);
-                    command.execute();
+                    zoomInCommand.execute();
                 } else if (e.getKeyCode() == KeyEvent.VK_MINUS) {
-                    ICommand command = new ZoomCommand(showcase, false);
-                    command.execute();
+                    zoomOutCommand.execute();
                 } else if (e.getKeyCode() == KeyEvent.VK_SPACE) {
                     if (evopaint.isRunning()) {
-                        ICommand command = new PauseCommand(evopaint);
-                        command.execute();
+                        pauseCommand.execute();
                     } else {
-                        ICommand command = new ResumeCommand(evopaint);
-                        command.execute();
+                        resumeCommand.execute();
                     }
                 }
             }
@@ -103,6 +104,13 @@ public class MainFrame extends JFrame {
         add(showcase);
         this.pack();
         this.setVisible(true);
+    }
+
+    private void initializeCommands(EvoPaint evopaint) {
+        resumeCommand = new ResumeCommand(evopaint);
+        pauseCommand = new PauseCommand(evopaint);
+        zoomInCommand = new ZoomCommand(showcase, true);
+        zoomOutCommand = new ZoomCommand(showcase, false);
     }
 
     public Showcase getShowcase() {
