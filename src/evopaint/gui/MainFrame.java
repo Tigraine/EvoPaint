@@ -2,10 +2,7 @@ package evopaint.gui;
 
 
 import evopaint.EvoPaint;
-import evopaint.commands.MoveCommand;
-import evopaint.commands.PauseCommand;
-import evopaint.commands.ResumeCommand;
-import evopaint.commands.ZoomCommand;
+import evopaint.commands.*;
 
 import java.awt.*;
 import java.awt.event.KeyEvent;
@@ -109,8 +106,8 @@ public class MainFrame extends JFrame {
     private void initializeCommands(EvoPaint evopaint) {
         resumeCommand = new ResumeCommand(evopaint);
         pauseCommand = new PauseCommand(evopaint);
-        zoomInCommand = new ZoomCommand(showcase, true);
-        zoomOutCommand = new ZoomCommand(showcase, false);
+        zoomInCommand = new ZoomInCommand(showcase);
+        zoomOutCommand = new ZoomOutCommand(showcase);
     }
 
     public Showcase getShowcase() {

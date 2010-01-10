@@ -7,7 +7,7 @@ public class ZoomCommand extends AbstractCommand {
     private boolean zoomIn;
     private Showcase showcase;
 
-    public ZoomCommand(Showcase showcase, boolean zoomIn) {
+    protected ZoomCommand(Showcase showcase, boolean zoomIn) {
         this.zoomIn = zoomIn;
         this.showcase = showcase;
     }

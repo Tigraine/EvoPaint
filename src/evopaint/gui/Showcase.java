@@ -5,9 +5,7 @@
 package evopaint.gui;
 
 import evopaint.EvoPaint;
-import evopaint.commands.MoveCommand;
-import evopaint.commands.PaintCommand;
-import evopaint.commands.ZoomCommand;
+import evopaint.commands.*;
 
 import java.awt.Dimension;
 import java.awt.Graphics;
@@ -104,8 +102,11 @@ public class Showcase extends JPanel implements MouseInputListener, MouseWheelLi
     }
 
     public void mouseWheelMoved(MouseWheelEvent e) {
-        ZoomCommand zoomCommand = new ZoomCommand(this,
-                (e.getWheelRotation() < 0 ? true : false));
+        ZoomCommand zoomCommand ;
+        if (e.getWheelRotation() < 0)
+            zoomCommand = new ZoomInCommand(this);
+        else
+            zoomCommand = new ZoomOutCommand(this);
         zoomCommand.execute();
     }
 
