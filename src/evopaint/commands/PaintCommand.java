@@ -14,22 +14,43 @@ import java.util.IdentityHashMap;
 
 public class PaintCommand extends AbstractCommand {
     private World world;
+
+    public double getScale() {
+        return scale;
+    }
+
+    public void setScale(double scale) {
+        this.scale = scale;
+    }
+
+    private double scale;
+    private final AffineTransform affineTransform;
     private int radius;
-    private Point location;
 
-    public PaintCommand(World world, Point location, double scale, AffineTransform at, int radius) {
-        this.world = world;
-        this.radius = radius;
+    public Point getLocation() {
+        return location;
+    }
 
+    public void setLocation(Point location) {
         this.location = new Point(location);
         this.location.x /= scale;
         this.location.y /= scale;
+
         try {
-            this.location = (Point)at.inverseTransform(this.location , this.location);
+            this.location = (Point) affineTransform.inverseTransform(this.location , this.location);
         } catch(NoninvertibleTransformException e) {
             Config.log.error("Non convertable transformation created. This should not be possible");
         }
-        
+    }
+
+    private Point location;
+
+    public PaintCommand(World world, double scale, AffineTransform affineTransform, int radius) {
+        this.world = world;
+        this.scale = scale;
+        this.affineTransform = affineTransform;
+        this.radius = radius;
+
         // TODO: make the new attributes a parameter
     }
 
