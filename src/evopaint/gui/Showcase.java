@@ -8,7 +8,7 @@ import evopaint.EvoPaint;
 import evopaint.commands.MoveCommand;
 import evopaint.commands.PaintCommand;
 import evopaint.commands.ZoomCommand;
-import evopaint.interfaces.ICommand;
+
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -31,11 +31,11 @@ public class Showcase extends JPanel implements MouseInputListener, MouseWheelLi
     private MainFrame mainFrame;
     private EvoPaint evopaint;
     private AffineTransform affineTransform = new AffineTransform();
-    private Point draggedPoint;
     private boolean leftButtonPressed = false;
     private int zoom = 10;
     private double scale = (double)this.zoom / 10;
     private PaintCommand paintCommand;
+    private MoveCommand moveCommand;
 
     @Override
     public void paintComponent(Graphics g) {
@@ -96,6 +96,7 @@ public class Showcase extends JPanel implements MouseInputListener, MouseWheelLi
     private void rescale() {
         this.scale = (double)this.zoom / 10;
         this.paintCommand.setScale(this.scale);
+        this.moveCommand.setScale(this.scale);
         setPreferredSize(new Dimension(
                 (int) (evopaint.getImage().getWidth() * this.scale),
                 (int) (evopaint.getImage().getHeight() * this.scale)));
@@ -115,7 +116,8 @@ public class Showcase extends JPanel implements MouseInputListener, MouseWheelLi
                 paintCommand.setLocation(e.getPoint());
                 paintCommand.execute();
             } else if (mainFrame.getActiveTool() == MoveCommand.class) {
-                this.draggedPoint = e.getPoint();
+                moveCommand.setSource(e.getPoint());
+                //moveCommand.setScale(this.scale);
             }
         } else if (e.getButton() == MouseEvent.BUTTON3) {
             if (leftButtonPressed == false) {
@@ -140,11 +142,8 @@ public class Showcase extends JPanel implements MouseInputListener, MouseWheelLi
                 paintCommand.setLocation(e.getPoint());
                 paintCommand.execute();
             } else if (mainFrame.getActiveTool() == MoveCommand.class) {
-                ICommand command = new MoveCommand(draggedPoint, e.getPoint(),
-                        this.scale, affineTransform, evopaint.getImage());
-                command.execute();
-
-                draggedPoint = e.getPoint();
+                moveCommand.setDestination(e.getPoint());
+                moveCommand.execute();
                 repaint();
             }
         }
@@ -166,15 +165,15 @@ public class Showcase extends JPanel implements MouseInputListener, MouseWheelLi
         super();
         this.mainFrame = mf;
         this.evopaint = evo;
-
-        setPreferredSize(new Dimension(this.evopaint.getImage().getWidth(),
-                this.evopaint.getImage().getHeight()));
+        this.paintCommand = new PaintCommand(this.evopaint.getWorld(),
+                                this.scale, affineTransform, 10);
+        this.moveCommand = new MoveCommand(affineTransform, evopaint.getImage());
 
         addMouseWheelListener(this);
         addMouseListener(this);
         addMouseMotionListener(this);
 
-        paintCommand = new PaintCommand(this.evopaint.getWorld(),
-                                this.scale, affineTransform, 10);
+        this.zoom = 10;
+        this.rescale();
     }
 }
