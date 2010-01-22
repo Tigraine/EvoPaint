@@ -5,10 +5,17 @@
 
 package evopaint.gui;
 
+import evopaint.Config;
+import evopaint.Manifest;
 import evopaint.gui.MainFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 
 /**
  *
@@ -56,5 +63,41 @@ public class MenuBar extends JMenuBar {
         JMenu helpMenu = new JMenu();
         helpMenu.setText("?");
         add(helpMenu);
+
+        JMenuItem userGuide = new JMenuItem();
+        userGuide.setText("User Guide");
+        userGuide.addActionListener(new ActionListener() {
+
+            public void actionPerformed(ActionEvent e) {
+                //.getDesktop().browse(new URI("http://www.your.url"));
+                try {
+                    java.awt.Desktop.getDesktop().browse(new URI(Manifest.USER_GUIDE_URL));
+                } catch (IOException e1) {
+                    Config.log.error("Exception occurred during opening of Users guide: \n%s", e1);
+                } catch (URISyntaxException e1) {
+                    Config.log.error("Exception occurred during opening of Users guide: \n%s", e1);
+                }
+            }
+        });
+        helpMenu.add(userGuide);
+
+        JMenuItem getCode = new JMenuItem();
+        getCode.setText("Get the Code");
+        getCode.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    java.awt.Desktop.getDesktop().browse(new URI(Manifest.CODE_DOWNLOAD_URL));
+                } catch (URISyntaxException e1) {
+                    Config.log.error("Exception occurred during opening of Get The Code : \n%s", e1);
+                } catch (IOException e1) {
+                    Config.log.error("Exception occurred during opening of Get The Code : \n%s", e1);
+                }
+            }
+        });
+        helpMenu.add(getCode);
+
+        JMenuItem about = new JMenuItem();
+        about.setText("About");
+        helpMenu.add(about);
     }
 }

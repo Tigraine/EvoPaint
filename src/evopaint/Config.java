@@ -14,9 +14,7 @@ import java.util.IdentityHashMap;
 import java.util.Map;
 
 import evopaint.util.LogLevel;
-import evopaint.util.objectrenderers.EntityRenderer;
-import evopaint.util.objectrenderers.RelationRenderer;
-import evopaint.util.objectrenderers.VerboseEntityRenderer;
+import evopaint.util.objectrenderers.*;
 import java.awt.Dimension;
 import org.uncommons.maths.random.CellularAutomatonRNG;
 import org.uncommons.maths.random.DefaultSeedGenerator;
@@ -76,6 +74,7 @@ public class Config {
             log.addRenderer(Entity.class, new EntityRenderer());
         }
         log.addRenderer(Relation.class, new RelationRenderer());
+        log.addRenderer(Exception.class, new ExceptionRenderer());
     }
 
     private static void initRNG() {
