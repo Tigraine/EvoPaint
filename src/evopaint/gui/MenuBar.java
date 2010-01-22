@@ -8,9 +8,8 @@ package evopaint.gui;
 import evopaint.Config;
 import evopaint.Manifest;
 import evopaint.gui.MainFrame;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
+
+import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
@@ -22,7 +21,10 @@ import java.net.URISyntaxException;
  * @author tam
  */
 public class MenuBar extends JMenuBar {
-    public MenuBar() {
+    private final MainFrame mainFrame;
+
+    public MenuBar(MainFrame parentFrame) {
+        this.mainFrame = parentFrame;
 
         // File Menu
         JMenu fileMenu = new JMenu();
@@ -52,6 +54,14 @@ public class MenuBar extends JMenuBar {
 
         JMenuItem exitItem = new JMenuItem();
         exitItem.setText("Exit");
+        exitItem.addActionListener(new ActionListener() {
+
+            public void actionPerformed(ActionEvent e) {
+                if (JOptionPane.showConfirmDialog(mainFrame, "Do you really want to Exit?", "Exit EvoPaint", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+                    System.exit(0);
+                }
+            }
+        });
         fileMenu.add(exitItem);
 
         // Edit menu
