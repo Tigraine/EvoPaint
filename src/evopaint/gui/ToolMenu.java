@@ -7,8 +7,11 @@ package evopaint.gui;
 
 import evopaint.commands.MoveCommand;
 import evopaint.commands.PaintCommand;
+import evopaint.commands.SelectCommand;
+
 import java.awt.Cursor;
 import java.awt.GridLayout;
+import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import javax.swing.JMenuItem;
@@ -60,6 +63,15 @@ public class ToolMenu extends JPopupMenu {
             public void mouseEntered(MouseEvent e) {
                 mainFrame.setActiveTool(PaintCommand.class);
                 mainFrame.setCursor(new Cursor(Cursor.HAND_CURSOR));
+            }
+        });
+
+        tools.get(2).setText("Select");
+        tools.get(2).addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                mainFrame.setActiveTool(SelectCommand.class);
+                mainFrame.setCursor(new Cursor(Cursor.CROSSHAIR_CURSOR));
             }
         });
 

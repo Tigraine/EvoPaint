@@ -4,8 +4,10 @@
  */
 package evopaint.gui;
 
+import evopaint.Config;
 import evopaint.EvoPaint;
 import evopaint.commands.*;
+import evopaint.entities.Selection;
 
 import java.awt.Dimension;
 import java.awt.Graphics;
@@ -24,7 +26,7 @@ import javax.swing.event.MouseInputListener;
  *
  * @author tam
  */
-public class Showcase extends JPanel implements MouseInputListener, MouseWheelListener {
+public class Showcase extends JPanel implements MouseInputListener, MouseWheelListener, SelectionReceiver {
 
     private MainFrame mainFrame;
     private EvoPaint evopaint;
@@ -34,6 +36,8 @@ public class Showcase extends JPanel implements MouseInputListener, MouseWheelLi
     private double scale = (double)this.zoom / 10;
     private PaintCommand paintCommand;
     private MoveCommand moveCommand;
+    private SelectCommand selectCommand;
+    private Selection currentSelection;
 
     @Override
     public void paintComponent(Graphics g) {
@@ -119,6 +123,9 @@ public class Showcase extends JPanel implements MouseInputListener, MouseWheelLi
             } else if (mainFrame.getActiveTool() == MoveCommand.class) {
                 moveCommand.setSource(e.getPoint());
                 //moveCommand.setScale(this.scale);
+            } else if (mainFrame.getActiveTool() == SelectCommand.class) {
+                selectCommand.setLocation(e.getPoint());
+                selectCommand.execute();
             }
         } else if (e.getButton() == MouseEvent.BUTTON3) {
             if (leftButtonPressed == false) {
@@ -130,6 +137,10 @@ public class Showcase extends JPanel implements MouseInputListener, MouseWheelLi
     public void mouseReleased(MouseEvent e) {
         if (e.getButton() == MouseEvent.BUTTON1) {
             leftButtonPressed = false;
+            if (mainFrame.getActiveTool() == SelectCommand.class) {
+                selectCommand.setLocation(e.getPoint());
+                selectCommand.execute();
+            }
         } else if (e.getButton() == MouseEvent.BUTTON3) {
             mainFrame.hideToolMenu();
         }
@@ -169,6 +180,7 @@ public class Showcase extends JPanel implements MouseInputListener, MouseWheelLi
         this.paintCommand = new PaintCommand(this.evopaint.getWorld(),
                                 this.scale, affineTransform, 10);
         this.moveCommand = new MoveCommand(affineTransform, evopaint.getImage());
+        this.selectCommand = new SelectCommand(this);
 
         addMouseWheelListener(this);
         addMouseListener(this);
@@ -176,5 +188,10 @@ public class Showcase extends JPanel implements MouseInputListener, MouseWheelLi
 
         this.zoom = 10;
         this.rescale();
+    }
+
+    public void setSelection(Selection selection) {
+        this.currentSelection = selection;
+        Config.log.error("Selection from %s-%s to %s-%s", selection.getStartPoint().getX(), selection.getStartPoint().getY(), selection.getEndPoint().getX(), selection.getEndPoint().getY());
     }
 }
