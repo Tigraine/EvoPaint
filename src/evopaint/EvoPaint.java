@@ -32,9 +32,10 @@ public class EvoPaint {
     private Observer observer;
     private boolean running = true;
     MainFrame frame;
+    private Config configuration;
 
     public EvoPaint() {
-        Config.init();
+        this.configuration = new Config();
 
         // create empty world
         List<Entity> parts = new ArrayList<Entity>();
@@ -42,10 +43,10 @@ public class EvoPaint {
 
         List<Relation> relations = new ArrayList<Relation>();
         RelationsAttribute ra = new RelationsAttribute(relations);
-        SpacialAttribute sa = new SpacialAttribute(new Point(0, 0), new Dimension(Config.defaultDimension));
+        SpacialAttribute sa = new SpacialAttribute(new Point(0, 0), new Dimension(configuration.defaultDimension));
         TemporalAttribute ta = new TemporalAttribute(0);
         this.world = new World(new IdentityHashMap<Class, IAttribute>(), pa,
-                ra, sa, ta);
+                ra, sa, ta, configuration);
         this.world.init();
 
         // create observer
@@ -56,7 +57,7 @@ public class EvoPaint {
 
         // observe the world
         this.perception = new PixelPerceptionRelation(observer, world);
-        boolean ret = this.perception.relate(Config.randomNumberGenerator);
+        boolean ret = this.perception.relate(configuration.randomNumberGenerator);
         assert (ret);
 
         this.frame = new MainFrame(this);
@@ -69,7 +70,7 @@ public class EvoPaint {
                 continue;
             }
             this.world.step();
-            boolean ret = this.perception.relate(Config.randomNumberGenerator);
+            boolean ret = this.perception.relate(configuration.randomNumberGenerator);
             assert (ret);
             this.frame.getShowcase().repaint();
         }

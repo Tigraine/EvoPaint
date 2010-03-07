@@ -3,6 +3,7 @@ package evopaint.commands;
 import evopaint.Config;
 import evopaint.entities.Selection;
 import evopaint.gui.SelectionReceiver;
+import evopaint.util.Logger;
 
 import java.awt.*;
 
@@ -34,7 +35,7 @@ public class SelectCommand extends AbstractCommand {
     private Point endPoint;
 
     public void execute() {
-        Config.log.error("Selection pressed");
+        Logger.log.error("Selection pressed");
         if (CurrentState == State.IDLE){
             startPoint = mouseLocation;
             CurrentState = State.STARTED;

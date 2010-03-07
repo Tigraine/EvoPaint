@@ -13,6 +13,8 @@ import evopaint.attributes.RelationChoosingAttribute;
 import evopaint.attributes.SpacialAttribute;
 import evopaint.entities.World;
 import evopaint.interfaces.IRandomNumberGenerator;
+import evopaint.util.Logger;
+
 import java.awt.Point;
 
 /**
@@ -23,19 +25,19 @@ public class ColorCopyRelation extends Relation {
 
     public boolean relate(IRandomNumberGenerator rng) {
         if (this.b == null) {
-            Config.log.information("relation invalid (no partner) %s",  this);
+            //Logger.log.information("relation invalid (no partner) %s",  this);
             return false;
         }
         
         // a and b both need spacial means for this relation to work
         SpacialAttribute sa = (SpacialAttribute) a.getAttribute(SpacialAttribute.class);
         if (sa == null) {
-            Config.log.information("invalid relation (A has no spacial means) %s", this);
+            //Logger.log.information("invalid relation (A has no spacial means) %s", this);
             return false;
         }
         SpacialAttribute sb = (SpacialAttribute) b.getAttribute(SpacialAttribute.class);
         if (sb == null) {
-            Config.log.information("invalid relation (has no spacial means) %s", this);
+            //Logger.log.information("invalid relation (has no spacial means) %s", this);
             return false;
         }
 
@@ -47,7 +49,8 @@ public class ColorCopyRelation extends Relation {
         // now let us get to copying colors, therefore a needs a color
         ColorAttribute ca = (ColorAttribute) a.getAttribute(ColorAttribute.class);
         if (ca == null) {
-            Config.log.information("invalid relation (A has no color) %s", this);
+
+            //Logger.log.information("invalid relation (A has no color) %s", this);
             return false;
         }
         
@@ -58,7 +61,7 @@ public class ColorCopyRelation extends Relation {
             b.setAttribute(ColorAttribute.class, cb);
         } else {
             if (ca.getColor() == cb.getColor()) {
-                 Config.log.information("invalid relation (target of same color) %s", this);
+                 //Logger.log.information("invalid relation (target of same color) %s", this);
                  return false;
             }
             cb.setColor(ca.getColor());
@@ -71,7 +74,7 @@ public class ColorCopyRelation extends Relation {
             rca.promote(this.getClass());
         }
 
-        Config.log.information("relating %s", this);
+        //Logger.log.information("relating %s", this);
         return true;
     }
 

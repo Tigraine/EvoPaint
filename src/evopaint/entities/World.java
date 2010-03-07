@@ -26,6 +26,8 @@ import java.util.HashMap;
 import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
+
+import evopaint.util.Logger;
 import org.uncommons.maths.random.CellularAutomatonRNG;
 
 /**
@@ -36,6 +38,7 @@ public class World extends System {
 
     private Dimension cachedDimension;
     private Map<Point, Entity> locationsToEntities;
+    private Config configuration;
 
     public void init() {
         this.clear();
@@ -107,14 +110,14 @@ public class World extends System {
             java.lang.System.exit(1);
         }
 
-        Config.log.information("Time: %s, Relations: %s", new Object[]{ta, ra.getRelations().size()});
+        Logger.log.information("Time: %s, Relations: %s", new Object[]{ta, ra.getRelations().size()});
 
         ta.increaseTime();
         List<Relation> relations = ra.getRelations();
 
-        Collections.shuffle(relations, Config.randomNumberGenerator.getRandom());
+        Collections.shuffle(relations, this.configuration.randomNumberGenerator.getRandom());
 
-        if (Config.numRelationThreads > 1) {
+        if (this.configuration.numRelationThreads > 1) {
             this.parallel(relations);
         } else {
             this.serial(relations);
@@ -159,18 +162,18 @@ public class World extends System {
     }
 
     private void createEntities() {
-        for (int y = 0; y < Config.initialPopulationY; y++) {
-            for (int x = 0; x < Config.initialPopulationX; x++) {
+        for (int y = 0; y < this.configuration.initialPopulationY; y++) {
+            for (int x = 0; x < this.configuration.initialPopulationX; x++) {
 
                 IdentityHashMap<Class, IAttribute> attributesForEntity =
                         new IdentityHashMap<Class, IAttribute>();
 
-                int color = Config.randomNumberGenerator.nextPositiveInt();
+                int color = this.configuration.randomNumberGenerator.nextPositiveInt();
                 attributesForEntity.put(ColorAttribute.class, new ColorAttribute(color));
 
                 Point origin = new Point(
-                        this.cachedDimension.width / 2 - Config.initialPopulationX / 2 + x,
-                        this.cachedDimension.height / 2 - Config.initialPopulationY / 2 + y);
+                        this.cachedDimension.width / 2 - this.configuration.initialPopulationX / 2 + x,
+                        this.cachedDimension.height / 2 - this.configuration.initialPopulationY / 2 + y);
                 Dimension dimension = new Dimension(1, 1);
                 attributesForEntity.put(SpacialAttribute.class, new SpacialAttribute(origin, dimension));
 
@@ -185,7 +188,7 @@ public class World extends System {
     }
 
     private void createRelations() {
-        if (Config.oneRelationPerEntity == true) {
+        if (this.configuration.oneRelationPerEntity == true) {
             this.createOneRelationPerEntity();
         } else {
             this.createRandomRelations();
@@ -203,11 +206,11 @@ public class World extends System {
         List<Entity> entities = pa.getParts();
 
         try {
-            for (Class pixelRelationType : Config.pixelRelationTypes) {
+            for (Class pixelRelationType : this.configuration.pixelRelationTypes) {
                 for (Entity e : entities) {
                     Relation r = (Relation) pixelRelationType.newInstance();
                     r.setA(e);
-                    r.resetB(this, Config.randomNumberGenerator);
+                    r.resetB(this, this.configuration.randomNumberGenerator);
                     ra.getRelations().add(r);
                 }
             }
@@ -228,11 +231,11 @@ public class World extends System {
         }
 
         try {
-            for (Class pixelRelationType : Config.pixelRelationTypes) {
-                int numRels = Config.numPixelRelations.get(pixelRelationType);
+            for (Class pixelRelationType : this.configuration.pixelRelationTypes) {
+                int numRels = this.configuration.numPixelRelations.get(pixelRelationType);
                 for (int i = 0; i < numRels; i++) {
                     Relation r = (Relation) pixelRelationType.newInstance();
-                    r.reset(this, Config.randomNumberGenerator);
+                    r.reset(this, this.configuration.randomNumberGenerator);
                     ra.getRelations().add(r);
                 }
             }
@@ -247,18 +250,18 @@ public class World extends System {
 
     private void serial(List<Relation> relations) {
         for (Relation relation : relations) {
-            if (!relation.relate(Config.randomNumberGenerator)) {
-                if (Config.oneRelationPerEntity == true) {
-                    relation.resetB(this, Config.randomNumberGenerator);
+            if (!relation.relate(this.configuration.randomNumberGenerator)) {
+                if (this.configuration.oneRelationPerEntity == true) {
+                    relation.resetB(this, this.configuration.randomNumberGenerator);
                 } else {
-                    relation.reset(this, Config.randomNumberGenerator);
+                    relation.reset(this, this.configuration.randomNumberGenerator);
                 }
             }
         }
     }
 
     private void parallel(List<Relation> relations) {
-        List<List<Relation>> partitionedRelations = this.partition(relations, Config.numRelationThreads);
+        List<List<Relation>> partitionedRelations = this.partition(relations, this.configuration.numRelationThreads);
 
         // make threads
         List<Thread> relatorThreads = new ArrayList<Thread>();
@@ -266,11 +269,11 @@ public class World extends System {
 
             // get random seed out of our rng
             byte [] seed = new byte[4];
-            Config.randomNumberGenerator.getRandom().nextBytes(seed);
+            this.configuration.randomNumberGenerator.getRandom().nextBytes(seed);
 
             // and seed a new rng for each thread, so they can do random shit in
             // a well defined order (without race conditions on the main rng)
-            Thread relator = new Relator(this, part, new RandomNumberGeneratorWrapper(new CellularAutomatonRNG(seed)));
+            Thread relator = new Relator(this, part, new RandomNumberGeneratorWrapper(new CellularAutomatonRNG(seed)), configuration);
             relatorThreads.add(relator);
             relator.start();
         }
@@ -281,7 +284,7 @@ public class World extends System {
                 relatorThread.join();
             }
             catch (InterruptedException ex) {
-                Config.log.warning("Exception during Relating %s", ex.getMessage());
+                Logger.log.warning("Exception during Relating %s", ex.getMessage());
             }
         }
     }
@@ -309,11 +312,12 @@ public class World extends System {
     }
 
     public World(IdentityHashMap<Class, IAttribute> attributes, PartsAttribute pa,
-            RelationsAttribute ra, SpacialAttribute sa, TemporalAttribute ta) {
+            RelationsAttribute ra, SpacialAttribute sa, TemporalAttribute ta, Config configuration) {
         super(attributes, pa, ra);
         this.attributes.put(SpacialAttribute.class, sa);
         this.attributes.put(TemporalAttribute.class, ta);
         this.locationsToEntities = new HashMap<Point, Entity>();
         this.cachedDimension = sa.getDimension();
+        this.configuration = configuration;
     }
 }

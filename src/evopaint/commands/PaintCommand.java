@@ -6,6 +6,8 @@ import evopaint.attributes.ColorAttribute;
 import evopaint.attributes.SpacialAttribute;
 import evopaint.entities.World;
 import evopaint.interfaces.IAttribute;
+import evopaint.util.Logger;
+
 import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.geom.AffineTransform;
@@ -39,7 +41,7 @@ public class PaintCommand extends AbstractCommand {
         try {
             this.location = (Point) affineTransform.inverseTransform(this.location , this.location);
         } catch(NoninvertibleTransformException e) {
-            Config.log.error("Non convertable transformation created. This should not be possible");
+            Logger.log.error("Non convertable transformation created. This should not be possible");
         }
     }
 
@@ -56,7 +58,7 @@ public class PaintCommand extends AbstractCommand {
 
     public void execute() {
         //Config.log.debug(this);
-        Config.log.information("Executing Paint command on x: %s y: %s", location.x, location.y);
+        Logger.log.information("Executing Paint command on x: %s y: %s", location.x, location.y);
         for (int i = 0 - this.radius / 2; i < radius / 2; i++) {
             for (int j = 0 - this.radius / 2; j < this.radius / 2; j++) {
                 Point point = new Point(this.location.x + i, this.location.y + j);

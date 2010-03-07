@@ -8,6 +8,7 @@ package evopaint.gui;
 import evopaint.Config;
 import evopaint.Manifest;
 import evopaint.gui.MainFrame;
+import evopaint.util.Logger;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -83,9 +84,9 @@ public class MenuBar extends JMenuBar {
                 try {
                     java.awt.Desktop.getDesktop().browse(new URI(Manifest.USER_GUIDE_URL));
                 } catch (IOException e1) {
-                    Config.log.error("Exception occurred during opening of Users guide: \n%s", e1);
+                    Logger.log.error("Exception occurred during opening of Users guide: \n%s", e1);
                 } catch (URISyntaxException e1) {
-                    Config.log.error("Exception occurred during opening of Users guide: \n%s", e1);
+                    Logger.log.error("Exception occurred during opening of Users guide: \n%s", e1);
                 }
             }
         });
@@ -98,9 +99,9 @@ public class MenuBar extends JMenuBar {
                 try {
                     java.awt.Desktop.getDesktop().browse(new URI(Manifest.CODE_DOWNLOAD_URL));
                 } catch (URISyntaxException e1) {
-                    Config.log.error("Exception occurred during opening of Get The Code : \n%s", e1);
+                    Logger.log.error("Exception occurred during opening of Get The Code : \n%s", e1);
                 } catch (IOException e1) {
-                    Config.log.error("Exception occurred during opening of Get The Code : \n%s", e1);
+                    Logger.log.error("Exception occurred during opening of Get The Code : \n%s", e1);
                 }
             }
         });

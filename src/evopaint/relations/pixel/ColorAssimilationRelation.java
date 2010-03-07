@@ -12,6 +12,8 @@ import evopaint.attributes.PartnerSelectionAttribute;
 import evopaint.interfaces.IObjectRenderer;
 import evopaint.interfaces.IRandomNumberGenerator;
 import evopaint.util.Log;
+import evopaint.util.Logger;
+
 import java.awt.Color;
 
 /**
@@ -24,7 +26,7 @@ public class ColorAssimilationRelation extends Relation {
         //this.resetB(rng);
 
         if (this.b == null) {
-            Config.log.information("relation invalid (no partner) %s", this);
+            //Logger.log.information("relation invalid (no partner) %s", this);
             return false;
         }
 
@@ -32,19 +34,19 @@ public class ColorAssimilationRelation extends Relation {
         ColorAttribute caa = (ColorAttribute) a.getAttribute(ColorAttribute.class);
         ColorAttribute cab = (ColorAttribute) b.getAttribute(ColorAttribute.class);
         if (caa == null || cab == null) {
-            Config.log.information("relation invalid (color gone) A={%s}, B={%s}", this.a, this.b);
+            //Logger.log.information("relation invalid (color gone) A={%s}, B={%s}", this.a, this.b);
             return false;
         }
 
         // if the color already is the same, we might want to use this relation elsewhere
         if (caa.getColor() == cab.getColor()) {
-            Config.log.information("relation invalid (target has same color) A={%s}, B={%s}", this.a, this.b);
+            //Logger.log.information("relation invalid (target has same color) A={%s}, B={%s}", this.a, this.b);
             return false;
         }
 
         // mix A's colors into B
         cab.setColor(this.hsbMix(caa, cab, 0.5f)); // XXX there is some hard coding right here
-        Config.log.information("relating %s", this);
+        //Logger.log.information("relating %s", this);
         return true;
     }
 

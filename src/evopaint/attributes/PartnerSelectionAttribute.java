@@ -12,6 +12,8 @@ import evopaint.interfaces.IAttribute;
 import evopaint.interfaces.IMatcher;
 import evopaint.interfaces.IRandomNumberGenerator;
 import evopaint.util.Log;
+import evopaint.util.Logger;
+
 import java.awt.Point;
 import java.util.ArrayList;
 import java.util.List;
@@ -30,7 +32,7 @@ public class PartnerSelectionAttribute implements IAttribute {
         // check if we exist in space
         SpacialAttribute sa = (SpacialAttribute) us.getAttribute(SpacialAttribute.class);
         if (sa == null) {
-            Config.log.information("cannot find partner (we have no spacial means) %s", this);
+            Logger.log.information("cannot find partner (we have no spacial means) %s", this);
             return null;
         }
 

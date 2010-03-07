@@ -8,6 +8,7 @@ import evopaint.Config;
 import evopaint.EvoPaint;
 import evopaint.commands.*;
 import evopaint.entities.Selection;
+import evopaint.util.Logger;
 
 import java.awt.Dimension;
 import java.awt.Graphics;
@@ -192,6 +193,6 @@ public class Showcase extends JPanel implements MouseInputListener, MouseWheelLi
 
     public void setSelection(Selection selection) {
         this.currentSelection = selection;
-        Config.log.error("Selection from %s-%s to %s-%s", selection.getStartPoint().getX(), selection.getStartPoint().getY(), selection.getEndPoint().getX(), selection.getEndPoint().getY());
+        Logger.log.error("Selection from %s-%s to %s-%s", selection.getStartPoint().getX(), selection.getStartPoint().getY(), selection.getEndPoint().getX(), selection.getEndPoint().getY());
     }
 }

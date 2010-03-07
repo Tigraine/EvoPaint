@@ -14,6 +14,7 @@ import java.util.IdentityHashMap;
 import java.util.Map;
 
 import evopaint.util.LogLevel;
+import evopaint.util.Logger;
 import evopaint.util.objectrenderers.*;
 import java.awt.Dimension;
 import org.uncommons.maths.random.CellularAutomatonRNG;
@@ -27,18 +28,11 @@ import org.uncommons.maths.random.SeedGenerator;
  */
 public class Config {
 
-    public static final int nrRenderings = 0;
-    public static final int nrStepsPerRendering = 1;
-
-    public static final Dimension defaultDimension = new Dimension(100,100);
-    public static final int initialPopulationX = 100;
-    public static final int initialPopulationY = 100;
+    public final Dimension defaultDimension = new Dimension(100,100);
+    public final int initialPopulationX = 100;
+    public final int initialPopulationY = 100;
     
-    public static final int numRelationThreads = 1;
-
-    public static final int logLevel = LogLevel.ERROR;
-    public static final int logVerbosity = Log.Verbosity.VERBOSE;
-    public static Log log = new ConsoleLog(logLevel);
+    public final int numRelationThreads = 1;
 
     // if true, this option will override each and every setting for how
     // many relations of what type are used and run exactly one of each avtive
@@ -47,37 +41,24 @@ public class Config {
 
     //public static final double mutationRate = 0.0;
 
-    public static ArrayList<Class> pixelRelationTypes = new ArrayList<Class>() {{
+    public Config() {
+        initRNG();
+    }
+
+    public ArrayList<Class> pixelRelationTypes = new ArrayList<Class>() {{
         add(ColorCopyRelation.class);
         add(ColorAssimilationRelation.class);
     }};
 
-    public static Map<Class,Integer> numPixelRelations = new IdentityHashMap<Class,Integer>() {{
-        put(ColorCopyRelation.class, Config.defaultDimension.width*Config.defaultDimension.height);
-        put(ColorAssimilationRelation.class, Config.defaultDimension.width*Config.defaultDimension.height);
+    public Map<Class,Integer> numPixelRelations = new IdentityHashMap<Class,Integer>() {{
+        put(ColorCopyRelation.class, defaultDimension.width*defaultDimension.height);
+        put(ColorAssimilationRelation.class, defaultDimension.width*defaultDimension.height);
     }};
 
     // initialized by init()
-    public static IRandomNumberGenerator randomNumberGenerator;
+    public IRandomNumberGenerator randomNumberGenerator;
 
-    public static void init() {
-        Config.initLogger(logLevel, logVerbosity);
-        Config.initRNG();
-    }
-
-    private static void initLogger(int logLevel, int logVerbosity) {
-        log = new ConsoleLog(logLevel);
-        if (logVerbosity == Log.Verbosity.VERBOSEVERBOSE) {
-            log.addRenderer(Entity.class, new VerboseEntityRenderer());
-        }
-        else {
-            log.addRenderer(Entity.class, new EntityRenderer());
-        }
-        log.addRenderer(Relation.class, new RelationRenderer());
-        log.addRenderer(Exception.class, new ExceptionRenderer());
-    }
-
-    private static void initRNG() {
+    private void initRNG() {
         // Random, SecureRandom, AESCounterRNG, CellularAutomatonRNG,
         // CMWC4096RNG, JavaRNG, MersenneTwisterRNG, XORShiftRNG
 
@@ -95,11 +76,11 @@ public class Config {
             try {
                 seed = sg.generateSeed(4);
             } catch (SeedException e) {
-                log.error("got seed exception from default seed generator. this should not have happened.");
+                Logger.log.error("got seed exception from default seed generator. this should not have happened.");
                 java.lang.System.exit(1);
             }
         }
-        Config.randomNumberGenerator = new RandomNumberGeneratorWrapper(new CellularAutomatonRNG(seed));
+        randomNumberGenerator = new RandomNumberGeneratorWrapper(new CellularAutomatonRNG(seed));
     }
 
     /*

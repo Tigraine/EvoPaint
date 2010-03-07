@@ -23,7 +23,7 @@ public class PartsAttribute implements IAttribute {
     public String toString() {
         String ret = this.getClass().getSimpleName();
 
-        if (Config.logVerbosity == Log.Verbosity.VERBOSE) {
+        /*if (Config.logVerbosity == Log.Verbosity.VERBOSE) {
             ret += "(" + this.hashCode() + "){" + this.parts.size() + " parts}";
         }
 
@@ -34,7 +34,7 @@ public class PartsAttribute implements IAttribute {
             }
             ret = ret.substring(0, ret.length() - 1);
             ret += "}";
-        }
+        } */
 
         return ret;
     }

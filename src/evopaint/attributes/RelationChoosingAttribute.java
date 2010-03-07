@@ -6,6 +6,9 @@
 package evopaint.attributes;
 
 import evopaint.Config;
+import evopaint.RandomNumberGeneratorWrapper;
+import evopaint.interfaces.IRandomNumberGenerator;
+
 import java.util.IdentityHashMap;
 
 /**
@@ -20,7 +23,7 @@ public class RelationChoosingAttribute {
         return "TODO: implement me in RelationChoosingAttribute.java";
     }
 
-    public Class getFavoriteRelationType() {
+    public Class getFavoriteRelationType(IRandomNumberGenerator randomNumberGenerator) {
         
         // sum up all biases to get all possible events
         long sum = 0;
@@ -29,7 +32,7 @@ public class RelationChoosingAttribute {
         }
 
         // draw from those events using a random number
-        double rnd = Config.randomNumberGenerator.nextDouble();
+        double rnd = randomNumberGenerator.nextDouble();
         double lastProbability = 0;
         for (Class relationType : this.biases.keySet()) {
             double probability = lastProbability + ((double)this.biases.get(relationType)) / sum;
