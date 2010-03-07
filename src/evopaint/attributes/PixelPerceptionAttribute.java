@@ -7,6 +7,7 @@ package evopaint.attributes;
 
 import evopaint.interfaces.IAttribute;
 import java.awt.AlphaComposite;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.Point;
@@ -22,26 +23,31 @@ public class PixelPerceptionAttribute implements IAttribute {
     private BufferedImage perception;
     private int backgroundColor;
     private int[] internalPerception;
+    private Graphics2D graphicsContext;
 
     @Override
     public String toString() {
         return "TODO: implement me in PixelPerceptionAttribute.java";
     }
 
-    public synchronized void setPixel(int color, Point origin) {
+    public void setPixel(int color, Point origin) {
         this.internalPerception[origin.y * this.perception.getWidth() + origin.x] = color;
     }
 
     public void clear() {
         // clear bufferedImage (by setting it to transparent)
-        Graphics2D g = (Graphics2D)this.perception.getGraphics();
-        g.setComposite(AlphaComposite.Clear);
-        g.fillRect(0,0,this.perception.getWidth(),this.perception.getHeight());
-        g.setComposite(AlphaComposite.SrcOver);
-        g.dispose();
+        //g.setComposite(AlphaComposite.Clear);
+        //g.fillRect(0,0,this.perception.getWidth(),this.perception.getHeight());
+        //g.setComposite(AlphaComposite.SrcOver);
+        //this.graphicsContext.clearRect(0, 0, perception.getWidth(), perception.getHeight());
+        //g.dispose();
+
+        
+        //this.perception = new BufferedImage(perception.getWidth(), perception.getHeight(), perception.getType());
+        //this.internalPerception = ((DataBufferInt)this.perception.getRaster().getDataBuffer()).getData();
     }
 
-    public synchronized BufferedImage getPerception() {
+    public BufferedImage getPerception() {
         return this.perception;
     }
 
@@ -63,5 +69,6 @@ public class PixelPerceptionAttribute implements IAttribute {
         }
         this.perception = new BufferedImage(width, height, type);
         this.internalPerception = ((DataBufferInt)this.perception.getRaster().getDataBuffer()).getData();
+        this.graphicsContext = (Graphics2D)this.perception.getGraphics();
     }
 }

@@ -4,18 +4,16 @@
  */
 package evopaint;
 
-import evopaint.util.Log;
 import evopaint.interfaces.IRandomNumberGenerator;
 import evopaint.relations.pixel.ColorAssimilationRelation;
 import evopaint.relations.pixel.ColorCopyRelation;
-import evopaint.util.ConsoleLog;
+import evopaint.relations.pixel.ColorMoveRelation;
+import evopaint.relations.pixel.TakeRedRelation;
 import java.util.ArrayList;
 import java.util.IdentityHashMap;
 import java.util.Map;
 
-import evopaint.util.LogLevel;
 import evopaint.util.Logger;
-import evopaint.util.objectrenderers.*;
 import java.awt.Dimension;
 import org.uncommons.maths.random.CellularAutomatonRNG;
 import org.uncommons.maths.random.DefaultSeedGenerator;
@@ -29,8 +27,8 @@ import org.uncommons.maths.random.SeedGenerator;
 public class Config {
 
     public final Dimension defaultDimension = new Dimension(100,100);
-    public final int initialPopulationX = 100;
-    public final int initialPopulationY = 100;
+    public final int initialPopulationX = 50;
+    public final int initialPopulationY = 50;
     
     public final int numRelationThreads = 1;
 
@@ -46,13 +44,17 @@ public class Config {
     }
 
     public ArrayList<Class> pixelRelationTypes = new ArrayList<Class>() {{
-        add(ColorCopyRelation.class);
-        add(ColorAssimilationRelation.class);
+       // add(ColorCopyRelation.class);
+       // add(ColorAssimilationRelation.class);
+       // add(ColorMoveRelation.class);
+        add(TakeRedRelation.class);
     }};
 
     public Map<Class,Integer> numPixelRelations = new IdentityHashMap<Class,Integer>() {{
         put(ColorCopyRelation.class, defaultDimension.width*defaultDimension.height);
         put(ColorAssimilationRelation.class, defaultDimension.width*defaultDimension.height);
+        put(ColorMoveRelation.class, defaultDimension.width*defaultDimension.height);
+        put(TakeRedRelation.class, defaultDimension.width*defaultDimension.height);
     }};
 
     // initialized by init()

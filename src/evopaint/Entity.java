@@ -29,6 +29,10 @@ public class Entity {
         this.attributes.put(attributeType, attribute);
     }
 
+    public void removeAttribute(Class attributeType) {
+        this.attributes.remove(attributeType);
+    }
+
     public IAttribute getAttribute(Class attributeType) {
         return this.attributes.get(attributeType);
     }

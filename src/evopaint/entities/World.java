@@ -162,14 +162,10 @@ public class World extends System {
     }
 
     private void createEntities() {
-        for (int y = 0; y < this.configuration.initialPopulationY; y++) {
-            for (int x = 0; x < this.configuration.initialPopulationX; x++) {
-
+        for (int y = 0; y < this.configuration.defaultDimension.height; y++) {
+            for (int x = 0; x < this.configuration.defaultDimension.width; x++) {
                 IdentityHashMap<Class, IAttribute> attributesForEntity =
                         new IdentityHashMap<Class, IAttribute>();
-
-                int color = this.configuration.randomNumberGenerator.nextPositiveInt();
-                attributesForEntity.put(ColorAttribute.class, new ColorAttribute(color));
 
                 Point origin = new Point(
                         this.cachedDimension.width / 2 - this.configuration.initialPopulationX / 2 + x,
@@ -177,12 +173,23 @@ public class World extends System {
                 Dimension dimension = new Dimension(1, 1);
                 attributesForEntity.put(SpacialAttribute.class, new SpacialAttribute(origin, dimension));
 
-                Pixel pixie = new Pixel(attributesForEntity);
+                this.add(new Entity(attributesForEntity));
+            }
+        }
 
-                attributesForEntity.put(PartnerSelectionAttribute.class,
-                        new PartnerSelectionAttribute(new RGBMatcher(), 0.1f, 0.9f));
+        for (int y = 0; y < this.configuration.initialPopulationY; y++) {
+            for (int x = 0; x < this.configuration.initialPopulationX; x++) {
 
-                this.add(pixie);
+                int color = this.configuration.randomNumberGenerator.nextPositiveInt();
+                IdentityHashMap<Class, IAttribute> attributesForEntity =
+                        locationToEntity(new Point(x+this.configuration.defaultDimension.width/2-this.configuration.initialPopulationX/2,
+                        y+this.configuration.defaultDimension.height/2-this.configuration.initialPopulationY/2)).getAttributes();
+
+                attributesForEntity.put(ColorAttribute.class, new ColorAttribute(color));
+
+
+                //attributesForEntity.put(PartnerSelectionAttribute.class,
+                 //       new PartnerSelectionAttribute(new RGBMatcher(), 0.1f, 0.9f));
             }
         }
     }

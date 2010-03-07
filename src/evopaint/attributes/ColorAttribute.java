@@ -37,6 +37,10 @@ public class ColorAttribute implements IAttribute {
         return ret;
     }
 
+    public void setARGB(short [] argb) {
+        this.color = 0 | argb[0] << 24 | argb[1] << 16 | argb[2] << 8 | argb[3];
+    }
+
     public float [] getHSB() {
         return Color.RGBtoHSB((this.color >> 16) & 0xFF,
                 (this.color >> 8) & 0xFF,

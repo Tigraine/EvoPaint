@@ -65,6 +65,7 @@ public class EvoPaint {
 
     public void work() {
         while (true) {
+            //try { Thread.sleep(10); } catch (InterruptedException e) {}
             if (this.running == false) {
                 try { Thread.sleep(500); } catch (InterruptedException e) {}
                 continue;
