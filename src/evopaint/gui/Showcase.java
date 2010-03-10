@@ -157,7 +157,8 @@ public class Showcase extends JPanel implements MouseInputListener, MouseWheelLi
             } else if (mainFrame.getActiveTool() == MoveCommand.class) {
                 moveCommand.setDestination(e.getPoint());
                 moveCommand.execute();
-                repaint();
+                //repaint();
+                //paintImmediately(0, 0, getWidth(), getHeight());
             }
         }
     }

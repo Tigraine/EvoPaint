@@ -64,16 +64,26 @@ public class EvoPaint {
     }
 
     public void work() {
+        int i = 0;
+        int stepsPerRendering = this.world.getConfiguration().stepsPerRendering;
         while (true) {
-            //try { Thread.sleep(10); } catch (InterruptedException e) {}
+     
             if (this.running == false) {
                 try { Thread.sleep(500); } catch (InterruptedException e) {}
                 continue;
             }
+
             this.world.step();
-            boolean ret = this.perception.relate(configuration.randomNumberGenerator);
-            assert (ret);
-            this.frame.getShowcase().repaint();
+              
+            if (i % stepsPerRendering == 0) {
+               boolean ret = this.perception.relate(configuration.randomNumberGenerator);
+               assert (ret);
+               //this.frame.getShowcase().repaint(); // causes flickering cause painting is delayed until the image is being reconstructed
+               this.frame.getShowcase().paintImmediately(0, 0, this.frame.getShowcase().getWidth(), this.frame.getShowcase().getHeight());
+               i = 0;
+            }
+            
+            i++;
         }
     }
 

@@ -29,7 +29,7 @@ public class Config {
     public final Dimension defaultDimension = new Dimension(100,100);
     public final int initialPopulationX = 50;
     public final int initialPopulationY = 50;
-    
+    public final int stepsPerRendering = 1;
     public final int numRelationThreads = 1;
 
     // if true, this option will override each and every setting for how
@@ -44,9 +44,9 @@ public class Config {
     }
 
     public ArrayList<Class> pixelRelationTypes = new ArrayList<Class>() {{
-       // add(ColorCopyRelation.class);
-       // add(ColorAssimilationRelation.class);
-       // add(ColorMoveRelation.class);
+        add(ColorCopyRelation.class);
+        add(ColorAssimilationRelation.class);
+        add(ColorMoveRelation.class);
         add(TakeRedRelation.class);
     }};
 

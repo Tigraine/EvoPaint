@@ -318,6 +318,10 @@ public class World extends System {
         return ret;
     }
 
+    public Config getConfiguration() {
+        return configuration;
+    }
+
     public World(IdentityHashMap<Class, IAttribute> attributes, PartsAttribute pa,
             RelationsAttribute ra, SpacialAttribute sa, TemporalAttribute ta, Config configuration) {
         super(attributes, pa, ra);
