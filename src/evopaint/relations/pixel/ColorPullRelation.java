@@ -14,7 +14,7 @@ import evopaint.interfaces.IRandomNumberGenerator;
  *
  * @author tam
  */
-public class TakeRedRelation extends Relation {
+public class ColorPullRelation extends Relation {
 
     @Override
     public boolean relate(IRandomNumberGenerator rng) {
@@ -34,23 +34,32 @@ public class TakeRedRelation extends Relation {
         }
 
         if (ca == null) {
-            ca = new ColorAttribute(0x00000000);
+            ca = new ColorAttribute(0xFF000000);
             a.setAttribute(ColorAttribute.class, ca);
         }
 
         short [] caARGB = ca.getARGB();
         short [] cbARGB = cb.getARGB();
+        
+        int index = 0;
+        short min = caARGB[index];
+        for (int i = 1; i <= 3; i++) {
+            if (caARGB[i] < min) {
+                min = caARGB[i];
+                index = i;
+            }
+        }
 
-        short missing = (short)(0xFF - caARGB[1]);
-        short available = cbARGB[1] > missing ? missing : cbARGB[1];
+        short missing = (short)(0xFF - caARGB[index]);
+        short available = cbARGB[index] > missing ? missing : cbARGB[index];
 
-        caARGB[1] = (short)(caARGB[1] + available);
-        cbARGB[1] = (short)(cbARGB[1] - available);
+        caARGB[index] = (short)(caARGB[index] + available);
+        cbARGB[index] = (short)(cbARGB[index] - available);
 
         ca.setARGB(caARGB);
         cb.setARGB(cbARGB);
 
-        return true;
+        return false;
     }
 
 }

@@ -8,7 +8,7 @@ import evopaint.interfaces.IRandomNumberGenerator;
 import evopaint.relations.pixel.ColorAssimilationRelation;
 import evopaint.relations.pixel.ColorCopyRelation;
 import evopaint.relations.pixel.ColorMoveRelation;
-import evopaint.relations.pixel.TakeRedRelation;
+import evopaint.relations.pixel.ColorPullRelation;
 import java.util.ArrayList;
 import java.util.IdentityHashMap;
 import java.util.Map;
@@ -47,14 +47,14 @@ public class Config {
         add(ColorCopyRelation.class);
         add(ColorAssimilationRelation.class);
         add(ColorMoveRelation.class);
-        add(TakeRedRelation.class);
+        add(ColorPullRelation.class);
     }};
 
     public Map<Class,Integer> numPixelRelations = new IdentityHashMap<Class,Integer>() {{
         put(ColorCopyRelation.class, defaultDimension.width*defaultDimension.height);
         put(ColorAssimilationRelation.class, defaultDimension.width*defaultDimension.height);
         put(ColorMoveRelation.class, defaultDimension.width*defaultDimension.height);
-        put(TakeRedRelation.class, defaultDimension.width*defaultDimension.height);
+        put(ColorPullRelation.class, defaultDimension.width*defaultDimension.height);
     }};
 
     // initialized by init()
