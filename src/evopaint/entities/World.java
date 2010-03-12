@@ -11,12 +11,10 @@ import evopaint.Relation;
 import evopaint.Relator;
 import evopaint.interfaces.IAttribute;
 import evopaint.attributes.ColorAttribute;
-import evopaint.attributes.PartnerSelectionAttribute;
 import evopaint.attributes.RelationsAttribute;
 import evopaint.attributes.PartsAttribute;
 import evopaint.attributes.SpacialAttribute;
 import evopaint.attributes.TemporalAttribute;
-import evopaint.matchers.RGBMatcher;
 import java.awt.Dimension;
 import java.awt.Point;
 import java.util.ArrayList;
@@ -36,7 +34,6 @@ import org.uncommons.maths.random.CellularAutomatonRNG;
  */
 public class World extends System {
 
-    private Dimension cachedDimension;
     private Map<Point, Entity> locationsToEntities;
     private Config configuration;
 
@@ -125,8 +122,8 @@ public class World extends System {
     }
 
     private Point clamp(Point p) {
-        int sizeX = this.cachedDimension.width;
-        int sizeY = this.cachedDimension.height;
+        int sizeX = this.configuration.defaultDimension.width;
+        int sizeY = this.configuration.defaultDimension.height;
 
         while (p.x < 0) {
             p.x += sizeX;
@@ -148,8 +145,8 @@ public class World extends System {
      * fills the world with colorless, corporeal entities (think: space-slots)
      */
     private void clear() {
-        for (int y = 0; y < this.cachedDimension.height; y++) {
-            for (int x = 0; x < this.cachedDimension.width; x++) {
+        for (int y = 0; y < this.configuration.defaultDimension.height; y++) {
+            for (int x = 0; x < this.configuration.defaultDimension.width; x++) {
                 Point origin = new Point(x, y);
                 Dimension dimension = new Dimension(1, 1);
                 SpacialAttribute spacialAttribute = new SpacialAttribute(origin, dimension);
@@ -168,8 +165,8 @@ public class World extends System {
                         new IdentityHashMap<Class, IAttribute>();
 
                 Point origin = new Point(
-                        this.cachedDimension.width / 2 - this.configuration.initialPopulationX / 2 + x,
-                        this.cachedDimension.height / 2 - this.configuration.initialPopulationY / 2 + y);
+                        this.configuration.defaultDimension.width / 2 - this.configuration.initialPopulationX / 2 + x,
+                        this.configuration.defaultDimension.height / 2 - this.configuration.initialPopulationY / 2 + y);
                 Dimension dimension = new Dimension(1, 1);
                 attributesForEntity.put(SpacialAttribute.class, new SpacialAttribute(origin, dimension));
 
@@ -328,7 +325,6 @@ public class World extends System {
         this.attributes.put(SpacialAttribute.class, sa);
         this.attributes.put(TemporalAttribute.class, ta);
         this.locationsToEntities = new HashMap<Point, Entity>();
-        this.cachedDimension = sa.getDimension();
         this.configuration = configuration;
     }
 }
