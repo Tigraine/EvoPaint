@@ -6,13 +6,20 @@
 package evopaint.gui;
 
 import evopaint.Config;
+import evopaint.EvoPaint;
 import evopaint.Manifest;
 import evopaint.gui.MainFrame;
 import evopaint.util.Logger;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
+
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -23,9 +30,11 @@ import java.net.URISyntaxException;
  */
 public class MenuBar extends JMenuBar {
     private final MainFrame mainFrame;
+    private EvoPaint evopaint;
 
-    public MenuBar(MainFrame parentFrame) {
+    public MenuBar(MainFrame parentFrame, final EvoPaint evopaint) {
         this.mainFrame = parentFrame;
+        this.evopaint = evopaint;
 
         // File Menu
         JMenu fileMenu = new JMenu();
@@ -49,9 +58,12 @@ public class MenuBar extends JMenuBar {
         loadItem.setText("Load");
         fileMenu.add(loadItem);
 
+        fileMenu.add(loadItem);
+
         JMenuItem exportItem = new JMenuItem();
         exportItem.setText("Export");
         fileMenu.add(exportItem);
+        exportItem.addActionListener(new ExportDialog(parentFrame, evopaint));
 
         JMenuItem exitItem = new JMenuItem();
         exitItem.setText("Exit");

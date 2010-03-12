@@ -42,7 +42,7 @@ public class MainFrame extends JFrame {
 
         this.toolMenu = new ToolMenu(this);
         this.showcase = new Showcase(this, evopaint);
-        this.menuBar = new MenuBar(this);
+        this.menuBar = new MenuBar(this, evopaint);
 
         initializeCommands(evopaint);
 
