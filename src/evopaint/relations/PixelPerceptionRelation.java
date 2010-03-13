@@ -54,7 +54,7 @@ public class PixelPerceptionRelation extends Relation {
         }
 
         // else this thing is not to be percieved
-        ppa.setPixel(0xFFFFFFFF, sab.getOrigin()); // TODO configurable background color
+        ppa.setPixel(0xFF000000, sab.getOrigin()); // TODO configurable background color
         return true;
     }
 
