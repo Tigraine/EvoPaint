@@ -5,28 +5,27 @@
 
 package evopaint;
 
-import evopaint.attributes.PartnerSelectionAttribute;
-import evopaint.attributes.SpacialAttribute;
+import evopaint.pixel.attributes.PartnerSelectionAttribute;
+import evopaint.entities.Pixel;
 import evopaint.entities.World;
 import evopaint.interfaces.IRandomNumberGenerator;
+import evopaint.interfaces.IRelation;
 import java.awt.Point;
 
 /**
  *
  * @author tam
  */
-public abstract class Relation {
-    protected Entity a;
-    protected Entity b;
+public abstract class PixelRelation implements IRelation {
+    protected Pixel a;
+    protected Pixel b;
     protected static int radiusOfInfluence = 1;
 
-    public abstract boolean relate(IRandomNumberGenerator rng);
+    public abstract boolean relate(Config configuration, IRandomNumberGenerator rng);
     
     public void reset(World world, IRandomNumberGenerator rng) {
-        SpacialAttribute sa = (SpacialAttribute) world.getAttribute(SpacialAttribute.class);
-        assert(sa != null);
-        Point location = rng.nextLocation(sa.getDimension());
-        this.a = world.locationToEntity(location);
+        Point location = rng.nextLocation(world.getDimension());
+        this.a = world.locationToPixel(location);
         this.resetB(world, rng);
     }
 
@@ -35,29 +34,27 @@ public abstract class Relation {
         PartnerSelectionAttribute psa =
                 (PartnerSelectionAttribute) this.a.getAttribute(PartnerSelectionAttribute.class);
         if (psa != null) {
-            this.b = psa.findPartner(world, a, radiusOfInfluence, rng);
+            this.b = psa.findPartner(world, this.a, radiusOfInfluence, rng);
         } else {
             // else choose B from A's environment
-            SpacialAttribute sa = (SpacialAttribute) this.a.getAttribute(SpacialAttribute.class);
-            assert (sa != null);
-            Point newLocation = new Point(sa.getOrigin());
+            Point newLocation = new Point(a.getLocation());
 
             // TODO: points close to A need a quadratically higher chance
             // to be chosen
             newLocation.translate(rng.nextPositiveInt(2*radiusOfInfluence+1) - radiusOfInfluence,
                     rng.nextPositiveInt(2*radiusOfInfluence+1) - radiusOfInfluence);
-            this.b = world.locationToEntity(newLocation);
+            this.b = world.locationToPixel(newLocation);
         }
     }
 
-    public void setA(Entity a) {
+    public void setA(Pixel a) {
         this.a = a;
     }
 
-    public Relation(Entity a, Entity b) {
+    public PixelRelation(Pixel a, Pixel b) {
         this.a = a;
         this.b = b;
     }
 
-    public Relation() {}
+    public PixelRelation() {}
 }

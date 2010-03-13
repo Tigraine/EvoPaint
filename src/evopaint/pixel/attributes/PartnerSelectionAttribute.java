@@ -3,16 +3,13 @@
  * and open the template in the editor.
  */
 
-package evopaint.attributes;
+package evopaint.pixel.attributes;
 
-import evopaint.Config;
-import evopaint.Entity;
+import evopaint.entities.Pixel;
 import evopaint.entities.World;
 import evopaint.interfaces.IAttribute;
 import evopaint.interfaces.IMatcher;
 import evopaint.interfaces.IRandomNumberGenerator;
-import evopaint.util.Log;
-import evopaint.util.Logger;
 
 import java.awt.Point;
 import java.util.ArrayList;
@@ -27,18 +24,11 @@ public class PartnerSelectionAttribute implements IAttribute {
     private float minScore;
     private float maxScore;
 
-    public Entity findPartner(World world, Entity us, int radius, IRandomNumberGenerator rng) {
+    public Pixel findPartner(World world, Pixel us, int radius, IRandomNumberGenerator rng) {
 
-        // check if we exist in space
-        SpacialAttribute sa = (SpacialAttribute) us.getAttribute(SpacialAttribute.class);
-        if (sa == null) {
-            Logger.log.information("cannot find partner (we have no spacial means) %s", this);
-            return null;
-        }
-
-        // get the possible matches from the environment of our entity
-        List<Entity> environment = new ArrayList<Entity>((2*radius+1)*(2*radius+1)-1);
-        Point loc = sa.getOrigin();
+        // get the possible matches from the environment of our pixel
+        List<Pixel> environment = new ArrayList<Pixel>((2*radius+1)*(2*radius+1)-1);
+        Point loc = us.getLocation();
         for (int y = loc.y - radius; y <= loc.y + radius; y++) {
             for (int x = loc.x - radius; x <= loc.x + radius; x++) {
 
@@ -47,14 +37,14 @@ public class PartnerSelectionAttribute implements IAttribute {
                     continue;
                 }
 
-                environment.add(world.locationToEntity(new Point(x, y)));
+                environment.add(world.locationToPixel(new Point(x, y)));
             }
         }
 
         // scan the environment for good matches
-        List<Entity> winners = new ArrayList<Entity>();
+        List<Pixel> winners = new ArrayList<Pixel>();
         float highestScore = 0.0f;
-        for (Entity candidate : environment) {
+        for (Pixel candidate : environment) {
             float score = this.matcher.match(us, candidate);
             if (score >= highestScore && score >= minScore && score <= maxScore) {
                 if (score > highestScore) {

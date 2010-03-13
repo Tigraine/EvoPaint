@@ -5,12 +5,12 @@
 
 package evopaint.interfaces;
 
-import evopaint.entities.Pixel;
+import evopaint.Config;
 
 /**
  *
  * @author tam
  */
-public interface IMatcher {
-    public float match(Pixel a, Pixel b);
+public interface IRelation {
+    public boolean relate(Config configuration, IRandomNumberGenerator rng);
 }

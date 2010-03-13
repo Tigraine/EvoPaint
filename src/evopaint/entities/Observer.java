@@ -5,27 +5,30 @@
 
 package evopaint.entities;
 
-import evopaint.*;
-import evopaint.attributes.PixelPerceptionAttribute;
-import evopaint.interfaces.IAttribute;
+import evopaint.Perception;
 import java.awt.image.BufferedImage;
-import java.util.IdentityHashMap;
+import java.util.List;
 
 /**
  *
  * @author tam
  */
-public class Observer extends Entity {
+public class Observer {
+    private Perception perception;
 
-    public BufferedImage getPerception() {
-        PixelPerceptionAttribute ppa = (PixelPerceptionAttribute) this.attributes.get(PixelPerceptionAttribute.class);
-        assert (ppa != null);
-        return ppa.getPerception();
+    public void percieve(System system) {
+        List<Pixel> pixels = system.getPixels();
+        for (Pixel pixel : pixels) {
+            this.perception.setPixel(pixel.getColor(), pixel.getLocation());
+        }
     }
 
-    public Observer(IdentityHashMap<Class, IAttribute> attributes, PixelPerceptionAttribute pixelPerceptionAttribute) {
-        super(attributes);
-        this.attributes.put(PixelPerceptionAttribute.class, (IAttribute)pixelPerceptionAttribute);
+    public BufferedImage getPerception() {
+        return this.perception.getImage();
+    }
+
+    public Observer(Perception perception) {
+        this.perception = perception;
     }
 
 

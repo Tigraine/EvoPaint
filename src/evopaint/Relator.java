@@ -16,15 +16,15 @@ import java.util.List;
 public class Relator extends Thread {
 
     private World world;
-    private List<Relation> myShare;
+    private List<PixelRelation> myShare;
     private IRandomNumberGenerator rng;
     private final Config configuration;
 
     @Override
     public void run() {
         // relate anything related (pun intended)
-        for (Relation relation : this.myShare) {
-            if (!relation.relate(this.rng)) {
+        for (PixelRelation relation : this.myShare) {
+            if (!relation.relate(this.configuration, this.rng)) {
                 if (configuration.oneRelationPerEntity == true) {
                     relation.resetB(this.world, this.rng);
                 } else {
@@ -34,7 +34,7 @@ public class Relator extends Thread {
         }
     }
 
-    public Relator(World world, List<Relation> myShare, IRandomNumberGenerator rng, Config configuration) {
+    public Relator(World world, List<PixelRelation> myShare, IRandomNumberGenerator rng, Config configuration) {
         this.world = world;
         this.myShare = myShare;
         this.rng = rng;

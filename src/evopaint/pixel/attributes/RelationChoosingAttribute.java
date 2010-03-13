@@ -3,7 +3,7 @@
  * and open the template in the editor.
  */
 
-package evopaint.attributes;
+package evopaint.pixel.attributes;
 
 import evopaint.Config;
 import evopaint.RandomNumberGeneratorWrapper;

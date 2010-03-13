@@ -1,6 +1,6 @@
 package evopaint.util.objectrenderers;
 
-import evopaint.Entity;
+import evopaint.entities.Pixel;
 import evopaint.interfaces.IObjectRenderer;
 
 /**
@@ -10,14 +10,14 @@ import evopaint.interfaces.IObjectRenderer;
  * Time: 17:27:22
  * To change this template use File | Settings | File Templates.
  */
-public class VerboseEntityRenderer implements IObjectRenderer {
+public class VerbosePixelRenderer implements IObjectRenderer {
     public String render(Object object) {
-        Entity entity = (Entity) object;
+        Pixel pixel = (Pixel) object;
         String ret = object.getClass().getSimpleName() + "{";
-            for (Class attributeType : entity.getAttributes().keySet()) {
+            for (Class attributeType : pixel.getAttributes().keySet()) {
                 ret += attributeType.getSimpleName();
                 ret += "=";
-                ret += entity.getAttributes().get(attributeType);
+                ret += pixel.getAttributes().get(attributeType);
                 ret += ",";
             }
             ret = ret.substring(0, ret.length() - 1);

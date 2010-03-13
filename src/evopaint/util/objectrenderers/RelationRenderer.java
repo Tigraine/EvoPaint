@@ -1,6 +1,6 @@
 package evopaint.util.objectrenderers;
 
-import evopaint.Relation;
+import evopaint.PixelRelation;
 import evopaint.interfaces.IObjectRenderer;
 
 /**
@@ -12,7 +12,7 @@ import evopaint.interfaces.IObjectRenderer;
  */
 public class RelationRenderer implements IObjectRenderer {
     public String render(Object object) {
-        Relation relation = (Relation) object;
+        PixelRelation relation = (PixelRelation) object;
         return "(" + relation.hashCode() + ")";
     }
 }

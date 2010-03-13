@@ -4,21 +4,15 @@
  */
 package evopaint;
 
-import evopaint.interfaces.IRandomNumberGenerator;
-import evopaint.relations.pixel.ColorAssimilationRelation;
-import evopaint.relations.pixel.ColorCopyRelation;
-import evopaint.relations.pixel.ColorMoveRelation;
-import evopaint.relations.pixel.ColorPullRelation;
+import evopaint.pixel.relations.ColorAssimilationRelation;
+import evopaint.pixel.relations.ColorCopyRelation;
+import evopaint.pixel.relations.ColorMoveRelation;
+import evopaint.pixel.relations.ColorPullRelation;
 import java.util.ArrayList;
 import java.util.IdentityHashMap;
 import java.util.Map;
 
-import evopaint.util.Logger;
 import java.awt.Dimension;
-import org.uncommons.maths.random.CellularAutomatonRNG;
-import org.uncommons.maths.random.DefaultSeedGenerator;
-import org.uncommons.maths.random.SeedException;
-import org.uncommons.maths.random.SeedGenerator;
 
 /**
  *
@@ -26,11 +20,12 @@ import org.uncommons.maths.random.SeedGenerator;
  */
 public class Config {
 
-    public final Dimension defaultDimension = new Dimension(100,100);
-    public final int initialPopulationX = 50;
-    public final int initialPopulationY = 50;
+    public final Dimension defaultDimension = new Dimension(200,200);
+    public final int initialPopulationX = 150;
+    public final int initialPopulationY = 150;
     public final int stepsPerRendering = 1;
     public final int numRelationThreads = 1;
+    public final int backgroundColor = 0xFF000000;
 
     // if true, this option will override each and every setting for how
     // many relations of what type are used and run exactly one of each avtive
@@ -39,9 +34,7 @@ public class Config {
 
     //public static final double mutationRate = 0.0;
 
-    public Config() {
-        initRNG();
-    }
+    public Config() {}
 
     public ArrayList<Class> pixelRelationTypes = new ArrayList<Class>() {{
         add(ColorCopyRelation.class);
@@ -56,34 +49,6 @@ public class Config {
         put(ColorMoveRelation.class, defaultDimension.width*defaultDimension.height);
         put(ColorPullRelation.class, defaultDimension.width*defaultDimension.height);
     }};
-
-    // initialized by init()
-    public IRandomNumberGenerator randomNumberGenerator;
-
-    private void initRNG() {
-        // Random, SecureRandom, AESCounterRNG, CellularAutomatonRNG,
-        // CMWC4096RNG, JavaRNG, MersenneTwisterRNG, XORShiftRNG
-
-        // default seed size for cellularAutomatonRNG is 4 bytes;
-        int seed_size_bytes = 4;
-
-        // set fixed seed or null for generation
-        byte [] seed = null;
-       // byte [] seed = new byte [] { 1, 2, 3, 4 };
-
-        // default seed generator checks some different approaches and will
-        // always succeed
-        if (seed == null) {
-            SeedGenerator sg = DefaultSeedGenerator.getInstance();
-            try {
-                seed = sg.generateSeed(4);
-            } catch (SeedException e) {
-                Logger.log.error("got seed exception from default seed generator. this should not have happened.");
-                java.lang.System.exit(1);
-            }
-        }
-        randomNumberGenerator = new RandomNumberGeneratorWrapper(new CellularAutomatonRNG(seed));
-    }
 
     /*
     TODO: Talk through with TAM

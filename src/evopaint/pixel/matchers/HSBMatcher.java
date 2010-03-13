@@ -3,10 +3,9 @@
  * and open the template in the editor.
  */
 
-package evopaint.matchers;
+package evopaint.pixel.matchers;
 
-import evopaint.Entity;
-import evopaint.attributes.ColorAttribute;
+import evopaint.entities.Pixel;
 import evopaint.interfaces.IMatcher;
 
 /**
@@ -14,15 +13,10 @@ import evopaint.interfaces.IMatcher;
  * @author tam
  */
 public class HSBMatcher implements IMatcher {
-    public float match(Entity a, Entity b) {
-        ColorAttribute caa = (ColorAttribute) a.getAttribute(ColorAttribute.class);
-        ColorAttribute cab = (ColorAttribute) b.getAttribute(ColorAttribute.class);
-        if (caa == null || cab == null) {
-            return -1;
-        }
-
-        float [] c1hsb = caa.getHSB();
-        float [] c2hsb = cab.getHSB();
+    public float match(Pixel a, Pixel b) {
+       
+        float [] c1hsb = a.getHSB();
+        float [] c2hsb = b.getHSB();
 
         float deltaSum = 0;
         for (int i = 0; i < 3; i++) {

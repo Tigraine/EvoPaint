@@ -5,20 +5,14 @@
 package evopaint.entities;
 
 import evopaint.Config;
-import evopaint.Entity;
 import evopaint.RandomNumberGeneratorWrapper;
-import evopaint.Relation;
+import evopaint.PixelRelation;
 import evopaint.Relator;
 import evopaint.interfaces.IAttribute;
-import evopaint.attributes.ColorAttribute;
-import evopaint.attributes.RelationsAttribute;
-import evopaint.attributes.PartsAttribute;
-import evopaint.attributes.SpacialAttribute;
-import evopaint.attributes.TemporalAttribute;
+import evopaint.interfaces.IRandomNumberGenerator;
 import java.awt.Dimension;
 import java.awt.Point;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.IdentityHashMap;
@@ -27,6 +21,9 @@ import java.util.Map;
 
 import evopaint.util.Logger;
 import org.uncommons.maths.random.CellularAutomatonRNG;
+import org.uncommons.maths.random.DefaultSeedGenerator;
+import org.uncommons.maths.random.SeedException;
+import org.uncommons.maths.random.SeedGenerator;
 
 /**
  *
@@ -34,50 +31,35 @@ import org.uncommons.maths.random.CellularAutomatonRNG;
  */
 public class World extends System {
 
-    private Map<Point, Entity> locationsToEntities;
+    private Dimension dimension;
+    private Map<Point, Pixel> locationsToPixel;
     private Config configuration;
+    private long time;
+    private IRandomNumberGenerator randomNumberGenerator;
 
-    public void init() {
-        this.clear();
+    public Dimension getDimension() {
+        return dimension;
+    }
+
+    private void init() {
+        this.initRNG();
         this.createEntities();
         this.createRelations();
     }
 
-    public Entity locationToEntity(Point location) {
-        return this.locationsToEntities.get(this.clamp(location));
+    public Pixel locationToPixel(Point location) {
+        return this.locationsToPixel.get(this.clamp(location));
     }
 
-    @Override
-    public void add(Entity entity) {
-        super.add(entity);
-
-        // if an entity consists of parts, we might want to add them
-        PartsAttribute partsAttribute = (PartsAttribute) entity.getAttribute(PartsAttribute.class);
-        if (partsAttribute != null) {
-            // add its parts recursively
-            Collection<Entity> parts = partsAttribute.getParts();
-            for (Entity part : parts) {
-                this.add(part);
-            }
-        }
-
-        // can only add entities which have spacial means
-        SpacialAttribute spacialAttribute = (SpacialAttribute) entity.getAttribute(SpacialAttribute.class);
-        if (spacialAttribute == null) {
-            return;
-        }
-
-        Entity target = this.locationToEntity(spacialAttribute.getOrigin());
-
+    public void add(Pixel pixel) {
+        Pixel target = (Pixel)this.locationToPixel(pixel.getLocation());
         if (target != null) {
-            ColorAttribute cat = (ColorAttribute) target.getAttribute(ColorAttribute.class);
-            if (cat != null) {
-                java.lang.System.err.println("ERROR: Occupied location chosen for adding (Space.java) " + spacialAttribute.getOrigin().x + "/" + spacialAttribute.getOrigin().y);
-                java.lang.System.exit(1);
-            }
+            java.lang.System.out.println("there is already a pixel at this position");
+            java.lang.System.exit(1);
         }
-
-        this.locationsToEntities.put(spacialAttribute.getOrigin(), entity);
+        
+        this.pixels.add(pixel);
+        this.locationsToPixel.put(pixel.getLocation(), pixel);
         return;
     }
 
@@ -85,40 +67,33 @@ public class World extends System {
      * resets the entity in the location-entity translation table to be empty
      * removes the entity from the system
      *
-     * @param entity entity to be removed
+     * @param pixel entity to be removed
      */
     @Override
-    public void remove(Entity entity) {
-        SpacialAttribute sa = (SpacialAttribute) entity.getAttribute(SpacialAttribute.class);
-        assert(sa != null);
-        entity.getAttributes().clear();
-        entity.setAttribute(SpacialAttribute.class, sa);
-        //super.remove(entity);
+    public void remove(Pixel pixel) {
+        pixel.setColor(configuration.backgroundColor);
     }
 
     public void step() {
 
-        // get time and relations
-        TemporalAttribute ta = (TemporalAttribute) this.attributes.get(TemporalAttribute.class);
-        RelationsAttribute ra = (RelationsAttribute) this.attributes.get(RelationsAttribute.class);
-
-        if (ta == null || ra == null) {
-            java.lang.System.out.println("We accidently the whole world");
-            java.lang.System.exit(1);
+        if (time == Long.MAX_VALUE) {
+            java.lang.System.out.println("time overflowed");
         }
-
-        Logger.log.information("Time: %s, Relations: %s", new Object[]{ta, ra.getRelations().size()});
-
-        ta.increaseTime();
-        List<Relation> relations = ra.getRelations();
-
-        Collections.shuffle(relations, this.configuration.randomNumberGenerator.getRandom());
+ 
+        Logger.log.information("Time: %s, Relations: %s", new Object[]{time, this.relations.size()});
+       
+        Collections.shuffle(this.relations, this.randomNumberGenerator.getRandom());
 
         if (this.configuration.numRelationThreads > 1) {
-            this.parallel(relations);
+            this.parallel();
         } else {
-            this.serial(relations);
+            this.serial();
         }
+
+        this.time++;
+        //if (this.time == 200) {
+        //    java.lang.System.exit(0);
+        //}
     }
 
     private Point clamp(Point p) {
@@ -140,52 +115,32 @@ public class World extends System {
         return p;
     }
 
-
-    /**
-     * fills the world with colorless, corporeal entities (think: space-slots)
-     */
-    private void clear() {
-        for (int y = 0; y < this.configuration.defaultDimension.height; y++) {
-            for (int x = 0; x < this.configuration.defaultDimension.width; x++) {
-                Point origin = new Point(x, y);
-                Dimension dimension = new Dimension(1, 1);
-                SpacialAttribute spacialAttribute = new SpacialAttribute(origin, dimension);
-                IdentityHashMap<Class,IAttribute> attributesForEntity = new IdentityHashMap<Class,IAttribute>();
-                attributesForEntity.put(SpacialAttribute.class,spacialAttribute);
-                Entity entity = new Entity(attributesForEntity);
-                this.add(entity);
-            }
-        }
-    }
-
     private void createEntities() {
         for (int y = 0; y < this.configuration.defaultDimension.height; y++) {
             for (int x = 0; x < this.configuration.defaultDimension.width; x++) {
-                IdentityHashMap<Class, IAttribute> attributesForEntity =
+                IdentityHashMap<Class, IAttribute> attributesForPixel =
                         new IdentityHashMap<Class, IAttribute>();
 
                 Point origin = new Point(
                         this.configuration.defaultDimension.width / 2 - this.configuration.initialPopulationX / 2 + x,
                         this.configuration.defaultDimension.height / 2 - this.configuration.initialPopulationY / 2 + y);
-                Dimension dimension = new Dimension(1, 1);
-                attributesForEntity.put(SpacialAttribute.class, new SpacialAttribute(origin, dimension));
 
-                this.add(new Entity(attributesForEntity));
+                int color = this.configuration.backgroundColor;
+                this.add(new Pixel(color, origin, attributesForPixel));
             }
         }
 
         for (int y = 0; y < this.configuration.initialPopulationY; y++) {
             for (int x = 0; x < this.configuration.initialPopulationX; x++) {
 
-                int color = this.configuration.randomNumberGenerator.nextPositiveInt();
-                IdentityHashMap<Class, IAttribute> attributesForEntity =
-                        locationToEntity(new Point(x+this.configuration.defaultDimension.width/2-this.configuration.initialPopulationX/2,
-                        y+this.configuration.defaultDimension.height/2-this.configuration.initialPopulationY/2)).getAttributes();
+                int color = this.randomNumberGenerator.nextPositiveInt();
+                Pixel pixie = (Pixel)
+                        locationToPixel(new Point(x+this.configuration.defaultDimension.width/2-this.configuration.initialPopulationX/2,
+                        y+this.configuration.defaultDimension.height/2-this.configuration.initialPopulationY/2));
+               pixie.setColor(color);
 
-                attributesForEntity.put(ColorAttribute.class, new ColorAttribute(color));
 
-
-                //attributesForEntity.put(PartnerSelectionAttribute.class,
+                //attributesForPixel.put(PartnerSelectionAttribute.class,
                  //       new PartnerSelectionAttribute(new RGBMatcher(), 0.1f, 0.9f));
             }
         }
@@ -200,22 +155,13 @@ public class World extends System {
     }
 
     private void createOneRelationPerEntity() {
-        RelationsAttribute ra = (RelationsAttribute) this.attributes.get(RelationsAttribute.class);
-        if (ra == null) {
-            java.lang.System.out.println("We accidently the whole world");
-            java.lang.System.exit(1);
-        }
-
-        PartsAttribute pa = (PartsAttribute) this.attributes.get(PartsAttribute.class);
-        List<Entity> entities = pa.getParts();
-
         try {
             for (Class pixelRelationType : this.configuration.pixelRelationTypes) {
-                for (Entity e : entities) {
-                    Relation r = (Relation) pixelRelationType.newInstance();
-                    r.setA(e);
-                    r.resetB(this, this.configuration.randomNumberGenerator);
-                    ra.getRelations().add(r);
+                for (Pixel p : this.pixels) {
+                    PixelRelation r = (PixelRelation) pixelRelationType.newInstance();
+                    r.setA(p);
+                    r.resetB(this, this.randomNumberGenerator);
+                    this.relations.add(r);
                 }
             }
         } catch (InstantiationException e) {
@@ -228,19 +174,13 @@ public class World extends System {
     }
 
     private void createRandomRelations() {
-        RelationsAttribute ra = (RelationsAttribute) this.attributes.get(RelationsAttribute.class);
-        if (ra == null) {
-            java.lang.System.out.println("We accidently the whole world");
-            java.lang.System.exit(1);
-        }
-
         try {
             for (Class pixelRelationType : this.configuration.pixelRelationTypes) {
                 int numRels = this.configuration.numPixelRelations.get(pixelRelationType);
                 for (int i = 0; i < numRels; i++) {
-                    Relation r = (Relation) pixelRelationType.newInstance();
-                    r.reset(this, this.configuration.randomNumberGenerator);
-                    ra.getRelations().add(r);
+                    PixelRelation r = (PixelRelation) pixelRelationType.newInstance();
+                    r.reset(this, this.randomNumberGenerator);
+                    this.relations.add(r);
                 }
             }
         } catch (InstantiationException e) {
@@ -252,28 +192,28 @@ public class World extends System {
         }
     }
 
-    private void serial(List<Relation> relations) {
-        for (Relation relation : relations) {
-            if (!relation.relate(this.configuration.randomNumberGenerator)) {
+    private void serial() {
+        for (PixelRelation relation : this.relations) {
+            if (!relation.relate(this.configuration, this.randomNumberGenerator)) {
                 if (this.configuration.oneRelationPerEntity == true) {
-                    relation.resetB(this, this.configuration.randomNumberGenerator);
+                    relation.resetB(this, this.randomNumberGenerator);
                 } else {
-                    relation.reset(this, this.configuration.randomNumberGenerator);
+                    relation.reset(this, this.randomNumberGenerator);
                 }
             }
         }
     }
 
-    private void parallel(List<Relation> relations) {
-        List<List<Relation>> partitionedRelations = this.partition(relations, this.configuration.numRelationThreads);
+    private void parallel() {
+        List<List<PixelRelation>> partitionedRelations = this.partition(this.relations, this.configuration.numRelationThreads);
 
         // make threads
         List<Thread> relatorThreads = new ArrayList<Thread>();
-        for (List<Relation> part : partitionedRelations) {
+        for (List<PixelRelation> part : partitionedRelations) {
 
             // get random seed out of our rng
             byte [] seed = new byte[4];
-            this.configuration.randomNumberGenerator.getRandom().nextBytes(seed);
+            this.randomNumberGenerator.getRandom().nextBytes(seed);
 
             // and seed a new rng for each thread, so they can do random shit in
             // a well defined order (without race conditions on the main rng)
@@ -293,9 +233,9 @@ public class World extends System {
         }
     }
 
-    private List<List<Relation>> partition(List<Relation> relations, int numChunks) {
+    private List<List<PixelRelation>> partition(List<PixelRelation> relations, int numChunks) {
 
-        List<List<Relation>> ret = new ArrayList<List<Relation>>();
+        List<List<PixelRelation>> ret = new ArrayList<List<PixelRelation>>();
 
         int chunkSize = relations.size() / numChunks;
         int rest = relations.size() % numChunks;
@@ -319,12 +259,44 @@ public class World extends System {
         return configuration;
     }
 
-    public World(IdentityHashMap<Class, IAttribute> attributes, PartsAttribute pa,
-            RelationsAttribute ra, SpacialAttribute sa, TemporalAttribute ta, Config configuration) {
-        super(attributes, pa, ra);
-        this.attributes.put(SpacialAttribute.class, sa);
-        this.attributes.put(TemporalAttribute.class, ta);
-        this.locationsToEntities = new HashMap<Point, Entity>();
+    private void initRNG() {
+        // Random, SecureRandom, AESCounterRNG, CellularAutomatonRNG,
+        // CMWC4096RNG, JavaRNG, MersenneTwisterRNG, XORShiftRNG
+
+        // default seed size for cellularAutomatonRNG is 4 bytes;
+        int seed_size_bytes = 4;
+
+        // set fixed seed or null for generation
+        byte [] seed = null;
+       // byte [] seed = new byte [] { 1, 2, 3, 4 };
+
+        // default seed generator checks some different approaches and will
+        // always succeed
+        if (seed == null) {
+            SeedGenerator sg = DefaultSeedGenerator.getInstance();
+            try {
+                seed = sg.generateSeed(4);
+            } catch (SeedException e) {
+                Logger.log.error("got seed exception from default seed generator. this should not have happened.");
+                java.lang.System.exit(1);
+            }
+        }
+        randomNumberGenerator = new RandomNumberGeneratorWrapper(new CellularAutomatonRNG(seed));
+    }
+
+    public IRandomNumberGenerator getRandomNumberGenerator() {
+        return randomNumberGenerator;
+    }
+
+
+    public World(List<Pixel> pixels, List<PixelRelation> relations, Dimension dimension, long time, Config configuration) {
+        super(pixels, relations);
+        this.dimension = dimension;
+        this.time = time;
+        //this.attributes.put(SpacialAttribute.class, sa);
+        //this.attributes.put(TemporalAttribute.class, ta);
+        this.locationsToPixel = new HashMap<Point, Pixel>();
         this.configuration = configuration;
+        this.init();
     }
 }

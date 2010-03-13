@@ -1,11 +1,11 @@
 package evopaint.util;
 
-import evopaint.Entity;
-import evopaint.Relation;
-import evopaint.util.objectrenderers.EntityRenderer;
+import evopaint.PixelRelation;
+import evopaint.entities.Pixel;
+import evopaint.util.objectrenderers.PixelRenderer;
 import evopaint.util.objectrenderers.ExceptionRenderer;
 import evopaint.util.objectrenderers.RelationRenderer;
-import evopaint.util.objectrenderers.VerboseEntityRenderer;
+import evopaint.util.objectrenderers.VerbosePixelRenderer;
 
 /**
  * Created by IntelliJ IDEA.
@@ -26,12 +26,12 @@ public class Logger {
     private static void initLogger(int logLevel, int logVerbosity) {
         log = new ConsoleLog(logLevel);
         if (logVerbosity == Log.Verbosity.VERBOSEVERBOSE) {
-            log.addRenderer(Entity.class, new VerboseEntityRenderer());
+            log.addRenderer(Pixel.class, new VerbosePixelRenderer());
         }
         else {
-            log.addRenderer(Entity.class, new EntityRenderer());
+            log.addRenderer(Pixel.class, new PixelRenderer());
         }
-        log.addRenderer(Relation.class, new RelationRenderer());
+        log.addRenderer(PixelRelation.class, new RelationRenderer());
         log.addRenderer(Exception.class, new ExceptionRenderer());
     }
 }

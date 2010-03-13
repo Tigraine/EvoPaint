@@ -5,18 +5,12 @@
 
 package evopaint;
 
-import evopaint.attributes.PartsAttribute;
-import evopaint.attributes.PixelPerceptionAttribute;
-import evopaint.attributes.RelationsAttribute;
-import evopaint.attributes.SpacialAttribute;
-import evopaint.attributes.TemporalAttribute;
 import evopaint.entities.Observer;
+import evopaint.entities.Pixel;
 import evopaint.entities.World;
 import evopaint.gui.MainFrame;
 import evopaint.interfaces.IAttribute;
-import evopaint.relations.PixelPerceptionRelation;
 import java.awt.Dimension;
-import java.awt.Point;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.IdentityHashMap;
@@ -27,7 +21,6 @@ import java.util.List;
  * @author tam
  */
 public class EvoPaint {
-    private PixelPerceptionRelation perception;
     private World world;
     private Observer observer;
     private boolean running = true;
@@ -38,27 +31,17 @@ public class EvoPaint {
         this.configuration = new Config();
 
         // create empty world
-        List<Entity> parts = new ArrayList<Entity>();
-        PartsAttribute pa = new PartsAttribute(parts);
-
-        List<Relation> relations = new ArrayList<Relation>();
-        RelationsAttribute ra = new RelationsAttribute(relations);
-        SpacialAttribute sa = new SpacialAttribute(new Point(0, 0), new Dimension(configuration.defaultDimension));
-        TemporalAttribute ta = new TemporalAttribute(0);
-        this.world = new World(new IdentityHashMap<Class, IAttribute>(), pa,
-                ra, sa, ta, configuration);
-        this.world.init();
+        List<Pixel> pixels = new ArrayList<Pixel>();
+        List<PixelRelation> relations = new ArrayList<PixelRelation>();
+        Dimension dimension = new Dimension(configuration.defaultDimension);
+        long time =0;
+        this.world = new World(pixels, relations, dimension, time, configuration);
 
         // create observer
-        PixelPerceptionAttribute ppa = new PixelPerceptionAttribute(
-                sa.getDimension().width, sa.getDimension().height, BufferedImage.TYPE_INT_ARGB);
-        this.observer = new Observer(new IdentityHashMap<Class, IAttribute>(),
-                ppa);
-
-        // observe the world
-        this.perception = new PixelPerceptionRelation(observer, world);
-        boolean ret = this.perception.relate(configuration.randomNumberGenerator);
-        assert (ret);
+        Perception perception = new Perception(
+                dimension.width, dimension.height, BufferedImage.TYPE_INT_ARGB);
+        this.observer = new Observer(perception);
+        this.observer.percieve(this.world);
 
         this.frame = new MainFrame(this);
     }
@@ -76,9 +59,7 @@ public class EvoPaint {
             this.world.step();
               
             if (i % stepsPerRendering == 0) {
-               boolean ret = this.perception.relate(configuration.randomNumberGenerator);
-               assert (ret);
-               //this.frame.getShowcase().repaint(); // causes flickering cause painting is delayed until the image is being reconstructed
+               this.observer.percieve(this.world);
                this.frame.getShowcase().paintImmediately(0, 0, this.frame.getShowcase().getWidth(), this.frame.getShowcase().getHeight());
                i = 0;
             }

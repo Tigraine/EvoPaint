@@ -1,18 +1,12 @@
 package evopaint.commands;
 
-import evopaint.Config;
-import evopaint.Entity;
-import evopaint.attributes.ColorAttribute;
-import evopaint.attributes.SpacialAttribute;
+import evopaint.entities.Pixel;
 import evopaint.entities.World;
-import evopaint.interfaces.IAttribute;
 import evopaint.util.Logger;
 
-import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.NoninvertibleTransformException;
-import java.util.IdentityHashMap;
 
 public class PaintCommand extends AbstractCommand {
     private World world;
@@ -64,11 +58,11 @@ public class PaintCommand extends AbstractCommand {
                 Point point = new Point(this.location.x + i, this.location.y + j);
 
 
-                IdentityHashMap<Class,IAttribute> newAttributes = new IdentityHashMap<Class,IAttribute>();
-                newAttributes.put(ColorAttribute.class, new ColorAttribute(0xFFFF0000));
-                newAttributes.put(SpacialAttribute.class, new SpacialAttribute(point, new Dimension(1,1)));
-                Entity entity = this.world.locationToEntity(point);
-                entity.setAttributes(newAttributes);
+               // IdentityHashMap<Class,IAttribute> newAttributes = new IdentityHashMap<Class,IAttribute>();
+                //newAttributes.put(ColorAttribute.class, new ColorAttribute(0xFFFF0000));
+                //newAttributes.put(SpacialAttribute.class, new SpacialAttribute(point, new Dimension(1,1)));
+                Pixel pixie = this.world.locationToPixel(point);
+                pixie.setColor(0xFFFF0000);
             }
         }
     }

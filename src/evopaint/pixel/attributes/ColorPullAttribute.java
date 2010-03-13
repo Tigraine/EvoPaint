@@ -3,21 +3,23 @@
  * and open the template in the editor.
  */
 
-package evopaint.attributes;
+package evopaint.pixel.attributes;
 
-import evopaint.Config;
-import evopaint.Entity;
+import evopaint.entities.Pixel;
 import evopaint.interfaces.IAttribute;
-import evopaint.util.Log;
-import java.util.Collection;
 import java.util.List;
 
 /**
  *
  * @author tam
  */
-public class PartsAttribute implements IAttribute {
-    private List<Entity> parts;
+public class ColorPullAttribute implements IAttribute {
+   // private boolean chooseNearest
+    public static final int BY_DIRECTION = 0;
+    public static final int BY_COLOR = 1;
+    public static final int DIRECTION = 0;
+
+
 
     @Override
     public String toString() {
@@ -39,11 +41,7 @@ public class PartsAttribute implements IAttribute {
         return ret;
     }
 
-    public List<Entity> getParts() {
-        return parts;
-    }
-
-    public PartsAttribute(List<Entity> parts) {
-        this.parts = parts;
+    public ColorPullAttribute(List<Pixel> parts) {
+        //this.parts = parts;
     }
 }
