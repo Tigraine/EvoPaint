@@ -10,8 +10,7 @@ import evopaint.PixelRelation;
 import evopaint.Relator;
 import evopaint.interfaces.IAttribute;
 import evopaint.interfaces.IRandomNumberGenerator;
-import evopaint.pixel.attributes.PartnerSelectionAttribute;
-import evopaint.pixel.matchers.RGBMatcher;
+import evopaint.pixel.attributes.NeuronalAttribute;
 import java.awt.Dimension;
 import java.awt.Point;
 import java.util.ArrayList;
@@ -34,7 +33,7 @@ public class World extends System {
     private Dimension dimension;
     private Config configuration;
     private long time;
-    private IRandomNumberGenerator randomNumberGenerator;
+    private IRandomNumberGenerator rng;
 
     public Dimension getDimension() {
         return dimension;
@@ -71,7 +70,7 @@ public class World extends System {
  
         Logger.log.information("Time: %s, Relations: %s", new Object[]{time, this.relations.size()});
        
-        Collections.shuffle(this.relations, this.randomNumberGenerator.getRandom());
+        Collections.shuffle(this.relations, this.rng.getRandom());
 
         if (this.configuration.numRelationThreads > 1) {
             this.parallel();
@@ -113,7 +112,7 @@ public class World extends System {
         for (int y = 0; y < this.configuration.initialPopulationY; y++) {
             for (int x = 0; x < this.configuration.initialPopulationX; x++) {
 
-                int color = this.randomNumberGenerator.nextPositiveInt();
+                int color = this.rng.nextPositiveInt();
                 Point location = new Point(
                         this.configuration.defaultDimension.width / 2 - this.configuration.initialPopulationX / 2 + x,
                         this.configuration.defaultDimension.height / 2 - this.configuration.initialPopulationY / 2 + y);
@@ -124,6 +123,10 @@ public class World extends System {
                         
                 //pixie.getAttributes().put(PartnerSelectionAttribute.class,
                   //      new PartnerSelectionAttribute(new RGBMatcher(), 0.1f, 0.9f));
+            
+                pixie.getAttributes().put(NeuronalAttribute.class,
+                        new NeuronalAttribute((short)this.rng.nextPositiveInt(256),
+                        (byte)this.rng.nextPositiveInt(3)));
             }
         }
     }
@@ -142,7 +145,7 @@ public class World extends System {
                 for (Pixel p : this.pixels) {
                     PixelRelation r = (PixelRelation) pixelRelationType.newInstance();
                     r.setA(p);
-                    r.resetB(this, this.randomNumberGenerator);
+                    r.resetB(this, this.rng);
                     this.relations.add(r);
                 }
             }
@@ -161,7 +164,7 @@ public class World extends System {
                 int numRels = this.configuration.numPixelRelations.get(pixelRelationType);
                 for (int i = 0; i < numRels; i++) {
                     PixelRelation r = (PixelRelation) pixelRelationType.newInstance();
-                    r.reset(this, this.randomNumberGenerator);
+                    r.reset(this, this.rng);
                     this.relations.add(r);
                 }
             }
@@ -176,11 +179,11 @@ public class World extends System {
 
     private void serial() {
         for (PixelRelation relation : this.relations) {
-            if (!relation.relate(this.configuration, this.randomNumberGenerator)) {
+            if (!relation.relate(this.configuration, this.rng)) {
                 if (this.configuration.oneRelationPerEntity == true) {
-                    relation.resetB(this, this.randomNumberGenerator);
+                    relation.resetB(this, this.rng);
                 } else {
-                    relation.reset(this, this.randomNumberGenerator);
+                    relation.reset(this, this.rng);
                 }
             }
         }
@@ -195,7 +198,7 @@ public class World extends System {
 
             // get random seed out of our rng
             byte [] seed = new byte[4];
-            this.randomNumberGenerator.getRandom().nextBytes(seed);
+            this.rng.getRandom().nextBytes(seed);
 
             // and seed a new rng for each thread, so they can do random shit in
             // a well defined order (without race conditions on the main rng)
@@ -263,11 +266,11 @@ public class World extends System {
                 java.lang.System.exit(1);
             }
         }
-        randomNumberGenerator = new RandomNumberGeneratorWrapper(new CellularAutomatonRNG(seed));
+        rng = new RandomNumberGeneratorWrapper(new CellularAutomatonRNG(seed));
     }
 
     public IRandomNumberGenerator getRandomNumberGenerator() {
-        return randomNumberGenerator;
+        return rng;
     }
 
     public World(List<Pixel> pixels, List<PixelRelation> relations, Dimension dimension, long time, Config configuration) {

@@ -4,9 +4,11 @@
  */
 package evopaint;
 
+import evopaint.pixel.attributes.NeuronalAttribute;
 import evopaint.pixel.relations.ColorAssimilationRelation;
 import evopaint.pixel.relations.ColorCopyRelation;
 import evopaint.pixel.relations.ColorMoveRelation;
+import evopaint.pixel.relations.SynapticRelation;
 import java.util.ArrayList;
 import java.util.IdentityHashMap;
 import java.util.Map;
@@ -36,9 +38,10 @@ public class Config {
     public Config() {}
 
     public ArrayList<Class> pixelRelationTypes = new ArrayList<Class>() {{
-        //add(ColorCopyRelation.class);
-        //add(ColorAssimilationRelation.class);
-        //add(ColorMoveRelation.class);
+        add(ColorCopyRelation.class);
+        add(ColorAssimilationRelation.class);
+        add(ColorMoveRelation.class);
+        add(SynapticRelation.class);
 
     }};
 
@@ -46,6 +49,7 @@ public class Config {
         put(ColorCopyRelation.class, defaultDimension.width*defaultDimension.height);
         put(ColorAssimilationRelation.class, defaultDimension.width*defaultDimension.height);
         put(ColorMoveRelation.class, defaultDimension.width*defaultDimension.height);
+        put(SynapticRelation.class, defaultDimension.width*defaultDimension.height);
     }};
 
     /*

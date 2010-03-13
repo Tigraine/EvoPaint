@@ -30,8 +30,8 @@ public class RandomNumberGeneratorWrapper implements IRandomNumberGenerator {
         return this.rng.nextInt(Integer.MAX_VALUE); // modul to prevent negative values
     }
 
-    public int nextPositiveInt(int maxValue) {
-        return this.rng.nextInt(maxValue);
+    public int nextPositiveInt(int modul) {
+        return this.rng.nextInt(modul);
     }
 
     public short nextBias() {
