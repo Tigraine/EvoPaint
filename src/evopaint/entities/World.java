@@ -11,6 +11,7 @@ import evopaint.Relator;
 import evopaint.interfaces.IAttribute;
 import evopaint.interfaces.IRandomNumberGenerator;
 import evopaint.pixel.attributes.NeuronalAttribute;
+import evopaint.pixel.attributes.RelationChoosingAttribute;
 import java.awt.Dimension;
 import java.awt.Point;
 import java.util.ArrayList;
@@ -41,7 +42,7 @@ public class World extends System {
 
     public void init() {
         this.initRNG();
-        this.createEntities();
+        this.createPixels();
         this.createRelations();
     }
 
@@ -100,13 +101,46 @@ public class World extends System {
         return p;
     }
 
-    private void createEntities() {
+    private void createPixels() {
         for (int i = 0; i < this.dimension.width * this.dimension.height; i++) {
             IdentityHashMap<Class, IAttribute> attributesForPixel =
                         new IdentityHashMap<Class, IAttribute>();
-                Point origin = new Point(i % this.dimension.width, i / this.dimension.width);
-                int color = this.configuration.backgroundColor;
-                this.pixels.add(new Pixel(color, origin, attributesForPixel));
+            Point origin = new Point(i % this.dimension.width, i / this.dimension.width);
+            int color = this.configuration.backgroundColor;
+            Pixel pixie = new Pixel(color, origin, attributesForPixel);
+
+            if (this.configuration.pixelRelationTypes.contains(NeuronalAttribute.class)) {
+                pixie.getAttributes().put(NeuronalAttribute.class,
+                        new NeuronalAttribute((short)this.rng.nextPositiveInt(256),
+                        (byte)this.rng.nextPositiveInt(3)));
+            }
+
+            if (this.configuration.pixelsChooseRelation && this.configuration.pixelsAct) {
+                RelationChoosingAttribute ra = new RelationChoosingAttribute();
+                for (Class relationType : this.configuration.pixelRelationTypes) {
+                    ra.learn(relationType);
+                }
+
+                try {
+                    PixelRelation r = (PixelRelation)ra.getFavoriteRelationType(rng).newInstance();
+                    r.setA(pixie);
+                    ra.setRelation(r);
+                } catch (InstantiationException e) {
+                    e.printStackTrace();
+                    java.lang.System.exit(1);
+                } catch (IllegalAccessException e) {
+                    e.printStackTrace();
+                    java.lang.System.exit(1);
+                }
+
+                pixie.getAttributes().put(RelationChoosingAttribute.class, ra);
+            }
+            
+                //pixie.getAttributes().put(PartnerSelectionAttribute.class,
+                  //      new PartnerSelectionAttribute(new RGBMatcher(), 0.1f, 0.9f));
+
+
+            this.pixels.add(pixie);
         }
 
         for (int y = 0; y < this.configuration.initialPopulationY; y++) {
@@ -120,26 +154,27 @@ public class World extends System {
 
                 Pixel pixie = locationToPixel(location);
                 pixie.setColor(color);
-                        
-                //pixie.getAttributes().put(PartnerSelectionAttribute.class,
-                  //      new PartnerSelectionAttribute(new RGBMatcher(), 0.1f, 0.9f));
-            
-                pixie.getAttributes().put(NeuronalAttribute.class,
-                        new NeuronalAttribute((short)this.rng.nextPositiveInt(256),
-                        (byte)this.rng.nextPositiveInt(3)));
             }
         }
     }
 
     private void createRelations() {
-        if (this.configuration.oneRelationPerEntity == true) {
-            this.createOneRelationPerEntity();
+        if (this.configuration.pixelsAct == true) {
+            if (this.configuration.pixelsChooseRelation == true) {
+               this.createRelationChoosingPixelsRelations();
+               return;
+            }
+            this.createActingPixelsRelations();
         } else {
             this.createRandomRelations();
         }
     }
 
-    private void createOneRelationPerEntity() {
+    private void createRelationChoosingPixelsRelations() {
+        
+    }
+
+    private void createActingPixelsRelations() {
         try {
             for (Class pixelRelationType : this.configuration.pixelRelationTypes) {
                 for (Pixel p : this.pixels) {
@@ -178,13 +213,37 @@ public class World extends System {
     }
 
     private void serial() {
-        for (PixelRelation relation : this.relations) {
-            if (!relation.relate(this.configuration, this.rng)) {
-                if (this.configuration.oneRelationPerEntity == true) {
-                    relation.resetB(this, this.rng);
+        if (this.configuration.pixelsChooseRelation == true) {
+            for (Pixel pixel : pixels) {
+                RelationChoosingAttribute ra = (RelationChoosingAttribute)
+                        pixel.getAttribute(RelationChoosingAttribute.class);
+                PixelRelation relation = ra.getRelation();
+
+                if (relation.relate(configuration, rng)) {
+                    ra.promote(relation.getClass());
                 } else {
-                    relation.reset(this, this.rng);
+                    ra.demote(relation.getClass());
                 }
+
+                ra.resetRelation(this, this.rng);
+            }
+
+            return;
+        }
+
+        if (this.configuration.pixelsAct == true) {
+            for (PixelRelation relation : this.relations) {
+                if (!relation.relate(this.configuration, this.rng)) {
+                    relation.resetB(this, this.rng);
+                }
+            }
+
+            return;
+        }
+        
+       for (PixelRelation relation : this.relations) {
+            if (!relation.relate(this.configuration, this.rng)) {
+                relation.reset(this, this.rng);
             }
         }
     }

@@ -25,7 +25,7 @@ public class Relator extends Thread {
         // relate anything related (pun intended)
         for (PixelRelation relation : this.myShare) {
             if (!relation.relate(this.configuration, this.rng)) {
-                if (configuration.oneRelationPerEntity == true) {
+                if (configuration.pixelsAct == true) {
                     relation.resetB(this.world, this.rng);
                 } else {
                     relation.reset(this.world, this.rng);

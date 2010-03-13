@@ -47,6 +47,10 @@ public abstract class PixelRelation implements IRelation {
         }
     }
 
+    public Pixel getA() {
+        return a;
+    }
+
     public void setA(Pixel a) {
         this.a = a;
     }

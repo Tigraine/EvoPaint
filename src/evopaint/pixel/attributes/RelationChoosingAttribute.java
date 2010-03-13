@@ -5,9 +5,12 @@
 
 package evopaint.pixel.attributes;
 
-import evopaint.Config;
-import evopaint.RandomNumberGeneratorWrapper;
+import evopaint.PixelRelation;
+import evopaint.entities.Pixel;
+import evopaint.entities.World;
+import evopaint.interfaces.IAttribute;
 import evopaint.interfaces.IRandomNumberGenerator;
+import evopaint.util.Logger;
 
 import java.util.IdentityHashMap;
 
@@ -15,8 +18,17 @@ import java.util.IdentityHashMap;
  *
  * @author tam
  */
-public class RelationChoosingAttribute {
+public class RelationChoosingAttribute implements IAttribute {
     private IdentityHashMap<Class, Short> biases;
+    private PixelRelation relation;
+
+    public PixelRelation getRelation() {
+        return relation;
+    }
+
+    public void setRelation(PixelRelation relation) {
+        this.relation = relation;
+    }
 
     @Override
     public String toString() {
@@ -43,17 +55,17 @@ public class RelationChoosingAttribute {
         }
 
         if (lastProbability != 1.0) {
-            System.err.println("it happened! please send a mail to tam@edu.uni-klu.ac.at"+lastProbability);
+            System.err.println("it happened! please send a mail to tam@edu.uni-klu.ac.at (" + lastProbability + ")");
             System.exit(1);
         }
 
-        System.err.println("ERROR: No Probability found, this should not happen (Strategy.java)");
+        System.err.println("ERROR: No Probability found, this should not happen (RelationChoosingAttribute.java)");
         System.exit(1);
         return null;
     }
 
     public void learn(Class relationType) {
-        this.biases.put(relationType, (short)1);
+        this.biases.put(relationType, (short)(Short.MAX_VALUE / 2));
     }
 
     public void forget(Class relationType) {
@@ -65,7 +77,7 @@ public class RelationChoosingAttribute {
 
         // lil check if we know this relation type at all
         if (biasO == null) {
-            System.err.println("WARNING: RelationCapabilityAttribute: Unable to promote " + relationType.getName() + ", because it is not known.");
+            Logger.log.warning("WARNING: RelationChoosingAttribute: Unable to promote " + relationType.getName() + ", because it is not known.");
             return;
         }
 
@@ -88,11 +100,36 @@ public class RelationChoosingAttribute {
     public void demote(Class relationType) {
         Short biasO = this.biases.get(relationType);
         if (biasO == null) {
-            System.err.println("WARNING: RelationCapabilityAttribute: Unable to demote " + relationType.getName() + ", because it is not known.");
+            Logger.log.warning("WARNING: RelationChoosingAttribute: Unable to demote " + relationType.getName() + ", because it is not known.");
             return;
         }
         short bias = biasO.shortValue();
-        this.biases.put(relationType, (short)Math.max(bias - 1, 0));
+        this.biases.put(relationType, (short)Math.max(bias - 1, 1));
     }
 
+    public void resetRelation(World world, IRandomNumberGenerator rng) {
+        Class chosenRelationType = getFavoriteRelationType(rng);
+
+        if (relation != null && relation.getClass() == chosenRelationType) {
+            relation.resetB(world, rng);
+            return;
+        }
+
+        try {
+            PixelRelation newRelation = (PixelRelation)chosenRelationType.newInstance();
+            newRelation.setA(relation.getA());
+            newRelation.resetB(world, rng);
+            relation = newRelation;
+        } catch (InstantiationException e) {
+            e.printStackTrace();
+            java.lang.System.exit(1);
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+            java.lang.System.exit(1);
+        }
+    }
+
+    public RelationChoosingAttribute() {
+        this.biases = new IdentityHashMap<Class, Short>();
+    }
 }

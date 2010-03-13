@@ -44,10 +44,4 @@ public class ColorCopyRelation extends PixelRelation {
         //Logger.log.information("relating %s", this);
         return true;
     }
-
-    public ColorCopyRelation(Pixel a, Pixel b) {
-        super(a, b);
-    }
-
-    public ColorCopyRelation() {}
 }
