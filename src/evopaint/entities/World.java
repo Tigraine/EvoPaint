@@ -12,6 +12,7 @@ import evopaint.interfaces.IAttribute;
 import evopaint.interfaces.IRandomNumberGenerator;
 import evopaint.pixel.attributes.NeuronalAttribute;
 import evopaint.pixel.attributes.RelationChoosingAttribute;
+import evopaint.pixel.relations.SynapticRelation;
 import java.awt.Dimension;
 import java.awt.Point;
 import java.util.ArrayList;
@@ -109,7 +110,7 @@ public class World extends System {
             int color = this.configuration.backgroundColor;
             Pixel pixie = new Pixel(color, origin, attributesForPixel);
 
-            if (this.configuration.pixelRelationTypes.contains(NeuronalAttribute.class)) {
+            if (this.configuration.pixelRelationTypes.contains(SynapticRelation.class)) {
                 pixie.getAttributes().put(NeuronalAttribute.class,
                         new NeuronalAttribute((short)this.rng.nextPositiveInt(256),
                         (byte)this.rng.nextPositiveInt(3)));
