@@ -15,8 +15,8 @@ import evopaint.interfaces.IMatcher;
 public class RGBMatcher implements IMatcher {
     public float match(Pixel a, Pixel b) {
 
-        short [] c1argb = a.getARGB();
-        short [] c2argb = b.getARGB();
+        short [] c1argb = a.getRGB();
+        short [] c2argb = b.getRGB();
 
         int deltaSum = 0;
         for (int i = 1; i < 4; i++) {

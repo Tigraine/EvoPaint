@@ -21,18 +21,16 @@ public class ColorCopyRelation extends PixelRelation {
 
     public boolean relate(Config configuration, IRandomNumberGenerator rng) {
 
+        if (    this.b == null || // b needs to exist
+                a.getColor() == configuration.backgroundColor || // a shall not be empty
+                b.getColor() == a.getColor() // and the colors shall be distinct
+                ) {
+            return false;
+        }
+
         // a and b need to stay within a maximum distance to each other
         Point locationA = a.getLocation();
         Point locationB = b.getLocation();
-
-
-        // now let us get to copying colors, therefore a needs a color
-        //ColorAttribute ca = (ColorAttribute) a.getAttribute(ColorAttribute.class);
-        if (a.getColor() == configuration.backgroundColor) {
-
-            //Logger.log.information("invalid relation (A has no color) %s", this);
-            return false;
-        }
 
         b.setColor(a.getColor());
     

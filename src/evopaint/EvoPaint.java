@@ -36,11 +36,10 @@ public class EvoPaint {
         Dimension dimension = new Dimension(configuration.defaultDimension);
         long time =0;
         this.world = new World(pixels, relations, dimension, time, configuration);
-        this.world.init();
         
         // create observer
         Perception perception = new Perception(
-                dimension.width, dimension.height, BufferedImage.TYPE_INT_ARGB);
+                dimension.width, dimension.height, BufferedImage.TYPE_INT_RGB);
         this.observer = new Observer(perception);
         this.observer.percieve(this.world);
 

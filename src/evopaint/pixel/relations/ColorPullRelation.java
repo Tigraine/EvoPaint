@@ -17,32 +17,42 @@ public class ColorPullRelation extends PixelRelation {
 
     @Override
     public boolean relate(Config configuration, IRandomNumberGenerator rng) {
-        if (this.b.getColor() == configuration.backgroundColor) {
+
+        if (    this.b == null || // b must exist
+                this.b.getColor() == configuration.backgroundColor || // and not be empty
+                this.a.getColor() == configuration.backgroundColor // just as a
+                ) {
             return false;
         }
 
-        short [] caARGB = a.getARGB();
-        short [] cbARGB = b.getARGB();
-        
+        short [] aRGB = a.getRGB();
+        short [] bRGB = b.getRGB();
+
+
         int index = 0;
-        short min = caARGB[index];
-        for (int i = 1; i <= 3; i++) {
-            if (caARGB[i] < min) {
-                min = caARGB[i];
+        short min = aRGB[index];
+        for (int i = 1; i < 3; i++) {
+            if (aRGB[i] < min) {
+                min = aRGB[i];
                 index = i;
+            } else if (aRGB[i] == min) {
+                if (rng.nextBoolean()) {
+                    min = aRGB[i];
+                    index = i;
+                }
             }
         }
 
-        short missing = (short)(0xFF - caARGB[index]);
-        short available = cbARGB[index] > missing ? missing : cbARGB[index];
+        short missing = (short)(0xFF - aRGB[index]);
+        short available = bRGB[index] > missing ? missing : bRGB[index];
 
-        caARGB[index] = (short)(caARGB[index] + available);
-        cbARGB[index] = (short)(cbARGB[index] - available);
+        aRGB[index] = (short)(aRGB[index] + available);
+        bRGB[index] = (short)(bRGB[index] - available);
 
-        a.setARGB(caARGB);
-        b.setARGB(cbARGB);
+        a.setRGB(aRGB);
+        b.setRGB(bRGB);
 
-        return false;
+        return true;
     }
 
 }

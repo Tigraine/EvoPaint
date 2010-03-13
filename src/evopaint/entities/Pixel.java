@@ -35,17 +35,18 @@ public class Pixel {
         this.location = location;
     }
 
-    public short [] getARGB() {
-        short [] ret = new short[4];
-        ret[0] = (short) ((this.color >> 24) & 0xFF);
-        ret[1] = (short) ((this.color >> 16) & 0xFF);
-        ret[2] = (short) ((this.color >> 8) & 0xFF);
-        ret[3] = (short) (this.color & 0xFF);
+    public short [] getRGB() {
+        short [] ret = new short[3];
+        //ret[0] = (short) ((this.color >> 24) & 0xFF);
+        ret[0] = (short) ((this.color >> 16) & 0xFF);
+        ret[1] = (short) ((this.color >> 8) & 0xFF);
+        ret[2] = (short) (this.color & 0xFF);
         return ret;
     }
 
-    public void setARGB(short [] argb) {
-        this.color = 0 | argb[0] << 24 | argb[1] << 16 | argb[2] << 8 | argb[3];
+    public void setRGB(short [] argb) {
+        this.color = 0 | argb[0] << 16 | argb[1] << 8 | argb[2];
+        //this.color = 0 | argb[0] << 24 | argb[1] << 16 | argb[2] << 8 | argb[3];
     }
 
     public float [] getHSB() {
@@ -76,7 +77,7 @@ public class Pixel {
     }
 
     public Pixel(int color, Point location, IdentityHashMap<Class, IAttribute> attributes) {
-        this.color = color;
+        this.color = 0 & color;
         this.location = location;
         this.attributes = attributes;
     }

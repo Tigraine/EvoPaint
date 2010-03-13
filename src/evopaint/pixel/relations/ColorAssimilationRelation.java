@@ -18,21 +18,18 @@ import java.awt.Color;
 public class ColorAssimilationRelation extends PixelRelation {
 
     public boolean relate(Config configuration, IRandomNumberGenerator rng) {
-        if (this.b.getColor() == configuration.backgroundColor) {
-            //Logger.log.information("relation invalid (no partner) %s", this);
-            return false;
-        }
-
-        // if the color already is the same, we might want to use this relation elsewhere
-        if (a.getColor() == b.getColor()) {
-            //Logger.log.information("relation invalid (target has same color) A={%s}, B={%s}", this.a, this.b);
+        if (    this.b == null || // b needs to exist
+                this.b.getColor() == configuration.backgroundColor || // and be not empty
+                this.a.getColor() == configuration.backgroundColor || // as well as a
+                a.getColor() == b.getColor() // and colors shall be distinct
+                ) {
             return false;
         }
 
         // mix A's colors into B
         b.setColor(this.hsbMix(a, b, 0.5f)); // XXX there is some hard coding right here
         //Logger.log.information("relating %s", this);
-        return true;
+        return false;
     }
 
     private int hsbMix(Pixel p1, Pixel p2, float shareOfC1) {

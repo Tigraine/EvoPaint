@@ -25,7 +25,7 @@ public class Config {
     public final int initialPopulationY = 150;
     public final int stepsPerRendering = 1;
     public final int numRelationThreads = 1;
-    public final int backgroundColor = 0xFF000000;
+    public final int backgroundColor = 0 & 0x000000;
 
     // if true, this option will override each and every setting for how
     // many relations of what type are used and run exactly one of each avtive

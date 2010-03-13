@@ -10,14 +10,14 @@ import evopaint.PixelRelation;
 import evopaint.Relator;
 import evopaint.interfaces.IAttribute;
 import evopaint.interfaces.IRandomNumberGenerator;
+import evopaint.pixel.attributes.PartnerSelectionAttribute;
+import evopaint.pixel.matchers.RGBMatcher;
 import java.awt.Dimension;
 import java.awt.Point;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.IdentityHashMap;
 import java.util.List;
-import java.util.Map;
 
 import evopaint.util.Logger;
 import org.uncommons.maths.random.CellularAutomatonRNG;
@@ -32,7 +32,6 @@ import org.uncommons.maths.random.SeedGenerator;
 public class World extends System {
 
     private Dimension dimension;
-    //private Map<Point, Pixel> locationsToPixel;
     private Config configuration;
     private long time;
     private IRandomNumberGenerator randomNumberGenerator;
@@ -48,9 +47,7 @@ public class World extends System {
     }
 
     public Pixel locationToPixel(Point location) {
-        //return this.locationsToPixel.get(this.clamp(location));
         Point loc = (this.clamp(location));
-        //java.lang.System.out.println("" + loc.x + " " + loc.y + " " + this.dimension.width);
         return this.pixels.get(this.dimension.width * loc.y + loc.x);
     }
 
@@ -62,6 +59,7 @@ public class World extends System {
      */
     @Override
     public void remove(Pixel pixel) {
+        pixel.getAttributes().clear();
         pixel.setColor(configuration.backgroundColor);
     }
 
@@ -82,9 +80,6 @@ public class World extends System {
         }
 
         this.time++;
-        if (this.time == 200) {
-            java.lang.System.exit(0);
-        }
     }
 
     private Point clamp(Point p) {
@@ -127,8 +122,8 @@ public class World extends System {
                 Pixel pixie = locationToPixel(location);
                 pixie.setColor(color);
                         
-                //attributesForPixel.put(PartnerSelectionAttribute.class,
-                 //       new PartnerSelectionAttribute(new RGBMatcher(), 0.1f, 0.9f));
+                //pixie.getAttributes().put(PartnerSelectionAttribute.class,
+                  //      new PartnerSelectionAttribute(new RGBMatcher(), 0.1f, 0.9f));
             }
         }
     }
@@ -275,16 +270,11 @@ public class World extends System {
         return randomNumberGenerator;
     }
 
-
     public World(List<Pixel> pixels, List<PixelRelation> relations, Dimension dimension, long time, Config configuration) {
         super(pixels, relations);
         this.dimension = dimension;
         this.time = time;
-        //this.attributes.put(SpacialAttribute.class, sa);
-        //this.attributes.put(TemporalAttribute.class, ta);
-       // this.locationsToPixel = new HashMap<Point, Pixel>();
         this.configuration = configuration;
-        //this.pixelArray = new Pixel[this.configuration.defaultDimension.width * this.configuration.defaultDimension.height];
-        //this.init();
+        this.init();
     }
 }
