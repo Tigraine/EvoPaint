@@ -32,7 +32,7 @@ import org.uncommons.maths.random.SeedGenerator;
 public class World extends System {
 
     private Dimension dimension;
-    private Map<Point, Pixel> locationsToPixel;
+    //private Map<Point, Pixel> locationsToPixel;
     private Config configuration;
     private long time;
     private IRandomNumberGenerator randomNumberGenerator;
@@ -41,26 +41,17 @@ public class World extends System {
         return dimension;
     }
 
-    private void init() {
+    public void init() {
         this.initRNG();
         this.createEntities();
         this.createRelations();
     }
 
     public Pixel locationToPixel(Point location) {
-        return this.locationsToPixel.get(this.clamp(location));
-    }
-
-    public void add(Pixel pixel) {
-        Pixel target = (Pixel)this.locationToPixel(pixel.getLocation());
-        if (target != null) {
-            java.lang.System.out.println("there is already a pixel at this position");
-            java.lang.System.exit(1);
-        }
-        
-        this.pixels.add(pixel);
-        this.locationsToPixel.put(pixel.getLocation(), pixel);
-        return;
+        //return this.locationsToPixel.get(this.clamp(location));
+        Point loc = (this.clamp(location));
+        //java.lang.System.out.println("" + loc.x + " " + loc.y + " " + this.dimension.width);
+        return this.pixels.get(this.dimension.width * loc.y + loc.x);
     }
 
     /**
@@ -91,9 +82,9 @@ public class World extends System {
         }
 
         this.time++;
-        //if (this.time == 200) {
-        //    java.lang.System.exit(0);
-        //}
+        if (this.time == 200) {
+            java.lang.System.exit(0);
+        }
     }
 
     private Point clamp(Point p) {
@@ -116,30 +107,26 @@ public class World extends System {
     }
 
     private void createEntities() {
-        for (int y = 0; y < this.configuration.defaultDimension.height; y++) {
-            for (int x = 0; x < this.configuration.defaultDimension.width; x++) {
-                IdentityHashMap<Class, IAttribute> attributesForPixel =
+        for (int i = 0; i < this.dimension.width * this.dimension.height; i++) {
+            IdentityHashMap<Class, IAttribute> attributesForPixel =
                         new IdentityHashMap<Class, IAttribute>();
-
-                Point origin = new Point(
-                        this.configuration.defaultDimension.width / 2 - this.configuration.initialPopulationX / 2 + x,
-                        this.configuration.defaultDimension.height / 2 - this.configuration.initialPopulationY / 2 + y);
-
+                Point origin = new Point(i % this.dimension.width, i / this.dimension.width);
                 int color = this.configuration.backgroundColor;
-                this.add(new Pixel(color, origin, attributesForPixel));
-            }
+                this.pixels.add(new Pixel(color, origin, attributesForPixel));
         }
 
         for (int y = 0; y < this.configuration.initialPopulationY; y++) {
             for (int x = 0; x < this.configuration.initialPopulationX; x++) {
 
                 int color = this.randomNumberGenerator.nextPositiveInt();
-                Pixel pixie = (Pixel)
-                        locationToPixel(new Point(x+this.configuration.defaultDimension.width/2-this.configuration.initialPopulationX/2,
-                        y+this.configuration.defaultDimension.height/2-this.configuration.initialPopulationY/2));
-               pixie.setColor(color);
+                Point location = new Point(
+                        this.configuration.defaultDimension.width / 2 - this.configuration.initialPopulationX / 2 + x,
+                        this.configuration.defaultDimension.height / 2 - this.configuration.initialPopulationY / 2 + y);
 
 
+                Pixel pixie = locationToPixel(location);
+                pixie.setColor(color);
+                        
                 //attributesForPixel.put(PartnerSelectionAttribute.class,
                  //       new PartnerSelectionAttribute(new RGBMatcher(), 0.1f, 0.9f));
             }
@@ -295,8 +282,9 @@ public class World extends System {
         this.time = time;
         //this.attributes.put(SpacialAttribute.class, sa);
         //this.attributes.put(TemporalAttribute.class, ta);
-        this.locationsToPixel = new HashMap<Point, Pixel>();
+       // this.locationsToPixel = new HashMap<Point, Pixel>();
         this.configuration = configuration;
-        this.init();
+        //this.pixelArray = new Pixel[this.configuration.defaultDimension.width * this.configuration.defaultDimension.height];
+        //this.init();
     }
 }

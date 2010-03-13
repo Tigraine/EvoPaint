@@ -4,9 +4,7 @@
  */
 package evopaint.entities;
 
-import evopaint.interfaces.IAttribute;
 import evopaint.PixelRelation;
-import java.util.IdentityHashMap;
 import java.util.List;
 
 /**
