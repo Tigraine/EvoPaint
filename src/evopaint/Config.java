@@ -7,7 +7,6 @@ package evopaint;
 import evopaint.pixel.relations.ColorAssimilationRelation;
 import evopaint.pixel.relations.ColorCopyRelation;
 import evopaint.pixel.relations.ColorMoveRelation;
-import evopaint.pixel.relations.ColorPullRelation;
 import java.util.ArrayList;
 import java.util.IdentityHashMap;
 import java.util.Map;
@@ -37,17 +36,16 @@ public class Config {
     public Config() {}
 
     public ArrayList<Class> pixelRelationTypes = new ArrayList<Class>() {{
-        add(ColorCopyRelation.class);
-        add(ColorAssimilationRelation.class);
-        add(ColorMoveRelation.class);
-        add(ColorPullRelation.class);
+        //add(ColorCopyRelation.class);
+        //add(ColorAssimilationRelation.class);
+        //add(ColorMoveRelation.class);
+
     }};
 
     public Map<Class,Integer> numPixelRelations = new IdentityHashMap<Class,Integer>() {{
         put(ColorCopyRelation.class, defaultDimension.width*defaultDimension.height);
         put(ColorAssimilationRelation.class, defaultDimension.width*defaultDimension.height);
         put(ColorMoveRelation.class, defaultDimension.width*defaultDimension.height);
-        put(ColorPullRelation.class, defaultDimension.width*defaultDimension.height);
     }};
 
     /*
