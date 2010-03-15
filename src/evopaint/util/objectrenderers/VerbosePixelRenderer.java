@@ -13,15 +13,7 @@ import evopaint.interfaces.IObjectRenderer;
 public class VerbosePixelRenderer implements IObjectRenderer {
     public String render(Object object) {
         Pixel pixel = (Pixel) object;
-        String ret = object.getClass().getSimpleName() + "{";
-            for (Class attributeType : pixel.getAttributes().keySet()) {
-                ret += attributeType.getSimpleName();
-                ret += "=";
-                ret += pixel.getAttributes().get(attributeType);
-                ret += ",";
-            }
-            ret = ret.substring(0, ret.length() - 1);
-            ret += "}";
+        String ret = object.getClass().getSimpleName();
         return ret;
     }
 }

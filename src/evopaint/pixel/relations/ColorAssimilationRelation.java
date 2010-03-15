@@ -19,22 +19,22 @@ public class ColorAssimilationRelation extends PixelRelation {
 
     public boolean relate(Config configuration, IRandomNumberGenerator rng) {
         if (    this.b == null || // b needs to exist
-                this.b.getColor() == configuration.backgroundColor || // and be not empty
-                this.a.getColor() == configuration.backgroundColor || // as well as a
-                a.getColor() == b.getColor() // and colors shall be distinct
+                this.b.getColorAttribute().getColor() == configuration.backgroundColor || // and be not empty
+                this.a.getColorAttribute().getColor() == configuration.backgroundColor || // as well as a
+                a.getColorAttribute().getColor() == b.getColorAttribute().getColor() // and colors shall be distinct
                 ) {
             return false;
         }
 
         // mix A's colors into B
-        b.setColor(this.hsbMix(a, b, 0.5f)); // XXX there is some hard coding right here
+        b.getColorAttribute().setColor(this.hsbMix(a, b, 0.5f)); // XXX there is some hard coding right here
         //Logger.log.information("relating %s", this);
         return false;
     }
 
     private int hsbMix(Pixel p1, Pixel p2, float shareOfC1) {
-        float[] c1hsb = p1.getHSB();
-        float[] c2hsb = p2.getHSB();
+        float[] c1hsb = p1.getColorAttribute().getHSB();
+        float[] c2hsb = p2.getColorAttribute().getHSB();
         float[] mixhsb = new float[3];
 
         mixhsb[0] = mixCyclic(c1hsb[0], c2hsb[0], shareOfC1);

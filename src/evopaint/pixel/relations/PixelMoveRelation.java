@@ -22,7 +22,8 @@ public class PixelMoveRelation extends ColorMoveRelation {
             return false;
         }
 
-        b.setAttributes(a.getAttributes());
+       // a.setLocation(b.getLocation());
+       // a.clear();
 
         return true;
     }

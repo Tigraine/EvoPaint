@@ -15,8 +15,8 @@ import evopaint.interfaces.IMatcher;
 public class HSBMatcher implements IMatcher {
     public float match(Pixel a, Pixel b) {
        
-        float [] c1hsb = a.getHSB();
-        float [] c2hsb = b.getHSB();
+        float [] c1hsb = a.getColorAttribute().getHSB();
+        float [] c2hsb = b.getColorAttribute().getHSB();
 
         float deltaSum = 0;
         for (int i = 0; i < 3; i++) {

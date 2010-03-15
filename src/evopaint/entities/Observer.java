@@ -19,7 +19,7 @@ public class Observer {
     public void percieve(System system) {
         List<Pixel> pixels = system.getPixels();
         for (Pixel pixel : pixels) {
-            this.perception.setPixel(pixel.getColor(), pixel.getLocation());
+            this.perception.setPixel(pixel.getColorAttribute().getColor(), pixel.getLocation());
         }
     }
 

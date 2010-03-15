@@ -31,8 +31,7 @@ public abstract class PixelRelation implements IRelation {
 
     public void resetB(World world, IRandomNumberGenerator rng) {
         // if A has the ability to select its own partner, do it
-        PartnerSelectionAttribute psa =
-                (PartnerSelectionAttribute) this.a.getAttribute(PartnerSelectionAttribute.class);
+        PartnerSelectionAttribute psa = this.a.getPartnerSelectionAttribute();
         if (psa != null) {
             this.b = psa.findPartner(world, this.a, radiusOfInfluence, rng);
         } else {

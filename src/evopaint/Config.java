@@ -22,7 +22,7 @@ import java.awt.Dimension;
  */
 public class Config {
 
-    public final Dimension defaultDimension = new Dimension(150,150);
+    public final Dimension defaultDimension = new Dimension(250,250);
     public final int initialPopulationX = 100;
     public final int initialPopulationY = 100;
     public final int stepsPerRendering = 1;
@@ -47,8 +47,8 @@ public class Config {
         add(ColorAssimilationRelation.class);
         add(ColorMoveRelation.class);
         add(SynapticRelation.class);
-        add(PixelCopyRelation.class);
-        add(PixelMoveRelation.class);
+        //add(PixelCopyRelation.class);
+        //add(PixelMoveRelation.class);
     }};
 
     public Map<Class,Integer> numPixelRelations = new IdentityHashMap<Class,Integer>() {{

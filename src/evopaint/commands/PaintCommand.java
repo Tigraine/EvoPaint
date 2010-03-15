@@ -62,7 +62,7 @@ public class PaintCommand extends AbstractCommand {
                 //newAttributes.put(ColorAttribute.class, new ColorAttribute(0xFFFF0000));
                 //newAttributes.put(SpacialAttribute.class, new SpacialAttribute(point, new Dimension(1,1)));
                 Pixel pixie = this.world.locationToPixel(point);
-                pixie.setColor(0xFFFF0000);
+                pixie.getColorAttribute().setColor(0xFFFF0000);
             }
         }
     }
