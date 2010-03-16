@@ -6,10 +6,8 @@ package evopaint.pixel.relations;
 
 import evopaint.Config;
 import evopaint.PixelRelation;
-import evopaint.entities.Pixel;
 import evopaint.interfaces.IRandomNumberGenerator;
 
-import java.awt.Color;
 
 /**
  *
@@ -27,62 +25,10 @@ public class ColorAssimilationRelation extends PixelRelation {
         }
 
         // mix A's colors into B
-        b.getColorAttribute().setColor(this.hsbMix(a, b, 0.5f)); // XXX there is some hard coding right here
-        //Logger.log.information("relating %s", this);
-        return false;
+        b.getColorAttribute().mixInHSB(a.getColorAttribute(), 0.5f); // XXX there is some hard coding right here
+
+        return true;
     }
 
-    private int rgbMix(Pixel p1, Pixel p2) {
-        short [] c1rgb = p1.getColorAttribute().getRGB();
-        short [] c2rgb = p2.getColorAttribute().getRGB();
-        short [] mixrgb = new short[3];
-
-        for (int i = 0; i < 3; i++)
-            mixrgb[i] = (short)(Math.min(c1rgb[i], c2rgb[i]) + Math.abs(c1rgb[i] - c2rgb[i]) / 2);
-
-        return 0 | mixrgb[0] << 16 | mixrgb[1] << 8 | mixrgb[2];
-    }
-
-    private int hsbMix(Pixel p1, Pixel p2, float shareOfC1) {
-        float[] c1hsb = p1.getColorAttribute().getHSB();
-        float[] c2hsb = p2.getColorAttribute().getHSB();
-        float[] mixhsb = new float[3];
-
-        mixhsb[0] = mixCyclic(c1hsb[0], c2hsb[0], shareOfC1);
-        mixhsb[1] = mixLinear(c1hsb[1], c2hsb[1], shareOfC1);
-        mixhsb[2] = mixLinear(c1hsb[2], c2hsb[2], shareOfC1);
-
-        return Color.HSBtoRGB(mixhsb[0], mixhsb[1], mixhsb[2]);
-    }
-
-    private float mixCyclic(float a, float b, float shareOfA) {
-        float ret = 0.0f;
-        float min = Math.min(a, b);
-        float delta = Math.abs(a - b);
-        boolean isWrapped = false;
-        if (delta > 1 - delta) {
-            isWrapped = true;
-            delta = 1 - delta;
-        }
-        if (min == a) {
-            ret = isWrapped ? min - delta * (1 - shareOfA) : min + delta * (1 - shareOfA);
-        } else {
-            ret = isWrapped ? min - delta * shareOfA : min + delta * shareOfA;
-        }
-        if (ret < 0) {
-            ret = ret + 1;
-        }
-        return ret;
-    }
-
-    private float mixLinear(float a, float b, float shareOfA) {
-        float min = Math.min(a, b);
-        float delta = Math.abs(a - b);
-
-        if (min == a) {
-            return min + delta * (1 - shareOfA);
-        } else {
-            return min + delta * shareOfA;
-        }
-    }
+    
 }
