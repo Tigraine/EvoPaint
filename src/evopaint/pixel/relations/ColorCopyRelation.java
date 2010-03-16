@@ -34,12 +34,6 @@ public class ColorCopyRelation extends PixelRelation {
 
         b.getColorAttribute().setColor(a.getColorAttribute().getColor());
     
-        // if a has means of being responsible for the relations invoked on it,
-        // let us promote this relation since it was successful (law of lazyness)
-        RelationChoosingAttribute rca =a.getRelationChoosingAttribute();
-        if (rca != null) {
-            rca.promote(this.getClass());
-        }
 
         //Logger.log.information("relating %s", this);
         return true;
