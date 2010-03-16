@@ -15,22 +15,6 @@ public class System {
     protected List<Pixel> pixels;
     protected List<PixelRelation> relations;
 
-    public void add(Pixel pixel) {
-        this.pixels.add(pixel);
-    }
-
-    public void add(PixelRelation relation) {
-        this.relations.add(relation);
-    }
-
-    public void remove(Pixel pixel) {
-        this.pixels.remove(pixel);
-    }
-
-    public void remove(PixelRelation relation) {
-        this.relations.remove(relation);
-    }
-
     public List<Pixel> getPixels() {
         return pixels;
     }
