@@ -32,6 +32,17 @@ public class ColorAssimilationRelation extends PixelRelation {
         return false;
     }
 
+    private int rgbMix(Pixel p1, Pixel p2) {
+        short [] c1rgb = p1.getColorAttribute().getRGB();
+        short [] c2rgb = p2.getColorAttribute().getRGB();
+        short [] mixrgb = new short[3];
+
+        for (int i = 0; i < 3; i++)
+            mixrgb[i] = (short)(Math.min(c1rgb[i], c2rgb[i]) + Math.abs(c1rgb[i] - c2rgb[i]) / 2);
+
+        return 0 | mixrgb[0] << 16 | mixrgb[1] << 8 | mixrgb[2];
+    }
+
     private int hsbMix(Pixel p1, Pixel p2, float shareOfC1) {
         float[] c1hsb = p1.getColorAttribute().getHSB();
         float[] c2hsb = p2.getColorAttribute().getHSB();
