@@ -7,7 +7,7 @@ package evopaint.entities;
 
 import evopaint.Perception;
 import java.awt.image.BufferedImage;
-import java.util.List;
+import java.util.Collection;
 
 /**
  *
@@ -17,9 +17,11 @@ public class Observer {
     private Perception perception;
 
     public void percieve(System system) {
-        List<Pixel> pixels = system.getPixels();
+        Collection<Pixel> pixels = system.getPixels();
         for (Pixel pixel : pixels) {
-            this.perception.setPixel(pixel.getColorAttribute().getColor(), pixel.getSpacialAttribute());
+            this.perception.setPixel(pixel.getSpacialAttribute().getX(),
+                    pixel.getSpacialAttribute().getY(),
+                    pixel.getColorAttribute().getColor());
         }
     }
 

@@ -5,7 +5,6 @@
 
 package evopaint;
 
-import java.awt.Point;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
 
@@ -18,8 +17,8 @@ public class Perception {
     private BufferedImage image;
     private int[] internalImage;
 
-    public void setPixel(int color, Point origin) {
-        this.internalImage[origin.y * this.image.getWidth() + origin.x] = color;
+    public void setPixel(int x, int y, int color) {
+        this.internalImage[y * this.image.getWidth() + x] = color;
     }
 
     //public void clear() {

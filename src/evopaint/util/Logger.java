@@ -15,7 +15,7 @@ import evopaint.util.objectrenderers.VerbosePixelRenderer;
  * To change this template use File | Settings | File Templates.
  */
 public class Logger {
-    public static final int logLevel = LogLevel.ERROR;
+    public static final int logLevel = LogLevel.WARNING;
     public static final int logVerbosity = Log.Verbosity.VERBOSE;
     public static Log log = new ConsoleLog(logLevel);
 

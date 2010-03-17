@@ -28,16 +28,16 @@ public class PartnerSelectionAttribute implements IAttribute {
 
         // get the possible matches from the environment of our pixel
         List<Pixel> environment = new ArrayList<Pixel>((2*radius+1)*(2*radius+1)-1);
-        Point loc = us.getSpacialAttribute();
-        for (int y = loc.y - radius; y <= loc.y + radius; y++) {
-            for (int x = loc.x - radius; x <= loc.x + radius; x++) {
+        SpacialAttribute sa = us.getSpacialAttribute();
+        for (int y = sa.getY() - radius; y <= sa.getY() + radius; y++) {
+            for (int x = sa.getX() - radius; x <= sa.getX() + radius; x++) {
 
                 // skip self
-                if (x == loc.x && y == loc.y) {
+                if (x == sa.getX() && y == sa.getY()) {
                     continue;
                 }
 
-                environment.add(world.locationToPixel(new Point(x, y)));
+                environment.add(world.getPixels().get(x, y));
             }
         }
 

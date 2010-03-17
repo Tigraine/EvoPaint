@@ -10,6 +10,7 @@ import evopaint.entities.Pixel;
 import evopaint.entities.World;
 import evopaint.interfaces.IRandomNumberGenerator;
 import evopaint.interfaces.IRelation;
+import java.awt.Dimension;
 import java.awt.Point;
 
 /**
@@ -24,8 +25,7 @@ public abstract class PixelRelation implements IRelation {
     public abstract boolean relate(World world, IRandomNumberGenerator rng);
     
     public void reset(World world, IRandomNumberGenerator rng) {
-        Point location = rng.nextLocation(world.getDimension());
-        this.a = world.locationToPixel(location);
+        this.a = world.getPixels().getRandom(rng);
         this.resetB(world, rng);
     }
 
@@ -36,13 +36,13 @@ public abstract class PixelRelation implements IRelation {
             this.b = psa.findPartner(world, this.a, radiusOfInfluence, rng);
         } else {
             // else choose B from A's environment
-            Point newLocation = new Point(a.getSpacialAttribute());
+            Point newLocation = new Point(a.getSpacialAttribute().getX(), a.getSpacialAttribute().getY());
 
             // TODO: points close to A need a quadratically higher chance
             // to be chosen
             newLocation.translate(rng.nextPositiveInt(2*radiusOfInfluence+1) - radiusOfInfluence,
                     rng.nextPositiveInt(2*radiusOfInfluence+1) - radiusOfInfluence);
-            this.b = world.locationToPixel(newLocation);
+            this.b = world.getPixels().get(newLocation.x, newLocation.y);
         }
     }
 

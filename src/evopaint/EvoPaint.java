@@ -9,11 +9,10 @@ import evopaint.entities.Observer;
 import evopaint.entities.Pixel;
 import evopaint.entities.World;
 import evopaint.gui.MainFrame;
-import evopaint.interfaces.IAttribute;
-import java.awt.Dimension;
+import evopaint.util.ParallaxMap;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
-import java.util.IdentityHashMap;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -31,15 +30,15 @@ public class EvoPaint {
         this.configuration = new Config();
 
         // create empty world
-        List<Pixel> pixels = new ArrayList<Pixel>(configuration.defaultDimension.width * configuration.defaultDimension.height);
+        ParallaxMap<Pixel> pixels = new ParallaxMap<Pixel>(new Pixel[configuration.defaultDimension.width * configuration.defaultDimension.height],
+                configuration.defaultDimension.width, configuration.defaultDimension.height);
         List<PixelRelation> relations = new ArrayList<PixelRelation>();
-        Dimension dimension = new Dimension(configuration.defaultDimension);
         long time =0;
-        this.world = new World(pixels, relations, dimension, time, configuration);
+        this.world = new World(pixels, relations, time, configuration);
         
         // create observer
         Perception perception = new Perception(
-                dimension.width, dimension.height, BufferedImage.TYPE_INT_RGB);
+                configuration.defaultDimension.width, configuration.defaultDimension.height, BufferedImage.TYPE_INT_RGB);
         this.observer = new Observer(perception);
         this.observer.percieve(this.world);
 

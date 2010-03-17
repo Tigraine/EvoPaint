@@ -18,9 +18,10 @@ public class ColorMoveRelation extends PixelRelation {
     @Override
     public boolean relate(World world, IRandomNumberGenerator rng) {
 
-        if (    this.b == null || // b needs to exist
-                this.b.getColorAttribute().getColor() != world.getConfiguration().backgroundColor || // and be empty
-                this.a.getColorAttribute().getColor() == world.getConfiguration().backgroundColor // but not a
+        if (    this.b == null ||
+                this.a.getColorAttribute() == null ||
+                this.b.getColorAttribute() == null ||
+                this.b.getColorAttribute().getColor() != world.getConfiguration().backgroundColor
                 ) {
             return false;
         }

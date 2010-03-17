@@ -26,7 +26,7 @@ public class Config {
     public final int initialPopulationY = 100;
     public final int stepsPerRendering = 1;
     public final int numRelationThreads = 1;
-    public final int backgroundColor = 0 & 0x000000;
+    public final int backgroundColor = 0;
 
     // if true, this option will override each and every setting for how
     // many relations of what type are used and run exactly one of each avtive
@@ -50,7 +50,7 @@ public class Config {
     }};
 
     public Map<Class,Integer> numPixelRelations = new IdentityHashMap<Class,Integer>() {{
-        put(ColorCopyRelation.class, 10);
+        put(ColorCopyRelation.class, defaultDimension.width*defaultDimension.height);
         put(ColorAssimilationRelation.class, defaultDimension.width*defaultDimension.height);
         put(ColorMoveRelation.class, defaultDimension.width*defaultDimension.height);
         put(PixelCopyRelation.class, defaultDimension.width*defaultDimension.height);

@@ -5,6 +5,7 @@
 package evopaint.entities;
 
 import evopaint.PixelRelation;
+import evopaint.util.ParallaxMap;
 import java.util.List;
 
 /**
@@ -12,10 +13,10 @@ import java.util.List;
  * @author tam
  */
 public class System {
-    protected List<Pixel> pixels;
+    protected ParallaxMap<Pixel> pixels;
     protected List<PixelRelation> relations;
 
-    public List<Pixel> getPixels() {
+    public ParallaxMap<Pixel> getPixels() {
         return pixels;
     }
 
@@ -23,7 +24,7 @@ public class System {
         return relations;
     }
 
-    public System(List<Pixel> pixels, List<PixelRelation> relations) {
+    public System(ParallaxMap<Pixel> pixels, List<PixelRelation> relations) {
         this.pixels = pixels;
         this.relations = relations;
     }

@@ -112,6 +112,6 @@ public class ColorAttribute implements IAttribute {
 
 
     public ColorAttribute(int color) {
-        this.color = 0 & color;
+        this.color = 0xFF000000 | color;
     }
 }

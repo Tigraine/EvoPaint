@@ -13,14 +13,15 @@ import evopaint.interfaces.IRandomNumberGenerator;
 import evopaint.pixel.attributes.ColorAttribute;
 import evopaint.pixel.attributes.RelationChoosingAttribute;
 import evopaint.pixel.attributes.SpacialAttribute;
-import java.awt.Dimension;
 import java.awt.Point;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.IdentityHashMap;
 import java.util.List;
 
 import evopaint.util.Logger;
+import evopaint.util.ParallaxMap;
+import java.awt.Color;
+import java.util.IdentityHashMap;
 import org.uncommons.maths.random.CellularAutomatonRNG;
 import org.uncommons.maths.random.DefaultSeedGenerator;
 import org.uncommons.maths.random.SeedException;
@@ -32,24 +33,14 @@ import org.uncommons.maths.random.SeedGenerator;
  */
 public class World extends System {
 
-    private Dimension dimension;
     private Config configuration;
     private long time;
     private IRandomNumberGenerator rng;
-
-    public Dimension getDimension() {
-        return dimension;
-    }
 
     public void init() {
         this.initRNG();
         this.createPixels();
         this.createRelations();
-    }
-
-    public Pixel locationToPixel(Point location) {
-        Point loc = (this.clamp(location));
-        return this.pixels.get(this.dimension.width * loc.y + loc.x);
     }
 
     public void step() {
@@ -75,27 +66,8 @@ public class World extends System {
 
     }
 
-    private Point clamp(Point p) {
-        int sizeX = this.configuration.defaultDimension.width;
-        int sizeY = this.configuration.defaultDimension.height;
-
-        while (p.x < 0) {
-            p.x += sizeX;
-        }
-        while (p.x >= sizeX) {
-            p.x -= sizeX;
-        }
-        while (p.y < 0) {
-            p.y += sizeY;
-        }
-        while (p.y >= sizeY) {
-            p.y -= sizeY;
-        }
-        return p;
-    }
-
     private void createPixels() {
-        for (int i = 0; i < this.dimension.width * this.dimension.height; i++) {
+        /*for (int i = 0; i < this.dimension.width * this.dimension.height; i++) {
             IdentityHashMap<Class, IAttribute> attributesForPixel =
                         new IdentityHashMap<Class, IAttribute>();
             SpacialAttribute origin = new SpacialAttribute(i % this.dimension.width, i / this.dimension.width);
@@ -103,50 +75,46 @@ public class World extends System {
             Pixel pixie = new Pixel(color, origin);
 
             this.pixels.add(pixie);
-        }
+        }*/
 
         for (int y = 0; y < this.configuration.initialPopulationY; y++) {
             for (int x = 0; x < this.configuration.initialPopulationX; x++) {
 
-                int color = this.rng.nextPositiveInt();
-                Point location = new Point(
+                ColorAttribute ca = new ColorAttribute(rng.nextPositiveInt());
+                SpacialAttribute sa = new SpacialAttribute(
                         this.configuration.defaultDimension.width / 2 - this.configuration.initialPopulationX / 2 + x,
-                        this.configuration.defaultDimension.height / 2 - this.configuration.initialPopulationY / 2 + y);
+                        this.configuration.defaultDimension.height / 2 - this.configuration.initialPopulationY / 2 + y,
+                        this);
+                Pixel pixie = new Pixel(ca, sa);
 
-
-                Pixel pixie = locationToPixel(location);
-                pixie.getColorAttribute().setColor(color);
+                pixels.set(sa.getX(), sa.getY(), pixie);
             }
         }
 
-        for (int y = 0; y < this.configuration.defaultDimension.height; y++) {
-            for (int x = 0; x < this.configuration.defaultDimension.width; x++) {
-                Pixel pixie = locationToPixel(new Point(x, y));
-
-                if (this.configuration.pixelsChooseRelation && this.configuration.pixelsAct) {
-                    RelationChoosingAttribute ra = new RelationChoosingAttribute();
-                    for (Class relationType : this.configuration.pixelRelationTypes) {
-                        ra.learn(relationType);
-                    }
-
-                    try {
-                        PixelRelation r = (PixelRelation)ra.getFavoriteRelationType(rng).newInstance();
-                        r.setA(pixie);
-                        ra.setRelation(r);
-                    } catch (InstantiationException e) {
-                        e.printStackTrace();
-                        java.lang.System.exit(1);
-                    } catch (IllegalAccessException e) {
-                        e.printStackTrace();
-                        java.lang.System.exit(1);
-                    }
-
-                    pixie.setRelationChoosingAttribute(ra);
+        for (Pixel pixie : pixels) {
+            if (this.configuration.pixelsChooseRelation && this.configuration.pixelsAct) {
+                RelationChoosingAttribute ra = new RelationChoosingAttribute();
+                for (Class relationType : this.configuration.pixelRelationTypes) {
+                    ra.learn(relationType);
                 }
 
-                    //pixie.getAttributes().put(PartnerSelectionAttribute.class,
-                      //      new PartnerSelectionAttribute(new RGBMatcher(), 0.1f, 0.9f));
+                try {
+                    PixelRelation r = (PixelRelation)ra.getFavoriteRelationType(rng).newInstance();
+                    r.setA(pixie);
+                    ra.setRelation(r);
+                } catch (InstantiationException e) {
+                    e.printStackTrace();
+                    java.lang.System.exit(1);
+                } catch (IllegalAccessException e) {
+                    e.printStackTrace();
+                    java.lang.System.exit(1);
+                }
+
+                pixie.setRelationChoosingAttribute(ra);
             }
+
+                //pixie.getAttributes().put(PartnerSelectionAttribute.class,
+                  //      new PartnerSelectionAttribute(new RGBMatcher(), 0.1f, 0.9f));
         }
     }
 
@@ -169,9 +137,9 @@ public class World extends System {
     private void createActingPixelsRelations() {
         try {
             for (Class pixelRelationType : this.configuration.pixelRelationTypes) {
-                for (Pixel p : this.pixels) {
+                for (Pixel pixie : pixels) {
                     PixelRelation r = (PixelRelation) pixelRelationType.newInstance();
-                    r.setA(p);
+                    r.setA(pixie);
                     r.resetB(this, this.rng);
                     this.relations.add(r);
                 }
@@ -206,8 +174,8 @@ public class World extends System {
 
     private void serial() {
         if (this.configuration.pixelsChooseRelation == true) {
-            for (Pixel pixel : pixels) {
-                RelationChoosingAttribute ra = pixel.getRelationChoosingAttribute();
+            for (Pixel pixie : pixels) {
+                RelationChoosingAttribute ra = pixie.getRelationChoosingAttribute();
                 PixelRelation relation = ra.getRelation();
 
                 if (relation.relate(this, rng)) {
@@ -323,9 +291,8 @@ public class World extends System {
         return rng;
     }
 
-    public World(List<Pixel> pixels, List<PixelRelation> relations, Dimension dimension, long time, Config configuration) {
+    public World(ParallaxMap<Pixel> pixels, List<PixelRelation> relations, long time, Config configuration) {
         super(pixels, relations);
-        this.dimension = dimension;
         this.time = time;
         this.configuration = configuration;
         this.init();
