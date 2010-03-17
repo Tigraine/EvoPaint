@@ -5,13 +5,10 @@
 
 package evopaint.pixel.relations;
 
-import evopaint.Config;
 import evopaint.PixelRelation;
-import evopaint.pixel.attributes.RelationChoosingAttribute;
-import evopaint.entities.Pixel;
+import evopaint.entities.World;
 import evopaint.interfaces.IRandomNumberGenerator;
 
-import java.awt.Point;
 
 /**
  *
@@ -19,10 +16,10 @@ import java.awt.Point;
  */
 public class ColorCopyRelation extends PixelRelation {
 
-    public boolean relate(Config configuration, IRandomNumberGenerator rng) {
+    public boolean relate(World world, IRandomNumberGenerator rng) {
 
         if (    this.b == null || // b needs to exist
-                a.getColorAttribute().getColor() == configuration.backgroundColor || // a shall not be empty
+                a.getColorAttribute().getColor() == world.getConfiguration().backgroundColor || // a shall not be empty
                 b.getColorAttribute().getColor() == a.getColorAttribute().getColor() // and the colors shall be distinct
                 ) {
             return false;

@@ -5,7 +5,7 @@
 
 package evopaint.pixel.relations;
 
-import evopaint.Config;
+import evopaint.entities.World;
 import evopaint.interfaces.IRandomNumberGenerator;
 
 
@@ -16,9 +16,9 @@ import evopaint.interfaces.IRandomNumberGenerator;
 public class PixelCopyRelation extends ColorCopyRelation {
 
     @Override
-    public boolean relate(Config configuration, IRandomNumberGenerator rng) {
+    public boolean relate(World world, IRandomNumberGenerator rng) {
 
-        if (!super.relate(configuration, rng)) {
+        if (!super.relate(world, rng)) {
             return false;
         }
 

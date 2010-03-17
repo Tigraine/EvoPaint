@@ -9,7 +9,6 @@ import evopaint.pixel.relations.ColorCopyRelation;
 import evopaint.pixel.relations.ColorMoveRelation;
 import evopaint.pixel.relations.PixelCopyRelation;
 import evopaint.pixel.relations.PixelMoveRelation;
-import evopaint.pixel.relations.SynapticRelation;
 import java.util.ArrayList;
 import java.util.IdentityHashMap;
 import java.util.Map;
@@ -22,7 +21,7 @@ import java.awt.Dimension;
  */
 public class Config {
 
-    public final Dimension defaultDimension = new Dimension(250,250);
+    public final Dimension defaultDimension = new Dimension(200,200);
     public final int initialPopulationX = 100;
     public final int initialPopulationY = 100;
     public final int stepsPerRendering = 1;
@@ -32,7 +31,7 @@ public class Config {
     // if true, this option will override each and every setting for how
     // many relations of what type are used and run exactly one of each avtive
     // relations per pixel at all times.
-    public boolean pixelsAct = false;
+    public boolean pixelsAct = true;
 
     // if true, each pixel has exactly one relation and will choose it by its success
     // since there is no "general relation", pixelsAct must be set to true for this to work
@@ -46,16 +45,14 @@ public class Config {
         add(ColorCopyRelation.class);
         add(ColorAssimilationRelation.class);
         add(ColorMoveRelation.class);
-        add(SynapticRelation.class);
         //add(PixelCopyRelation.class);
         //add(PixelMoveRelation.class);
     }};
 
     public Map<Class,Integer> numPixelRelations = new IdentityHashMap<Class,Integer>() {{
-        put(ColorCopyRelation.class, defaultDimension.width*defaultDimension.height);
+        put(ColorCopyRelation.class, 10);
         put(ColorAssimilationRelation.class, defaultDimension.width*defaultDimension.height);
         put(ColorMoveRelation.class, defaultDimension.width*defaultDimension.height);
-        put(SynapticRelation.class, defaultDimension.width*defaultDimension.height);
         put(PixelCopyRelation.class, defaultDimension.width*defaultDimension.height);
         put(PixelMoveRelation.class, defaultDimension.width*defaultDimension.height);
     }};

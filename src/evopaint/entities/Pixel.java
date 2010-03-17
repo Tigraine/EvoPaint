@@ -5,7 +5,6 @@
 package evopaint.entities;
 
 import evopaint.pixel.attributes.ColorAttribute;
-import evopaint.pixel.attributes.NeuronalAttribute;
 import evopaint.pixel.attributes.PartnerSelectionAttribute;
 import evopaint.pixel.attributes.RelationChoosingAttribute;
 import evopaint.pixel.attributes.SpacialAttribute;
@@ -18,17 +17,8 @@ public class Pixel {
 
     private ColorAttribute colorAttribute;
     private SpacialAttribute spacialAttribute;
-    private NeuronalAttribute neuronalAttribute;
     private PartnerSelectionAttribute partnerSelectionAttribute;
     private RelationChoosingAttribute relationChoosingAttribute;
-
-    public NeuronalAttribute getNeuronalAttribute() {
-        return neuronalAttribute;
-    }
-
-    public void setNeuronalAttribute(NeuronalAttribute neuronalAttribute) {
-        this.neuronalAttribute = neuronalAttribute;
-    }
 
     public PartnerSelectionAttribute getPartnerSelectionAttribute() {
         return partnerSelectionAttribute;

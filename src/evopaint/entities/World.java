@@ -11,10 +11,8 @@ import evopaint.Relator;
 import evopaint.interfaces.IAttribute;
 import evopaint.interfaces.IRandomNumberGenerator;
 import evopaint.pixel.attributes.ColorAttribute;
-import evopaint.pixel.attributes.NeuronalAttribute;
 import evopaint.pixel.attributes.RelationChoosingAttribute;
 import evopaint.pixel.attributes.SpacialAttribute;
-import evopaint.pixel.relations.SynapticRelation;
 import java.awt.Dimension;
 import java.awt.Point;
 import java.util.ArrayList;
@@ -104,36 +102,6 @@ public class World extends System {
             ColorAttribute color = new ColorAttribute(this.configuration.backgroundColor);
             Pixel pixie = new Pixel(color, origin);
 
-            if (this.configuration.pixelRelationTypes.contains(SynapticRelation.class)) {
-                pixie.setNeuronalAttribute(new NeuronalAttribute((short)this.rng.nextPositiveInt(256),
-                        (byte)this.rng.nextPositiveInt(3)));
-            }
-
-            if (this.configuration.pixelsChooseRelation && this.configuration.pixelsAct) {
-                RelationChoosingAttribute ra = new RelationChoosingAttribute();
-                for (Class relationType : this.configuration.pixelRelationTypes) {
-                    ra.learn(relationType);
-                }
-
-                try {
-                    PixelRelation r = (PixelRelation)ra.getFavoriteRelationType(rng).newInstance();
-                    r.setA(pixie);
-                    ra.setRelation(r);
-                } catch (InstantiationException e) {
-                    e.printStackTrace();
-                    java.lang.System.exit(1);
-                } catch (IllegalAccessException e) {
-                    e.printStackTrace();
-                    java.lang.System.exit(1);
-                }
-
-                pixie.setRelationChoosingAttribute(ra);
-            }
-            
-                //pixie.getAttributes().put(PartnerSelectionAttribute.class,
-                  //      new PartnerSelectionAttribute(new RGBMatcher(), 0.1f, 0.9f));
-
-
             this.pixels.add(pixie);
         }
 
@@ -148,6 +116,36 @@ public class World extends System {
 
                 Pixel pixie = locationToPixel(location);
                 pixie.getColorAttribute().setColor(color);
+            }
+        }
+
+        for (int y = 0; y < this.configuration.defaultDimension.height; y++) {
+            for (int x = 0; x < this.configuration.defaultDimension.width; x++) {
+                Pixel pixie = locationToPixel(new Point(x, y));
+
+                if (this.configuration.pixelsChooseRelation && this.configuration.pixelsAct) {
+                    RelationChoosingAttribute ra = new RelationChoosingAttribute();
+                    for (Class relationType : this.configuration.pixelRelationTypes) {
+                        ra.learn(relationType);
+                    }
+
+                    try {
+                        PixelRelation r = (PixelRelation)ra.getFavoriteRelationType(rng).newInstance();
+                        r.setA(pixie);
+                        ra.setRelation(r);
+                    } catch (InstantiationException e) {
+                        e.printStackTrace();
+                        java.lang.System.exit(1);
+                    } catch (IllegalAccessException e) {
+                        e.printStackTrace();
+                        java.lang.System.exit(1);
+                    }
+
+                    pixie.setRelationChoosingAttribute(ra);
+                }
+
+                    //pixie.getAttributes().put(PartnerSelectionAttribute.class,
+                      //      new PartnerSelectionAttribute(new RGBMatcher(), 0.1f, 0.9f));
             }
         }
     }
@@ -212,7 +210,7 @@ public class World extends System {
                 RelationChoosingAttribute ra = pixel.getRelationChoosingAttribute();
                 PixelRelation relation = ra.getRelation();
 
-                if (relation.relate(configuration, rng)) {
+                if (relation.relate(this, rng)) {
                     ra.promote(relation.getClass());
                 } else {
                     ra.demote(relation.getClass());
@@ -226,7 +224,7 @@ public class World extends System {
 
         if (this.configuration.pixelsAct == true) {
             for (PixelRelation relation : this.relations) {
-                if (!relation.relate(this.configuration, this.rng)) {
+                if (!relation.relate(this, this.rng)) {
                     relation.resetB(this, this.rng);
                 }
             }
@@ -235,7 +233,7 @@ public class World extends System {
         }
         
        for (PixelRelation relation : this.relations) {
-            if (!relation.relate(this.configuration, this.rng)) {
+            if (!relation.relate(this, this.rng)) {
                 relation.reset(this, this.rng);
             }
         }

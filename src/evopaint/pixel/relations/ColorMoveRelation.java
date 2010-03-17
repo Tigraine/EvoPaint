@@ -5,8 +5,8 @@
 
 package evopaint.pixel.relations;
 
-import evopaint.Config;
 import evopaint.PixelRelation;
+import evopaint.entities.World;
 import evopaint.interfaces.IRandomNumberGenerator;
 
 /**
@@ -16,17 +16,17 @@ import evopaint.interfaces.IRandomNumberGenerator;
 public class ColorMoveRelation extends PixelRelation {
 
     @Override
-    public boolean relate(Config configuration, IRandomNumberGenerator rng) {
+    public boolean relate(World world, IRandomNumberGenerator rng) {
 
         if (    this.b == null || // b needs to exist
-                this.b.getColorAttribute().getColor() != configuration.backgroundColor || // and be empty
-                this.a.getColorAttribute().getColor() == configuration.backgroundColor // but not a
+                this.b.getColorAttribute().getColor() != world.getConfiguration().backgroundColor || // and be empty
+                this.a.getColorAttribute().getColor() == world.getConfiguration().backgroundColor // but not a
                 ) {
             return false;
         }
 
         b.getColorAttribute().setColor(a.getColorAttribute().getColor());
-        a.getColorAttribute().setColor(configuration.backgroundColor);
+        a.getColorAttribute().setColor(world.getConfiguration().backgroundColor);
 
         return true;
     }

@@ -5,12 +5,12 @@
 
 package evopaint.interfaces;
 
-import evopaint.Config;
+import evopaint.entities.World;
 
 /**
  *
  * @author tam
  */
 public interface IRelation {
-    public boolean relate(Config configuration, IRandomNumberGenerator rng);
+    public boolean relate(World world, IRandomNumberGenerator rng);
 }

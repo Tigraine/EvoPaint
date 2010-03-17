@@ -4,8 +4,8 @@
  */
 package evopaint.pixel.relations;
 
-import evopaint.Config;
 import evopaint.PixelRelation;
+import evopaint.entities.World;
 import evopaint.interfaces.IRandomNumberGenerator;
 
 
@@ -15,10 +15,10 @@ import evopaint.interfaces.IRandomNumberGenerator;
  */
 public class ColorAssimilationRelation extends PixelRelation {
 
-    public boolean relate(Config configuration, IRandomNumberGenerator rng) {
+    public boolean relate(World world, IRandomNumberGenerator rng) {
         if (    this.b == null || // b needs to exist
-                this.b.getColorAttribute().getColor() == configuration.backgroundColor || // and be not empty
-                this.a.getColorAttribute().getColor() == configuration.backgroundColor || // as well as a
+                this.b.getColorAttribute().getColor() == world.getConfiguration().backgroundColor || // and be not empty
+                this.a.getColorAttribute().getColor() == world.getConfiguration().backgroundColor || // as well as a
                 a.getColorAttribute().getColor() == b.getColorAttribute().getColor() // and colors shall be distinct
                 ) {
             return false;
@@ -26,8 +26,9 @@ public class ColorAssimilationRelation extends PixelRelation {
 
         // mix A's colors into B
         b.getColorAttribute().mixInHSB(a.getColorAttribute(), 0.5f); // XXX there is some hard coding right here
+        //b.getColorAttribute().mixInRGB(a.getColorAttribute()); // XXX there is some hard coding right here
 
-        return true;
+        return false;
     }
 
     

@@ -21,7 +21,7 @@ public abstract class PixelRelation implements IRelation {
     protected Pixel b;
     protected static int radiusOfInfluence = 1;
 
-    public abstract boolean relate(Config configuration, IRandomNumberGenerator rng);
+    public abstract boolean relate(World world, IRandomNumberGenerator rng);
     
     public void reset(World world, IRandomNumberGenerator rng) {
         Point location = rng.nextLocation(world.getDimension());
