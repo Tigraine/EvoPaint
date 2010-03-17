@@ -36,7 +36,7 @@ public abstract class PixelRelation implements IRelation {
             this.b = psa.findPartner(world, this.a, radiusOfInfluence, rng);
         } else {
             // else choose B from A's environment
-            Point newLocation = new Point(a.getLocation());
+            Point newLocation = new Point(a.getSpacialAttribute());
 
             // TODO: points close to A need a quadratically higher chance
             // to be chosen

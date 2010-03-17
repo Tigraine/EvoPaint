@@ -4,14 +4,11 @@
  */
 package evopaint.entities;
 
-import evopaint.interfaces.IAttribute;
 import evopaint.pixel.attributes.ColorAttribute;
 import evopaint.pixel.attributes.NeuronalAttribute;
 import evopaint.pixel.attributes.PartnerSelectionAttribute;
 import evopaint.pixel.attributes.RelationChoosingAttribute;
 import evopaint.pixel.attributes.SpacialAttribute;
-import java.awt.Point;
-import java.util.IdentityHashMap;
 
 /**
  *
@@ -57,12 +54,12 @@ public class Pixel {
         this.colorAttribute = colorAttribute;
     }
 
-    public SpacialAttribute getLocation() {
+    public SpacialAttribute getSpacialAttribute() {
         return spacialAttribute;
     }
 
-    public void setLocation(SpacialAttribute location) {
-        this.spacialAttribute = location;
+    public void setSpacialAttribute(SpacialAttribute spacialAttribute) {
+        this.spacialAttribute = spacialAttribute;
     }
 
     public Pixel(ColorAttribute colorAttribute, SpacialAttribute spacialAttribute) {

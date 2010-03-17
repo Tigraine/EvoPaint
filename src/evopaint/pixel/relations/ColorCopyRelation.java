@@ -28,10 +28,6 @@ public class ColorCopyRelation extends PixelRelation {
             return false;
         }
 
-        // a and b need to stay within a maximum distance to each other
-        Point locationA = a.getLocation();
-        Point locationB = b.getLocation();
-
         b.getColorAttribute().setColor(a.getColorAttribute().getColor());
     
 

@@ -28,7 +28,7 @@ public class PartnerSelectionAttribute implements IAttribute {
 
         // get the possible matches from the environment of our pixel
         List<Pixel> environment = new ArrayList<Pixel>((2*radius+1)*(2*radius+1)-1);
-        Point loc = us.getLocation();
+        Point loc = us.getSpacialAttribute();
         for (int y = loc.y - radius; y <= loc.y + radius; y++) {
             for (int x = loc.x - radius; x <= loc.x + radius; x++) {
 
