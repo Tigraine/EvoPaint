@@ -10,8 +10,10 @@ import evopaint.PixelRelation;
 import evopaint.Relator;
 import evopaint.interfaces.IAttribute;
 import evopaint.interfaces.IRandomNumberGenerator;
+import evopaint.pixel.attributes.ColorAttribute;
 import evopaint.pixel.attributes.NeuronalAttribute;
 import evopaint.pixel.attributes.RelationChoosingAttribute;
+import evopaint.pixel.attributes.SpacialAttribute;
 import evopaint.pixel.relations.SynapticRelation;
 import java.awt.Dimension;
 import java.awt.Point;
@@ -52,18 +54,6 @@ public class World extends System {
         return this.pixels.get(this.dimension.width * loc.y + loc.x);
     }
 
-    /**
-     * resets the entity in the location-entity translation table to be empty
-     * removes the entity from the system
-     *
-     * @param pixel entity to be removed
-     */
-    @Override
-    public void remove(Pixel pixel) {
-        pixel.getAttributes().clear();
-        pixel.setColor(configuration.backgroundColor);
-    }
-
     public void step() {
 
         if (time == Long.MAX_VALUE) {
@@ -81,6 +71,10 @@ public class World extends System {
         }
 
         this.time++;
+
+        //if (time == 1000)
+          //  java.lang.System.exit(0);
+
     }
 
     private Point clamp(Point p) {
@@ -106,13 +100,12 @@ public class World extends System {
         for (int i = 0; i < this.dimension.width * this.dimension.height; i++) {
             IdentityHashMap<Class, IAttribute> attributesForPixel =
                         new IdentityHashMap<Class, IAttribute>();
-            Point origin = new Point(i % this.dimension.width, i / this.dimension.width);
-            int color = this.configuration.backgroundColor;
-            Pixel pixie = new Pixel(color, origin, attributesForPixel);
+            SpacialAttribute origin = new SpacialAttribute(i % this.dimension.width, i / this.dimension.width);
+            ColorAttribute color = new ColorAttribute(this.configuration.backgroundColor);
+            Pixel pixie = new Pixel(color, origin);
 
             if (this.configuration.pixelRelationTypes.contains(SynapticRelation.class)) {
-                pixie.getAttributes().put(NeuronalAttribute.class,
-                        new NeuronalAttribute((short)this.rng.nextPositiveInt(256),
+                pixie.setNeuronalAttribute(new NeuronalAttribute((short)this.rng.nextPositiveInt(256),
                         (byte)this.rng.nextPositiveInt(3)));
             }
 
@@ -134,7 +127,7 @@ public class World extends System {
                     java.lang.System.exit(1);
                 }
 
-                pixie.getAttributes().put(RelationChoosingAttribute.class, ra);
+                pixie.setRelationChoosingAttribute(ra);
             }
             
                 //pixie.getAttributes().put(PartnerSelectionAttribute.class,
@@ -154,7 +147,7 @@ public class World extends System {
 
 
                 Pixel pixie = locationToPixel(location);
-                pixie.setColor(color);
+                pixie.getColorAttribute().setColor(color);
             }
         }
     }
@@ -216,8 +209,7 @@ public class World extends System {
     private void serial() {
         if (this.configuration.pixelsChooseRelation == true) {
             for (Pixel pixel : pixels) {
-                RelationChoosingAttribute ra = (RelationChoosingAttribute)
-                        pixel.getAttribute(RelationChoosingAttribute.class);
+                RelationChoosingAttribute ra = pixel.getRelationChoosingAttribute();
                 PixelRelation relation = ra.getRelation();
 
                 if (relation.relate(configuration, rng)) {

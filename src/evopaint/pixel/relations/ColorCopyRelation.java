@@ -22,8 +22,8 @@ public class ColorCopyRelation extends PixelRelation {
     public boolean relate(Config configuration, IRandomNumberGenerator rng) {
 
         if (    this.b == null || // b needs to exist
-                a.getColor() == configuration.backgroundColor || // a shall not be empty
-                b.getColor() == a.getColor() // and the colors shall be distinct
+                a.getColorAttribute().getColor() == configuration.backgroundColor || // a shall not be empty
+                b.getColorAttribute().getColor() == a.getColorAttribute().getColor() // and the colors shall be distinct
                 ) {
             return false;
         }
@@ -32,14 +32,8 @@ public class ColorCopyRelation extends PixelRelation {
         Point locationA = a.getLocation();
         Point locationB = b.getLocation();
 
-        b.setColor(a.getColor());
+        b.getColorAttribute().setColor(a.getColorAttribute().getColor());
     
-        // if a has means of being responsible for the relations invoked on it,
-        // let us promote this relation since it was successful (law of lazyness)
-        RelationChoosingAttribute rca = (RelationChoosingAttribute) a.getAttribute(RelationChoosingAttribute.class);
-        if (rca != null) {
-            rca.promote(this.getClass());
-        }
 
         //Logger.log.information("relating %s", this);
         return true;

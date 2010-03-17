@@ -36,38 +36,22 @@ public class MenuBar extends JMenuBar {
         this.mainFrame = parentFrame;
         this.evopaint = evopaint;
 
-        // File Menu
-        JMenu fileMenu = new JMenu();
-        fileMenu.setText("File");
-        add(fileMenu);
+        // World Menu
+        JMenu worldMenu = new JMenu();
+        worldMenu.setText("World");
+        add(worldMenu);
 
         // File Menu Items
-        JMenuItem newEvoItem = new JMenuItem();
-        newEvoItem.setText("New Evo");
-        fileMenu.add(newEvoItem);
-
-        JMenuItem saveItem = new JMenuItem();
-        saveItem.setText("Save");
-        fileMenu.add(saveItem);
-
-        JMenuItem saveAsItem = new JMenuItem();
-        saveAsItem.setText("Save as");
-        fileMenu.add(saveAsItem);
-
-        JMenuItem loadItem = new JMenuItem();
-        loadItem.setText("Load");
-        fileMenu.add(loadItem);
-
-        fileMenu.add(loadItem);
-
-        JMenuItem exportItem = new JMenuItem();
-        exportItem.setText("Export");
-        fileMenu.add(exportItem);
-        exportItem.addActionListener(new ExportDialog(parentFrame, evopaint));
-
-        JMenuItem exitItem = new JMenuItem();
-        exitItem.setText("Exit");
-        exitItem.addActionListener(new ActionListener() {
+        worldMenu.add(new JMenuItem("New..."));
+        worldMenu.add(new JMenuItem("Open..."));
+        worldMenu.add(new JMenuItem("Save"));
+        worldMenu.add(new JMenuItem("Save as..."));
+        worldMenu.add(new JMenuItem("Import..."));
+        worldMenu.add(new JMenuItem("Export..."));
+        worldMenu.add(new JMenuItem("Options..."));
+        JMenuItem endItem = new JMenuItem();
+        endItem.setText("End");
+        endItem.addActionListener(new ActionListener() {
 
             public void actionPerformed(ActionEvent e) {
                 if (JOptionPane.showConfirmDialog(mainFrame, "Do you really want to Exit?", "Exit EvoPaint", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
@@ -75,17 +59,22 @@ public class MenuBar extends JMenuBar {
                 }
             }
         });
-        fileMenu.add(exitItem);
+        worldMenu.add(endItem);
 
-        // Edit menu
-        JMenu editMenu = new JMenu();
-        editMenu.setText("Edit");
-        add(editMenu);
+        // selection menu
+        JMenu selectionMenu = new JMenu("Selection");
+        add(selectionMenu);
 
-        // help menu
-        JMenu helpMenu = new JMenu();
-        helpMenu.setText("?");
-        add(helpMenu);
+        selectionMenu.add(new JMenuItem("Set Name..."));
+        selectionMenu.add(new JMenuItem("Invert"));
+        selectionMenu.add(new JMenuItem("Open as new"));
+        selectionMenu.add(new JMenuItem("Copy"));
+        selectionMenu.add(new JMenuItem("Options..."));
+
+        // info menu
+        JMenu infoMenu = new JMenu();
+        infoMenu.setText("Info");
+        add(infoMenu);
 
         JMenuItem userGuide = new JMenuItem();
         userGuide.setText("User Guide");
@@ -102,10 +91,10 @@ public class MenuBar extends JMenuBar {
                 }
             }
         });
-        helpMenu.add(userGuide);
+        infoMenu.add(userGuide);
 
         JMenuItem getCode = new JMenuItem();
-        getCode.setText("Get the Code");
+        getCode.setText("Get the source code");
         getCode.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 try {
@@ -117,10 +106,21 @@ public class MenuBar extends JMenuBar {
                 }
             }
         });
-        helpMenu.add(getCode);
+        infoMenu.add(getCode);
 
         JMenuItem about = new JMenuItem();
         about.setText("About");
-        helpMenu.add(about);
+        about.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                String msg = "EvoPaint is being developed as part of a software lab\n" +
+                                "for the Bachelor's Degree at the\n" +
+                                "University of Klagenfurt, Austria.\n" +
+                                "\n" +
+                                "Enjoy.";
+                JOptionPane.showMessageDialog(mainFrame, msg, "About EvoPaint", JOptionPane.INFORMATION_MESSAGE);
+            }
+        });
+        infoMenu.add(about);
+
     }
 }

@@ -19,14 +19,14 @@ public class ColorMoveRelation extends PixelRelation {
     public boolean relate(Config configuration, IRandomNumberGenerator rng) {
 
         if (    this.b == null || // b needs to exist
-                this.b.getColor() != configuration.backgroundColor || // and be empty
-                this.a.getColor() == configuration.backgroundColor // but not a
+                this.b.getColorAttribute().getColor() != configuration.backgroundColor || // and be empty
+                this.a.getColorAttribute().getColor() == configuration.backgroundColor // but not a
                 ) {
             return false;
         }
 
-        b.setColor(a.getColor());
-        a.setColor(configuration.backgroundColor);
+        b.getColorAttribute().setColor(a.getColorAttribute().getColor());
+        a.getColorAttribute().setColor(configuration.backgroundColor);
 
         return true;
     }

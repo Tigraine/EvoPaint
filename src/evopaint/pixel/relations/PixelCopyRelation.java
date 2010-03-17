@@ -22,7 +22,7 @@ public class PixelCopyRelation extends ColorCopyRelation {
             return false;
         }
 
-        b.setAttributes(a.getAttributes());
+     //   b.copy(a);
 
         return true;
     }

@@ -5,7 +5,11 @@
 package evopaint.entities;
 
 import evopaint.interfaces.IAttribute;
-import java.awt.Color;
+import evopaint.pixel.attributes.ColorAttribute;
+import evopaint.pixel.attributes.NeuronalAttribute;
+import evopaint.pixel.attributes.PartnerSelectionAttribute;
+import evopaint.pixel.attributes.RelationChoosingAttribute;
+import evopaint.pixel.attributes.SpacialAttribute;
 import java.awt.Point;
 import java.util.IdentityHashMap;
 
@@ -15,70 +19,74 @@ import java.util.IdentityHashMap;
  */
 public class Pixel {
 
-    private int color;
-    private Point location;
-    private IdentityHashMap<Class,IAttribute> attributes;
+    private ColorAttribute colorAttribute;
+    private SpacialAttribute spacialAttribute;
+    private NeuronalAttribute neuronalAttribute;
+    private PartnerSelectionAttribute partnerSelectionAttribute;
+    private RelationChoosingAttribute relationChoosingAttribute;
 
-    public int getColor() {
-        return color;
+    public NeuronalAttribute getNeuronalAttribute() {
+        return neuronalAttribute;
     }
 
-    public void setColor(int color) {
-        this.color = color;
+    public void setNeuronalAttribute(NeuronalAttribute neuronalAttribute) {
+        this.neuronalAttribute = neuronalAttribute;
     }
 
-    public Point getLocation() {
-        return location;
+    public PartnerSelectionAttribute getPartnerSelectionAttribute() {
+        return partnerSelectionAttribute;
     }
 
-    public void setLocation(Point location) {
-        this.location = location;
+    public void setPartnerSelectionAttribute(PartnerSelectionAttribute partnerSelectionAttribute) {
+        this.partnerSelectionAttribute = partnerSelectionAttribute;
     }
 
-    public short [] getRGB() {
-        short [] ret = new short[3];
-        //ret[0] = (short) ((this.color >> 24) & 0xFF);
-        ret[0] = (short) ((this.color >> 16) & 0xFF);
-        ret[1] = (short) ((this.color >> 8) & 0xFF);
-        ret[2] = (short) (this.color & 0xFF);
-        return ret;
+    public RelationChoosingAttribute getRelationChoosingAttribute() {
+        return relationChoosingAttribute;
     }
 
-    public void setRGB(short [] argb) {
-        this.color = 0 | argb[0] << 16 | argb[1] << 8 | argb[2];
-        //this.color = 0 | argb[0] << 24 | argb[1] << 16 | argb[2] << 8 | argb[3];
+    public void setRelationChoosingAttribute(RelationChoosingAttribute relationChoosingAttribute) {
+        this.relationChoosingAttribute = relationChoosingAttribute;
     }
 
-    public float [] getHSB() {
-        return Color.RGBtoHSB((this.color >> 16) & 0xFF,
-                (this.color >> 8) & 0xFF,
-                this.color & 0xFF,
-                null);
+    public ColorAttribute getColorAttribute() {
+        return colorAttribute;
     }
 
-        public IdentityHashMap<Class, IAttribute> getAttributes() {
-        return attributes;
+    public void setColorAttribute(ColorAttribute colorAttribute) {
+        this.colorAttribute = colorAttribute;
     }
 
-    public void setAttributes(IdentityHashMap<Class, IAttribute> attributes) {
-        this.attributes = attributes;
+    public SpacialAttribute getLocation() {
+        return spacialAttribute;
     }
 
-    public void setAttribute(Class attributeType, IAttribute attribute) {
-        this.attributes.put(attributeType, attribute);
+    public void setLocation(SpacialAttribute location) {
+        this.spacialAttribute = location;
     }
 
-    public void removeAttribute(Class attributeType) {
-        this.attributes.remove(attributeType);
+    public Pixel(ColorAttribute colorAttribute, SpacialAttribute spacialAttribute) {
+        this.colorAttribute = colorAttribute;
+        this.spacialAttribute = spacialAttribute;
     }
 
-    public IAttribute getAttribute(Class attributeType) {
-        return this.attributes.get(attributeType);
+
+/*
+    public void copy(Pixel pixie) {
+        this.color = pixie.color;
+        this.neuronalAttribute = pixie.neuronalAttribute.getCopy();
+        this.partnerSelectionAttribute = pixie.partnerSelectionAttribute.getCopy();
+        this.relationChoosingAttribute = pixie.partnerSelectionAttribute.getCopy();
     }
 
-    public Pixel(int color, Point location, IdentityHashMap<Class, IAttribute> attributes) {
-        this.color = 0 & color;
-        this.location = location;
-        this.attributes = attributes;
+    public void clear(Config configuration) {
+        this.color = configuration.backgroundColor;
+        if (configuration.pixelRelationTypes.contains(NeuronalAttribute.class) {
+            this.neuronalAttribute = new NeuronalAttribute(configuration., index)
+        }
     }
+*/
+    
+
+
 }
