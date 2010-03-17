@@ -39,6 +39,7 @@ public class Showcase extends JPanel implements MouseInputListener, MouseWheelLi
     private MoveCommand moveCommand;
     private SelectCommand selectCommand;
     private Selection currentSelection;
+    
 
     @Override
     public void paintComponent(Graphics g) {
@@ -104,6 +105,7 @@ public class Showcase extends JPanel implements MouseInputListener, MouseWheelLi
                 (int) (evopaint.getImage().getWidth() * this.scale),
                 (int) (evopaint.getImage().getHeight() * this.scale)));
         mainFrame.pack();
+        
     }
 
     public void mouseWheelMoved(MouseWheelEvent e) {
@@ -179,8 +181,7 @@ public class Showcase extends JPanel implements MouseInputListener, MouseWheelLi
         super();
         this.mainFrame = mf;
         this.evopaint = evo;
-        this.paintCommand = new PaintCommand(this.evopaint.getWorld(),
-                                this.scale, affineTransform, 10);
+        this.paintCommand = new PaintCommand(this.evopaint.getWorld(),this.scale, affineTransform, 50 ,0x000000FF);
         this.moveCommand = new MoveCommand(affineTransform, evopaint.getImage());
         this.selectCommand = new SelectCommand(this);
 
@@ -195,5 +196,9 @@ public class Showcase extends JPanel implements MouseInputListener, MouseWheelLi
     public void setSelection(Selection selection) {
         this.currentSelection = selection;
         Logger.log.error("Selection from %s-%s to %s-%s", selection.getStartPoint().getX(), selection.getStartPoint().getY(), selection.getEndPoint().getX(), selection.getEndPoint().getY());
+    }
+    
+    public void setpaintCommand(){
+    	this.paintCommand = new PaintCommand(this.evopaint.getWorld(),this.scale, affineTransform, mainFrame.getPop().getBrushsize(),  mainFrame.getPop().getColor());
     }
 }

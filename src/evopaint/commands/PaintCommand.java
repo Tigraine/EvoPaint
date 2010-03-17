@@ -10,6 +10,7 @@ import java.awt.geom.NoninvertibleTransformException;
 
 public class PaintCommand extends AbstractCommand {
     private World world;
+    private int color;
 
     public double getScale() {
         return scale;
@@ -41,11 +42,13 @@ public class PaintCommand extends AbstractCommand {
 
     private Point location;
 
-    public PaintCommand(World world, double scale, AffineTransform affineTransform, int radius) {
+    public PaintCommand(World world, double scale, AffineTransform affineTransform, int radius,int color) {
+    	//public PaintCommand(World world, double scale, AffineTransform affineTransform, int radius, int color) {
         this.world = world;
         this.scale = scale;
         this.affineTransform = affineTransform;
         this.radius = radius;
+        this.color = color;
 
         // TODO: make the new attributes a parameter
     }
@@ -62,9 +65,13 @@ public class PaintCommand extends AbstractCommand {
                 //newAttributes.put(ColorAttribute.class, new ColorAttribute(0xFFFF0000));
                 //newAttributes.put(SpacialAttribute.class, new SpacialAttribute(point, new Dimension(1,1)));
                 Pixel pixie = this.world.locationToPixel(point);
-                pixie.setColor(0xFFFF0000);
+//                pixie.setColor(color);
             }
         }
     }
+
+	public void setColor(int color) {
+		this.color = color;
+	}
 }
 
