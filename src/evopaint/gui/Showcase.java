@@ -7,8 +7,8 @@ package evopaint.gui;
 import evopaint.Config;
 import evopaint.EvoPaint;
 import evopaint.commands.*;
-import evopaint.entities.Selection;
-import evopaint.util.Logger;
+import evopaint.Selection;
+import evopaint.util.logging.Logger;
 
 import java.awt.Dimension;
 import java.awt.Graphics;

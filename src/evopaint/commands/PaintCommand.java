@@ -1,11 +1,10 @@
 package evopaint.commands;
 
-import evopaint.PixelRelation;
-import evopaint.entities.Pixel;
-import evopaint.entities.World;
-import evopaint.pixel.attributes.ColorAttribute;
-import evopaint.pixel.attributes.SpacialAttribute;
-import evopaint.util.Logger;
+import evopaint.pixel.Pixel;
+import evopaint.World;
+import evopaint.util.mapping.AbsoluteCoordinate;
+import evopaint.util.Color;
+import evopaint.util.logging.Logger;
 
 import java.awt.Point;
 import java.awt.geom.AffineTransform;
@@ -60,14 +59,13 @@ public class PaintCommand extends AbstractCommand {
             for (int j = 0 - this.radius / 2; j < this.radius / 2; j++) {
                 int x = location.x + j;
                 int y = location.y + i;
-                Pixel pixie = this.world.getPixels().get(x, y);
+                Pixel pixie = this.world.get(x, y);
                 if (pixie == null) {
-                    pixie = new Pixel(new ColorAttribute(0xFFFF0000), new SpacialAttribute(x, y, world));
-                    this.world.getPixels().set(x, y, pixie);
-                    // FIXME: adding a relation to this pixel (as neccessary in pixelsCanAct mode) will
-                    // cause a ConcurrentModificationException. will solve later...
+                    pixie = new Pixel(world.getConfiguration().startingEnergy,
+                            new Color(0xFFFF0000), new AbsoluteCoordinate(x, y, world));
+                    world.set(x, y, pixie);
                 }
-                pixie.getColorAttribute().setColor(0xFFFF0000);
+                pixie.getColor().setInteger(0xFFFF0000);
             }
         }
     }

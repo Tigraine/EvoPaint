@@ -5,12 +5,13 @@
 
 package evopaint.interfaces;
 
-import evopaint.entities.World;
+import evopaint.World;
+import evopaint.pixel.Pixel;
 
 /**
  *
  * @author tam
  */
-public interface IRelation {
-    public boolean relate(World world, IRandomNumberGenerator rng);
+public interface IAction {
+    public int execute(Pixel pixel, World world);
 }

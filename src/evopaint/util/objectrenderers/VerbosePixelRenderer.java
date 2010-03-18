@@ -1,6 +1,6 @@
 package evopaint.util.objectrenderers;
 
-import evopaint.entities.Pixel;
+import evopaint.pixel.Pixel;
 import evopaint.interfaces.IObjectRenderer;
 
 /**

@@ -1,10 +1,8 @@
-package evopaint.util;
+package evopaint.util.logging;
 
-import evopaint.PixelRelation;
-import evopaint.entities.Pixel;
+import evopaint.pixel.Pixel;
 import evopaint.util.objectrenderers.PixelRenderer;
 import evopaint.util.objectrenderers.ExceptionRenderer;
-import evopaint.util.objectrenderers.RelationRenderer;
 import evopaint.util.objectrenderers.VerbosePixelRenderer;
 
 /**
@@ -31,7 +29,6 @@ public class Logger {
         else {
             log.addRenderer(Pixel.class, new PixelRenderer());
         }
-        log.addRenderer(PixelRelation.class, new RelationRenderer());
         log.addRenderer(Exception.class, new ExceptionRenderer());
     }
 }

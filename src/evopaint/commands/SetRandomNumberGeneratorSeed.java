@@ -1,6 +1,6 @@
 package evopaint.commands;
 
-import evopaint.RandomNumberGeneratorWrapper;
+import evopaint.util.RandomNumberGeneratorWrapper;
 import evopaint.interfaces.ICommand;
 
 public class SetRandomNumberGeneratorSeed implements ICommand {

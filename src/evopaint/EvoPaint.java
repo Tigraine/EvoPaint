@@ -5,15 +5,10 @@
 
 package evopaint;
 
-import evopaint.entities.Observer;
-import evopaint.entities.Pixel;
-import evopaint.entities.World;
+import evopaint.pixel.Pixel;
 import evopaint.gui.MainFrame;
-import evopaint.util.ParallaxMap;
+import evopaint.util.mapping.ParallaxMap;
 import java.awt.image.BufferedImage;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
 
 /**
  *
@@ -21,26 +16,24 @@ import java.util.List;
  */
 public class EvoPaint {
     private World world;
-    private Observer observer;
     private boolean running = true;
     MainFrame frame;
     private Config configuration;
+    private Perception perception;
 
     public EvoPaint() {
         this.configuration = new Config();
 
         // create empty world
-        ParallaxMap<Pixel> pixels = new ParallaxMap<Pixel>(new Pixel[configuration.defaultDimension.width * configuration.defaultDimension.height],
-                configuration.defaultDimension.width, configuration.defaultDimension.height);
-        List<PixelRelation> relations = new ArrayList<PixelRelation>();
         long time =0;
-        this.world = new World(pixels, relations, time, configuration);
+        this.world = new World(
+                new Pixel[configuration.dimension.width * configuration.dimension.height],
+                time, configuration);
         
-        // create observer
-        Perception perception = new Perception(
-                configuration.defaultDimension.width, configuration.defaultDimension.height, BufferedImage.TYPE_INT_RGB);
-        this.observer = new Observer(perception);
-        this.observer.percieve(this.world);
+        // create Image
+        perception = new Perception(
+                configuration.dimension.width, configuration.dimension.height, BufferedImage.TYPE_INT_RGB);
+        perception.percieve(this.world);
 
         this.frame = new MainFrame(this);
     }
@@ -58,8 +51,9 @@ public class EvoPaint {
             this.world.step();
               
             if (i % stepsPerRendering == 0) {
-               this.observer.percieve(this.world);
-               this.frame.getShowcase().paintImmediately(0, 0, this.frame.getShowcase().getWidth(), this.frame.getShowcase().getHeight());
+               perception.percieve(this.world);
+               frame.getShowcase().repaint();
+               //this.frame.getShowcase().paintImmediately(0, 0, this.frame.getShowcase().getWidth(), this.frame.getShowcase().getHeight());
                i = 0;
             }
             
@@ -68,11 +62,7 @@ public class EvoPaint {
     }
 
     public BufferedImage getImage() {
-        return this.observer.getPerception();
-    }
-
-    public Observer getObserver() {
-        return observer;
+        return perception.getImage();
     }
 
     public World getWorld() {

@@ -6,11 +6,12 @@
 package evopaint.interfaces;
 
 import evopaint.pixel.Pixel;
+import evopaint.util.mapping.ParallaxMap;
 
 /**
  *
  * @author tam
  */
-public interface IMatcher {
-    public float match(Pixel a, Pixel b);
+public interface IRequirement {
+    public boolean isMet(Pixel pixel, ParallaxMap<Pixel> map);
 }

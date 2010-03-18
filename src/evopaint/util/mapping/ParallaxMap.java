@@ -3,9 +3,10 @@
  * and open the template in the editor.
  */
 
-package evopaint.util;
+package evopaint.util.mapping;
 
 import evopaint.interfaces.IRandomNumberGenerator;
+import evopaint.util.logging.Logger;
 import java.util.AbstractCollection;
 import java.util.Iterator;
 
@@ -17,16 +18,16 @@ import java.util.Iterator;
 public class ParallaxMap<T> extends AbstractCollection<T> {
     private class ParallaxMapIterator<T> implements Iterator {
 
-        T [] array;
+        T [] data;
         int i;
 
         public boolean hasNext() {
-            if (i == array.length) {
+            if (i == data.length) {
                     return false;
             }
-            while (array[i] == null) {
+            while (data[i] == null) {
                 i++;
-                if (i == array.length) {
+                if (i == data.length) {
                     return false;
                 }
             }
@@ -34,20 +35,20 @@ public class ParallaxMap<T> extends AbstractCollection<T> {
         }
 
         public T next() {
-            return array[i++];
+            return data[i++];
         }
 
         public void remove() {
-            array[i] = null;
+            data[i] = null;
         }
 
         public ParallaxMapIterator(T [] array) {
             this.i = 0;
-            this.array = array;
+            this.data = array;
         }
     }
 
-    private T [] array;
+    private T [] data;
     protected int width;
     protected int height;
     //protected int size;
@@ -55,12 +56,12 @@ public class ParallaxMap<T> extends AbstractCollection<T> {
     @Override
     public int size() {
         //return size;
-        return array == null ? 0 : array.length;
+        return data == null ? 0 : data.length;
     }
 
     @Override
     public Iterator<T> iterator() {
-        return new ParallaxMapIterator(array);
+        return new ParallaxMapIterator(data);
     }
 
     public int getWidth() {
@@ -72,22 +73,36 @@ public class ParallaxMap<T> extends AbstractCollection<T> {
     }
 
     public T get(int x, int y) {
-        return array[clamp(y, height) * width + clamp(x, width)];
+        return data[clamp(y, height) * width + clamp(x, width)];
     }
 
+    public T get(AbsoluteCoordinate ac) {
+        return data[clamp(ac.y, height) * width + clamp(ac.x, width)];
+    }
+
+    @SuppressWarnings({"unchecked"})
+    public T [] getEnvironment(int x, int y) {
+        Object [] ret = new Object [9];
+        int loc = y * width + x;
+        for (int i = loc - 4, j = 0; i <= loc + 4; i++, j++) {
+            ret[j] = data[i];
+        }
+        return (T[])ret;
+    }
+ 
     public T getRandom(IRandomNumberGenerator rng) {
-        int rnd = rng.nextPositiveInt(array.length);
+        int rnd = rng.nextPositiveInt(data.length);
         int i = rnd;
-        while (array[i] == null) {
+        while (data[i] == null) {
             i++;
-            if (i == array.length) {
+            if (i == data.length) {
                 i = 0;
             }
             if (i == rnd) {
                 Logger.log.warning("calling getRandom() on empty ParallaxMap", (Object[])null);
             }
         }
-        return array[i];
+        return data[i];
     }
 
     public void set(int x, int y, T object) {
@@ -102,7 +117,7 @@ public class ParallaxMap<T> extends AbstractCollection<T> {
         }
         array[i] = object;
         */
-        array[clamp(y, height) * width + clamp(x, width)] = object;
+        data[clamp(y, height) * width + clamp(x, width)] = object;
     }
 
     public static int clamp(int index, int length) {
@@ -119,7 +134,7 @@ public class ParallaxMap<T> extends AbstractCollection<T> {
         assert (array != null);
         assert (width > 0);
         assert (height > 0);
-        this.array = array;
+        this.data = array;
         this.width = width;
         this.height = height;
     }

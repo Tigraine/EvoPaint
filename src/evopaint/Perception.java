@@ -5,6 +5,8 @@
 
 package evopaint;
 
+import evopaint.pixel.Pixel;
+import evopaint.util.mapping.ParallaxMap;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
 
@@ -16,10 +18,6 @@ public class Perception {
 
     private BufferedImage image;
     private int[] internalImage;
-
-    public void setPixel(int x, int y, int color) {
-        this.internalImage[y * this.image.getWidth() + x] = color;
-    }
 
     //public void clear() {
         // clear bufferedImage (by setting it to transparent)
@@ -36,6 +34,15 @@ public class Perception {
 
     public int getType() {
         return this.image.getType();
+    }
+
+    public void percieve(ParallaxMap<Pixel> map) {
+        for (Pixel pixel : map) {
+            if (pixel.getLocation().x >= 200 || pixel.getLocation().y >= 200)System.out.println(pixel.getLocation().x + " " + pixel.getLocation().y);
+            
+            internalImage[pixel.getLocation().y * image.getWidth() +
+                    pixel.getLocation().x] = pixel.getColor().getInteger();
+        }
     }
 
     public Perception(int width, int height, int type) {

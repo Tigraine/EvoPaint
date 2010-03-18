@@ -1,9 +1,9 @@
 package evopaint.commands;
 
 import evopaint.Config;
-import evopaint.entities.Selection;
+import evopaint.Selection;
 import evopaint.gui.SelectionReceiver;
-import evopaint.util.Logger;
+import evopaint.util.logging.Logger;
 
 import java.awt.*;
 
