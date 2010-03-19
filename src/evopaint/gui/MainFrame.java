@@ -15,6 +15,7 @@ public class MainFrame extends JFrame {
     private JMenuBar menuBar;
     private Showcase showcase;
     private JPopupMenu toolMenu;
+    private PaintOptionsPanel pop;
 
     private Class activeTool = null;
     private ResumeCommand resumeCommand;
@@ -44,6 +45,7 @@ public class MainFrame extends JFrame {
         this.toolMenu = new ToolMenu(this);
         this.showcase = new Showcase(this, evopaint.getWorld(), evopaint.getPerception());
         this.menuBar = new MenuBar(this, evopaint);
+        this.pop = new PaintOptionsPanel(showcase,this);
 
         initializeCommands(evopaint);
 
@@ -79,10 +81,12 @@ public class MainFrame extends JFrame {
 
         setJMenuBar(menuBar);
 
-        //BorderLayout layout = new BorderLayout();
-        //layout.addLayoutComponent(showcase, BorderLayout.CENTER);
-        //getContentPane().add(showcase);
-        //getContentPane().setLayout(layout);
+        BorderLayout layout = new BorderLayout();
+        layout.addLayoutComponent(showcase, BorderLayout.CENTER);
+        layout.addLayoutComponent(pop, BorderLayout.PAGE_END);
+        getContentPane().add(showcase);
+        getContentPane().add(pop);
+        getContentPane().setLayout(layout);
 
         
        /* layout.setHorizontalGroup(layout.createParallelGroup(
@@ -98,8 +102,8 @@ public class MainFrame extends JFrame {
         // at the correct coordinates later
         this.toolMenu.setVisible(true);
         this.toolMenu.setVisible(false);
-
-        add(showcase);
+//        add(pop);
+//        add(showcase);
         this.pack();
         this.setVisible(true);
     }
@@ -129,5 +133,9 @@ public class MainFrame extends JFrame {
     public void resize() {
         this.pack();
     }
+
+	public PaintOptionsPanel getPop() {
+		return pop;
+	}
 
 }

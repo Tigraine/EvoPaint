@@ -40,7 +40,6 @@ public class Showcase extends JPanel implements MouseInputListener, MouseWheelLi
     private SelectCommand selectCommand;
     private Selection currentSelection;
 
-
     @Override
     public void paintComponent(Graphics g) {
         BufferedImage image = perception.getImage();
@@ -104,6 +103,7 @@ public class Showcase extends JPanel implements MouseInputListener, MouseWheelLi
                 (int) (world.getWidth() * this.scale),
                 (int) (world.getHeight() * this.scale)));
         mainFrame.pack();
+        
     }
 
     public void mouseWheelMoved(MouseWheelEvent e) {
@@ -181,9 +181,10 @@ public class Showcase extends JPanel implements MouseInputListener, MouseWheelLi
         this.mainFrame = mf;
         this.world = world;
         this.perception = perception;
-        this.paintCommand = new PaintCommand(this.world,
-                                this.scale, affineTransform, 10);
+        this.paintCommand = new PaintCommand(this.world, this.mainFrame,this.scale, affineTransform, 50 ,0x000000FF);
+
         this.moveCommand = new MoveCommand(affineTransform, world.getWidth(), world.getHeight());
+
         this.selectCommand = new SelectCommand(this);
 
         addMouseWheelListener(this);
@@ -197,5 +198,9 @@ public class Showcase extends JPanel implements MouseInputListener, MouseWheelLi
     public void setSelection(Selection selection) {
         this.currentSelection = selection;
         Logger.log.error("Selection from %s-%s to %s-%s", selection.getStartPoint().getX(), selection.getStartPoint().getY(), selection.getEndPoint().getX(), selection.getEndPoint().getY());
+    }
+    
+    public void setpaintCommand(){
+    	this.paintCommand = new PaintCommand(this.world, this.mainFrame ,this.scale, affineTransform, mainFrame.getPop().getBrushsize(),  mainFrame.getPop().getColor());
     }
 }
