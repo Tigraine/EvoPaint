@@ -1,10 +1,14 @@
 package evopaint.commands;
 
-import evopaint.entities.Pixel;
-import evopaint.entities.World;
+
 import evopaint.gui.MainFrame;
 import evopaint.pixel.attributes.ColorAttribute;
-import evopaint.util.Logger;
+import evopaint.pixel.Pixel;
+import evopaint.World;
+import evopaint.util.mapping.AbsoluteCoordinate;
+import evopaint.util.Color;
+import evopaint.util.logging.Logger;
+
 
 import java.awt.Point;
 import java.awt.geom.AffineTransform;
@@ -62,20 +66,33 @@ public class PaintCommand extends AbstractCommand {
         Logger.log.information("Executing Paint command on x: %s y: %s", location.x, location.y);
         for (int i = 0 - this.radius / 2; i < radius / 2; i++) {
             for (int j = 0 - this.radius / 2; j < this.radius / 2; j++) {
-                Point point = new Point(this.location.x + i, this.location.y + j);
 
 
                // IdentityHashMap<Class,IAttribute> newAttributes = new IdentityHashMap<Class,IAttribute>();
                 //newAttributes.put(ColorAttribute.class, new ColorAttribute(0xFFFF0000));
                 //newAttributes.put(SpacialAttribute.class, new SpacialAttribute(point, new Dimension(1,1)));
-                Pixel pixie = this.world.locationToPixel(point);
-               
-                if(!(mf.getPop().getcBRandom())){
-                	pixie.setColorAttribute(new ColorAttribute(color));
-                }else{
-                	pixie.setColorAttribute(new ColorAttribute(world.getRandomNumberGenerator().nextPositiveInt()));
-                }
 
+                int x = location.x + j;
+                int y = location.y + i;
+                Pixel pixie = this.world.get(x, y);
+                if (pixie == null) {
+                	if(!(mf.getPop().getcBRandom())){
+                		pixie = new Pixel(world.getConfiguration().startingEnergy,
+                				new Color(color), new AbsoluteCoordinate(x, y, world));
+                    	world.set(x, y, pixie);
+                	}else{
+                		pixie = new Pixel(world.getConfiguration().startingEnergy,
+                				new Color(world.getRandomNumberGenerator().nextPositiveInt()), new AbsoluteCoordinate(x, y, world));
+                    	world.set(x, y, pixie);
+                		
+                	}
+                }
+                if(!(mf.getPop().getcBRandom())){
+                	pixie.getColor().setInteger(color);
+                }else{
+                	pixie.getColor().setInteger(world.getRandomNumberGenerator().nextPositiveInt());
+                }
+                
             }
         }
     }

@@ -5,7 +5,7 @@
 
 package evopaint.interfaces;
 
-import evopaint.entities.Pixel;
+import evopaint.pixel.Pixel;
 
 /**
  *

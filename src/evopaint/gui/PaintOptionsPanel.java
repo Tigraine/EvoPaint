@@ -32,13 +32,13 @@ import com.bric.swing.ColorPicker;
 import net.java.dev.colorchooser.ColorChooser;
 
 import evopaint.EvoPaint;
-import evopaint.interfaces.IAttribute;
+
 
 public class PaintOptionsPanel extends Panel{
 	
 	private int color;
 	private int brushsize;
-	private IdentityHashMap<Class,IAttribute> newAttributes = new IdentityHashMap<Class,IAttribute>();
+//	private IdentityHashMap<Class,IAttribute> newAttributes = new IdentityHashMap<Class,IAttribute>();
 	ColorChooser cc= null;
 	JSlider jBrushSizeSlider=null; 
 	Showcase sc;

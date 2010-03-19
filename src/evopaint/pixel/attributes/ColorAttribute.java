@@ -7,7 +7,6 @@
 
 package evopaint.pixel.attributes;
 
-import evopaint.interfaces.IAttribute;
 import java.awt.Color;
 
 
@@ -15,7 +14,7 @@ import java.awt.Color;
  *
  * @author tam
  */
-public class ColorAttribute implements IAttribute {
+public class ColorAttribute {
     private int color;
 
     public int getColor() {

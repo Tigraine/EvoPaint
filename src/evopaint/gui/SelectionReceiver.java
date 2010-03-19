@@ -1,6 +1,6 @@
 package evopaint.gui;
 
-import evopaint.entities.Selection;
+import evopaint.Selection;
 
 /**
  * Created by IntelliJ IDEA.

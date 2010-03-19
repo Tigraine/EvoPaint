@@ -9,7 +9,7 @@ import evopaint.Config;
 import evopaint.EvoPaint;
 import evopaint.Manifest;
 import evopaint.gui.MainFrame;
-import evopaint.util.Logger;
+import evopaint.util.logging.Logger;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;

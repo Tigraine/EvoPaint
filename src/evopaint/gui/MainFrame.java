@@ -42,7 +42,7 @@ public class MainFrame extends JFrame {
         this.activeTool = MoveCommand.class;
 
         this.toolMenu = new ToolMenu(this);
-        this.showcase = new Showcase(this, evopaint);
+        this.showcase = new Showcase(this, evopaint.getWorld());
         this.menuBar = new MenuBar(this, evopaint);
         this.pop = new PaintOptionsPanel(showcase,this);
 

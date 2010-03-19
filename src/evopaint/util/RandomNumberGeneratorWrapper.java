@@ -4,7 +4,7 @@
  * Eg. use /dev/random on UNIX systems "please move your mouse randomly to
  * generate the image"
  */
-package evopaint;
+package evopaint.util;
 
 import evopaint.interfaces.IRandomNumberGenerator;
 import java.awt.Dimension;

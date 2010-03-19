@@ -5,10 +5,13 @@
 
 package evopaint.interfaces;
 
+import evopaint.World;
+import evopaint.pixel.Pixel;
+
 /**
  *
  * @author tam
  */
-public interface IAttribute {
-    public String toString();
+public interface IRequirement {
+    public boolean isMet(Pixel us, World world);
 }

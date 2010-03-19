@@ -1,4 +1,4 @@
-package evopaint.util;
+package evopaint.util.logging;
 
 import evopaint.interfaces.IObjectRenderer;
 

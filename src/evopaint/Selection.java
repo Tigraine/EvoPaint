@@ -1,4 +1,4 @@
-package evopaint.entities;
+package evopaint;
 
 import java.awt.*;
 

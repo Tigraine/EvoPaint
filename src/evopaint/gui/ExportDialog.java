@@ -24,7 +24,7 @@ public class ExportDialog implements ActionListener {
     public void actionPerformed(java.awt.event.ActionEvent e) {
     	File file= null;
     	evopaint.setRunning(false);
-    	BufferedImage img = evopaint.getImage();
+    	BufferedImage img = frame.getShowcase().getImage();
     	
 
     	try{
