@@ -9,6 +9,7 @@ import evopaint.pixel.Pixel;
 import evopaint.util.mapping.ParallaxMap;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
+import java.util.Arrays;
 
 /**
  *
@@ -37,11 +38,12 @@ public class Perception {
     }
 
     public void percieve(ParallaxMap<Pixel> map) {
-        for (Pixel pixel : map) {
-            if (pixel.getLocation().x >= 200 || pixel.getLocation().y >= 200)System.out.println(pixel.getLocation().x + " " + pixel.getLocation().y);
-            
-            internalImage[pixel.getLocation().y * image.getWidth() +
-                    pixel.getLocation().x] = pixel.getColor().getInteger();
+        int height = map.getHeight();
+        for (int y = 0; y < height; y++) {
+            for (int x = 0; x < map.getWidth(); x++) {
+                Pixel pixie = map.get(x, y);
+                internalImage[y * height + x] = pixie == null ? 0 : pixie.getColor().getInteger();
+            }
         }
     }
 

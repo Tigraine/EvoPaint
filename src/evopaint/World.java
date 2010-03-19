@@ -18,6 +18,7 @@ import evopaint.util.mapping.AbsoluteCoordinate;
 import evopaint.util.logging.Logger;
 import evopaint.util.mapping.ParallaxMap;
 import evopaint.util.mapping.RelativeCoordinate;
+import java.util.Iterator;
 import org.uncommons.maths.random.CellularAutomatonRNG;
 import org.uncommons.maths.random.DefaultSeedGenerator;
 import org.uncommons.maths.random.SeedException;
@@ -95,9 +96,15 @@ public class World extends ParallaxMap<Pixel> {
 
     private void serial() {
         // TODO shuffle the order in which they act
-       for (Pixel pixel : this) {
-            pixel.act(this);
-        }
+       Iterator ii = this.iterator();
+       while (ii.hasNext()) {
+            Pixel pixie = (Pixel)ii.next();
+            if (pixie.isAlive()) {
+                pixie.act(this);
+            } else {
+                ii.remove();
+            }
+       }
     }
 /*
     private void parallel() {
