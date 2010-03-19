@@ -5,9 +5,9 @@
 
 package evopaint.pixel.requirements;
 
+import evopaint.World;
 import evopaint.pixel.Pixel;
 import evopaint.interfaces.IRequirement;
-import evopaint.util.mapping.ParallaxMap;
 import evopaint.util.mapping.RelativeCoordinate;
 
 /**
@@ -24,13 +24,13 @@ public class EnergyRequirement extends AbstractRequirement implements IRequireme
     private int comparationOperation;
     private int threshold;
 
-    public boolean isMet(Pixel pixie, ParallaxMap<Pixel> map) {
+    public boolean isMet(Pixel us, World world) {
         switch (comparationOperation) {
-            case GREATER_THAN: return pixie.getEnergy() > threshold;
-            case LESS_THAN: return pixie.getEnergy() < threshold;
-            case EQUAL: return pixie.getEnergy() == threshold;
-            case GREATER_OR_EQUAL: return pixie.getEnergy() >= threshold;
-            case LESS_OR_EQUAL: return pixie.getEnergy() <= threshold;
+            case GREATER_THAN: return us.getEnergy() > threshold;
+            case LESS_THAN: return us.getEnergy() < threshold;
+            case EQUAL: return us.getEnergy() == threshold;
+            case GREATER_OR_EQUAL: return us.getEnergy() >= threshold;
+            case LESS_OR_EQUAL: return us.getEnergy() <= threshold;
         }
         return false;
     }

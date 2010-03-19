@@ -5,9 +5,9 @@
 
 package evopaint.pixel.requirements;
 
+import evopaint.World;
 import evopaint.pixel.Pixel;
 import evopaint.interfaces.IRequirement;
-import evopaint.util.mapping.ParallaxMap;
 import evopaint.util.mapping.RelativeCoordinate;
 
 /**
@@ -40,7 +40,7 @@ public abstract class AbstractRequirement implements IRequirement {
         this.direction = direction;
     }
 
-    public abstract boolean isMet(Pixel pixel, ParallaxMap<Pixel> map);
+    public abstract boolean isMet(Pixel us, World world);
 
     public AbstractRequirement(RelativeCoordinate direction) {
         this.name = "Unnamed Requirement";

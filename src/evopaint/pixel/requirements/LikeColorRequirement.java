@@ -5,10 +5,10 @@
 
 package evopaint.pixel.requirements;
 
+import evopaint.World;
 import evopaint.pixel.Pixel;
 import evopaint.interfaces.IRequirement;
 import evopaint.util.Color;
-import evopaint.util.mapping.ParallaxMap;
 import evopaint.util.mapping.RelativeCoordinate;
 
 /**
@@ -45,8 +45,8 @@ public class LikeColorRequirement extends AbstractRequirement implements IRequir
         this.minLikeliness = minLikeliness;
     }
 
-    public boolean isMet(Pixel us, ParallaxMap<Pixel> map) {
-        Pixel them = map.get(us.getLocation(), direction);
+    public boolean isMet(Pixel us, World world) {
+        Pixel them = world.get(us.getLocation(), direction);
         if (them == null) {
             return false;
         }

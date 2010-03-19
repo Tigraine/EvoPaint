@@ -5,13 +5,13 @@
 
 package evopaint.interfaces;
 
+import evopaint.World;
 import evopaint.pixel.Pixel;
-import evopaint.util.mapping.ParallaxMap;
 
 /**
  *
  * @author tam
  */
 public interface IRequirement {
-    public boolean isMet(Pixel pixel, ParallaxMap<Pixel> map);
+    public boolean isMet(Pixel us, World world);
 }
