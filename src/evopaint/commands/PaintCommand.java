@@ -2,6 +2,8 @@ package evopaint.commands;
 
 import evopaint.entities.Pixel;
 import evopaint.entities.World;
+import evopaint.gui.MainFrame;
+import evopaint.pixel.attributes.ColorAttribute;
 import evopaint.util.Logger;
 
 import java.awt.Point;
@@ -11,6 +13,7 @@ import java.awt.geom.NoninvertibleTransformException;
 public class PaintCommand extends AbstractCommand {
     private World world;
     private int color;
+    private MainFrame mf;
 
     public double getScale() {
         return scale;
@@ -42,8 +45,9 @@ public class PaintCommand extends AbstractCommand {
 
     private Point location;
 
-    public PaintCommand(World world, double scale, AffineTransform affineTransform, int radius,int color) {
+    public PaintCommand(World world, MainFrame mf, double scale, AffineTransform affineTransform, int radius,int color) {
     	//public PaintCommand(World world, double scale, AffineTransform affineTransform, int radius, int color) {
+    	this.mf=mf;
         this.world = world;
         this.scale = scale;
         this.affineTransform = affineTransform;
@@ -65,7 +69,12 @@ public class PaintCommand extends AbstractCommand {
                 //newAttributes.put(ColorAttribute.class, new ColorAttribute(0xFFFF0000));
                 //newAttributes.put(SpacialAttribute.class, new SpacialAttribute(point, new Dimension(1,1)));
                 Pixel pixie = this.world.locationToPixel(point);
-                pixie.setColor(color);
+               
+                if(!(mf.getPop().getcBRandom())){
+                	pixie.setColorAttribute(new ColorAttribute(color));
+                }else{
+                	pixie.setColorAttribute(new ColorAttribute(world.getRandomNumberGenerator().nextPositiveInt()));
+                }
 
             }
         }

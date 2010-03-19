@@ -181,7 +181,7 @@ public class Showcase extends JPanel implements MouseInputListener, MouseWheelLi
         super();
         this.mainFrame = mf;
         this.evopaint = evo;
-        this.paintCommand = new PaintCommand(this.evopaint.getWorld(),this.scale, affineTransform, 50 ,0x000000FF);
+        this.paintCommand = new PaintCommand(this.evopaint.getWorld(), this.mainFrame,this.scale, affineTransform, 50 ,0x000000FF);
         this.moveCommand = new MoveCommand(affineTransform, evopaint.getImage());
         this.selectCommand = new SelectCommand(this);
 
@@ -199,6 +199,6 @@ public class Showcase extends JPanel implements MouseInputListener, MouseWheelLi
     }
     
     public void setpaintCommand(){
-    	this.paintCommand = new PaintCommand(this.evopaint.getWorld(),this.scale, affineTransform, mainFrame.getPop().getBrushsize(),  mainFrame.getPop().getColor());
+    	this.paintCommand = new PaintCommand(this.evopaint.getWorld(), this.mainFrame ,this.scale, affineTransform, mainFrame.getPop().getBrushsize(),  mainFrame.getPop().getColor());
     }
 }

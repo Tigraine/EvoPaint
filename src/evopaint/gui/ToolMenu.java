@@ -62,7 +62,7 @@ public class ToolMenu extends JPopupMenu {
         tools.get(1).addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseEntered(MouseEvent e) {
-            	
+            	mainFrame.getShowcase().setpaintCommand();
             	
                 mainFrame.setActiveTool(PaintCommand.class);
                 mainFrame.setCursor(new Cursor(Cursor.HAND_CURSOR));
