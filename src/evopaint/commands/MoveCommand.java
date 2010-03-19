@@ -2,15 +2,15 @@ package evopaint.commands;
 
 import java.awt.Point;
 import java.awt.geom.AffineTransform;
-import java.awt.image.BufferedImage;
 
 public class MoveCommand extends AbstractCommand {
 
     private double dxtrans, dytrans;
     private AffineTransform at;
-    private BufferedImage img;
     private Point source;
     private Point destination;
+    private int imageWidth;
+    private int imageHeight;
 
     public Point getSource() {
         return source;
@@ -44,9 +44,10 @@ public class MoveCommand extends AbstractCommand {
         this.dytrans = (dst.y - src.y) / scale;
     }
 
-    public MoveCommand(AffineTransform at, BufferedImage img) {
+    public MoveCommand(AffineTransform at, int width, int height) {
         this.at = at;
-        this.img = img;
+        this.imageWidth = width;
+        this.imageHeight = height;
     }
 
     public void execute() {
@@ -60,23 +61,21 @@ public class MoveCommand extends AbstractCommand {
         // and clamp it a little
         double dx = at.getTranslateX();
         double dy = at.getTranslateY();
-        int w = img.getWidth();
-        int h = img.getHeight();
 
-        while (dx < (-1) * w) {
-            at.translate(w, 0);
+        while (dx < (-1) * imageWidth) {
+            at.translate(imageWidth, 0);
             dx = at.getTranslateX();
         }
-        while (dx > w) {
-            at.translate((-1) * w, 0);
+        while (dx > imageWidth) {
+            at.translate((-1) * imageWidth, 0);
             dx = at.getTranslateX();
         }
-        while (dy < (-1) * h) {
-            at.translate(0, h);
+        while (dy < (-1) * imageHeight) {
+            at.translate(0, imageHeight);
             dy = at.getTranslateY();
         }
-        while (dy > h) {
-            at.translate(0, (-1) * h);
+        while (dy > imageHeight) {
+            at.translate(0, (-1) * imageHeight);
             dy = at.getTranslateY();
         }
 

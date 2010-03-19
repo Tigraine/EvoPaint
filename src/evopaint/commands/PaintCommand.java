@@ -63,7 +63,7 @@ public class PaintCommand extends AbstractCommand {
                 if (pixie == null) {
                     pixie = new Pixel(world.getConfiguration().startingEnergy,
                             new Color(0xFFFF0000), new AbsoluteCoordinate(x, y, world));
-                    world.set(x, y, pixie);
+                    world.set(pixie);
                 }
                 pixie.getColor().setInteger(0xFFFF0000);
             }

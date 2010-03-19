@@ -4,11 +4,10 @@
  */
 package evopaint.gui;
 
-import evopaint.EvoPaint;
 import evopaint.commands.*;
 import evopaint.Selection;
 import evopaint.World;
-import evopaint.pixel.Pixel;
+import evopaint.Perception;
 import evopaint.util.logging.Logger;
 
 import java.awt.Dimension;
@@ -20,7 +19,6 @@ import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
-import java.awt.image.DataBufferInt;
 import javax.swing.JPanel;
 import javax.swing.event.MouseInputListener;
 
@@ -30,6 +28,7 @@ import javax.swing.event.MouseInputListener;
  */
 public class Showcase extends JPanel implements MouseInputListener, MouseWheelListener, SelectionReceiver {
 
+    private Perception perception;
     private MainFrame mainFrame;
     private World world;
     private AffineTransform affineTransform = new AffineTransform();
@@ -40,23 +39,11 @@ public class Showcase extends JPanel implements MouseInputListener, MouseWheelLi
     private MoveCommand moveCommand;
     private SelectCommand selectCommand;
     private Selection currentSelection;
-    private BufferedImage image;
-    private int[] internalImage;
+
 
     @Override
     public void paintComponent(Graphics g) {
-
-        int height = world.getHeight();
-        for (int y = 0; y < height; y++) {
-            for (int x = 0; x < world.getWidth(); x++) {
-                Pixel pixie = world.get(x, y);
-                internalImage[y * height + x] =
-                        pixie == null ?
-                        world.getConfiguration().backgroundColor :
-                        pixie.getColor().getInteger();
-            }
-        }
-
+        BufferedImage image = perception.getImage();
         Graphics2D g2 = (Graphics2D) g;
         g2.scale(this.scale, this.scale);
 
@@ -95,10 +82,6 @@ public class Showcase extends JPanel implements MouseInputListener, MouseWheelLi
         g2.drawRenderedImage(image, this.affineTransform);
     }
 
-    public BufferedImage getImage() {
-        return image;
-    }
-
     public void zoomIn() {
         this.zoom += 1;
         this.rescale();
@@ -118,8 +101,8 @@ public class Showcase extends JPanel implements MouseInputListener, MouseWheelLi
         this.paintCommand.setScale(this.scale);
         this.moveCommand.setScale(this.scale);
         setPreferredSize(new Dimension(
-                (int) (image.getWidth() * this.scale),
-                (int) (image.getHeight() * this.scale)));
+                (int) (world.getWidth() * this.scale),
+                (int) (world.getHeight() * this.scale)));
         mainFrame.pack();
     }
 
@@ -192,17 +175,15 @@ public class Showcase extends JPanel implements MouseInputListener, MouseWheelLi
     public void mouseMoved(MouseEvent e) {
     }
 
-    public Showcase(MainFrame mf, World world) {
+    public Showcase(MainFrame mf, World world, Perception perception) {
         super();
-        this.image = new BufferedImage(world.getConfiguration().dimension.width,
-                world.getConfiguration().dimension.height, BufferedImage.TYPE_INT_RGB);
-        this.internalImage = ((DataBufferInt)this.image.getRaster().getDataBuffer()).getData();
 
         this.mainFrame = mf;
         this.world = world;
+        this.perception = perception;
         this.paintCommand = new PaintCommand(this.world,
                                 this.scale, affineTransform, 10);
-        this.moveCommand = new MoveCommand(affineTransform, image);
+        this.moveCommand = new MoveCommand(affineTransform, world.getWidth(), world.getHeight());
         this.selectCommand = new SelectCommand(this);
 
         addMouseWheelListener(this);

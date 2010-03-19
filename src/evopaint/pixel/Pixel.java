@@ -7,8 +7,6 @@ package evopaint.pixel;
 import evopaint.World;
 import evopaint.util.Color;
 import evopaint.util.mapping.AbsoluteCoordinate;
-import evopaint.util.mapping.ParallaxMap;
-import evopaint.util.mapping.RelativeCoordinate;
 
 /**
  *

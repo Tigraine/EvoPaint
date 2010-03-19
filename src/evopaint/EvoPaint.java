@@ -8,7 +8,6 @@ package evopaint;
 import evopaint.pixel.Pixel;
 import evopaint.gui.MainFrame;
 import java.awt.image.BufferedImage;
-import java.awt.image.DataBufferInt;
 
 /**
  *
@@ -19,8 +18,8 @@ public class EvoPaint {
     private boolean running = true;
     MainFrame frame;
     private Config configuration;
+    private Perception perception;
     
-
     public EvoPaint() {
         this.configuration = new Config();
 
@@ -30,12 +29,16 @@ public class EvoPaint {
                 new Pixel[configuration.dimension.width * configuration.dimension.height],
                 time, configuration);
 
+        this.perception = new Perception(new BufferedImage
+                (configuration.dimension.width, configuration.dimension.height,
+                BufferedImage.TYPE_INT_RGB));
+
+        this.perception.createImage(world);
+
         this.frame = new MainFrame(this);
     }
 
     public void work() {
-        int i = 0;
-        int stepsPerRendering = this.world.getConfiguration().stepsPerRendering;
         while (true) {
      
             if (this.running == false) {
@@ -43,16 +46,18 @@ public class EvoPaint {
                 continue;
             }
 
+            this.perception.createImage(world);
+
             this.world.step();
-              
-            if (i % stepsPerRendering == 0) {
-               frame.getShowcase().repaint();
-               //this.frame.getShowcase().paintImmediately(0, 0, this.frame.getShowcase().getWidth(), this.frame.getShowcase().getHeight());
-               i = 0;
-            }
-            
-            i++;
+
+            frame.getShowcase().repaint();
+
+           //this.frame.getShowcase().paintImmediately(0, 0, this.frame.getShowcase().getWidth(), this.frame.getShowcase().getHeight());
         }
+    }
+
+    public Perception getPerception() {
+        return perception;
     }
 
     public World getWorld() {

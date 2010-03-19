@@ -51,11 +51,10 @@ public class ParallaxMap<T> extends AbstractCollection<T> {
     private T [] data;
     protected int width;
     protected int height;
-    //protected int size;
+    private int nrElements;
 
     @Override
     public int size() {
-        //return size;
         return data == null ? 0 : data.length;
     }
 
@@ -70,6 +69,10 @@ public class ParallaxMap<T> extends AbstractCollection<T> {
 
     public int getHeight() {
         return height;
+    }
+
+    public T get(int i) {
+        return data[i];
     }
 
     public T get(int x, int y) {
@@ -98,6 +101,30 @@ public class ParallaxMap<T> extends AbstractCollection<T> {
         }
         return (T[])ret;
     }
+
+    public int [] getShuffledIndices(IRandomNumberGenerator rng) {
+        int [] indices = new int[nrElements];
+
+        for (int i = 0, ii = 0; ii < nrElements && i < data.length; i++) {
+            if (data[i] != null) {
+                indices[ii++] = i;
+            }
+        }
+        
+        // Durstenfeld's algorithm for permutating
+        // http://en.wikipedia.org/wiki/Fisher-Yates_shuffle
+        // n is the number of items remaining to be shuffled.
+        for (int n = indices.length; n > 1; n--) {
+            // Pick a random element to swap with the nth element.
+            int k = rng.nextPositiveInt(n);  // 0 <= k <= n-1 (0-based array)
+            // Swap array elements.
+            int tmp = indices[k];
+            indices[k] = indices[n-1];
+            indices[n-1] = tmp;
+        }
+
+        return indices;
+    }
  
     public T getRandom(IRandomNumberGenerator rng) {
         int rnd = rng.nextPositiveInt(data.length);
@@ -114,19 +141,20 @@ public class ParallaxMap<T> extends AbstractCollection<T> {
         return data[i];
     }
 
-    public void set(int x, int y, T object) {
-        /*
-        int i = clamp(y, height) * width + clamp(x, width);
-        if (array[i] == null) {
+    public void set(int i, T object) {
+        if (data[i] == null) {
             if (object != null) {
-                size++;
+                nrElements++;
             }
         } else if (object == null) {
-                size--;
+                nrElements--;
         }
-        array[i] = object;
-        */
-        data[clamp(y, height) * width + clamp(x, width)] = object;
+        data[i] = object;
+    }
+
+    protected void set(int x, int y, T object) {
+        int i = clamp(y, height) * width + clamp(x, width);
+        set(i, object);
     }
 
     public static int clamp(int index, int length) {

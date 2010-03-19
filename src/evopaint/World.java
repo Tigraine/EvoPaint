@@ -18,7 +18,6 @@ import evopaint.util.mapping.AbsoluteCoordinate;
 import evopaint.util.logging.Logger;
 import evopaint.util.mapping.ParallaxMap;
 import evopaint.util.mapping.RelativeCoordinate;
-import java.util.Iterator;
 import org.uncommons.maths.random.CellularAutomatonRNG;
 import org.uncommons.maths.random.DefaultSeedGenerator;
 import org.uncommons.maths.random.SeedException;
@@ -33,11 +32,6 @@ public class World extends ParallaxMap<Pixel> {
     private Config configuration;
     private long time;
     private IRandomNumberGenerator rng;
-
-    public boolean add(Pixel pixie) {
-        set(pixie.getLocation().x, pixie.getLocation().y, pixie);
-        return true;
-    }
 
     public void init() {
         this.initRNG();
@@ -89,22 +83,26 @@ public class World extends ParallaxMap<Pixel> {
                 Pixel pixie = new Pixel(energy, color, location);
                 pixie.learn(number1);
                 pixie.learn(number2);
-                set(location.x, location.y, pixie);
+                set(pixie);
             }
         }
     }
 
+    public void set(Pixel pixel) {
+        super.set(pixel.getLocation().x, pixel.getLocation().y, pixel);
+    }
+
     private void serial() {
-        // TODO shuffle the order in which they act
-       Iterator ii = this.iterator();
-       while (ii.hasNext()) {
-            Pixel pixie = (Pixel)ii.next();
+        int [] indices = getShuffledIndices(rng);
+        
+        for (int i = 0; i < indices.length; i++) {
+            Pixel pixie = get(indices[i]);
             if (pixie.isAlive()) {
                 pixie.act(this);
             } else {
-                ii.remove();
+                set(indices[i], null);
             }
-       }
+        }
     }
 /*
     private void parallel() {

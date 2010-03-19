@@ -2,6 +2,7 @@ package evopaint.gui;
 
 
 import evopaint.EvoPaint;
+import evopaint.Perception;
 import evopaint.commands.*;
 
 import java.awt.*;
@@ -41,7 +42,7 @@ public class MainFrame extends JFrame {
         this.activeTool = MoveCommand.class;
 
         this.toolMenu = new ToolMenu(this);
-        this.showcase = new Showcase(this, evopaint.getWorld());
+        this.showcase = new Showcase(this, evopaint.getWorld(), evopaint.getPerception());
         this.menuBar = new MenuBar(this, evopaint);
 
         initializeCommands(evopaint);

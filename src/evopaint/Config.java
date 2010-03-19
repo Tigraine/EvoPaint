@@ -19,7 +19,7 @@ public class Config {
     //public final int numThreads = 1;
     public final int backgroundColor = 0;
 
-    public final int startingEnergy = 10000;
+    public final int startingEnergy = 1000000;
 
     // if set to true a pixel will stop working down his rule set once the first
     // rule matches
