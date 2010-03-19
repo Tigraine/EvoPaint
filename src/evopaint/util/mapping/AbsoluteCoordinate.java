@@ -16,10 +16,6 @@ public class AbsoluteCoordinate extends Coordinate {
         return "(" + x + "/" + y + ")";
     }
 
-    public AbsoluteCoordinate getNeighboring(RelativeCoordinate rc, ParallaxMap map) {
-        return new AbsoluteCoordinate(this, rc, map);
-    }
-
     public AbsoluteCoordinate(int x, int y, ParallaxMap map) {
         super(x, y);
         this.x = ParallaxMap.clamp(x, map.width);

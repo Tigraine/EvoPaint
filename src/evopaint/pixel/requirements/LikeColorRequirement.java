@@ -46,7 +46,7 @@ public class LikeColorRequirement extends AbstractRequirement implements IRequir
     }
 
     public boolean isMet(Pixel us, ParallaxMap<Pixel> map) {
-        Pixel them = map.get(us.getLocation().getNeighboring(direction, map));
+        Pixel them = map.get(us.getLocation(), direction);
         if (them == null) {
             return false;
         }

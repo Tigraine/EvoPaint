@@ -17,7 +17,7 @@ import evopaint.util.mapping.RelativeCoordinate;
 public class EmptyRequirement extends AbstractRequirement implements IRequirement {
     
     public boolean isMet(Pixel pixie, ParallaxMap<Pixel> map) {
-        return map.get(pixie.getLocation().getNeighboring(direction, map)) == null;
+        return map.get(pixie.getLocation(), direction) == null;
     }
 
     public EmptyRequirement(RelativeCoordinate direction) {

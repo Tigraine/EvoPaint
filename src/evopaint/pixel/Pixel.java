@@ -27,10 +27,6 @@ public class Pixel extends AbstractAgent {
         return color;
     }
 
-    public Pixel getNeighbor(ParallaxMap<Pixel> map, RelativeCoordinate direction) {
-        return map.get(location.getNeighboring(direction, map));
-    }
-
     public void act(World world) {
         for (Rule rule : rules) {
             if (rule.apply(this, world) && world.getConfiguration().oneActionPerPixel) {

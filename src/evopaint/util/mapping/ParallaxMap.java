@@ -80,8 +80,12 @@ public class ParallaxMap<T> extends AbstractCollection<T> {
         return data[clamp(ac.y, height) * width + clamp(ac.x, width)];
     }
 
+    public T get(AbsoluteCoordinate ac, RelativeCoordinate rc) {
+        return data[clamp(ac.y + rc.y, height) * width + clamp(ac.x + rc.x, width)];
+    }
+
     @SuppressWarnings({"unchecked"})
-    public T [] getEnvironment(int x, int y) {
+    public T [] getNeighborhood(int x, int y) {
         Object [] ret = new Object [9];
         int loc = y * width + x;
         for (int i = loc - 4, j = 0; i <= loc + 4; i++, j++) {

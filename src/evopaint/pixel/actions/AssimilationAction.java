@@ -9,6 +9,7 @@ import evopaint.World;
 import evopaint.pixel.Pixel;
 import evopaint.interfaces.IAction;
 import evopaint.util.Color;
+import evopaint.util.mapping.AbsoluteCoordinate;
 import evopaint.util.mapping.RelativeCoordinate;
 
 /**
@@ -37,10 +38,10 @@ public class AssimilationAction extends AbstractAction implements IAction {
     }
     
     public int execute(Pixel us, World world) {
-        Pixel them = us.getNeighbor(world, direction);
+        Pixel them = world.get(us.getLocation(), direction);
         
         if (them == null) {
-            them = new Pixel(world.getConfiguration().startingEnergy, new Color(0xFF000000), us.getLocation().getNeighboring(direction, world));
+            them = new Pixel(world.getConfiguration().startingEnergy, new Color(0xFF000000), new AbsoluteCoordinate(us.getLocation(), direction, world));
             world.add(them);
         }
 
