@@ -5,6 +5,8 @@
 
 package evopaint.util.mapping;
 
+import evopaint.interfaces.IRandomNumberGenerator;
+
 /**
  *
  * @author tam
@@ -18,8 +20,10 @@ public class RelativeCoordinate extends Coordinate {
     public static final RelativeCoordinate SOUTH = new RelativeCoordinate(0, 1);
     public static final RelativeCoordinate SOUTH_WEST = new RelativeCoordinate(-1, 1);
     public static final RelativeCoordinate WEST = new RelativeCoordinate(-1, 0);
-    public static final RelativeCoordinate NNORTH_WEST = new RelativeCoordinate(-1, -1);
+    public static final RelativeCoordinate NORTH_WEST = new RelativeCoordinate(-1, -1);
 
+    public static final RelativeCoordinate ALL = new RelativeCoordinate();
+    
     private String name;
 
     @Override
@@ -27,7 +31,21 @@ public class RelativeCoordinate extends Coordinate {
         return name;
     }
 
-    public RelativeCoordinate(int x, int y) {
+    private RelativeCoordinate() {
+        super(0, 0);
+        this.name = "all/any that";
+    }
+
+    public RelativeCoordinate(boolean includingHere, IRandomNumberGenerator rng) {
+        this(rng.nextPositiveInt(3) - 1, rng.nextPositiveInt(3) - 1);
+        if (includingHere) {
+            this.name = "any(" + this.name + ")";
+        } else {
+            this.name = "any neighbor(" + this.name + ")";
+        }
+    }
+
+    private RelativeCoordinate(int x, int y) {
         super(x, y);
         switch (x) {
             case -1: switch(y) {

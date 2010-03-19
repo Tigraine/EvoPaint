@@ -81,7 +81,12 @@ public class ParallaxMap<T> extends AbstractCollection<T> {
     }
 
     public T get(AbsoluteCoordinate ac, RelativeCoordinate rc) {
+        assert(rc != RelativeCoordinate.ALL);
         return data[clamp(ac.y + rc.y, height) * width + clamp(ac.x + rc.x, width)];
+    }
+
+    public T [] getNeighborhood(AbsoluteCoordinate ac) {
+        return getNeighborhood(ac.x, ac.y);
     }
 
     @SuppressWarnings({"unchecked"})
