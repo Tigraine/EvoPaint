@@ -2,6 +2,7 @@ package evopaint.gui.listeners;
 
 import evopaint.gui.SelectionManager;
 
+import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -20,7 +21,10 @@ public class SelectionSetNameListener implements ActionListener {
     }
 
     public void actionPerformed(ActionEvent e) {
-        String textFromWindow = "Bla bla";
-        manager.getActiveSelection().setSelectionName("Bla bla");
+        String s = JOptionPane.showInputDialog("Please enter the new name for your selection");
+        if (s!= null && s.length() > 0)
+        {
+            manager.getActiveSelection().setSelectionName(s);
+        }
     }
 }
