@@ -85,9 +85,18 @@ public class Showcase extends JPanel implements MouseInputListener, MouseWheelLi
         g2.drawRenderedImage(image, this.affineTransform);
 
         if (isDrawingSelection && selectionStartPoint != null && currentMouseDragPosition != null) {
-            int selectionStartX = selectionStartPoint.x;
-            int selectionStartY = selectionStartPoint.y;
-            g2.drawRect(selectionStartX, selectionStartY, currentMouseDragPosition.x - selectionStartX, currentMouseDragPosition.y - selectionStartY);
+            Point startPoint = selectionStartPoint;
+            Point endPoint = currentMouseDragPosition;
+            if (startPoint.x > endPoint.x || startPoint.y > endPoint.y) {
+                Point temp = endPoint;
+                endPoint = startPoint;
+                startPoint = temp;
+                Logger.log.error("Swapped");
+            }
+            int width = endPoint.x - startPoint.x;
+            int height = endPoint.y - startPoint.y;
+            g2.drawRect(startPoint.x, startPoint.y, width, height);
+            Logger.log.error("Rect from: %s:%s to %s:%s", startPoint.x, startPoint.y, width, height);
         }
 
         for(Selection selection : currentSelections) {
