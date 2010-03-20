@@ -43,10 +43,19 @@ public class SelectCommand extends AbstractCommand {
         } else if (CurrentState == State.STARTED) {
             endPoint = mouseLocation;
             CurrentState = State.IDLE;
+            SwapPoints();
             Selection selection = new Selection(startPoint, endPoint);
             selection.setSelectionName("New Selection " + nextSelectionId);
             nextSelectionId++;
             signalReceivers(selection);
+        }
+    }
+
+    private void SwapPoints() {
+        if (startPoint.x > endPoint.x || startPoint.y > endPoint.y ) {
+            Point temp = endPoint;
+            endPoint = startPoint;
+            startPoint = temp;
         }
     }
 
