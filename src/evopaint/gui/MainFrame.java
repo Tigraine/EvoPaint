@@ -36,6 +36,13 @@ public class MainFrame extends JFrame {
     }
     
     public MainFrame(final EvoPaint evopaint) {
+        try {
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        } catch(Exception e) {
+            // TODO handle exceptions
+        }
+
+
         this.setBackground(Color.WHITE);
         this.setDefaultCloseOperation(this.EXIT_ON_CLOSE);
         this.setCursor(new Cursor(Cursor.MOVE_CURSOR));
