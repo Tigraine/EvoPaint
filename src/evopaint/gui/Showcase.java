@@ -17,6 +17,7 @@ import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
 import javax.swing.JPanel;
 import javax.swing.event.MouseInputListener;
 
@@ -36,11 +37,12 @@ public class Showcase extends JPanel implements MouseInputListener, MouseWheelLi
     private PaintCommand paintCommand;
     private MoveCommand moveCommand;
     private SelectCommand selectCommand;
-    private Selection currentSelection;
+    private ArrayList<Selection> currentSelections = new ArrayList<Selection>();
+    private Selection activeSelection;
 
     private boolean isDrawingSelection = false;
     private Point selectionStartPoint;
-    private Point currentMouseDragPosition;
+    private Point currentMouseDragPosition; 
 
     @Override
     public void paintComponent(Graphics g) {
@@ -86,6 +88,14 @@ public class Showcase extends JPanel implements MouseInputListener, MouseWheelLi
             int selectionStartX = selectionStartPoint.x;
             int selectionStartY = selectionStartPoint.y;
             g2.drawRect(selectionStartX, selectionStartY, currentMouseDragPosition.x - selectionStartX, currentMouseDragPosition.y - selectionStartY);
+        }
+
+        for(Selection selection : currentSelections) {
+            if (selection.isHighlighted())
+                selection.draw(g2);
+        }
+        if (activeSelection != null) {
+            activeSelection.draw(g2);
         }
     }
 
@@ -200,6 +210,7 @@ public class Showcase extends JPanel implements MouseInputListener, MouseWheelLi
         this.moveCommand = new MoveCommand(affineTransform, world.getWidth(), world.getHeight());
 
         this.selectCommand = new SelectCommand(this);
+        this.selectCommand.addSelectionListener((MenuBar)mf.menuBar);
 
         addMouseWheelListener(this);
         addMouseListener(this);
@@ -211,8 +222,9 @@ public class Showcase extends JPanel implements MouseInputListener, MouseWheelLi
         this.rescale();
     }
 
-    public void setSelection(Selection selection) {
-        this.currentSelection = selection;
+    public void addSelection(Selection selection) {
+        this.currentSelections.add(selection);
+        this.activeSelection = selection;
         Logger.log.error("Selection from %s-%s to %s-%s", selection.getStartPoint().getX(), selection.getStartPoint().getY(), selection.getEndPoint().getX(), selection.getEndPoint().getY());
     }
     

@@ -12,7 +12,7 @@ import javax.swing.*;
 
 public class MainFrame extends JFrame {
 
-    private JMenuBar menuBar;
+    public JMenuBar menuBar;
     private Showcase showcase;
     private JPopupMenu toolMenu;
     private PaintOptionsPanel pop;
@@ -49,8 +49,8 @@ public class MainFrame extends JFrame {
         this.activeTool = MoveCommand.class;
 
         this.toolMenu = new ToolMenu(this);
-        this.showcase = new Showcase(this, evopaint.getWorld(), evopaint.getPerception());
         this.menuBar = new MenuBar(this, evopaint);
+        this.showcase = new Showcase(this, evopaint.getWorld(), evopaint.getPerception());
         this.pop = new PaintOptionsPanel(showcase,this);
 
         initializeCommands(evopaint);

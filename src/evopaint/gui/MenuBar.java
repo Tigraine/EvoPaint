@@ -8,6 +8,7 @@ package evopaint.gui;
 import evopaint.Config;
 import evopaint.EvoPaint;
 import evopaint.Manifest;
+import evopaint.Selection;
 import evopaint.gui.MainFrame;
 import evopaint.util.logging.Logger;
 
@@ -28,9 +29,11 @@ import java.net.URISyntaxException;
  *
  * @author tam
  */
-public class MenuBar extends JMenuBar {
+public class MenuBar extends JMenuBar implements SelectionReceiver {
     private final MainFrame mainFrame;
     private EvoPaint evopaint;
+    private JMenu selectionMenu;
+    private JMenu activeSelections;
 
     public MenuBar(MainFrame parentFrame, final EvoPaint evopaint) {
         this.mainFrame = parentFrame;
@@ -62,7 +65,7 @@ public class MenuBar extends JMenuBar {
         worldMenu.add(endItem);
 
         // selection menu
-        JMenu selectionMenu = new JMenu("Selection");
+        selectionMenu = new JMenu("Selection");
         add(selectionMenu);
 
         selectionMenu.add(new JMenuItem("Set Name..."));
@@ -70,6 +73,8 @@ public class MenuBar extends JMenuBar {
         selectionMenu.add(new JMenuItem("Open as new"));
         selectionMenu.add(new JMenuItem("Copy"));
         selectionMenu.add(new JMenuItem("Options..."));
+        activeSelections = new JMenu("Selections");
+        selectionMenu.add(activeSelections);
 
         // info menu
         JMenu infoMenu = new JMenu();
@@ -122,5 +127,9 @@ public class MenuBar extends JMenuBar {
         });
         infoMenu.add(about);
 
+    }
+
+    public void addSelection(Selection selection) {
+        activeSelections.add(selection.getSelectionName());
     }
 }

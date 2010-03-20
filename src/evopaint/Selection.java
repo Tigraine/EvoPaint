@@ -13,6 +13,22 @@ public class Selection {
     private Point startPoint;
     private Point endPoint;
 
+    public void setHighlighted(boolean highlighted) {
+        this.highlighted = highlighted;
+    }
+
+    private boolean highlighted;
+
+    public String getSelectionName() {
+        return selectionName;
+    }
+
+    public void setSelectionName(String selectionName) {
+        this.selectionName = selectionName;
+    }
+
+    private String selectionName;
+
     public Selection(Point startPoint, Point endPoint)
     {
         this.startPoint = startPoint;
@@ -25,5 +41,13 @@ public class Selection {
 
     public Point getEndPoint() {
         return endPoint;
+    }
+
+    public void draw(Graphics2D gfx){
+        gfx.drawRect(startPoint.x, startPoint.y, endPoint.x - startPoint.x, endPoint.y - startPoint.y);
+    }
+
+    public boolean isHighlighted() {
+        return highlighted;
     }
 }

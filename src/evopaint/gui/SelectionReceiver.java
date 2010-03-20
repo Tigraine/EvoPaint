@@ -10,5 +10,5 @@ import evopaint.Selection;
  * To change this template use File | Settings | File Templates.
  */
 public interface SelectionReceiver {
-    public void setSelection(Selection selection);
+    public void addSelection(Selection selection);
 }
