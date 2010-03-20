@@ -4,6 +4,7 @@
  */
 package evopaint;
 
+import evopaint.interfaces.ICondition;
 import evopaint.pixel.Pixel;
 import evopaint.util.RandomNumberGeneratorWrapper;
 import evopaint.interfaces.IRandomNumberGenerator;
@@ -18,6 +19,7 @@ import evopaint.util.mapping.AbsoluteCoordinate;
 import evopaint.util.logging.Logger;
 import evopaint.util.mapping.ParallaxMap;
 import evopaint.util.mapping.RelativeCoordinate;
+import java.util.ArrayList;
 import org.uncommons.maths.random.CellularAutomatonRNG;
 import org.uncommons.maths.random.DefaultSeedGenerator;
 import org.uncommons.maths.random.SeedException;
@@ -62,11 +64,15 @@ public class World extends ParallaxMap<Pixel> {
     }
 
     private void createPixels() {
-        Rule number1 = new Rule(
-                new EnergyCondition(RelativeCoordinate.HERE, 20, EnergyCondition.GREATER_OR_EQUAL),
+        ArrayList<ICondition> conditions1 = new ArrayList<ICondition>();
+        conditions1.add(new EnergyCondition(RelativeCoordinate.HERE, 20, EnergyCondition.GREATER_OR_EQUAL));
+        Rule number1 = new Rule(conditions1,
                 new AssimilationAction(20, RelativeCoordinate.WEST, Color.MIX_HSB));
+
+        ArrayList<ICondition> conditions2 = new ArrayList<ICondition>();
+        conditions2.add(new LikeColorCondition("is a little blue", RelativeCoordinate.NORTH, new Color(0xFF), 0.1, Color.COMPARE_BY_BLUE));
         Rule number2 = new Rule(
-                new LikeColorCondition("is a little blue", RelativeCoordinate.NORTH, new Color(0xFF), 0.1, Color.COMPARE_BY_BLUE),
+                conditions2,
                 new RewardAction(10));
 
         System.out.println("Test with 2 hardcoded rules for every pixel:");
