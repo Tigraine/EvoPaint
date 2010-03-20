@@ -1,5 +1,7 @@
 package evopaint.gui.listeners;
 
+import evopaint.gui.SelectionManager;
+
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -11,7 +13,14 @@ import java.awt.event.ActionListener;
  * To change this template use File | Settings | File Templates.
  */
 public class SelectionSetNameListener implements ActionListener {
+    private SelectionManager manager;
+
+    public SelectionSetNameListener(SelectionManager manager) {
+        this.manager = manager;
+    }
+
     public void actionPerformed(ActionEvent e) {
-        //To change body of implemented methods use File | Settings | File Templates.
+        String textFromWindow = "Bla bla";
+        manager.getActiveSelection().setSelectionName("Bla bla");
     }
 }

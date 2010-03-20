@@ -52,10 +52,10 @@ public class MainFrame extends JFrame {
         this.toolMenu = new ToolMenu(this);
 
         CommandFactory commandFactory = new CommandFactory();
-        this.menuBar = new MenuBar(this, evopaint, new SelectionListenerFactory());
+        this.showcase = new Showcase(this, evopaint.getWorld(), evopaint.getPerception(), commandFactory);
+        this.menuBar = new MenuBar(this, evopaint, new SelectionListenerFactory(showcase));
         this.paintOptionsPanel = new PaintOptionsPanel(showcase,this);
         commandFactory.GetSelectCommand().addSelectionListener(menuBar);
-        this.showcase = new Showcase(this, evopaint.getWorld(), evopaint.getPerception(), commandFactory);
 
         initializeCommands(evopaint);
 

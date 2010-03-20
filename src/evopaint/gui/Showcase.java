@@ -31,7 +31,7 @@ import javax.swing.event.MouseInputListener;
  * @author tam
  */
 
-public class Showcase extends JPanel implements MouseInputListener, MouseWheelListener, SelectionObserver {
+public class Showcase extends JPanel implements MouseInputListener, MouseWheelListener, SelectionObserver, SelectionManager {
 
     private Perception perception;
     private MainFrame mainFrame;
@@ -239,5 +239,9 @@ public class Showcase extends JPanel implements MouseInputListener, MouseWheelLi
         this.currentSelections.add(selection);
         this.activeSelection = selection;
         Logger.log.error("Selection from %s-%s to %s-%s", selection.getStartPoint().getX(), selection.getStartPoint().getY(), selection.getEndPoint().getX(), selection.getEndPoint().getY());
+    }
+
+    public Selection getActiveSelection() {
+        return activeSelection;
     }
 }

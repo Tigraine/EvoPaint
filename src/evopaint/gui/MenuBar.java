@@ -20,6 +20,8 @@ import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Observable;
+import java.util.Observer;
 
 /**
  *
@@ -128,6 +130,26 @@ public class MenuBar extends JMenuBar implements SelectionObserver {
     }
 
     public void addSelection(Selection selection) {
-        activeSelections.add(selection.getSelectionName());
+        activeSelections.add(new SelectionWrapper(selection));
+    }
+
+    private class SelectionWrapper extends JMenuItem implements Observer
+    {
+        private Selection selection;
+
+        private SelectionWrapper(Selection selection) {
+            selection.addObserver(this);
+            this.selection = selection;
+            UpdateName(selection);
+        }
+
+        public void update(Observable o, Object arg) {
+            Selection selection = (Selection) o;
+            UpdateName(selection);
+        }
+
+        private void UpdateName(Selection selection) {
+            this.setText(selection.getSelectionName());
+        }
     }
 }
