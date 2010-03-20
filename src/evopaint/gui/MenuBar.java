@@ -5,22 +5,16 @@
 
 package evopaint.gui;
 
-import evopaint.Config;
 import evopaint.EvoPaint;
 import evopaint.Manifest;
 import evopaint.Selection;
 import evopaint.gui.MainFrame;
 import evopaint.util.logging.Logger;
 
-import javax.imageio.ImageIO;
 import javax.swing.*;
-import javax.swing.filechooser.FileNameExtensionFilter;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -29,7 +23,7 @@ import java.net.URISyntaxException;
  *
  * @author tam
  */
-public class MenuBar extends JMenuBar implements SelectionReceiver {
+public class MenuBar extends JMenuBar implements SelectionObserver {
     private final MainFrame mainFrame;
     private EvoPaint evopaint;
     private JMenu selectionMenu;

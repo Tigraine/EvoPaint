@@ -1,9 +1,8 @@
 package evopaint.commands;
 
 import evopaint.Selection;
-import evopaint.gui.SelectionReceiver;
+import evopaint.gui.SelectionObserver;
 
-import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 
@@ -15,10 +14,10 @@ import java.util.ArrayList;
  * To change this template use File | Settings | File Templates.
  */
 public class SelectCommand extends AbstractCommand {
-    private ArrayList<SelectionReceiver> receivers = new ArrayList<SelectionReceiver>();
+    private ArrayList<SelectionObserver> observers = new ArrayList<SelectionObserver>();
 
-    public void addSelectionListener(SelectionReceiver receiver) {
-        receivers.add(receiver);
+    public void addSelectionListener(SelectionObserver observer) {
+        observers.add(observer);
     }
 
     public enum State { IDLE, STARTED }
@@ -26,8 +25,8 @@ public class SelectCommand extends AbstractCommand {
 
     private Point mouseLocation;
 
-    public SelectCommand(SelectionReceiver receiver){
-        addSelectionListener(receiver);
+    public SelectCommand(SelectionObserver observer){
+        addSelectionListener(observer);
     }
 
     public void setLocation(Point location){
@@ -53,8 +52,8 @@ public class SelectCommand extends AbstractCommand {
     }
 
     private void signalReceivers(Selection selection){
-        for(SelectionReceiver receiver : receivers){
-            receiver.addSelection(selection);
+        for(SelectionObserver observer : observers){
+            observer.addSelection(selection);
         }
     }
 }

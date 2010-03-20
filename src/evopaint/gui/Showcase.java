@@ -25,7 +25,7 @@ import javax.swing.event.MouseInputListener;
  *
  * @author tam
  */
-public class Showcase extends JPanel implements MouseInputListener, MouseWheelListener, SelectionReceiver {
+public class Showcase extends JPanel implements MouseInputListener, MouseWheelListener, SelectionObserver {
 
     private Perception perception;
     private MainFrame mainFrame;
