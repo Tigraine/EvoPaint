@@ -9,6 +9,7 @@ import javax.swing.JPanel;
 import javax.swing.JSlider;
 
 import com.bric.swing.ColorPicker;
+import evopaint.gui.ruleeditor.JRuleEditor;
 import net.java.dev.colorchooser.ColorChooser;
 
 
@@ -17,6 +18,7 @@ public class PaintOptionsPanel extends Panel{
 	
 	private int color;
 	private int brushsize;
+        private JRuleEditor ruleEditor;
 //	private IdentityHashMap<Class,IAttribute> newAttributes = new IdentityHashMap<Class,IAttribute>();
 	ColorChooser cc= null;
 	JSlider jBrushSizeSlider=null; 
@@ -59,11 +61,14 @@ public class PaintOptionsPanel extends Panel{
 
 		
 		cc.addActionListener(myL);
-				
+
+                this.ruleEditor = new JRuleEditor();
+
 		this.setLayout(new BorderLayout());
 		this.add(jColorPanel,BorderLayout.LINE_START);
 		this.add(jBrushPanel,BorderLayout.CENTER);
 		this.add(jAttrPanel,BorderLayout.LINE_END);
+                this.add(ruleEditor,BorderLayout.PAGE_END);
 	}
 
 	public int getBrushsize() {
