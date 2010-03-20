@@ -71,29 +71,29 @@ public class ParallaxMap<T> extends AbstractCollection<T> {
         return height;
     }
 
-    public T get(int i) {
+    public synchronized T  get(int i) {
         return data[i];
     }
 
-    public T get(int x, int y) {
+    public synchronized T get(int x, int y) {
         return data[clamp(y, height) * width + clamp(x, width)];
     }
 
-    public T get(AbsoluteCoordinate ac) {
+    public synchronized T get(AbsoluteCoordinate ac) {
         return data[clamp(ac.y, height) * width + clamp(ac.x, width)];
     }
 
-    public T get(AbsoluteCoordinate ac, RelativeCoordinate rc) {
+    public synchronized T get(AbsoluteCoordinate ac, RelativeCoordinate rc) {
         assert(rc != RelativeCoordinate.ALL);
         return data[clamp(ac.y + rc.y, height) * width + clamp(ac.x + rc.x, width)];
     }
 
-    public T [] getNeighborhood(AbsoluteCoordinate ac) {
+    public synchronized T [] getNeighborhood(AbsoluteCoordinate ac) {
         return getNeighborhood(ac.x, ac.y);
     }
 
     @SuppressWarnings({"unchecked"})
-    public T [] getNeighborhood(int x, int y) {
+    public synchronized T [] getNeighborhood(int x, int y) {
         Object [] ret = new Object [9];
         int loc = y * width + x;
         for (int i = loc - 4, j = 0; i <= loc + 4; i++, j++) {
@@ -102,7 +102,7 @@ public class ParallaxMap<T> extends AbstractCollection<T> {
         return (T[])ret;
     }
 
-    public int [] getShuffledIndices(IRandomNumberGenerator rng) {
+    public synchronized int [] getShuffledIndices(IRandomNumberGenerator rng) {
         int [] indices = new int[nrElements];
 
         for (int i = 0, ii = 0; ii < nrElements && i < data.length; i++) {
@@ -141,7 +141,7 @@ public class ParallaxMap<T> extends AbstractCollection<T> {
         return data[i];
     }
 
-    public void set(int i, T object) {
+    public synchronized void set(int i, T object) {
         if (data[i] == null) {
             if (object != null) {
                 nrElements++;
@@ -152,7 +152,7 @@ public class ParallaxMap<T> extends AbstractCollection<T> {
         data[i] = object;
     }
 
-    protected void set(int x, int y, T object) {
+    protected synchronized void set(int x, int y, T object) {
         int i = clamp(y, height) * width + clamp(x, width);
         set(i, object);
     }
