@@ -91,12 +91,10 @@ public class Showcase extends JPanel implements MouseInputListener, MouseWheelLi
                 Point temp = endPoint;
                 endPoint = startPoint;
                 startPoint = temp;
-                Logger.log.error("Swapped");
             }
             int width = endPoint.x - startPoint.x;
             int height = endPoint.y - startPoint.y;
             g2.drawRect(startPoint.x, startPoint.y, width, height);
-            Logger.log.error("Rect from: %s:%s to %s:%s", startPoint.x, startPoint.y, width, height);
         }
 
         for(Selection selection : currentSelections) {
