@@ -47,6 +47,11 @@ public class Selection {
         draw(gfx, selection.getStartPoint(), selection.getEndPoint(), scale);
     }
     public static void draw(Graphics2D gfx, Point startPoint, Point endPoint, double scale){
+        if (startPoint.x > endPoint.x || startPoint.y > endPoint.y) {
+            Point temp = endPoint;
+            endPoint = startPoint;
+            startPoint = temp;
+        }
         gfx.drawRect((int)(startPoint.x / scale), (int)(startPoint.y / scale), (int)((endPoint.x - startPoint.x) / scale), (int)((endPoint.y - startPoint.y) / scale));
     }
 
