@@ -9,6 +9,8 @@ import evopaint.EvoPaint;
 import evopaint.Manifest;
 import evopaint.Selection;
 import evopaint.gui.MainFrame;
+import evopaint.gui.listeners.SelectionListenerFactory;
+import evopaint.gui.listeners.SelectionSetNameListener;
 import evopaint.util.logging.Logger;
 
 import javax.swing.*;
@@ -29,7 +31,7 @@ public class MenuBar extends JMenuBar implements SelectionObserver {
     private JMenu selectionMenu;
     private JMenu activeSelections;
 
-    public MenuBar(MainFrame parentFrame, final EvoPaint evopaint) {
+    public MenuBar(MainFrame parentFrame, final EvoPaint evopaint, SelectionListenerFactory listenerFactory) {
         this.mainFrame = parentFrame;
         this.evopaint = evopaint;
 
@@ -62,7 +64,9 @@ public class MenuBar extends JMenuBar implements SelectionObserver {
         selectionMenu = new JMenu("Selection");
         add(selectionMenu);
 
-        selectionMenu.add(new JMenuItem("Set Name..."));
+        JMenuItem selectionSetName = new JMenuItem("Set Name...");
+        selectionMenu.add(selectionSetName);
+        selectionSetName.addActionListener(listenerFactory.CreateSelectionSetNameListener());
         selectionMenu.add(new JMenuItem("Invert"));
         selectionMenu.add(new JMenuItem("Open as new"));
         selectionMenu.add(new JMenuItem("Copy"));

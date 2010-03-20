@@ -199,7 +199,7 @@ public class Showcase extends JPanel implements MouseInputListener, MouseWheelLi
     public void mouseMoved(MouseEvent e) {
     }
 
-    public Showcase(MainFrame mf, World world, Perception perception) {
+    public Showcase(MainFrame mf, World world, Perception perception, CommandFactory commandFactory) {
         super();
 
         this.mainFrame = mf;
@@ -209,8 +209,8 @@ public class Showcase extends JPanel implements MouseInputListener, MouseWheelLi
 
         this.moveCommand = new MoveCommand(affineTransform, world.getWidth(), world.getHeight());
 
-        this.selectCommand = new SelectCommand(this);
-        this.selectCommand.addSelectionListener((MenuBar)mf.menuBar);
+        this.selectCommand = commandFactory.GetSelectCommand();
+        selectCommand.addSelectionListener(this);
 
         addMouseWheelListener(this);
         addMouseListener(this);

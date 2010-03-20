@@ -25,8 +25,7 @@ public class SelectCommand extends AbstractCommand {
 
     private Point mouseLocation;
 
-    public SelectCommand(SelectionObserver observer){
-        addSelectionListener(observer);
+    public SelectCommand(){
     }
 
     public void setLocation(Point location){

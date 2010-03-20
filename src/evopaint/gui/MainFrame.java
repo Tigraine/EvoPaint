@@ -4,6 +4,7 @@ package evopaint.gui;
 import evopaint.EvoPaint;
 import evopaint.Perception;
 import evopaint.commands.*;
+import evopaint.gui.listeners.SelectionListenerFactory;
 
 import java.awt.*;
 import java.awt.event.KeyEvent;
@@ -12,7 +13,7 @@ import javax.swing.*;
 
 public class MainFrame extends JFrame {
 
-    public JMenuBar menuBar;
+    public MenuBar menuBar;
     private Showcase showcase;
     private JPopupMenu toolMenu;
     private PaintOptionsPanel pop;
@@ -49,8 +50,10 @@ public class MainFrame extends JFrame {
         this.activeTool = MoveCommand.class;
 
         this.toolMenu = new ToolMenu(this);
-        this.menuBar = new MenuBar(this, evopaint);
-        this.showcase = new Showcase(this, evopaint.getWorld(), evopaint.getPerception());
+        CommandFactory commandFactory = new CommandFactory();
+        this.menuBar = new MenuBar(this, evopaint, new SelectionListenerFactory());
+        commandFactory.GetSelectCommand().addSelectionListener(menuBar);
+        this.showcase = new Showcase(this, evopaint.getWorld(), evopaint.getPerception(), commandFactory);
         this.pop = new PaintOptionsPanel(showcase,this);
 
         initializeCommands(evopaint);
