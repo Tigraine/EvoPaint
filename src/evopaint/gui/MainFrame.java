@@ -3,6 +3,7 @@ package evopaint.gui;
 
 import evopaint.EvoPaint;
 import evopaint.commands.*;
+import evopaint.gui.listeners.SelectionListenerFactory;
 
 import java.awt.*;
 import java.awt.event.KeyEvent;
@@ -12,7 +13,7 @@ import javax.swing.Box;
 
 public class MainFrame extends JFrame {
 
-    private JMenuBar menuBar;
+    public MenuBar menuBar;
     private Showcase showcase;
     private JPopupMenu toolMenu;
     private PaintOptionsPanel paintOptionsPanel;
@@ -49,9 +50,12 @@ public class MainFrame extends JFrame {
         this.activeTool = MoveCommand.class;
 
         this.toolMenu = new ToolMenu(this);
-        this.menuBar = new MenuBar(this, evopaint);
+
+        CommandFactory commandFactory = new CommandFactory();
+        this.menuBar = new MenuBar(this, evopaint, new SelectionListenerFactory());
         this.paintOptionsPanel = new PaintOptionsPanel(showcase,this);
-        this.showcase = new Showcase(this, evopaint.getWorld(), evopaint.getPerception());
+        commandFactory.GetSelectCommand().addSelectionListener(menuBar);
+        this.showcase = new Showcase(this, evopaint.getWorld(), evopaint.getPerception(), commandFactory);
 
         initializeCommands(evopaint);
 
@@ -91,14 +95,7 @@ public class MainFrame extends JFrame {
 
         JPanel showCaseWrapper = new JPanel();
         showCaseWrapper.setLayout(new GridBagLayout());
-        //showCaseWrapper.add(Box.createVerticalStrut(10), BorderLayout.NORTH);
-        //showCaseWrapper.add(Box.createVerticalStrut(10), BorderLayout.SOUTH);
-        System.out.println((int)(getSize().getWidth()/2-showcase.getWidth()/2));
-        //showCaseWrapper.add(Box.createHorizontalGlue());
         showCaseWrapper.add(showcase);
-        //showCaseWrapper.add(Box.createHorizontalGlue());
-        
-        //showCaseWrapper.setsetAlignmentX(Component.CENTER_ALIGNMENT);
 
         setLayout(new BoxLayout(this.getContentPane(), BoxLayout.X_AXIS));
 
@@ -107,7 +104,6 @@ public class MainFrame extends JFrame {
         paintOptionsPanel.setAlignmentY(TOP_ALIGNMENT);
         leftPanel.add(paintOptionsPanel);
         add(leftPanel);
-        //leftPanel.add(Box.createGlue())
         add(showCaseWrapper);
 
 

@@ -11,9 +11,9 @@ import evopaint.Perception;
 import evopaint.util.logging.Logger;
 import java.awt.Cursor;
 import java.awt.Dimension;
-
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
@@ -22,6 +22,7 @@ import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
 import javax.swing.JPanel;
 import javax.swing.event.MouseInputListener;
 
@@ -29,7 +30,8 @@ import javax.swing.event.MouseInputListener;
  *
  * @author tam
  */
-public class Showcase extends JPanel implements MouseInputListener, MouseWheelListener, SelectionReceiver, ComponentListener {
+
+public class Showcase extends JPanel implements MouseInputListener, MouseWheelListener, SelectionObserver {
 
     private Perception perception;
     private MainFrame mainFrame;
@@ -41,14 +43,19 @@ public class Showcase extends JPanel implements MouseInputListener, MouseWheelLi
     private PaintCommand paintCommand;
     private MoveCommand moveCommand;
     private SelectCommand selectCommand;
-    private Selection currentSelection;
+    private ArrayList<Selection> currentSelections = new ArrayList<Selection>();
+    private Selection activeSelection;
+
+    private boolean isDrawingSelection = false;
+    private Point selectionStartPoint;
+    private Point currentMouseDragPosition; 
 
     @Override
     public void paintComponent(Graphics g) {
         BufferedImage image = perception.getImage();
         Graphics2D g2 = (Graphics2D) g;
         g2.scale(this.scale, this.scale);
-
+        
         // paint 9 tiles of the origininal image
         // clip it
         g2.clip(new Rectangle(image.getWidth(), image.getHeight()));
@@ -82,6 +89,20 @@ public class Showcase extends JPanel implements MouseInputListener, MouseWheelLi
         // back to normal
         affineTransform.translate(w, 0);
         g2.drawRenderedImage(image, this.affineTransform);
+
+        if (isDrawingSelection && selectionStartPoint != null && currentMouseDragPosition != null) {
+            int selectionStartX = selectionStartPoint.x;
+            int selectionStartY = selectionStartPoint.y;
+            g2.drawRect(selectionStartX, selectionStartY, currentMouseDragPosition.x - selectionStartX, currentMouseDragPosition.y - selectionStartY);
+        }
+
+        for(Selection selection : currentSelections) {
+            if (selection.isHighlighted())
+                selection.draw(g2);
+        }
+        if (activeSelection != null) {
+            activeSelection.draw(g2);
+        }
     }
 
     public void zoomIn() {
@@ -131,6 +152,8 @@ public class Showcase extends JPanel implements MouseInputListener, MouseWheelLi
                 moveCommand.setSource(e.getPoint());
                 //moveCommand.setScale(this.scale);
             } else if (mainFrame.getActiveTool() == SelectCommand.class) {
+                this.selectionStartPoint = e.getPoint();
+                this.isDrawingSelection = true;
                 selectCommand.setLocation(e.getPoint());
                 selectCommand.execute();
             }
@@ -145,6 +168,7 @@ public class Showcase extends JPanel implements MouseInputListener, MouseWheelLi
         if (e.getButton() == MouseEvent.BUTTON1) {
             leftButtonPressed = false;
             if (mainFrame.getActiveTool() == SelectCommand.class) {
+                this.isDrawingSelection = false;
                 selectCommand.setLocation(e.getPoint());
                 selectCommand.execute();
             }
@@ -155,6 +179,7 @@ public class Showcase extends JPanel implements MouseInputListener, MouseWheelLi
 
     public void mouseDragged(MouseEvent e) {
         if (leftButtonPressed == true) {
+            this.currentMouseDragPosition = e.getPoint();
             if (mainFrame.getActiveTool() == PaintCommand.class) {
                 // TODO: paint pixels between mouse drags
                 // TODO: Maybe refactor state into PaintCommand
@@ -181,23 +206,8 @@ public class Showcase extends JPanel implements MouseInputListener, MouseWheelLi
     public void mouseMoved(MouseEvent e) {
     }
 
-    public void componentHidden(ComponentEvent e) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
 
-    public void componentMoved(ComponentEvent e) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    public void componentResized(ComponentEvent e) {
-        System.out.println("yay");
-    }
-
-    public void componentShown(ComponentEvent e) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-    
-    public Showcase(MainFrame mf, World world, Perception perception) {
+    public Showcase(MainFrame mf, World world, Perception perception, CommandFactory commandFactory) {
         super();
 
         this.mainFrame = mf;
@@ -207,7 +217,8 @@ public class Showcase extends JPanel implements MouseInputListener, MouseWheelLi
 
         this.moveCommand = new MoveCommand(affineTransform, world.getWidth(), world.getHeight());
 
-        this.selectCommand = new SelectCommand(this);
+        this.selectCommand = commandFactory.GetSelectCommand();
+        selectCommand.addSelectionListener(this);
 
         addMouseWheelListener(this);
         addMouseListener(this);
@@ -219,8 +230,9 @@ public class Showcase extends JPanel implements MouseInputListener, MouseWheelLi
         this.rescale();
     }
 
-    public void setSelection(Selection selection) {
-        this.currentSelection = selection;
+    public void addSelection(Selection selection) {
+        this.currentSelections.add(selection);
+        this.activeSelection = selection;
         Logger.log.error("Selection from %s-%s to %s-%s", selection.getStartPoint().getX(), selection.getStartPoint().getY(), selection.getEndPoint().getX(), selection.getEndPoint().getY());
     }
 }

@@ -5,21 +5,18 @@
 
 package evopaint.gui;
 
-import evopaint.Config;
 import evopaint.EvoPaint;
 import evopaint.Manifest;
+import evopaint.Selection;
 import evopaint.gui.MainFrame;
+import evopaint.gui.listeners.SelectionListenerFactory;
+import evopaint.gui.listeners.SelectionSetNameListener;
 import evopaint.util.logging.Logger;
 
-import javax.imageio.ImageIO;
 import javax.swing.*;
-import javax.swing.filechooser.FileNameExtensionFilter;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -28,11 +25,13 @@ import java.net.URISyntaxException;
  *
  * @author tam
  */
-public class MenuBar extends JMenuBar {
+public class MenuBar extends JMenuBar implements SelectionObserver {
     private final MainFrame mainFrame;
     private EvoPaint evopaint;
+    private JMenu selectionMenu;
+    private JMenu activeSelections;
 
-    public MenuBar(MainFrame parentFrame, final EvoPaint evopaint) {
+    public MenuBar(MainFrame parentFrame, final EvoPaint evopaint, SelectionListenerFactory listenerFactory) {
         this.mainFrame = parentFrame;
         this.evopaint = evopaint;
 
@@ -62,14 +61,18 @@ public class MenuBar extends JMenuBar {
         worldMenu.add(endItem);
 
         // selection menu
-        JMenu selectionMenu = new JMenu("Selection");
+        selectionMenu = new JMenu("Selection");
         add(selectionMenu);
 
-        selectionMenu.add(new JMenuItem("Set Name..."));
+        JMenuItem selectionSetName = new JMenuItem("Set Name...");
+        selectionMenu.add(selectionSetName);
+        selectionSetName.addActionListener(listenerFactory.CreateSelectionSetNameListener());
         selectionMenu.add(new JMenuItem("Invert"));
         selectionMenu.add(new JMenuItem("Open as new"));
         selectionMenu.add(new JMenuItem("Copy"));
         selectionMenu.add(new JMenuItem("Options..."));
+        activeSelections = new JMenu("Selections");
+        selectionMenu.add(activeSelections);
 
         // info menu
         JMenu infoMenu = new JMenu();
@@ -122,5 +125,9 @@ public class MenuBar extends JMenuBar {
         });
         infoMenu.add(about);
 
+    }
+
+    public void addSelection(Selection selection) {
+        activeSelections.add(selection.getSelectionName());
     }
 }

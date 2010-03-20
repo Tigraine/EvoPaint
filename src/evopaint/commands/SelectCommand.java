@@ -1,11 +1,10 @@
 package evopaint.commands;
 
-import evopaint.Config;
 import evopaint.Selection;
-import evopaint.gui.SelectionReceiver;
-import evopaint.util.logging.Logger;
+import evopaint.gui.SelectionObserver;
 
 import java.awt.*;
+import java.util.ArrayList;
 
 /**
  * Created by IntelliJ IDEA.
@@ -15,16 +14,18 @@ import java.awt.*;
  * To change this template use File | Settings | File Templates.
  */
 public class SelectCommand extends AbstractCommand {
-    private SelectionReceiver receiver;
+    private ArrayList<SelectionObserver> observers = new ArrayList<SelectionObserver>();
+
+    public void addSelectionListener(SelectionObserver observer) {
+        observers.add(observer);
+    }
 
     public enum State { IDLE, STARTED }
     private State CurrentState = State.IDLE;
 
     private Point mouseLocation;
 
-    public SelectCommand(SelectionReceiver receiver){
-
-        this.receiver = receiver;
+    public SelectCommand(){
     }
 
     public void setLocation(Point location){
@@ -34,15 +35,24 @@ public class SelectCommand extends AbstractCommand {
     private Point startPoint;
     private Point endPoint;
 
+    private int nextSelectionId = 0;
     public void execute() {
-        Logger.log.error("Selection pressed");
         if (CurrentState == State.IDLE){
             startPoint = mouseLocation;
             CurrentState = State.STARTED;
         } else if (CurrentState == State.STARTED) {
             endPoint = mouseLocation;
             CurrentState = State.IDLE;
-            receiver.setSelection(new Selection(startPoint, endPoint));
+            Selection selection = new Selection(startPoint, endPoint);
+            selection.setSelectionName("New Selection " + nextSelectionId);
+            nextSelectionId++;
+            signalReceivers(selection);
+        }
+    }
+
+    private void signalReceivers(Selection selection){
+        for(SelectionObserver observer : observers){
+            observer.addSelection(selection);
         }
     }
 }

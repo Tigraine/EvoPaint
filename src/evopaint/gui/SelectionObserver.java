@@ -9,6 +9,6 @@ import evopaint.Selection;
  * Time: 12:51:55
  * To change this template use File | Settings | File Templates.
  */
-public interface SelectionReceiver {
-    public void setSelection(Selection selection);
+public interface SelectionObserver {
+    public void addSelection(Selection selection);
 }
