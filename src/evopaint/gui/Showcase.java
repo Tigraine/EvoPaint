@@ -11,10 +11,7 @@ import evopaint.Perception;
 import evopaint.util.logging.Logger;
 import java.awt.Cursor;
 
-import java.awt.Dimension;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.Rectangle;
+import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
@@ -41,12 +38,16 @@ public class Showcase extends JPanel implements MouseInputListener, MouseWheelLi
     private SelectCommand selectCommand;
     private Selection currentSelection;
 
+    private boolean isDrawingSelection = false;
+    private Point selectionStartPoint;
+    private Point currentMouseDragPosition;
+
     @Override
     public void paintComponent(Graphics g) {
         BufferedImage image = perception.getImage();
         Graphics2D g2 = (Graphics2D) g;
         g2.scale(this.scale, this.scale);
-
+        
         // paint 9 tiles of the origininal image
         // clip it
         g2.clip(new Rectangle(image.getWidth(), image.getHeight()));
@@ -80,6 +81,12 @@ public class Showcase extends JPanel implements MouseInputListener, MouseWheelLi
         // back to normal
         affineTransform.translate(w, 0);
         g2.drawRenderedImage(image, this.affineTransform);
+
+        if (isDrawingSelection && selectionStartPoint != null && currentMouseDragPosition != null) {
+            int selectionStartX = selectionStartPoint.x;
+            int selectionStartY = selectionStartPoint.y;
+            g2.drawRect(selectionStartX, selectionStartY, currentMouseDragPosition.x - selectionStartX, currentMouseDragPosition.y - selectionStartY);
+        }
     }
 
     public void zoomIn() {
@@ -128,6 +135,8 @@ public class Showcase extends JPanel implements MouseInputListener, MouseWheelLi
                 moveCommand.setSource(e.getPoint());
                 //moveCommand.setScale(this.scale);
             } else if (mainFrame.getActiveTool() == SelectCommand.class) {
+                this.selectionStartPoint = e.getPoint();
+                this.isDrawingSelection = true;
                 selectCommand.setLocation(e.getPoint());
                 selectCommand.execute();
             }
@@ -142,6 +151,7 @@ public class Showcase extends JPanel implements MouseInputListener, MouseWheelLi
         if (e.getButton() == MouseEvent.BUTTON1) {
             leftButtonPressed = false;
             if (mainFrame.getActiveTool() == SelectCommand.class) {
+                this.isDrawingSelection = false;
                 selectCommand.setLocation(e.getPoint());
                 selectCommand.execute();
             }
@@ -152,6 +162,7 @@ public class Showcase extends JPanel implements MouseInputListener, MouseWheelLi
 
     public void mouseDragged(MouseEvent e) {
         if (leftButtonPressed == true) {
+            this.currentMouseDragPosition = e.getPoint();
             if (mainFrame.getActiveTool() == PaintCommand.class) {
                 // TODO: paint pixels between mouse drags
                 // TODO: Maybe refactor state into PaintCommand
