@@ -1,5 +1,7 @@
 package evopaint.gui.listeners;
 
+import evopaint.gui.TextInputWindow;
+
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -12,6 +14,7 @@ import java.awt.event.ActionListener;
  */
 public class SelectionSetNameListener implements ActionListener {
     public void actionPerformed(ActionEvent e) {
-        //To change body of implemented methods use File | Settings | File Templates.
+        TextInputWindow window = new TextInputWindow();
+        window.setVisible(true);
     }
 }
