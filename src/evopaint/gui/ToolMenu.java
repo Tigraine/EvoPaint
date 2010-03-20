@@ -45,7 +45,7 @@ public class ToolMenu extends JPopupMenu {
             public void mouseEntered(MouseEvent e) {
             	
                 mainFrame.setActiveTool(MoveCommand.class);
-                //mainFrame.setCursor(new Cursor(Cursor.MOVE_CURSOR));
+                mainFrame.getShowcase().setCursor(new Cursor(Cursor.MOVE_CURSOR));
             }
 
             /*// bugged
@@ -65,7 +65,7 @@ public class ToolMenu extends JPopupMenu {
             	mainFrame.getShowcase().setpaintCommand();
             	
                 mainFrame.setActiveTool(PaintCommand.class);
-                //mainFrame.setCursor(new Cursor(Cursor.HAND_CURSOR));
+                mainFrame.getShowcase().setCursor(new Cursor(Cursor.HAND_CURSOR));
             }
         });
 
@@ -74,7 +74,7 @@ public class ToolMenu extends JPopupMenu {
             @Override
             public void mouseEntered(MouseEvent e) {
                 mainFrame.setActiveTool(SelectCommand.class);
-                //mainFrame.setCursor(new Cursor(Cursor.CROSSHAIR_CURSOR));
+                mainFrame.getShowcase().setCursor(new Cursor(Cursor.CROSSHAIR_CURSOR));
             }
         });
 

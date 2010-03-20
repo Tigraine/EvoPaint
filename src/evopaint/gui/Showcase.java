@@ -170,11 +170,6 @@ public class Showcase extends JPanel implements MouseInputListener, MouseWheelLi
     }
 
     public void mouseEntered(MouseEvent e) {
-        if (mainFrame.getActiveTool() == MoveCommand.class) {
-            setCursor(new Cursor(Cursor.MOVE_CURSOR));
-        } else if (mainFrame.getActiveTool() == PaintCommand.class) {
-            setCursor(new Cursor(Cursor.HAND_CURSOR));
-        }
     }
 
     public void mouseExited(MouseEvent e) {
@@ -198,6 +193,8 @@ public class Showcase extends JPanel implements MouseInputListener, MouseWheelLi
         addMouseWheelListener(this);
         addMouseListener(this);
         addMouseMotionListener(this);
+
+        setCursor(new Cursor(Cursor.MOVE_CURSOR));
 
         this.zoom = 10;
         this.rescale();
