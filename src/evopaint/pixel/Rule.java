@@ -8,30 +8,40 @@ package evopaint.pixel;
 import evopaint.World;
 import evopaint.interfaces.IAction;
 import evopaint.interfaces.ICondition;
+import java.util.List;
 
 /**
  *
  * @author tam
  */
 public class Rule {
-    private ICondition condition;
+    private List<ICondition> conditions;
     private IAction action;
 
     @Override
     public String toString() {
-        return "if " + condition + " then " + action;
+        String ret = "IF ";
+        for (ICondition condition : conditions) {
+            ret += condition + " AND";
+        }
+        ret.substring(0, ret.length() - 3);
+        ret += " THEN " + action;
+        return ret;
     }
 
     public boolean apply(Pixel pixel, World world) {
-        if (condition.isMet(pixel, world) == false) {
-            return false;
+        for (ICondition condition : conditions) {
+            if (condition.isMet(pixel, world) == false) {
+                return false;
+            }
         }
+        
         pixel.reward(action.execute(pixel, world));
         return true;
     }
 
-    public Rule(ICondition condition, IAction action) {
-        this.condition = condition;
+    public Rule(List<ICondition> conditions, IAction action) {
+        this.conditions = conditions;
         this.action = action;
     }
 }
