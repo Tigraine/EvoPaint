@@ -9,6 +9,7 @@ import evopaint.Selection;
 import evopaint.World;
 import evopaint.Perception;
 import evopaint.util.logging.Logger;
+import java.awt.Cursor;
 
 import java.awt.Dimension;
 import java.awt.Graphics;
@@ -106,6 +107,8 @@ public class Showcase extends JPanel implements MouseInputListener, MouseWheelLi
         
     }
 
+
+
     public void mouseWheelMoved(MouseWheelEvent e) {
         ZoomCommand zoomCommand ;
         if (e.getWheelRotation() < 0)
@@ -167,6 +170,11 @@ public class Showcase extends JPanel implements MouseInputListener, MouseWheelLi
     }
 
     public void mouseEntered(MouseEvent e) {
+        if (mainFrame.getActiveTool() == MoveCommand.class) {
+            setCursor(new Cursor(Cursor.MOVE_CURSOR));
+        } else if (mainFrame.getActiveTool() == PaintCommand.class) {
+            setCursor(new Cursor(Cursor.HAND_CURSOR));
+        }
     }
 
     public void mouseExited(MouseEvent e) {

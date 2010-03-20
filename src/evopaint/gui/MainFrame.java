@@ -45,7 +45,7 @@ public class MainFrame extends JFrame {
 
         this.setBackground(Color.WHITE);
         this.setDefaultCloseOperation(this.EXIT_ON_CLOSE);
-        this.setCursor(new Cursor(Cursor.MOVE_CURSOR));
+        //this.setCursor(new Cursor(Cursor.MOVE_CURSOR));
         
         this.activeTool = MoveCommand.class;
 
