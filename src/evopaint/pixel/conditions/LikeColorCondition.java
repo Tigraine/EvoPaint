@@ -3,11 +3,11 @@
  * and open the template in the editor.
  */
 
-package evopaint.pixel.requirements;
+package evopaint.pixel.conditions;
 
 import evopaint.World;
 import evopaint.pixel.Pixel;
-import evopaint.interfaces.IRequirement;
+import evopaint.interfaces.ICondition;
 import evopaint.util.Color;
 import evopaint.util.mapping.RelativeCoordinate;
 
@@ -15,7 +15,7 @@ import evopaint.util.mapping.RelativeCoordinate;
  *
  * @author tam
  */
-public class LikeColorRequirement extends AbstractRequirement implements IRequirement {
+public class LikeColorCondition extends AbstractCondition implements ICondition {
     
     private Color desiredColor;
     private double minLikeliness;
@@ -54,7 +54,7 @@ public class LikeColorRequirement extends AbstractRequirement implements IRequir
         return (desiredColor.isLike(theirColor, minLikeliness, colorCompareMode));
     }
 
-    public LikeColorRequirement(String name, RelativeCoordinate direction, Color desiredColor,
+    public LikeColorCondition(String name, RelativeCoordinate direction, Color desiredColor,
             double minLikeliness, int colorCompareMode) {
         super(name, direction);
         this.desiredColor = desiredColor;

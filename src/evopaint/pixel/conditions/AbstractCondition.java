@@ -3,18 +3,18 @@
  * and open the template in the editor.
  */
 
-package evopaint.pixel.requirements;
+package evopaint.pixel.conditions;
 
 import evopaint.World;
 import evopaint.pixel.Pixel;
-import evopaint.interfaces.IRequirement;
+import evopaint.interfaces.ICondition;
 import evopaint.util.mapping.RelativeCoordinate;
 
 /**
  *
  * @author tam
  */
-public abstract class AbstractRequirement implements IRequirement {
+public abstract class AbstractCondition implements ICondition {
 
     private String name;
     protected RelativeCoordinate direction;
@@ -42,12 +42,12 @@ public abstract class AbstractRequirement implements IRequirement {
 
     public abstract boolean isMet(Pixel us, World world);
 
-    public AbstractRequirement(RelativeCoordinate direction) {
-        this.name = "Unnamed Requirement";
+    public AbstractCondition(RelativeCoordinate direction) {
+        this.name = "Unnamed Condition";
         this.direction = direction;
     }
 
-    public AbstractRequirement(String name, RelativeCoordinate direction) {
+    public AbstractCondition(String name, RelativeCoordinate direction) {
         this.name = name;
         this.direction = direction;
     }

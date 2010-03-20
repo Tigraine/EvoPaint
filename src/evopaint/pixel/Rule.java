@@ -7,31 +7,31 @@ package evopaint.pixel;
 
 import evopaint.World;
 import evopaint.interfaces.IAction;
-import evopaint.interfaces.IRequirement;
+import evopaint.interfaces.ICondition;
 
 /**
  *
  * @author tam
  */
 public class Rule {
-    private IRequirement requirement;
+    private ICondition condition;
     private IAction action;
 
     @Override
     public String toString() {
-        return "if " + requirement + " then " + action;
+        return "if " + condition + " then " + action;
     }
 
     public boolean apply(Pixel pixel, World world) {
-        if (requirement.isMet(pixel, world) == false) {
+        if (condition.isMet(pixel, world) == false) {
             return false;
         }
         pixel.reward(action.execute(pixel, world));
         return true;
     }
 
-    public Rule(IRequirement requirement, IAction action) {
-        this.requirement = requirement;
+    public Rule(ICondition condition, IAction action) {
+        this.condition = condition;
         this.action = action;
     }
 }

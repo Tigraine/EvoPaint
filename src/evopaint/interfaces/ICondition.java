@@ -12,6 +12,6 @@ import evopaint.pixel.Pixel;
  *
  * @author tam
  */
-public interface IRequirement {
+public interface ICondition {
     public boolean isMet(Pixel us, World world);
 }

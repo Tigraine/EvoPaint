@@ -3,24 +3,24 @@
  * and open the template in the editor.
  */
 
-package evopaint.pixel.requirements;
+package evopaint.pixel.conditions;
 
 import evopaint.World;
 import evopaint.pixel.Pixel;
-import evopaint.interfaces.IRequirement;
+import evopaint.interfaces.ICondition;
 import evopaint.util.mapping.RelativeCoordinate;
 
 /**
  *
  * @author tam
  */
-public class EmptyRequirement extends AbstractRequirement implements IRequirement {
+public class EmptyCondition extends AbstractCondition implements ICondition {
     
     public boolean isMet(Pixel us, World world) {
         return world.get(us.getLocation(), direction) == null;
     }
 
-    public EmptyRequirement(RelativeCoordinate direction) {
+    public EmptyCondition(RelativeCoordinate direction) {
         super("is empty", direction);
     }
 

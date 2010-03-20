@@ -3,18 +3,18 @@
  * and open the template in the editor.
  */
 
-package evopaint.pixel.requirements;
+package evopaint.pixel.conditions;
 
 import evopaint.World;
 import evopaint.pixel.Pixel;
-import evopaint.interfaces.IRequirement;
+import evopaint.interfaces.ICondition;
 import evopaint.util.mapping.RelativeCoordinate;
 
 /**
  *
  * @author tam
  */
-public class EnergyRequirement extends AbstractRequirement implements IRequirement {
+public class EnergyCondition extends AbstractCondition implements ICondition {
     public static final int GREATER_THAN = 0;
     public static final int LESS_THAN = 1;
     public static final int EQUAL = 2;
@@ -35,7 +35,7 @@ public class EnergyRequirement extends AbstractRequirement implements IRequireme
         return false;
     }
 
-    public EnergyRequirement(RelativeCoordinate direction, int threshold, int comparisonOperation) {
+    public EnergyCondition(RelativeCoordinate direction, int threshold, int comparisonOperation) {
         super(direction);
         this.threshold = threshold;
         this.comparationOperation = comparisonOperation;

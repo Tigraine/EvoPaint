@@ -10,8 +10,8 @@ import evopaint.interfaces.IRandomNumberGenerator;
 import evopaint.pixel.Rule;
 import evopaint.pixel.actions.AssimilationAction;
 import evopaint.pixel.actions.RewardAction;
-import evopaint.pixel.requirements.EnergyRequirement;
-import evopaint.pixel.requirements.LikeColorRequirement;
+import evopaint.pixel.conditions.EnergyCondition;
+import evopaint.pixel.conditions.LikeColorCondition;
 import evopaint.util.Color;
 import evopaint.util.mapping.AbsoluteCoordinate;
 
@@ -63,10 +63,10 @@ public class World extends ParallaxMap<Pixel> {
 
     private void createPixels() {
         Rule number1 = new Rule(
-                new EnergyRequirement(RelativeCoordinate.HERE, 20, EnergyRequirement.GREATER_OR_EQUAL),
+                new EnergyCondition(RelativeCoordinate.HERE, 20, EnergyCondition.GREATER_OR_EQUAL),
                 new AssimilationAction(20, RelativeCoordinate.WEST, Color.MIX_HSB));
         Rule number2 = new Rule(
-                new LikeColorRequirement("is a little blue", RelativeCoordinate.NORTH, new Color(0xFF), 0.1, Color.COMPARE_BY_BLUE),
+                new LikeColorCondition("is a little blue", RelativeCoordinate.NORTH, new Color(0xFF), 0.1, Color.COMPARE_BY_BLUE),
                 new RewardAction(10));
 
         System.out.println("Test with 2 hardcoded rules for every pixel:");
