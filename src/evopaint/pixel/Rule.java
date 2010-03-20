@@ -8,15 +8,24 @@ package evopaint.pixel;
 import evopaint.World;
 import evopaint.interfaces.IAction;
 import evopaint.interfaces.ICondition;
+import evopaint.interfaces.IRule;
 import java.util.List;
 
 /**
  *
  * @author tam
  */
-public class Rule {
+public class Rule implements IRule {
     private List<ICondition> conditions;
     private IAction action;
+
+    public IAction getAction() {
+        return action;
+    }
+
+    public List<ICondition> getConditions() {
+        return conditions;
+    }
 
     @Override
     public String toString() {
