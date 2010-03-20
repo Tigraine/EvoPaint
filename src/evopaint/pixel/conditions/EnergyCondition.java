@@ -41,15 +41,15 @@ public class EnergyCondition extends AbstractCondition implements ICondition {
         this.comparationOperation = comparisonOperation;
         String name = "has energy";
         switch (comparationOperation) {
-            case GREATER_THAN: name = name.concat(" greater than " + threshold);
+            case GREATER_THAN: name = name.concat(" > " + threshold);
             break;
-            case LESS_THAN: name = name.concat(" less than " + threshold);
+            case LESS_THAN: name = name.concat(" < " + threshold);
             break;
-            case EQUAL: name = name.concat(" equals " + threshold);
+            case EQUAL: name = name.concat(" = " + threshold);
             break;
-            case GREATER_OR_EQUAL: name = name.concat(" greater or equal " + threshold);
+            case GREATER_OR_EQUAL: name = name.concat(" >= " + threshold);
             break;
-            case LESS_OR_EQUAL: name = name.concat(" lesser or equal " + threshold);
+            case LESS_OR_EQUAL: name = name.concat(" <= " + threshold);
             break;
         }
         setName(name);
