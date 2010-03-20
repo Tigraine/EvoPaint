@@ -98,17 +98,15 @@ public class Showcase extends JPanel implements MouseInputListener, MouseWheelLi
                 endPoint = startPoint;
                 startPoint = temp;
             }
-            int width = endPoint.x - startPoint.x;
-            int height = endPoint.y - startPoint.y;
-            g2.drawRect(startPoint.x, startPoint.y, width, height);
+            Selection.draw(g2, startPoint, endPoint, scale);
         }
 
         for(Selection selection : currentSelections) {
             if (selection.isHighlighted())
-                selection.draw(g2);
+                Selection.draw(g2, selection, scale);
         }
         if (activeSelection != null) {
-            activeSelection.draw(g2);
+            Selection.draw(g2, activeSelection, scale);
         }
     }
 
