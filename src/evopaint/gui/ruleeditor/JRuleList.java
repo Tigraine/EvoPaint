@@ -6,8 +6,8 @@
 package evopaint.gui.ruleeditor;
 
 import evopaint.interfaces.IRule;
+import evopaint.pixel.RuleSet;
 import java.awt.Component;
-import java.util.Collection;
 import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 import javax.swing.border.TitledBorder;
@@ -18,9 +18,9 @@ import javax.swing.border.TitledBorder;
  */
 public class JRuleList extends JPanel {
 
-    public JRuleList(Collection<IRule> rules) {
+    public JRuleList(RuleSet ruleSet) {
         
-        for (IRule rule :rules) {
+        for (IRule rule : ruleSet.getRules()) {
             add(new JRule(rule));
         }
         

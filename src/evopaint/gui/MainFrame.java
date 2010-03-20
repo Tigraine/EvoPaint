@@ -2,20 +2,20 @@ package evopaint.gui;
 
 
 import evopaint.EvoPaint;
-import evopaint.Perception;
 import evopaint.commands.*;
 
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import javax.swing.*;
+import javax.swing.Box;
 
 public class MainFrame extends JFrame {
 
     private JMenuBar menuBar;
     private Showcase showcase;
     private JPopupMenu toolMenu;
-    private PaintOptionsPanel pop;
+    private PaintOptionsPanel paintOptionsPanel;
 
     private Class activeTool = null;
     private ResumeCommand resumeCommand;
@@ -49,9 +49,9 @@ public class MainFrame extends JFrame {
         this.activeTool = MoveCommand.class;
 
         this.toolMenu = new ToolMenu(this);
-        this.showcase = new Showcase(this, evopaint.getWorld(), evopaint.getPerception());
         this.menuBar = new MenuBar(this, evopaint);
-        this.pop = new PaintOptionsPanel(showcase,this);
+        this.paintOptionsPanel = new PaintOptionsPanel(showcase,this);
+        this.showcase = new Showcase(this, evopaint.getWorld(), evopaint.getPerception());
 
         initializeCommands(evopaint);
 
@@ -87,29 +87,35 @@ public class MainFrame extends JFrame {
 
         setJMenuBar(menuBar);
 
-        BorderLayout layout = new BorderLayout();
-        layout.addLayoutComponent(showcase, BorderLayout.CENTER);
-        layout.addLayoutComponent(pop, BorderLayout.PAGE_END);
-        getContentPane().add(showcase);
-        getContentPane().add(pop);
-        getContentPane().setLayout(layout);
 
+
+        JPanel showCaseWrapper = new JPanel();
+        showCaseWrapper.setLayout(new GridBagLayout());
+        //showCaseWrapper.add(Box.createVerticalStrut(10), BorderLayout.NORTH);
+        //showCaseWrapper.add(Box.createVerticalStrut(10), BorderLayout.SOUTH);
+        System.out.println((int)(getSize().getWidth()/2-showcase.getWidth()/2));
+        //showCaseWrapper.add(Box.createHorizontalGlue());
+        showCaseWrapper.add(showcase);
+        //showCaseWrapper.add(Box.createHorizontalGlue());
         
-       /* layout.setHorizontalGroup(layout.createParallelGroup(
-                GroupLayout.Alignment.LEADING).addComponent(showcase,
-                GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE,
-                Short.MAX_VALUE));
-        layout.setVerticalGroup(layout.createParallelGroup(
-                GroupLayout.Alignment.LEADING).addComponent(showcase,
-                GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE,
-                Short.MAX_VALUE));
-       */
+        //showCaseWrapper.setsetAlignmentX(Component.CENTER_ALIGNMENT);
+
+        setLayout(new BoxLayout(this.getContentPane(), BoxLayout.X_AXIS));
+
+        JPanel leftPanel = new JPanel();
+        leftPanel.setLayout(new GridBagLayout());
+        paintOptionsPanel.setAlignmentY(TOP_ALIGNMENT);
+        leftPanel.add(paintOptionsPanel);
+        add(leftPanel);
+        //leftPanel.add(Box.createGlue())
+        add(showCaseWrapper);
+
+
         // XXX workaround to update size of toolmenu so it is displayed
         // at the correct coordinates later
         this.toolMenu.setVisible(true);
         this.toolMenu.setVisible(false);
-//        add(pop);
-//        add(showcase);
+
         this.pack();
         this.setVisible(true);
     }
@@ -141,7 +147,7 @@ public class MainFrame extends JFrame {
     }
 
 	public PaintOptionsPanel getPop() {
-		return pop;
+		return paintOptionsPanel;
 	}
 
 }

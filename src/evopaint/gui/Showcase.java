@@ -10,11 +10,13 @@ import evopaint.World;
 import evopaint.Perception;
 import evopaint.util.logging.Logger;
 import java.awt.Cursor;
-
 import java.awt.Dimension;
+
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
@@ -27,7 +29,7 @@ import javax.swing.event.MouseInputListener;
  *
  * @author tam
  */
-public class Showcase extends JPanel implements MouseInputListener, MouseWheelListener, SelectionReceiver {
+public class Showcase extends JPanel implements MouseInputListener, MouseWheelListener, SelectionReceiver, ComponentListener {
 
     private Perception perception;
     private MainFrame mainFrame;
@@ -103,8 +105,9 @@ public class Showcase extends JPanel implements MouseInputListener, MouseWheelLi
         setPreferredSize(new Dimension(
                 (int) (world.getWidth() * this.scale),
                 (int) (world.getHeight() * this.scale)));
+
+        revalidate();
         mainFrame.pack();
-        
     }
 
 
@@ -178,13 +181,29 @@ public class Showcase extends JPanel implements MouseInputListener, MouseWheelLi
     public void mouseMoved(MouseEvent e) {
     }
 
+    public void componentHidden(ComponentEvent e) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public void componentMoved(ComponentEvent e) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public void componentResized(ComponentEvent e) {
+        System.out.println("yay");
+    }
+
+    public void componentShown(ComponentEvent e) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+    
     public Showcase(MainFrame mf, World world, Perception perception) {
         super();
 
         this.mainFrame = mf;
         this.world = world;
         this.perception = perception;
-        this.paintCommand = new PaintCommand(this.world, this.mainFrame,this.scale, affineTransform, 50 ,0x000000FF);
+        this.paintCommand = new PaintCommand(this.world, this.mainFrame, this.scale, affineTransform, mainFrame.getPop());
 
         this.moveCommand = new MoveCommand(affineTransform, world.getWidth(), world.getHeight());
 
@@ -203,9 +222,5 @@ public class Showcase extends JPanel implements MouseInputListener, MouseWheelLi
     public void setSelection(Selection selection) {
         this.currentSelection = selection;
         Logger.log.error("Selection from %s-%s to %s-%s", selection.getStartPoint().getX(), selection.getStartPoint().getY(), selection.getEndPoint().getX(), selection.getEndPoint().getY());
-    }
-    
-    public void setpaintCommand(){
-    	this.paintCommand = new PaintCommand(this.world, this.mainFrame ,this.scale, affineTransform, mainFrame.getPop().getBrushsize(),  mainFrame.getPop().getColor());
     }
 }

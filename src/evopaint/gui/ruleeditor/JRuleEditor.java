@@ -9,13 +9,13 @@ import evopaint.interfaces.IAction;
 import evopaint.interfaces.ICondition;
 import evopaint.interfaces.IRule;
 import evopaint.pixel.Rule;
+import evopaint.pixel.RuleSet;
 import evopaint.pixel.actions.AssimilationAction;
 import evopaint.pixel.actions.RewardAction;
 import evopaint.pixel.conditions.EnergyCondition;
 import evopaint.pixel.conditions.LikeColorCondition;
 import evopaint.util.Color;
 import evopaint.util.mapping.RelativeCoordinate;
-import java.awt.Component;
 import java.awt.GridLayout;
 import java.util.ArrayList;
 import java.util.List;
@@ -53,10 +53,9 @@ public class JRuleEditor extends JPanel {
         conditionsB.add(conditions.get(1));
         rules.add(new Rule(conditionsB, actions.get(1)));
 
+        RuleSet ruleSet = new RuleSet("test ruleset", rules);
 
-
-        
-        jRuleList = new JRuleList(rules);
+        jRuleList = new JRuleList(ruleSet);
         jConditionPool = new JConditionPool(conditions);
         jActionPool = new JActionPool(actions);
 
