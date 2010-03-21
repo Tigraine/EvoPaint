@@ -35,14 +35,17 @@ public class Showcase extends JPanel implements MouseInputListener, MouseWheelLi
 
     private Perception perception;
     private MainFrame mainFrame;
-    private World world;
+
     private AffineTransform affineTransform = new AffineTransform();
     private boolean leftButtonPressed = false;
     private int zoom = 10;
     private double scale = (double)this.zoom / 10;
+
+
     private PaintCommand paintCommand;
     private MoveCommand moveCommand;
     private SelectCommand selectCommand;
+
     private ArrayList<Selection> currentSelections = new ArrayList<Selection>();
     private Selection activeSelection;
 
@@ -129,8 +132,8 @@ public class Showcase extends JPanel implements MouseInputListener, MouseWheelLi
         this.paintCommand.setScale(this.scale);
         this.moveCommand.setScale(this.scale);
         setPreferredSize(new Dimension(
-                (int) (world.getWidth() * this.scale),
-                (int) (world.getHeight() * this.scale)));
+                (int) (perception.getImage().getWidth() * this.scale),
+                (int) (perception.getImage().getHeight() * this.scale)));
 
         revalidate();
         mainFrame.pack();
@@ -216,11 +219,11 @@ public class Showcase extends JPanel implements MouseInputListener, MouseWheelLi
         super();
 
         this.mainFrame = mf;
-        this.world = world;
         this.perception = perception;
-        this.paintCommand = new PaintCommand(this.world, this.mainFrame, this.scale, affineTransform, mainFrame.getPop());
+        this.paintCommand = new PaintCommand(world, this.mainFrame, this.scale, affineTransform, mainFrame.getPop());
 
-        this.moveCommand = new MoveCommand(affineTransform, world.getWidth(), world.getHeight());
+        this.moveCommand = new MoveCommand(affineTransform,
+                perception.getImage().getWidth(), perception.getImage().getHeight());
 
         this.selectCommand = commandFactory.GetSelectCommand();
         selectCommand.addSelectionListener(this);
