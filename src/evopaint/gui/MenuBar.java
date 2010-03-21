@@ -17,6 +17,8 @@ import javax.swing.*;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -139,6 +141,7 @@ public class MenuBar extends JMenuBar implements SelectionObserver {
             selection.addObserver(this);
             this.selection = selection;
             UpdateName(selection);
+            addMouseListener(new SelectionMouseListener());
         }
 
         public void update(Observable o, Object arg) {
@@ -148,6 +151,29 @@ public class MenuBar extends JMenuBar implements SelectionObserver {
 
         private void UpdateName(Selection selection) {
             this.setText(selection.getSelectionName());
+        }
+
+        private class SelectionMouseListener implements MouseListener
+        {
+            public void mouseClicked(MouseEvent e) {
+                //To change body of implemented methods use File | Settings | File Templates.
+            }
+
+            public void mousePressed(MouseEvent e) {
+                //To change body of implemented methods use File | Settings | File Templates.
+            }
+
+            public void mouseReleased(MouseEvent e) {
+                //To change body of implemented methods use File | Settings | File Templates.
+            }
+
+            public void mouseEntered(MouseEvent e) {
+                selection.setHighlighted(true);
+            }
+
+            public void mouseExited(MouseEvent e) {
+                selection.setHighlighted(false);
+            }
         }
     }
 }
