@@ -7,6 +7,7 @@ package evopaint;
 
 import evopaint.interfaces.ITool;
 import java.awt.Dimension;
+import java.awt.geom.AffineTransform;
 
 /**
  *
@@ -30,6 +31,8 @@ public class Configuration {
     private boolean running = true;
     private Brush brush;
     private ITool activeTool;
+    private AffineTransform affineTransform;
+    private int zoom;
 
     public ITool getActiveTool() {
         return activeTool;
@@ -53,6 +56,26 @@ public class Configuration {
 
     public void setRunning(boolean running) {
         this.running = running;
+    }
+
+    public AffineTransform getAffineTransform() {
+        return affineTransform;
+    }
+
+    public void setAffineTransform(AffineTransform affineTransform) {
+        this.affineTransform = affineTransform;
+    }
+
+    public int getZoom() {
+        return zoom;
+    }
+
+    public void setZoom(int zoom) {
+        this.zoom = zoom;
+    }
+
+    public double getScale() {
+        return zoom / 10;
     }
 
     public Configuration() {}

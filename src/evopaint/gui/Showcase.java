@@ -221,8 +221,7 @@ public class Showcase extends JPanel implements MouseInputListener, MouseWheelLi
         this.perception = perception;
         this.paintCommand = new PaintCommand(world, this.mainFrame, this.scale, affineTransform, mainFrame.getPop());
 
-        this.moveCommand = new MoveCommand(affineTransform,
-                perception.getImage().getWidth(), perception.getImage().getHeight());
+        this.moveCommand = new MoveCommand(configuration);
 
         this.selectCommand = commandFactory.GetSelectCommand();
         selectCommand.addSelectionListener(this);

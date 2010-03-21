@@ -1,5 +1,6 @@
 package evopaint.commands;
 
+import evopaint.Configuration;
 import java.awt.Point;
 import java.awt.geom.AffineTransform;
 
@@ -44,10 +45,10 @@ public class MoveCommand extends AbstractCommand {
         this.dytrans = (dst.y - src.y) / scale;
     }
 
-    public MoveCommand(AffineTransform at, int width, int height) {
-        this.at = at;
-        this.imageWidth = width;
-        this.imageHeight = height;
+    public MoveCommand(Configuration configuration) {
+        this.at = configuration.getAffineTransform();
+        this.imageWidth = configuration.dimension.width;
+        this.imageHeight = configuration.dimension.height;
     }
 
     public void execute() {

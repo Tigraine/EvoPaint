@@ -39,7 +39,7 @@ public class MainFrame extends JFrame {
         this.activeTool = activeTool;
     }
     
-    public MainFrame(Configuration configufation, EvoPaint evopaint) {
+    public MainFrame(Configuration configuration, EvoPaint evopaint) {
         this.configuration = configuration;
 
         try {
@@ -54,7 +54,7 @@ public class MainFrame extends JFrame {
 
         this.toolMenu = new ToolMenu(this);
 
-        CommandFactory commandFactory = new CommandFactory();
+        CommandFactory commandFactory = new CommandFactory(configuration);
         this.paintOptionsPanel = new PaintOptionsPanel(showcase,this); // FIXME: paintoptionspanel must be initialized before showcase or we get a nullpointer exception. the semantics to not express this!!
         this.showcase = new Showcase(configuration, this, evopaint.getWorld(), evopaint.getPerception(), commandFactory);
         this.menuBar = new MenuBar(evopaint, new SelectionListenerFactory(showcase));
@@ -62,33 +62,7 @@ public class MainFrame extends JFrame {
 
         initializeCommands(evopaint);
 
-        addKeyListener(new KeyListener() {
-
-            public void keyTyped(KeyEvent e) {
-               // System.out.println(""+e.getK)
-                
-                //System.out.println("adsf");
-                //throw new UnsupportedOperationException("Not supported yet.");
-            }
-
-            public void keyPressed(KeyEvent e) {
-                if (e.getKeyCode() == KeyEvent.VK_PLUS) {
-                    zoomInCommand.execute();
-                } else if (e.getKeyCode() == KeyEvent.VK_MINUS) {
-                    zoomOutCommand.execute();
-                } else if (e.getKeyCode() == KeyEvent.VK_SPACE) {
-                    if (configuration.isRunning()) {
-                        pauseCommand.execute();
-                    } else {
-                        resumeCommand.execute();
-                    }
-                }
-            }
-
-            public void keyReleased(KeyEvent e) {
-                //throw new UnsupportedOperationException("Not supported yet.");
-            }
-        });
+        addKeyListener(new MainFrameKeyListener());
 
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
@@ -145,8 +119,34 @@ public class MainFrame extends JFrame {
         this.pack();
     }
 
-	public PaintOptionsPanel getPop() {
-		return paintOptionsPanel;
-	}
+    public PaintOptionsPanel getPop() {
+        return paintOptionsPanel;
+    }
+    
+    private class MainFrameKeyListener implements KeyListener {
 
+        public void keyTyped(KeyEvent e) {
+            // System.out.println(""+e.getK)
+            //System.out.println("adsf");
+            //throw new UnsupportedOperationException("Not supported yet.");
+        }
+
+        public void keyPressed(KeyEvent e) {
+            if (e.getKeyCode() == KeyEvent.VK_PLUS) {
+                zoomInCommand.execute();
+            } else if (e.getKeyCode() == KeyEvent.VK_MINUS) {
+                zoomOutCommand.execute();
+            } else if (e.getKeyCode() == KeyEvent.VK_SPACE) {
+                if (configuration.isRunning()) {
+                    pauseCommand.execute();
+                } else {
+                    resumeCommand.execute();
+                }
+            }
+        }
+
+        public void keyReleased(KeyEvent e) {
+            //throw new UnsupportedOperationException("Not supported yet.");
+        }
+    }
 }
