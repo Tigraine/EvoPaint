@@ -66,22 +66,30 @@ public class PaintCommand extends AbstractCommand {
                 int x = location.x + j;
                 int y = location.y + i;
                 Pixel pixie = this.world.get(x, y);
+                int pixelColorInteger = 0;
+                switch (mf.getPop().getColorMode()) {
+                    case PaintOptionsPanel.COLORMODE_FAIRY_DUST:
+                        pixelColorInteger = world.getRandomNumberGenerator().nextPositiveInt();
+                        break;
+                    case PaintOptionsPanel.COLORMODE_USE_EXISTING:
+                        if (pixie == null) {
+                            continue;
+                        }
+                        pixelColorInteger = pixie.getColor().getInteger();
+                        break;
+                    case PaintOptionsPanel.COLORMODE_COLOR:
+                        pixelColorInteger = paintOptionsPanel.getColor().getRGB();
+                        break;
+                    default:
+                        Logger.log.error("colorMode not set", new Object());
+                        System.exit(1);
+                }
                 if (pixie == null) {
-                    Color pixelColor = null;
-                    if (mf.getPop().isFairyDustTime()) {
-                        pixelColor = new Color(world.getRandomNumberGenerator().nextPositiveInt());
-                    } else {
-                        pixelColor = new Color(paintOptionsPanel.getColor().getRGB());
-                    }
                     pixie = new Pixel(world.getConfiguration().startingEnergy,
-                            pixelColor, new AbsoluteCoordinate(x, y, world));
+                        new Color(pixelColorInteger), new AbsoluteCoordinate(x, y, world));
                     world.set(pixie);
                 } else {
-                    if (mf.getPop().isFairyDustTime()) {
-                        pixie.getColor().setInteger(world.getRandomNumberGenerator().nextPositiveInt());
-                    } else {
-                        pixie.getColor().setInteger(paintOptionsPanel.getColor().getRGB());
-                    }
+                    pixie.getColor().setInteger(pixelColorInteger);
                 }
                 
             }

@@ -24,7 +24,7 @@ public class Pixel extends AbstractAgent {
     public Color getColor() {
         return color;
     }
-
+    
     public void act(World world) {
         for (Rule rule : rules) {
             if (rule.apply(this, world) && world.getConfiguration().oneActionPerPixel) {
