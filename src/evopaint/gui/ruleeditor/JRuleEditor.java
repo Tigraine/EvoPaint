@@ -14,7 +14,7 @@ import evopaint.pixel.actions.AssimilationAction;
 import evopaint.pixel.actions.RewardAction;
 import evopaint.pixel.conditions.EnergyCondition;
 import evopaint.pixel.conditions.LikeColorCondition;
-import evopaint.util.Color;
+import evopaint.pixel.PixelColor;
 import evopaint.util.mapping.RelativeCoordinate;
 import java.awt.GridLayout;
 import java.util.ArrayList;
@@ -39,9 +39,9 @@ public class JRuleEditor extends JPanel {
         List<IRule> rules = new ArrayList();
 
         conditions.add(new EnergyCondition(RelativeCoordinate.HERE, 20, EnergyCondition.GREATER_OR_EQUAL));
-        conditions.add(new LikeColorCondition("is a little blue", RelativeCoordinate.NORTH, new Color(0xFF), 0.1, Color.COMPARE_BY_BLUE));
+        conditions.add(new LikeColorCondition("is a little blue", RelativeCoordinate.NORTH, new PixelColor(0xFF), 0.1, PixelColor.COMPARE_BY_BLUE));
 
-        actions.add(new AssimilationAction(20, RelativeCoordinate.WEST, Color.MIX_HSB));
+        actions.add(new AssimilationAction(20, RelativeCoordinate.WEST, PixelColor.MIX_HSB));
         actions.add(new RewardAction(10));
 
         List conditionsA = new ArrayList();

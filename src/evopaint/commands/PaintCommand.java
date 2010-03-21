@@ -6,7 +6,7 @@ import evopaint.pixel.Pixel;
 import evopaint.World;
 import evopaint.gui.PaintOptionsPanel;
 import evopaint.util.mapping.AbsoluteCoordinate;
-import evopaint.util.Color;
+import evopaint.pixel.PixelColor;
 import evopaint.util.logging.Logger;
 
 
@@ -75,7 +75,7 @@ public class PaintCommand extends AbstractCommand {
                         if (pixie == null) {
                             continue;
                         }
-                        pixelColorInteger = pixie.getColor().getInteger();
+                        pixelColorInteger = pixie.getPixelColor().getInteger();
                         break;
                     case PaintOptionsPanel.COLORMODE_COLOR:
                         pixelColorInteger = paintOptionsPanel.getColor().getRGB();
@@ -86,10 +86,10 @@ public class PaintCommand extends AbstractCommand {
                 }
                 if (pixie == null) {
                     pixie = new Pixel(world.getConfiguration().startingEnergy,
-                        new Color(pixelColorInteger), new AbsoluteCoordinate(x, y, world));
+                        new PixelColor(pixelColorInteger), new AbsoluteCoordinate(x, y, world));
                     world.set(pixie);
                 } else {
-                    pixie.getColor().setInteger(pixelColorInteger);
+                    pixie.getPixelColor().setInteger(pixelColorInteger);
                 }
                 
             }

@@ -8,7 +8,7 @@ package evopaint.pixel.conditions;
 import evopaint.World;
 import evopaint.pixel.Pixel;
 import evopaint.interfaces.ICondition;
-import evopaint.util.Color;
+import evopaint.pixel.PixelColor;
 import evopaint.util.mapping.RelativeCoordinate;
 
 /**
@@ -17,7 +17,7 @@ import evopaint.util.mapping.RelativeCoordinate;
  */
 public class LikeColorCondition extends AbstractCondition implements ICondition {
     
-    private Color desiredColor;
+    private PixelColor desiredColor;
     private double minLikeliness;
     int colorCompareMode;
 
@@ -29,11 +29,11 @@ public class LikeColorCondition extends AbstractCondition implements ICondition 
         this.colorCompareMode = colorCompareMode;
     }
 
-    public Color getDesiredColor() {
+    public PixelColor getDesiredColor() {
         return desiredColor;
     }
 
-    public void setDesiredColor(Color desiredColor) {
+    public void setDesiredColor(PixelColor desiredColor) {
         this.desiredColor = desiredColor;
     }
 
@@ -50,11 +50,11 @@ public class LikeColorCondition extends AbstractCondition implements ICondition 
         if (them == null) {
             return false;
         }
-        Color theirColor = them.getColor();
+        PixelColor theirColor = them.getPixelColor();
         return (desiredColor.isLike(theirColor, minLikeliness, colorCompareMode));
     }
 
-    public LikeColorCondition(String name, RelativeCoordinate direction, Color desiredColor,
+    public LikeColorCondition(String name, RelativeCoordinate direction, PixelColor desiredColor,
             double minLikeliness, int colorCompareMode) {
         super(name, direction);
         this.desiredColor = desiredColor;

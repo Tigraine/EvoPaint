@@ -30,7 +30,7 @@ public class Perception {
                 internalImage[y * height + x] =
                         pixie == null ?
                         world.getConfiguration().backgroundColor :
-                        pixie.getColor().getInteger();
+                        pixie.getPixelColor().getInteger();
             }
         }
     }

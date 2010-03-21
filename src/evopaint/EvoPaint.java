@@ -17,11 +17,11 @@ public class EvoPaint {
     private World world;
     private boolean running = true;
     MainFrame frame;
-    private Config configuration;
+    private Configuration configuration;
     private Perception perception;
     
     public EvoPaint() {
-        this.configuration = new Config();
+        this.configuration = new Configuration();
 
         // create empty world
         long time =0;

@@ -5,13 +5,14 @@
 package evopaint;
 
 
+import evopaint.interfaces.ITool;
 import java.awt.Dimension;
 
 /**
  *
  * @author tam
  */
-public class Config {
+public class Configuration {
 
     public final Dimension dimension = new Dimension(200,200);
     public final Dimension initialPopulation = new Dimension(200, 200);
@@ -26,8 +27,11 @@ public class Config {
     public final boolean oneActionPerPixel = true;
 
     //public static final double mutationRate = 0.0;
+    private boolean running = true;
+    private Brush brush;
+    private ITool activeTool;
 
-    public Config() {}
+    public Configuration() {}
 
     /*
     TODO: Talk through with TAM

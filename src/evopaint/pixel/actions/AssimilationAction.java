@@ -8,7 +8,7 @@ package evopaint.pixel.actions;
 import evopaint.World;
 import evopaint.pixel.Pixel;
 import evopaint.interfaces.IAction;
-import evopaint.util.Color;
+import evopaint.pixel.PixelColor;
 import evopaint.util.mapping.AbsoluteCoordinate;
 import evopaint.util.mapping.RelativeCoordinate;
 
@@ -41,11 +41,11 @@ public class AssimilationAction extends AbstractAction implements IAction {
         Pixel them = world.get(us.getLocation(), direction);
         
         if (them == null) {
-            them = new Pixel(world.getConfiguration().startingEnergy, new Color(0xFF000000), new AbsoluteCoordinate(us.getLocation(), direction, world));
+            them = new Pixel(world.getConfiguration().startingEnergy, new PixelColor(0xFF000000), new AbsoluteCoordinate(us.getLocation(), direction, world));
             world.add(them);
         }
 
-        them.getColor().mixIn(us.getColor(), 0.5f, colorMixMode);
+        them.getPixelColor().mixIn(us.getPixelColor(), 0.5f, colorMixMode);
 
         return (-1) * cost;
     }

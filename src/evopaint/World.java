@@ -13,7 +13,7 @@ import evopaint.pixel.actions.AssimilationAction;
 import evopaint.pixel.actions.RewardAction;
 import evopaint.pixel.conditions.EnergyCondition;
 import evopaint.pixel.conditions.LikeColorCondition;
-import evopaint.util.Color;
+import evopaint.pixel.PixelColor;
 import evopaint.util.mapping.AbsoluteCoordinate;
 
 import evopaint.util.logging.Logger;
@@ -31,7 +31,7 @@ import org.uncommons.maths.random.SeedGenerator;
  */
 public class World extends ParallaxMap<Pixel> {
 
-    private Config configuration;
+    private Configuration configuration;
     private long time;
     private IRandomNumberGenerator rng;
 
@@ -67,10 +67,10 @@ public class World extends ParallaxMap<Pixel> {
         ArrayList<ICondition> conditions1 = new ArrayList<ICondition>();
         conditions1.add(new EnergyCondition(RelativeCoordinate.HERE, 20, EnergyCondition.GREATER_OR_EQUAL));
         Rule number1 = new Rule(conditions1,
-                new AssimilationAction(20, RelativeCoordinate.WEST, Color.MIX_HSB));
+                new AssimilationAction(20, RelativeCoordinate.WEST, PixelColor.MIX_HSB));
 
         ArrayList<ICondition> conditions2 = new ArrayList<ICondition>();
-        conditions2.add(new LikeColorCondition("is a little blue", RelativeCoordinate.NORTH, new Color(0xFF), 0.1, Color.COMPARE_BY_BLUE));
+        conditions2.add(new LikeColorCondition("is a little blue", RelativeCoordinate.NORTH, new PixelColor(0xFF), 0.1, PixelColor.COMPARE_BY_BLUE));
         Rule number2 = new Rule(
                 conditions2,
                 new RewardAction(10));
@@ -83,7 +83,7 @@ public class World extends ParallaxMap<Pixel> {
             for (int x = 0; x < configuration.initialPopulation.width; x++) {
 
                 int energy = configuration.startingEnergy;
-                Color color = new Color(rng.nextPositiveInt());
+                PixelColor color = new PixelColor(rng.nextPositiveInt());
                 AbsoluteCoordinate location = new AbsoluteCoordinate(configuration.dimension.width / 2 - configuration.initialPopulation.width / 2 + x,
                         configuration.dimension.height / 2 - configuration.initialPopulation.height / 2 + y, this);
                 Pixel pixie = new Pixel(energy, color, location);
@@ -162,7 +162,7 @@ public class World extends ParallaxMap<Pixel> {
         return ret;
     }
 */
-    public Config getConfiguration() {
+    public Configuration getConfiguration() {
         return configuration;
     }
 
@@ -195,7 +195,7 @@ public class World extends ParallaxMap<Pixel> {
         return rng;
     }
 
-    public World(Pixel [] pixels, long time, Config configuration) {
+    public World(Pixel [] pixels, long time, Configuration configuration) {
         super(pixels, configuration.dimension.width, configuration.dimension.height);
         this.time = time;
         this.configuration = configuration;

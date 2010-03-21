@@ -43,11 +43,9 @@ public class MainFrame extends JFrame {
             // TODO handle exceptions
         }
 
-
-        this.setBackground(Color.WHITE);
-        this.setDefaultCloseOperation(this.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(this.EXIT_ON_CLOSE);
         
-        this.activeTool = MoveCommand.class;
+        activeTool = MoveCommand.class;
 
         this.toolMenu = new ToolMenu(this);
 

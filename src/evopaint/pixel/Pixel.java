@@ -5,7 +5,6 @@
 package evopaint.pixel;
 
 import evopaint.World;
-import evopaint.util.Color;
 import evopaint.util.mapping.AbsoluteCoordinate;
 
 /**
@@ -14,14 +13,14 @@ import evopaint.util.mapping.AbsoluteCoordinate;
  */
 public class Pixel extends AbstractAgent {
 
-    private Color color;
+    private PixelColor color;
     private AbsoluteCoordinate location;
 
     public AbsoluteCoordinate getLocation() {
         return location;
     }
 
-    public Color getColor() {
+    public PixelColor getPixelColor() {
         return color;
     }
     
@@ -33,7 +32,7 @@ public class Pixel extends AbstractAgent {
         }
     }
 
-    public Pixel(int energy, Color color, AbsoluteCoordinate location) {
+    public Pixel(int energy, PixelColor color, AbsoluteCoordinate location) {
         super(energy);
         this.color = color;
         this.location = location;
