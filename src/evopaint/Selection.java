@@ -1,6 +1,7 @@
 package evopaint;
 
 import java.awt.*;
+import java.util.Observable;
 
 /**
  * Created by IntelliJ IDEA.
@@ -9,7 +10,7 @@ import java.awt.*;
  * Time: 12:41:14
  * To change this template use File | Settings | File Templates.
  */
-public class Selection {
+public class Selection extends Observable {
     private Point startPoint;
     private Point endPoint;
 
@@ -25,6 +26,8 @@ public class Selection {
 
     public void setSelectionName(String selectionName) {
         this.selectionName = selectionName;
+        setChanged();
+        notifyObservers();
     }
 
     private String selectionName;
@@ -43,8 +46,11 @@ public class Selection {
         return endPoint;
     }
 
-    public void draw(Graphics2D gfx){
-        gfx.drawRect(startPoint.x, startPoint.y, endPoint.x - startPoint.x, endPoint.y - startPoint.y);
+    public static void draw(Graphics2D gfx, Selection selection, double scale){
+        draw(gfx, selection.getStartPoint(), selection.getEndPoint(), scale);
+    }
+    public static void draw(Graphics2D gfx, Point startPoint, Point endPoint, double scale){
+        gfx.drawRect((int)(startPoint.x / scale), (int)(startPoint.y / scale), (int)((endPoint.x - startPoint.x) / scale), (int)((endPoint.y - startPoint.y) / scale));
     }
 
     public boolean isHighlighted() {

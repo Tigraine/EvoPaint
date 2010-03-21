@@ -12,3 +12,4 @@ import evopaint.Selection;
 public interface SelectionObserver {
     public void addSelection(Selection selection);
 }
+
