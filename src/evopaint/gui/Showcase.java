@@ -4,6 +4,7 @@
  */
 package evopaint.gui;
 
+import evopaint.Configuration;
 import evopaint.commands.*;
 import evopaint.Selection;
 import evopaint.World;
@@ -15,8 +16,6 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
-import java.awt.event.ComponentEvent;
-import java.awt.event.ComponentListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
@@ -35,6 +34,7 @@ public class Showcase extends JPanel implements MouseInputListener, MouseWheelLi
 
     private Perception perception;
     private MainFrame mainFrame;
+    private Configuration configuration;
 
     private AffineTransform affineTransform = new AffineTransform();
     private boolean leftButtonPressed = false;
@@ -215,9 +215,8 @@ public class Showcase extends JPanel implements MouseInputListener, MouseWheelLi
     }
 
 
-    public Showcase(MainFrame mf, World world, Perception perception, CommandFactory commandFactory) {
-        super();
-
+    public Showcase(Configuration configuration, MainFrame mf, World world, Perception perception, CommandFactory commandFactory) {
+        this.configuration = configuration;
         this.mainFrame = mf;
         this.perception = perception;
         this.paintCommand = new PaintCommand(world, this.mainFrame, this.scale, affineTransform, mainFrame.getPop());

@@ -36,6 +36,14 @@ public class Brush {
         this.colorInteger = colorInteger;
     }
 
+    public RuleSet getRuleSet() {
+        return ruleSet;
+    }
+
+    public void setRuleSet(RuleSet ruleSet) {
+        this.ruleSet = ruleSet;
+    }
+
     public Brush() {
     }
 }

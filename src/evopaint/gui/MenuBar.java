@@ -28,13 +28,11 @@ import java.util.Observer;
  * @author tam
  */
 public class MenuBar extends JMenuBar implements SelectionObserver {
-    private final MainFrame mainFrame;
     private EvoPaint evopaint;
     private JMenu selectionMenu;
     private JMenu activeSelections;
 
-    public MenuBar(MainFrame parentFrame, final EvoPaint evopaint, SelectionListenerFactory listenerFactory) {
-        this.mainFrame = parentFrame;
+    public MenuBar(final EvoPaint evopaint, SelectionListenerFactory listenerFactory) {
         this.evopaint = evopaint;
 
         // World Menu
@@ -55,7 +53,7 @@ public class MenuBar extends JMenuBar implements SelectionObserver {
         endItem.addActionListener(new ActionListener() {
 
             public void actionPerformed(ActionEvent e) {
-                if (JOptionPane.showConfirmDialog(mainFrame, "Do you really want to Exit?", "Exit EvoPaint", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+                if (JOptionPane.showConfirmDialog(getRootPane(), "Do you really want to Exit?", "Exit EvoPaint", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
                     System.exit(0);
                 }
             }
@@ -122,7 +120,7 @@ public class MenuBar extends JMenuBar implements SelectionObserver {
                                 "University of Klagenfurt, Austria.\n" +
                                 "\n" +
                                 "Enjoy.";
-                JOptionPane.showMessageDialog(mainFrame, msg, "About EvoPaint", JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(getRootPane(), msg, "About EvoPaint", JOptionPane.INFORMATION_MESSAGE);
             }
         });
         infoMenu.add(about);

@@ -35,13 +35,13 @@ public class EvoPaint {
 
         this.perception.createImage(world);
 
-        this.frame = new MainFrame(this);
+        this.frame = new MainFrame(configuration, this);
     }
 
     public void work() {
         while (true) {
      
-            if (this.running == false) {
+            if (configuration.isRunning() == false) {
                 try { Thread.sleep(500); } catch (InterruptedException e) {}
                 continue;
             }

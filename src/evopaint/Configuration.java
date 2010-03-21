@@ -31,6 +31,30 @@ public class Configuration {
     private Brush brush;
     private ITool activeTool;
 
+    public ITool getActiveTool() {
+        return activeTool;
+    }
+
+    public void setActiveTool(ITool activeTool) {
+        this.activeTool = activeTool;
+    }
+
+    public Brush getBrush() {
+        return brush;
+    }
+
+    public void setBrush(Brush brush) {
+        this.brush = brush;
+    }
+
+    public boolean isRunning() {
+        return running;
+    }
+
+    public void setRunning(boolean running) {
+        this.running = running;
+    }
+
     public Configuration() {}
 
     /*

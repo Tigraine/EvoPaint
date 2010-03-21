@@ -1,6 +1,7 @@
 package evopaint.gui;
 
 
+import evopaint.Configuration;
 import evopaint.EvoPaint;
 import evopaint.commands.*;
 import evopaint.gui.listeners.SelectionListenerFactory;
@@ -18,11 +19,17 @@ public class MainFrame extends JFrame {
     private JPopupMenu toolMenu;
     private PaintOptionsPanel paintOptionsPanel;
 
+    private Configuration configuration;
+
     private Class activeTool = null;
     private ResumeCommand resumeCommand;
     private PauseCommand pauseCommand;
     private ZoomCommand zoomOutCommand;
     private ZoomCommand zoomInCommand;
+
+    public JPopupMenu getToolMenu() {
+        return toolMenu;
+    }
 
     public Class getActiveTool() {
         return activeTool;
@@ -31,12 +38,10 @@ public class MainFrame extends JFrame {
     public void setActiveTool(Class activeTool) {
         this.activeTool = activeTool;
     }
-
-    public JPopupMenu getToolMenu() {
-        return toolMenu;
-    }
     
-    public MainFrame(final EvoPaint evopaint) {
+    public MainFrame(Configuration configufation, EvoPaint evopaint) {
+        this.configuration = configuration;
+
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         } catch(Exception e) {
@@ -51,8 +56,8 @@ public class MainFrame extends JFrame {
 
         CommandFactory commandFactory = new CommandFactory();
         this.paintOptionsPanel = new PaintOptionsPanel(showcase,this); // FIXME: paintoptionspanel must be initialized before showcase or we get a nullpointer exception. the semantics to not express this!!
-        this.showcase = new Showcase(this, evopaint.getWorld(), evopaint.getPerception(), commandFactory);
-        this.menuBar = new MenuBar(this, evopaint, new SelectionListenerFactory(showcase));
+        this.showcase = new Showcase(configuration, this, evopaint.getWorld(), evopaint.getPerception(), commandFactory);
+        this.menuBar = new MenuBar(evopaint, new SelectionListenerFactory(showcase));
         commandFactory.GetSelectCommand().addSelectionListener(menuBar);
 
         initializeCommands(evopaint);
@@ -72,7 +77,7 @@ public class MainFrame extends JFrame {
                 } else if (e.getKeyCode() == KeyEvent.VK_MINUS) {
                     zoomOutCommand.execute();
                 } else if (e.getKeyCode() == KeyEvent.VK_SPACE) {
-                    if (evopaint.isRunning()) {
+                    if (configuration.isRunning()) {
                         pauseCommand.execute();
                     } else {
                         resumeCommand.execute();
