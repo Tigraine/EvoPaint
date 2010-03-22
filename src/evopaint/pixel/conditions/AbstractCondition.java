@@ -17,6 +17,7 @@ import evopaint.util.mapping.RelativeCoordinate;
 public abstract class AbstractCondition implements ICondition {
 
     private String name;
+    private RelativeCoordinate direction;
 
     public String getName() {
         return name;
