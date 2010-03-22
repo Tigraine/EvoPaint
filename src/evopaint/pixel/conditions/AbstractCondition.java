@@ -17,7 +17,6 @@ import evopaint.util.mapping.RelativeCoordinate;
 public abstract class AbstractCondition implements ICondition {
 
     private String name;
-    protected RelativeCoordinate direction;
 
     public String getName() {
         return name;
@@ -29,26 +28,12 @@ public abstract class AbstractCondition implements ICondition {
 
     @Override
     public String toString() {
-        return direction + " " + name;
+        return name;
     }
     
-    public RelativeCoordinate getDirection() {
-        return direction;
-    }
+    public abstract boolean isMet(Pixel us, RelativeCoordinate direction, World world);
 
-    public void setDirection(RelativeCoordinate direction) {
-        this.direction = direction;
-    }
-
-    public abstract boolean isMet(Pixel us, World world);
-
-    public AbstractCondition(RelativeCoordinate direction) {
-        this.name = "Unnamed Condition";
-        this.direction = direction;
-    }
-
-    public AbstractCondition(String name, RelativeCoordinate direction) {
+    public AbstractCondition(String name) {
         this.name = name;
-        this.direction = direction;
     }
 }

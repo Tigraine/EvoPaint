@@ -45,7 +45,7 @@ public class LikeColorCondition extends AbstractCondition implements ICondition 
         this.minLikeliness = minLikeliness;
     }
 
-    public boolean isMet(Pixel us, World world) {
+    public boolean isMet(Pixel us, RelativeCoordinate direction, World world) {
         Pixel them = world.get(us.getLocation(), direction);
         if (them == null) {
             return false;
@@ -54,9 +54,9 @@ public class LikeColorCondition extends AbstractCondition implements ICondition 
         return (desiredColor.isLike(theirColor, minLikeliness, colorCompareMode));
     }
 
-    public LikeColorCondition(String name, RelativeCoordinate direction, PixelColor desiredColor,
+    public LikeColorCondition(String name, PixelColor desiredColor,
             double minLikeliness, int colorCompareMode) {
-        super(name, direction);
+        super(name);
         this.desiredColor = desiredColor;
         this.minLikeliness = minLikeliness;
         this.colorCompareMode = colorCompareMode;

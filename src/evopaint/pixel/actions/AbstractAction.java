@@ -8,23 +8,15 @@ package evopaint.pixel.actions;
 import evopaint.World;
 import evopaint.pixel.Pixel;
 import evopaint.interfaces.IAction;
+import evopaint.util.mapping.RelativeCoordinate;
 
 /**
  *
  * @author tam
  */
 public abstract class AbstractAction implements IAction {
-
-    protected int cost;
-    protected String name;
-
-    public int getCost() {
-        return cost;
-    }
-
-    public void setCost(int cost) {
-        this.cost = cost;
-    }
+    private String name;
+    private int reward;
 
     public String getName() {
         return name;
@@ -36,18 +28,21 @@ public abstract class AbstractAction implements IAction {
 
     @Override
     public String toString() {
-        return name;
+        return name.concat("(").concat(Integer.toString(reward)).concat(")");
     }
 
-    public abstract int execute(Pixel pixel, World world);
-
-    public AbstractAction(int cost) {
-        this.cost = cost;
-        this.name = "unnamed action";
+    public int getReward() {
+        return reward;
     }
 
-    public AbstractAction(int cost, String name) {
-        this.cost = cost;
+    public void setReward(int reward) {
+        this.reward = reward;
+    }
+
+    public abstract int execute(Pixel pixel, RelativeCoordinate direction, World world);
+
+    public AbstractAction(String name, int reward) {
         this.name = name;
+        this.reward = reward;
     }
 }

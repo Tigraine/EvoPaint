@@ -12,7 +12,10 @@ import evopaint.interfaces.IRandomNumberGenerator;
  * @author tam
  */
 public class RelativeCoordinate extends Coordinate {
-    public static final RelativeCoordinate HERE = new RelativeCoordinate(0, 0);
+    public static final int SPECIAL_ALL = 0;
+    public static final int SPECIAL_ANY = 1;
+
+    public static final RelativeCoordinate SELF = new RelativeCoordinate(0, 0);
     public static final RelativeCoordinate NORTH = new RelativeCoordinate(0, -1);
     public static final RelativeCoordinate NORTH_EAST = new RelativeCoordinate(1, -1);
     public static final RelativeCoordinate EAST = new RelativeCoordinate(1, 0);
@@ -22,26 +25,38 @@ public class RelativeCoordinate extends Coordinate {
     public static final RelativeCoordinate WEST = new RelativeCoordinate(-1, 0);
     public static final RelativeCoordinate NORTH_WEST = new RelativeCoordinate(-1, -1);
 
-    public static final RelativeCoordinate ALL = new RelativeCoordinate();
+    public static final RelativeCoordinate ALL = new RelativeCoordinate(SPECIAL_ALL);
+    public static final RelativeCoordinate ANY = new RelativeCoordinate(SPECIAL_ANY);
     
     private String name;
+    private int special;
 
     @Override
     public String toString() {
         return name;
     }
 
-    private RelativeCoordinate() {
+    public int getSpecial() {
+        return special;
+    }
+
+    private RelativeCoordinate(int special) {
         super(0, 0);
-        this.name = "all/any that";
+        this.special = special;
+        switch (special) {
+            case SPECIAL_ALL: this.name = "all";
+            break;
+            case SPECIAL_ANY: this.name = "any";
+            break;
+        }
     }
 
     public RelativeCoordinate(boolean includingHere, IRandomNumberGenerator rng) {
         this(rng.nextPositiveInt(3) - 1, rng.nextPositiveInt(3) - 1);
         if (includingHere) {
-            this.name = "any(" + this.name + ")";
+            this.name = "random(" + this.name + ")";
         } else {
-            this.name = "any neighbor(" + this.name + ")";
+            this.name = "random neighbor(" + this.name + ")";
         }
     }
 
@@ -55,7 +70,7 @@ public class RelativeCoordinate extends Coordinate {
             } break;
             case 0: switch(y) {
                 case -1: name = "north"; break;
-                case 0: name = "here"; break;
+                case 0: name = "self"; break;
                 case 1: name = "south"; break;
             } break;
             case 1: switch(y) {

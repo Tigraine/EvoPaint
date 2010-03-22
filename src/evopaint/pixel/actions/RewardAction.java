@@ -8,6 +8,7 @@ package evopaint.pixel.actions;
 import evopaint.World;
 import evopaint.pixel.Pixel;
 import evopaint.interfaces.IAction;
+import evopaint.util.mapping.RelativeCoordinate;
 
 /**
  *
@@ -15,27 +16,16 @@ import evopaint.interfaces.IAction;
  */
 public class RewardAction extends AbstractAction implements IAction {
 
-    protected int reward;
-
-    public int getReward() {
-        return reward;
-    }
-
-    public void setReward(int reward) {
-        this.reward = reward;
-    }
-
     @Override
     public String toString() {
-        return super.toString() + " " + reward;
+        return super.toString();
     }
 
-    public int execute(Pixel pixel, World world) {
-        return reward;
+    public int execute(Pixel pixel, RelativeCoordinate direction, World world) {
+        return getReward();
     }
 
     public RewardAction(int reward) {
-        super(0, "reward");
-        this.reward = reward;
+        super("reward", reward);
     }
 }

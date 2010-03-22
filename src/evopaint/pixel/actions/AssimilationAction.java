@@ -17,17 +17,7 @@ import evopaint.util.mapping.RelativeCoordinate;
  * @author tam
  */
 public class AssimilationAction extends AbstractAction implements IAction {
-
-    private RelativeCoordinate direction;
     private int colorMixMode;
-
-    public RelativeCoordinate getDirection() {
-        return direction;
-    }
-
-    public void setDirection(RelativeCoordinate direction) {
-        this.direction = direction;
-    }
 
     public int getColorMixMode() {
         return colorMixMode;
@@ -37,7 +27,7 @@ public class AssimilationAction extends AbstractAction implements IAction {
         this.colorMixMode = colorMixMode;
     }
     
-    public int execute(Pixel us, World world) {
+    public int execute(Pixel us, RelativeCoordinate direction, World world) {
         Pixel them = world.get(us.getLocation(), direction);
         
         if (them == null) {
@@ -47,12 +37,11 @@ public class AssimilationAction extends AbstractAction implements IAction {
 
         them.getPixelColor().mixIn(us.getPixelColor(), 0.5f, colorMixMode);
 
-        return (-1) * cost;
+        return getReward();
     }
 
-    public AssimilationAction(int cost, RelativeCoordinate direction, int colorMixMode) {
-        super(cost, "assimilate " + direction);
-        this.direction = direction;
+    public AssimilationAction(int reward, int colorMixMode) {
+        super("assimilate", reward);
         this.colorMixMode = colorMixMode;
     }
 }

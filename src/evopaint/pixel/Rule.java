@@ -7,8 +7,10 @@ package evopaint.pixel;
 
 import evopaint.World;
 import evopaint.interfaces.IAction;
-import evopaint.interfaces.ICondition;
 import evopaint.interfaces.IRule;
+import evopaint.pixel.actions.ActionWrapper;
+import evopaint.pixel.conditions.ConditionWrapper;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -16,41 +18,54 @@ import java.util.List;
  * @author tam
  */
 public class Rule implements IRule {
-    private List<ICondition> conditions;
-    private IAction action;
+    private List<ConditionWrapper> conditions;
+    private List<ActionWrapper> actions;
 
-    public IAction getAction() {
-        return action;
+    public List<ConditionWrapper> getConditions() {
+        return conditions;
     }
 
-    public List<ICondition> getConditions() {
-        return conditions;
+    public List<ActionWrapper> getActions() {
+        return actions;
     }
 
     @Override
     public String toString() {
         String ret = "IF ";
-        for (ICondition condition : conditions) {
-            ret += condition + " AND";
+        for (Iterator<ConditionWrapper> ii = conditions.iterator(); ii.hasNext();) {
+            ConditionWrapper directedCondition = ii.next();
+            ret += directedCondition;
+            if (ii.hasNext()) {
+                ret += " AND ";
+            }
         }
-        ret.substring(0, ret.length() - 3);
-        ret += " THEN " + action;
+        ret += " THEN ";
+        for (Iterator<ActionWrapper> ii = actions.iterator(); ii.hasNext();) {
+            ActionWrapper directedAction = ii.next();
+            ret += directedAction;
+            if (ii.hasNext()) {
+                ret += " AND ";
+            }
+        }
         return ret;
     }
 
     public boolean apply(Pixel pixel, World world) {
-        for (ICondition condition : conditions) {
+        for (ConditionWrapper condition : conditions) {
             if (condition.isMet(pixel, world) == false) {
                 return false;
             }
         }
-        
-        pixel.reward(action.execute(pixel, world));
+
+        for (ActionWrapper wrappedAction : actions) {
+            pixel.reward(wrappedAction.execute(pixel, world));
+        }
+
         return true;
     }
 
-    public Rule(List<ICondition> conditions, IAction action) {
+    public Rule(List<ConditionWrapper> conditions, List<ActionWrapper> actions) {
         this.conditions = conditions;
-        this.action = action;
+        this.actions = actions;
     }
 }

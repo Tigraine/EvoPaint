@@ -7,11 +7,13 @@ package evopaint.interfaces;
 
 import evopaint.World;
 import evopaint.pixel.Pixel;
+import evopaint.util.mapping.RelativeCoordinate;
 
 /**
  *
  * @author tam
  */
 public interface IAction {
-    public int execute(Pixel pixel, World world);
+    public int getReward();
+    public int execute(Pixel pixel, RelativeCoordinate direction, World world);
 }

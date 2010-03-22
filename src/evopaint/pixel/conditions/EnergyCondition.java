@@ -24,7 +24,7 @@ public class EnergyCondition extends AbstractCondition implements ICondition {
     private int comparationOperation;
     private int threshold;
 
-    public boolean isMet(Pixel us, World world) {
+    public boolean isMet(Pixel us, RelativeCoordinate direction, World world) {
         switch (comparationOperation) {
             case GREATER_THAN: return us.getEnergy() > threshold;
             case LESS_THAN: return us.getEnergy() < threshold;
@@ -35,25 +35,21 @@ public class EnergyCondition extends AbstractCondition implements ICondition {
         return false;
     }
 
-    public EnergyCondition(RelativeCoordinate direction, int threshold, int comparisonOperation) {
-        super(direction);
+    public EnergyCondition(int threshold, int comparisonOperation) {
+        super("has energy");
         this.threshold = threshold;
         this.comparationOperation = comparisonOperation;
-        String name = "has energy";
         switch (comparationOperation) {
-            case GREATER_THAN: name = name.concat(" > " + threshold);
+            case GREATER_THAN: setName(getName().concat(" > " + threshold));
             break;
-            case LESS_THAN: name = name.concat(" < " + threshold);
+            case LESS_THAN: setName(getName().concat(" < " + threshold));
             break;
-            case EQUAL: name = name.concat(" = " + threshold);
+            case EQUAL: setName(getName().concat(" = " + threshold));
             break;
-            case GREATER_OR_EQUAL: name = name.concat(" >= " + threshold);
+            case GREATER_OR_EQUAL: setName(getName().concat(" >= " + threshold));
             break;
-            case LESS_OR_EQUAL: name = name.concat(" <= " + threshold);
+            case LESS_OR_EQUAL: setName(getName().concat(" <= " + threshold));
             break;
         }
-        setName(name);
     }
-
-
 }

@@ -7,6 +7,8 @@ package evopaint.interfaces;
 
 import evopaint.World;
 import evopaint.pixel.Pixel;
+import evopaint.pixel.actions.ActionWrapper;
+import evopaint.pixel.conditions.ConditionWrapper;
 import java.util.List;
 
 /**
@@ -15,9 +17,9 @@ import java.util.List;
  */
 public interface IRule {
 
-    public IAction getAction();
+    public List<ActionWrapper> getActions();
 
-    public List<ICondition> getConditions();
+    public List<ConditionWrapper> getConditions();
     
     public boolean apply(Pixel pixel, World world);
 }

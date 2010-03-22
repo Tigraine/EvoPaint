@@ -7,11 +7,12 @@ package evopaint.interfaces;
 
 import evopaint.World;
 import evopaint.pixel.Pixel;
+import evopaint.util.mapping.RelativeCoordinate;
 
 /**
  *
  * @author tam
  */
 public interface ICondition {
-    public boolean isMet(Pixel us, World world);
+    public boolean isMet(Pixel us, RelativeCoordinate direction, World world);
 }

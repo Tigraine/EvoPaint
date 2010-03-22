@@ -14,6 +14,8 @@ import evopaint.pixel.actions.RewardAction;
 import evopaint.pixel.conditions.EnergyCondition;
 import evopaint.pixel.conditions.LikeColorCondition;
 import evopaint.pixel.PixelColor;
+import evopaint.pixel.actions.ActionWrapper;
+import evopaint.pixel.conditions.ConditionWrapper;
 import evopaint.util.mapping.AbsoluteCoordinate;
 
 import evopaint.util.logging.Logger;
@@ -64,16 +66,23 @@ public class World extends ParallaxMap<Pixel> {
     }
 
     private void createPixels() {
-        ArrayList<ICondition> conditions1 = new ArrayList<ICondition>();
-        conditions1.add(new EnergyCondition(RelativeCoordinate.HERE, 20, EnergyCondition.GREATER_OR_EQUAL));
-        Rule number1 = new Rule(conditions1,
-                new AssimilationAction(20, RelativeCoordinate.WEST, PixelColor.MIX_HSB));
+        ArrayList<ConditionWrapper> conditions1 = new ArrayList<ConditionWrapper>();
+        conditions1.add(new ConditionWrapper(RelativeCoordinate.SELF,
+                new EnergyCondition(20, EnergyCondition.GREATER_OR_EQUAL)));
+        ArrayList<ActionWrapper> actions1 = new ArrayList<ActionWrapper>();
+        actions1.add(new ActionWrapper(RelativeCoordinate.WEST,
+                new AssimilationAction(-20, PixelColor.MIX_HSB)));
+        Rule number1 = new Rule(conditions1, actions1);
 
-        ArrayList<ICondition> conditions2 = new ArrayList<ICondition>();
-        conditions2.add(new LikeColorCondition("is a little blue", RelativeCoordinate.NORTH, new PixelColor(0xFF), 0.1, PixelColor.COMPARE_BY_BLUE));
+        ArrayList<ConditionWrapper> conditions2 = new ArrayList<ConditionWrapper>();
+        conditions2.add(new ConditionWrapper(RelativeCoordinate.NORTH,
+                new LikeColorCondition("is a little blue", new PixelColor(0xFF), 0.1, PixelColor.COMPARE_BY_BLUE)));
+        ArrayList<ActionWrapper> actions2 = new ArrayList<ActionWrapper>();
+        actions2.add(new ActionWrapper(RelativeCoordinate.SELF,
+                new RewardAction(10)));
         Rule number2 = new Rule(
                 conditions2,
-                new RewardAction(10));
+                actions2);
 
         System.out.println("Test with 2 hardcoded rules for every pixel:");
         System.out.println("Rule number1: '" + number1 + "'");

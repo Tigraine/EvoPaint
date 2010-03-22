@@ -16,13 +16,11 @@ import evopaint.util.mapping.RelativeCoordinate;
  */
 public class EmptyCondition extends AbstractCondition implements ICondition {
     
-    public boolean isMet(Pixel us, World world) {
+    public boolean isMet(Pixel us, RelativeCoordinate direction, World world) {
         return world.get(us.getLocation(), direction) == null;
     }
 
-    public EmptyCondition(RelativeCoordinate direction) {
-        super("is empty", direction);
+    public EmptyCondition(String name) {
+        super(name);
     }
-
-
 }
