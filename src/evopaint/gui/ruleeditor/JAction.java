@@ -24,7 +24,15 @@ public class JAction extends JPanel implements ActionListener {
 
     public JAction(List<IAction> actions) {
 
+        DefaultComboBoxModel comboBoxModelforActions = new DefaultComboBoxModel();
+        for (IAction action : actions) {
+            comboBoxModelforActions.addElement(action.toString());
+        }
+        JComboBox comboBoxActions = new JComboBox(comboBoxModelforActions);
+        add(comboBoxActions);
+
         DefaultComboBoxModel comboBoxModelForDirections = new DefaultComboBoxModel();
+        comboBoxModelForDirections.addElement(RelativeCoordinate.SELF);
         comboBoxModelForDirections.addElement(RelativeCoordinate.ALL);
         comboBoxModelForDirections.addElement(RelativeCoordinate.NORTH);
         comboBoxModelForDirections.addElement(RelativeCoordinate.NORTH_EAST);
@@ -37,13 +45,6 @@ public class JAction extends JPanel implements ActionListener {
 
         JComboBox comboBoxDirections = new JComboBox(comboBoxModelForDirections);
         add(comboBoxDirections);
-
-        DefaultComboBoxModel comboBoxModelforActions = new DefaultComboBoxModel();
-        for (IAction action : actions) {
-            comboBoxModelforActions.addElement(action.toString());
-        }
-        JComboBox comboBoxActions = new JComboBox(comboBoxModelforActions);
-        add(comboBoxActions);
 
         this.closeButton = new JButton("X");
         this.closeButton.addActionListener(this);

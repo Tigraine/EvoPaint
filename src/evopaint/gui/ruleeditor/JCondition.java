@@ -28,6 +28,7 @@ public class JCondition extends JPanel implements ActionListener {
 
     public JCondition(List<ICondition> conditions) {
         DefaultComboBoxModel comboBoxModelForDirections = new DefaultComboBoxModel();
+        comboBoxModelForDirections.addElement(RelativeCoordinate.SELF);
         comboBoxModelForDirections.addElement(RelativeCoordinate.ALL);
         comboBoxModelForDirections.addElement(RelativeCoordinate.ANY);
         comboBoxModelForDirections.addElement(RelativeCoordinate.NORTH);
