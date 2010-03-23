@@ -5,7 +5,7 @@
 
 package evopaint.gui.ruleeditor;
 
-import evopaint.interfaces.ICondition;
+import evopaint.pixel.interfaces.ICondition;
 import evopaint.util.mapping.RelativeCoordinate;
 import java.awt.Component;
 import java.awt.Graphics;
@@ -27,20 +27,7 @@ public class JCondition extends JPanel implements ActionListener {
     private JButton closeButton;
 
     public JCondition(List<ICondition> conditions) {
-        DefaultComboBoxModel comboBoxModelForDirections = new DefaultComboBoxModel();
-        comboBoxModelForDirections.addElement(RelativeCoordinate.SELF);
-        comboBoxModelForDirections.addElement(RelativeCoordinate.ALL);
-        comboBoxModelForDirections.addElement(RelativeCoordinate.ANY);
-        comboBoxModelForDirections.addElement(RelativeCoordinate.NORTH);
-        comboBoxModelForDirections.addElement(RelativeCoordinate.NORTH_EAST);
-        comboBoxModelForDirections.addElement(RelativeCoordinate.EAST);
-        comboBoxModelForDirections.addElement(RelativeCoordinate.SOUTH_EAST);
-        comboBoxModelForDirections.addElement(RelativeCoordinate.SOUTH);
-        comboBoxModelForDirections.addElement(RelativeCoordinate.SOUTH_WEST);
-        comboBoxModelForDirections.addElement(RelativeCoordinate.WEST);
-        comboBoxModelForDirections.addElement(RelativeCoordinate.NORTH_WEST);
-
-        JComboBox comboBoxDirections = new JComboBox(comboBoxModelForDirections);
+        JComboBox comboBoxDirections = new JComboBox(new TargetsComboBoxModel());
         add(comboBoxDirections);
 
         DefaultComboBoxModel comboBoxModelforConditions = new DefaultComboBoxModel();

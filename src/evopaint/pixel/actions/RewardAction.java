@@ -5,27 +5,39 @@
 
 package evopaint.pixel.actions;
 
+import evopaint.pixel.AbstractAction;
 import evopaint.World;
 import evopaint.pixel.Pixel;
-import evopaint.interfaces.IAction;
 import evopaint.util.mapping.RelativeCoordinate;
+import java.util.List;
 
 /**
  *
  * @author tam
  */
-public class RewardAction extends AbstractAction implements IAction {
+public class RewardAction extends AbstractAction {
+    
+    private int rewardValue;
 
     @Override
     public String toString() {
-        return super.toString();
+        String ret = "reward(";
+        ret += "reward: " + rewardValue;
+        ret += ", ";
+        ret += super.toString();
+        return ret;
     }
 
-    public int execute(Pixel pixel, RelativeCoordinate direction, World world) {
-        return getReward();
+    public int execute(Pixel us, World world) {
+        for (RelativeCoordinate direction : getDirections()) {
+            Pixel them = world.get(us.getLocation(), direction);
+            them.reward(rewardValue);
+        }
+        return getCost();
     }
 
-    public RewardAction(int reward) {
-        super("reward", reward);
+    public RewardAction(int cost, List<RelativeCoordinate> directions, int rewardValue) {
+        super(cost, directions);
+        this.rewardValue = rewardValue;
     }
 }

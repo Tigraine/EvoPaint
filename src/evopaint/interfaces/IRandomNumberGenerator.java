@@ -16,7 +16,6 @@ import java.util.Random;
 public interface IRandomNumberGenerator {
     int nextPositiveInt();
     int nextPositiveInt(int modul);
-    short nextBias();
     double nextDouble();
     float nextFloat();
     boolean nextBoolean();

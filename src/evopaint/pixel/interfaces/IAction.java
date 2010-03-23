@@ -3,17 +3,19 @@
  * and open the template in the editor.
  */
 
-package evopaint.interfaces;
+package evopaint.pixel.interfaces;
 
 import evopaint.World;
 import evopaint.pixel.Pixel;
 import evopaint.util.mapping.RelativeCoordinate;
+import java.util.List;
 
 /**
  *
  * @author tam
  */
 public interface IAction {
-    public int getReward();
-    public int execute(Pixel pixel, RelativeCoordinate direction, World world);
+    public int getCost();
+    public List<RelativeCoordinate> getDirections();
+    public int execute(Pixel actor, World world);
 }

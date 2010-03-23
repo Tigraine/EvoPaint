@@ -7,26 +7,12 @@
 
 package evopaint.pixel;
 
-import evopaint.util.logging.Logger;
-
 
 /**
  *
  * @author tam
  */
 public class PixelColor {
-    public static final int COMPARE_BY_INTEGER = 0;
-    public static final int COMPARE_BY_RGB = 1;
-    public static final int COMPARE_BY_HSB = 2;
-    public static final int COMPARE_BY_RED = 3;
-    public static final int COMPARE_BY_BLUE = 4;
-    public static final int COMPARE_BY_GREEN = 5;
-    public static final int COMPARE_BY_HUE = 6;
-    public static final int COMPARE_BY_SATURATION = 7;
-    public static final int COMPARE_BY_BRIGHTNESS = 8;
-
-    public static final int MIX_RGB = 0;
-    public static final int MIX_HSB = 1;
 
     private int integer;
 
@@ -36,6 +22,11 @@ public class PixelColor {
 
     public void setInteger(int integer) {
         this.integer = 0xFF000000 |  integer;
+    }
+
+    @Override
+    public String toString() {
+        return "#" + Integer.toHexString(integer).toUpperCase();
     }
 
     public short [] getRGB() {
@@ -64,24 +55,11 @@ public class PixelColor {
         this.integer = java.awt.Color.HSBtoRGB(hsb[0], hsb[1], hsb[2]);
     }
 
-    public boolean isLike(PixelColor color, double minLikeliness, int mode) {
-        switch(mode) {
-            case PixelColor.COMPARE_BY_INTEGER: return isLikeInteger(color, minLikeliness);
-            case PixelColor.COMPARE_BY_RGB: return isLikeRGB(color, minLikeliness);
-            case PixelColor.COMPARE_BY_HSB: return isLikeHSB(color, minLikeliness);
-            case PixelColor.COMPARE_BY_RED: return isLikeRed(color, minLikeliness);
-            case PixelColor.COMPARE_BY_GREEN: return isLikeGreen(color, minLikeliness);
-            case PixelColor.COMPARE_BY_BLUE: return isLikeBlue(color, minLikeliness);
-            case PixelColor.COMPARE_BY_HUE: return isLikeHue(color, minLikeliness);
-            case PixelColor.COMPARE_BY_SATURATION: return isLikeSaturation(color, minLikeliness);
-            case PixelColor.COMPARE_BY_BRIGHTNESS: return isLikeBrightness(color, minLikeliness);
-            default: Logger.log.error("Invalid mode: %s", Integer.valueOf(mode));
-                    System.exit(1);
-        }
-        return false;
+    public boolean equals(PixelColor theirColor) {
+        return integer == theirColor.getInteger();
     }
 
-    private boolean isLikeInteger(PixelColor color, double minLikeliness) {
+    public boolean isLikeInteger(PixelColor color, double minLikeliness) {
         int diff = Math.abs(this.integer & 0x00FFFFFF - color.getInteger() & 0x00FFFFFF);
         if (0x00FFFFFF - diff >= minLikeliness * 0x00FFFFFF) {
             return true;
@@ -89,30 +67,30 @@ public class PixelColor {
         return false;
     }
 
-    private boolean isLikeRGB(PixelColor color, double minLikeliness) {
+    public boolean isLikeRGB(PixelColor color, double minLikeliness) {
         return  isLikeRed(color, minLikeliness) &&
                 isLikeGreen(color, minLikeliness) &&
                 isLikeBlue(color, minLikeliness);
     }
 
-    private boolean isLikeRed(PixelColor color, double minLikeliness) {
+    public boolean isLikeRed(PixelColor color, double minLikeliness) {
         return isLikeRGBComponent(color, minLikeliness, 16);
     }
 
-    private boolean isLikeGreen(PixelColor color, double minLikeliness) {
+    public boolean isLikeGreen(PixelColor color, double minLikeliness) {
         return isLikeRGBComponent(color, minLikeliness, 8);
     }
 
-    private boolean isLikeBlue(PixelColor color, double minLikeliness) {
+    public boolean isLikeBlue(PixelColor color, double minLikeliness) {
         return isLikeRGBComponent(color, minLikeliness, 0);
     }
 
     private boolean isLikeRGBComponent(PixelColor color, double minLikeliness, int shiftAmount) {
-        int diff = ((integer >> shiftAmount) & 0xFF) - ((color.getInteger() >> shiftAmount) & 0xFF);
+        int diff = Math.abs(((integer >> shiftAmount) & 0xFF) - ((color.getInteger() >> shiftAmount) & 0xFF));
         return 0xFF - diff >= minLikeliness * 0xFF;
     }
 
-    private boolean isLikeHSB(PixelColor color, double minLikeliness) {
+    public boolean isLikeHSB(PixelColor color, double minLikeliness) {
         /*
          * this would be nice, but slow due to the multiple calculations of HSB
          *
@@ -130,32 +108,24 @@ public class PixelColor {
                 1 - db >= minLikeliness;
     }
 
-    private boolean isLikeHue(PixelColor color, double minLikeliness) {
+    public boolean isLikeHue(PixelColor color, double minLikeliness) {
         float delta = Math.abs(this.getHSB()[0] - color.getHSB()[0]);
         return (delta > 1 - delta) ? (delta >= minLikeliness) : (1 - delta >= minLikeliness);
     }
 
-    private boolean isLikeSaturation(PixelColor color, double minLikeliness) {
+    public boolean isLikeSaturation(PixelColor color, double minLikeliness) {
         return 1 - Math.abs(this.getHSB()[1] - color.getHSB()[1]) >= minLikeliness;
     }
 
-    private boolean isLikeBrightness(PixelColor color, double minLikeliness) {
+    public boolean isLikeBrightness(PixelColor color, double minLikeliness) {
         return 1 - Math.abs(this.getHSB()[2] - color.getHSB()[2]) >= minLikeliness;
     }
 
-    public void mixIn(PixelColor them, float theirShare, int mode) {
-        switch(mode) {
-            case MIX_RGB: mixInRGB(them, theirShare);
-            break;
-            case MIX_HSB: mixInHSB(them, theirShare);
-            break;
-        }
-    }
     /* XXX this is currently just 50/50 mixing, but I have a feeling that if
      * we included an evolution finding the optimal mixing percentage, it would
      * turn out to be 50/50 anyways...
      */
-    private void mixInRGB(PixelColor them, float theirShare) {
+    public void mixInRGB(PixelColor them, float theirShare) {
         // TODO theirShare unused!
         short [] c1rgb = them.getRGB();
         short [] c2rgb = this.getRGB();
@@ -167,7 +137,7 @@ public class PixelColor {
         this.setRGB(mixrgb);
     }
 
-    private void mixInHSB(PixelColor them, float theirShare) {
+    public void mixInHSB(PixelColor them, float theirShare) {
         float[] theirHSB = them.getHSB();
         float[] ourHSB = this.getHSB();
         float[] mixhsb = new float[3];
@@ -210,8 +180,11 @@ public class PixelColor {
         }
     }
 
-
     public PixelColor(int color) {
         this.integer = 0xFF000000 | color;
+    }
+
+    public PixelColor(PixelColor pixelColor) {
+        this.integer = pixelColor.integer;
     }
 }

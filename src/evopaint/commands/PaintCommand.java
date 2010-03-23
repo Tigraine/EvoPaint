@@ -1,6 +1,7 @@
 package evopaint.commands;
 
 
+import evopaint.Brush;
 import evopaint.gui.MainFrame;
 import evopaint.pixel.Pixel;
 import evopaint.World;
@@ -67,7 +68,7 @@ public class PaintCommand extends AbstractCommand {
                 int y = location.y + i;
                 Pixel pixie = this.world.get(x, y);
                 int pixelColorInteger = 0;
-                switch (mf.getPop().getColorMode()) {
+                switch (mf.getPop().getColorMode()) { // TODO move this to pixel construction
                     case PaintOptionsPanel.COLORMODE_FAIRY_DUST:
                         pixelColorInteger = world.getRandomNumberGenerator().nextPositiveInt();
                         break;
@@ -85,8 +86,8 @@ public class PaintCommand extends AbstractCommand {
                         System.exit(1);
                 }
                 if (pixie == null) {
-                    pixie = new Pixel(world.getConfiguration().startingEnergy,
-                        new PixelColor(pixelColorInteger), new AbsoluteCoordinate(x, y, world));
+                    Brush brush = world.getConfiguration().getBrush();
+                    pixie = brush.createPixelAt(new AbsoluteCoordinate(x, y, world));
                     world.set(pixie);
                 } else {
                     pixie.getPixelColor().setInteger(pixelColorInteger);

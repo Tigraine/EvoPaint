@@ -4,24 +4,30 @@
  */
 package evopaint;
 
-import evopaint.interfaces.ICondition;
+import evopaint.pixel.interfaces.ICondition;
 import evopaint.pixel.Pixel;
 import evopaint.util.RandomNumberGeneratorWrapper;
 import evopaint.interfaces.IRandomNumberGenerator;
 import evopaint.pixel.Rule;
 import evopaint.pixel.actions.AssimilationAction;
-import evopaint.pixel.actions.RewardAction;
-import evopaint.pixel.conditions.EnergyCondition;
-import evopaint.pixel.conditions.LikeColorCondition;
+import evopaint.pixel.pixelconditions.EnergyCondition;
+import evopaint.pixel.pixelconditions.ColorCondition;
 import evopaint.pixel.PixelColor;
-import evopaint.pixel.actions.ActionWrapper;
-import evopaint.pixel.conditions.ConditionWrapper;
+import evopaint.pixel.RuleSet;
+import evopaint.pixel.State;
+import evopaint.pixel.actions.RewardAction;
+import evopaint.pixel.interfaces.IAction;
+import evopaint.pixel.interfaces.IRule;
+import evopaint.pixel.misc.ColorComparisonOperator;
+import evopaint.pixel.misc.ColorMixMode;
+import evopaint.pixel.misc.IntegerComparisonOperator;
 import evopaint.util.mapping.AbsoluteCoordinate;
 
 import evopaint.util.logging.Logger;
 import evopaint.util.mapping.ParallaxMap;
 import evopaint.util.mapping.RelativeCoordinate;
 import java.util.ArrayList;
+import java.util.List;
 import org.uncommons.maths.random.CellularAutomatonRNG;
 import org.uncommons.maths.random.DefaultSeedGenerator;
 import org.uncommons.maths.random.SeedException;
@@ -66,27 +72,47 @@ public class World extends ParallaxMap<Pixel> {
     }
 
     private void createPixels() {
-        ArrayList<ConditionWrapper> conditions1 = new ArrayList<ConditionWrapper>();
-        conditions1.add(new ConditionWrapper(RelativeCoordinate.SELF,
-                new EnergyCondition(20, EnergyCondition.GREATER_OR_EQUAL)));
-        ArrayList<ActionWrapper> actions1 = new ArrayList<ActionWrapper>();
-        actions1.add(new ActionWrapper(RelativeCoordinate.WEST,
-                new AssimilationAction(-20, PixelColor.MIX_HSB)));
-        Rule number1 = new Rule(conditions1, actions1);
+        
 
-        ArrayList<ConditionWrapper> conditions2 = new ArrayList<ConditionWrapper>();
-        conditions2.add(new ConditionWrapper(RelativeCoordinate.NORTH,
-                new LikeColorCondition("is a little blue", new PixelColor(0xFF), 0.1, PixelColor.COMPARE_BY_BLUE)));
-        ArrayList<ActionWrapper> actions2 = new ArrayList<ActionWrapper>();
-        actions2.add(new ActionWrapper(RelativeCoordinate.SELF,
-                new RewardAction(10)));
-        Rule number2 = new Rule(
-                conditions2,
-                actions2);
+        List<IRule> rules = new ArrayList<IRule>();
 
-        System.out.println("Test with 2 hardcoded rules for every pixel:");
-        System.out.println("Rule number1: '" + number1 + "'");
-        System.out.println("Rule number2: '" + number2 + "'");
+        List<ICondition> conditions = new ArrayList<ICondition>();
+        List<RelativeCoordinate> directions = new ArrayList<RelativeCoordinate>();
+        directions.add(RelativeCoordinate.SELF);
+        conditions.add(new EnergyCondition(directions, IntegerComparisonOperator.GREATER_THAN, 80));
+        directions = new ArrayList<RelativeCoordinate>();
+        directions.add(RelativeCoordinate.WEST);
+        directions.add(RelativeCoordinate.NORTH);
+        directions.add(RelativeCoordinate.SOUTH);
+        directions.add(RelativeCoordinate.EAST);
+        IAction action = new AssimilationAction(20, directions, ColorMixMode.HSB);
+        rules.add(new Rule(conditions, action));
+
+        conditions = new ArrayList<ICondition>();
+        directions = new ArrayList<RelativeCoordinate>();
+        directions.add(RelativeCoordinate.SELF);
+        conditions.add(new ColorCondition(directions, new PixelColor(0xFF0000FF), 94, ColorComparisonOperator.MINIMUM_BLUE_LIKENESS));
+        directions = new ArrayList<RelativeCoordinate>();
+        directions.add(RelativeCoordinate.SELF);
+        action = new RewardAction(0, directions, 80);
+        rules.add(new Rule(conditions, action));
+
+        conditions = new ArrayList<ICondition>();
+        directions = new ArrayList<RelativeCoordinate>();
+        directions.add(RelativeCoordinate.SELF);
+        conditions.add(new ColorCondition(directions, new PixelColor(0xFFFF0000), 94, ColorComparisonOperator.MINIMUM_RED_LIKENESS));
+        directions = new ArrayList<RelativeCoordinate>();
+        directions.add(RelativeCoordinate.SELF);
+        action = new RewardAction(0, directions, 80);
+        rules.add(new Rule(conditions, action));
+
+        List<State> possibleStates = new ArrayList();
+        possibleStates.add(new State("START"));
+
+        RuleSet ruleSet = new RuleSet("test ruleset", rules);
+
+        System.out.println("Test with the following rules for every pixel:");
+        System.out.println(ruleSet.toString());
 
         for (int y = 0; y < configuration.initialPopulation.height; y++) {
             for (int x = 0; x < configuration.initialPopulation.width; x++) {
@@ -95,9 +121,9 @@ public class World extends ParallaxMap<Pixel> {
                 PixelColor color = new PixelColor(rng.nextPositiveInt());
                 AbsoluteCoordinate location = new AbsoluteCoordinate(configuration.dimension.width / 2 - configuration.initialPopulation.width / 2 + x,
                         configuration.dimension.height / 2 - configuration.initialPopulation.height / 2 + y, this);
-                Pixel pixie = new Pixel(energy, color, location);
-                pixie.learn(number1);
-                pixie.learn(number2);
+
+                Pixel pixie = new Pixel(color, location, energy, ruleSet, possibleStates.get(0), possibleStates);
+
                 set(pixie);
             }
         }

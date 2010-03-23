@@ -5,18 +5,16 @@
 
 package evopaint.gui.ruleeditor;
 
-import evopaint.interfaces.IAction;
-import evopaint.interfaces.ICondition;
-import evopaint.interfaces.IRule;
+import evopaint.pixel.interfaces.IAction;
+import evopaint.pixel.interfaces.ICondition;
+import evopaint.pixel.interfaces.IRule;
 import evopaint.pixel.Rule;
 import evopaint.pixel.RuleSet;
 import evopaint.pixel.actions.AssimilationAction;
 import evopaint.pixel.actions.RewardAction;
-import evopaint.pixel.conditions.EnergyCondition;
-import evopaint.pixel.conditions.LikeColorCondition;
+import evopaint.pixel.pixelconditions.EnergyCondition;
+import evopaint.pixel.pixelconditions.ColorCondition;
 import evopaint.pixel.PixelColor;
-import evopaint.pixel.actions.ActionWrapper;
-import evopaint.pixel.conditions.ConditionWrapper;
 import evopaint.util.mapping.RelativeCoordinate;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
@@ -29,7 +27,6 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.border.TitledBorder;
-import javax.swing.plaf.basic.BasicOptionPaneUI.ButtonActionListener;
 
 /**
  *
@@ -45,7 +42,7 @@ public class JRuleEditor extends JPanel {
     //private JPanel panelForConditions;
 
     public JRuleEditor() {
-
+/*
         List<ConditionWrapper> wrappedConditions = new ArrayList();
         List<ActionWrapper> wrappedActions = new ArrayList();
         List<IRule> rules = new ArrayList();
@@ -53,7 +50,7 @@ public class JRuleEditor extends JPanel {
         wrappedConditions.add(new ConditionWrapper(RelativeCoordinate.SELF,
                 new EnergyCondition(20, EnergyCondition.GREATER_OR_EQUAL)));
         wrappedConditions.add(new ConditionWrapper(RelativeCoordinate.SELF,
-                new LikeColorCondition("is a little blue", new PixelColor(0xFF), 0.1, PixelColor.COMPARE_BY_BLUE)));
+                new ColorCondition("is a little blue", new PixelColor(0xFF), 0.1, PixelColor.COMPARE_BY_BLUE)));
 
         wrappedActions.add(new ActionWrapper(RelativeCoordinate.WEST,
                 new AssimilationAction(-20, PixelColor.MIX_HSB)));
@@ -145,7 +142,7 @@ public class JRuleEditor extends JPanel {
 
 
         //setPreferredSize(new Dimension(500,100));
-        setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+        setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));*/
     }
 
     private class AddActionButtonListener implements ActionListener {

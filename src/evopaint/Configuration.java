@@ -14,14 +14,17 @@ import java.awt.geom.AffineTransform;
  * @author tam
  */
 public class Configuration {
+    public static final int COLORMODE_COLOR = 0;
+    public static final int COLORMODE_FAIRY_DUST = 1;
+    public static final int COLORMODE_USE_EXISTING = 2;
 
-    public final Dimension dimension = new Dimension(200,200);
-    public final Dimension initialPopulation = new Dimension(200, 200);
+    public final Dimension dimension = new Dimension(300,300);
+    public final Dimension initialPopulation = new Dimension(300, 300);
     public final int stepsPerRendering = 1;
     //public final int numThreads = 1;
     public final int backgroundColor = 0;
 
-    public final int startingEnergy = 1000000;
+    public final int startingEnergy = 100;
 
     // if set to true a pixel will stop working down his rule set once the first
     // rule matches

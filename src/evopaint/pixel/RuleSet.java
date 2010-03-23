@@ -5,7 +5,7 @@
 
 package evopaint.pixel;
 
-import evopaint.interfaces.IRule;
+import evopaint.pixel.interfaces.IRule;
 import java.util.List;
 
 /**
@@ -22,6 +22,15 @@ public class RuleSet {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    @Override
+    public String toString() {
+        String ret = "Rule set '" + name + "' consists of:\n";
+        for (IRule rule : rules) {
+            ret += "\t" + rule.toString() + "\n";
+        }
+        return ret;
     }
 
     public List<IRule> getRules() {

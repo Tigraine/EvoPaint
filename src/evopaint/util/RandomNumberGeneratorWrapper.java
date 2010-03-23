@@ -34,10 +34,6 @@ public class RandomNumberGeneratorWrapper implements IRandomNumberGenerator {
         return this.rng.nextInt(modul);
     }
 
-    public short nextBias() {
-        return (short)(this.rng.nextInt(Short.MAX_VALUE - 1) + 1);
-    }
-
     public double nextDouble() {
         return this.rng.nextDouble();
     }

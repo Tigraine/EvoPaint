@@ -5,20 +5,19 @@
 
 package evopaint;
 
-import evopaint.pixel.RuleSet;
+import evopaint.pixel.Pixel;
+import evopaint.pixel.PixelColor;
+import evopaint.util.mapping.AbsoluteCoordinate;
 
 /**
  *
  * @author tam
  */
 public class Brush {
-    public static final int COLORMODE_COLOR = 0;
-    public static final int COLORMODE_FAIRY_DUST = 1;
-    public static final int COLORMODE_USE_EXISTING = 2;
 
-    private int colorInteger;
     private int brushSize;
-    private RuleSet ruleSet;
+    private PixelColor pixelColor;
+    private Pixel pixel;
 
     public int getBrushSize() {
         return brushSize;
@@ -28,22 +27,13 @@ public class Brush {
         this.brushSize = brushSize;
     }
 
-    public int getColorInteger() {
-        return colorInteger;
+    public Pixel createPixelAt(AbsoluteCoordinate absoluteCoordinate) {
+        return new Pixel(new PixelColor(pixel.getPixelColor()), absoluteCoordinate,
+                pixel.getEnergy(), pixel.getRuleSet(), pixel.getState(), pixel.getPossibleStates());
     }
 
-    public void setColorInteger(int colorInteger) {
-        this.colorInteger = colorInteger;
-    }
-
-    public RuleSet getRuleSet() {
-        return ruleSet;
-    }
-
-    public void setRuleSet(RuleSet ruleSet) {
-        this.ruleSet = ruleSet;
-    }
-
-    public Brush() {
+    public Brush(int brushSize, Pixel pixel) {
+        this.brushSize = brushSize;
+        this.pixel = pixel;
     }
 }

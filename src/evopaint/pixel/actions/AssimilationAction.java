@@ -5,43 +5,54 @@
 
 package evopaint.pixel.actions;
 
+import evopaint.pixel.misc.ColorMixMode;
+import evopaint.pixel.AbstractAction;
 import evopaint.World;
 import evopaint.pixel.Pixel;
-import evopaint.interfaces.IAction;
+import evopaint.pixel.interfaces.IAction;
 import evopaint.pixel.PixelColor;
 import evopaint.util.mapping.AbsoluteCoordinate;
 import evopaint.util.mapping.RelativeCoordinate;
+import java.util.List;
 
 /**
  *
  * @author tam
  */
-public class AssimilationAction extends AbstractAction implements IAction {
-    private int colorMixMode;
+public class AssimilationAction extends AbstractAction {
 
-    public int getColorMixMode() {
-        return colorMixMode;
+    private ColorMixMode colorMixMode;
+
+    @Override
+    public String toString() {
+        String ret = "assimilate(";
+        ret += "mode: " + colorMixMode.toString();
+        ret += ", ";
+        ret += super.toString();
+        return ret;
     }
 
-    public void setColorMixMode(int colorMixMode) {
-        this.colorMixMode = colorMixMode;
-    }
-    
-    public int execute(Pixel us, RelativeCoordinate direction, World world) {
-        Pixel them = world.get(us.getLocation(), direction);
-        
-        if (them == null) {
-            them = new Pixel(world.getConfiguration().startingEnergy, new PixelColor(0xFF000000), new AbsoluteCoordinate(us.getLocation(), direction, world));
-            world.add(them);
+    public int execute(Pixel us, World world) {
+        switch (colorMixMode.getMode()) {
+            case ColorMixMode.MODE_RGB:
+                for (RelativeCoordinate direction : getDirections()) {
+                    Pixel them = world.get(us.getLocation(), direction);
+                    them.getPixelColor().mixInRGB(us.getPixelColor(), 0.5f);
+                }
+                break;
+            case ColorMixMode.MODE_HSB:
+                for (RelativeCoordinate direction : getDirections()) {
+                    Pixel them = world.get(us.getLocation(), direction);
+                    them.getPixelColor().mixInHSB(us.getPixelColor(), 0.5f);
+                }
+                break;
         }
-
-        them.getPixelColor().mixIn(us.getPixelColor(), 0.5f, colorMixMode);
-
-        return getReward();
+      
+        return getCost() * getDirections().size();
     }
 
-    public AssimilationAction(int reward, int colorMixMode) {
-        super("assimilate", reward);
+    public AssimilationAction(int reward, List<RelativeCoordinate> directions, ColorMixMode colorMixMode) {
+        super(reward, directions);
         this.colorMixMode = colorMixMode;
     }
 }

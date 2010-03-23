@@ -5,7 +5,7 @@
 
 package evopaint.gui.ruleeditor;
 
-import evopaint.interfaces.IAction;
+import evopaint.pixel.interfaces.IAction;
 import evopaint.util.mapping.RelativeCoordinate;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
