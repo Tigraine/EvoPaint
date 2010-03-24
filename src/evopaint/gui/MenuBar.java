@@ -212,7 +212,8 @@ public class MenuBar extends JMenuBar implements SelectionObserver {
 		evopaint.getConfiguration().setRunning(false);
 		//todo wizard code & implementation of a new evolution
 		
-		Configuration newConf = new Configuration(new Dimension(x, y));
+		Configuration newConf = new Configuration();
+                newConf.setDimension(new Dimension(x,y));
 		evopaint.setConfiguration(newConf);
 		
 		

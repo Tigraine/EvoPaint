@@ -54,6 +54,10 @@ public class EvoPaint {
         this.world = world;
     }
 
+    public void setConfiguration(Configuration configuration) {
+        this.configuration = configuration;
+    }
+
     public void work() {
         while (true) {
 

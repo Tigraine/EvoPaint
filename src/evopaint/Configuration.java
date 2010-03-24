@@ -18,7 +18,7 @@ public class Configuration {
     public static final int COLORMODE_FAIRY_DUST = 1;
     public static final int COLORMODE_USE_EXISTING = 2;
 
-    public final Dimension dimension = new Dimension(300,300);
+    public Dimension dimension = new Dimension(300,300);
     public final Dimension initialPopulation = new Dimension(300, 300);
     public final int stepsPerRendering = 1;
    
@@ -66,6 +66,10 @@ public class Configuration {
     
     public Dimension getDimension() {
 		return dimension;
+    }
+
+    public void setDimension(Dimension dimension) {
+        this.dimension = dimension;
     }
 
     public Dimension getInitialPopulation() {

@@ -106,7 +106,7 @@ public class MainFrame extends JFrame {
 
     public void initializeCommands(EvoPaint evopaint) {
     	
-        CommandFactory commandFactory = new CommandFactory();
+        CommandFactory commandFactory = new CommandFactory(configuration);
         this.paintOptionsPanel = new PaintOptionsPanel(showcase,this); // FIXME: paintoptionspanel must be initialized before showcase or we get a nullpointer exception. the semantics to not express this!!
         this.showcase = new Showcase(configuration, this, evopaint.getWorld(), evopaint.getPerception(), commandFactory);
         this.menuBar = new MenuBar(evopaint, new SelectionListenerFactory(showcase));
