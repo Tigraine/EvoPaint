@@ -112,11 +112,12 @@ public class World extends ParallaxMap<Pixel> {
         System.out.println("Test with the following rules for every pixel:");
         System.out.println(ruleSet.toString());
 
-        for (int y = 0; y < configuration.initialPopulation.height; y++) {
-            for (int x = 0; x < configuration.initialPopulation.width; x++) {
+        for (int y = 0; y < configuration.getInitialPopulation().height; y++) {
+            for (int x = 0; x < configuration.getInitialPopulation().width; x++) {
 
                 int energy = configuration.startingEnergy;
                 PixelColor color = new PixelColor(rng.nextPositiveInt());
+
                 AbsoluteCoordinate location = new AbsoluteCoordinate(configuration.dimension.width / 2 - configuration.initialPopulation.width / 2 + x,
                         configuration.dimension.height / 2 - configuration.initialPopulation.height / 2 + y, this);
 
@@ -229,7 +230,7 @@ public class World extends ParallaxMap<Pixel> {
     }
 
     public World(Pixel [] pixels, long time, Configuration configuration) {
-        super(pixels, configuration.dimension.width, configuration.dimension.height);
+        super(pixels, configuration.getDimension().width, configuration.getDimension().height);
         this.time = time;
         this.configuration = configuration;
         this.init();

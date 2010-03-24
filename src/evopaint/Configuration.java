@@ -21,8 +21,11 @@ public class Configuration {
     public final Dimension dimension = new Dimension(300,300);
     public final Dimension initialPopulation = new Dimension(300, 300);
     public final int stepsPerRendering = 1;
+   
     //public final int numThreads = 1;
     public final int backgroundColor = 0;
+    
+    
 
     public final int startingEnergy = 100000;
 
@@ -60,6 +63,14 @@ public class Configuration {
     public void setRunning(boolean running) {
         this.running = running;
     }
+    
+    public Dimension getDimension() {
+		return dimension;
+    }
+
+    public Dimension getInitialPopulation() {
+        return initialPopulation;
+    }
 
     public AffineTransform getAffineTransform() {
         return affineTransform;
@@ -82,7 +93,7 @@ public class Configuration {
     }
 
     public Configuration() {}
-
+	
     /*
     TODO: Talk through with TAM
     public static Log getLogger(Object object) {
