@@ -6,7 +6,7 @@
 package evopaint.pixel;
 
 import evopaint.World;
-import evopaint.pixel.pixelconditions.EnergyCondition;
+import evopaint.pixel.conditions.EnergyCondition;
 import evopaint.pixel.misc.IntegerComparisonOperator;
 import evopaint.pixel.interfaces.IRule;
 import evopaint.pixel.interfaces.IAction;

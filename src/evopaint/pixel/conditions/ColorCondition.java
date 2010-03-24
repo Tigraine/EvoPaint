@@ -3,12 +3,13 @@
  * and open the template in the editor.
  */
 
-package evopaint.pixel.pixelconditions;
+package evopaint.pixel.conditions;
 
-import evopaint.pixel.misc.IntegerComparisonOperator;
+import evopaint.pixel.misc.ColorComparisonOperator;
 import evopaint.pixel.AbstractPixelCondition;
 import evopaint.World;
 import evopaint.pixel.Pixel;
+import evopaint.pixel.PixelColor;
 import evopaint.util.mapping.RelativeCoordinate;
 import java.util.List;
 
@@ -16,45 +17,39 @@ import java.util.List;
  *
  * @author tam
  */
-public class EnergyCondition extends AbstractPixelCondition {
+public class ColorCondition extends AbstractPixelCondition {
 
-    private IntegerComparisonOperator comparisonOperator;
-    private int energyValue;
-
-    public IntegerComparisonOperator getComparisonOperator() {
-        return comparisonOperator;
-    }
-
-    public int getEnergyValue() {
-        return energyValue;
-    }
+    private PixelColor desiredColor;
+    private int minLikenessPercentage;
+    ColorComparisonOperator comparisonOperator;
 
     @Override
     public String toString() {
-        String ret = "energy of ";
+        String ret = "color of ";
         ret += super.toString();
-        ret += " ";
+        ret += " has ";
         ret += comparisonOperator.toString();
         ret += " ";
-        ret += energyValue;
-        ret += "?";
+        ret += minLikenessPercentage;
+        ret += "% of ";
+        ret += desiredColor;
         return ret;
     }
 
-    @Override
     public boolean isMet(Pixel us, World world) {
         for (RelativeCoordinate direction : getDirections()) {
             Pixel them = world.get(us.getLocation(), direction);
-            if (comparisonOperator.compare(them.getEnergy(), energyValue) == false) {
+            if (comparisonOperator.compare(them.getPixelColor(), desiredColor, minLikenessPercentage) == false) {
                 return false; // so this is what lazy evaluation looks like...
             }
         }
         return true;
     }
 
-    public EnergyCondition(List<RelativeCoordinate> directions, IntegerComparisonOperator comparisonOperator, int energyValue) {
+    public ColorCondition(List<RelativeCoordinate> directions, PixelColor desiredColor, int minLikenessPercentage, ColorComparisonOperator comparisonOperator) {
         super(directions);
+        this.desiredColor = desiredColor;
+        this.minLikenessPercentage = minLikenessPercentage;
         this.comparisonOperator = comparisonOperator;
-        this.energyValue = energyValue;
     }
 }

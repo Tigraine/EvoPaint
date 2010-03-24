@@ -3,7 +3,7 @@
  * and open the template in the editor.
  */
 
-package evopaint.pixel.pixelconditions;
+package evopaint.pixel.conditions;
 
 import evopaint.World;
 import evopaint.pixel.misc.ObjectComparisonOperator;
