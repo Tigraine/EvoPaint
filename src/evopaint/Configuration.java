@@ -14,11 +14,16 @@ import java.awt.Dimension;
  */
 public class Configuration {
 
-    public final Dimension dimension = new Dimension(200,200);
-    public final Dimension initialPopulation = new Dimension(200, 200);
+//    public final Dimension dimension = new Dimension(200,200);
+    private Dimension dim;
+//	public final Dimension initialPopulation = new Dimension(200, 200);
+	private Dimension initPop;
     public final int stepsPerRendering = 1;
+   
     //public final int numThreads = 1;
     public final int backgroundColor = 0;
+    
+    
 
     public final int startingEnergy = 1000000;
 
@@ -54,9 +59,29 @@ public class Configuration {
     public void setRunning(boolean running) {
         this.running = running;
     }
+    
+    public Dimension getDimension() {
+		return dim;
+	}
 
-    public Configuration() {}
+	public void setDimension(Dimension dimension) {
+		this.dim =dimension;
+	}
 
+    public Dimension getInitPop() {
+		return initPop;
+	}
+
+	public void setInitPop(Dimension initPop) {
+		this.initPop = initPop;
+	}
+
+	public Configuration(Dimension dim) {
+		this.dim=dim;
+		this.initPop=dim;
+		
+	}
+	
     /*
     TODO: Talk through with TAM
     public static Log getLogger(Object object) {

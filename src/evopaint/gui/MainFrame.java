@@ -18,7 +18,9 @@ public class MainFrame extends JFrame {
     private Showcase showcase;
     private JPopupMenu toolMenu;
     private PaintOptionsPanel paintOptionsPanel;
-
+    private ToolBox toolBox;
+    private JPanel showCaseWrapper = new JPanel();
+    private JPanel leftPanel = new JPanel();
     private Configuration configuration;
 
     private Class activeTool = null;
@@ -54,14 +56,9 @@ public class MainFrame extends JFrame {
 
         this.toolMenu = new ToolMenu(this);
 
-        CommandFactory commandFactory = new CommandFactory();
-        this.paintOptionsPanel = new PaintOptionsPanel(showcase,this); // FIXME: paintoptionspanel must be initialized before showcase or we get a nullpointer exception. the semantics to not express this!!
-        this.showcase = new Showcase(configuration, this, evopaint.getWorld(), evopaint.getPerception(), commandFactory);
-        this.menuBar = new MenuBar(evopaint, new SelectionListenerFactory(showcase));
-        commandFactory.GetSelectCommand().addSelectionListener(menuBar);
-
         initializeCommands(evopaint);
-
+        
+        
         addKeyListener(new KeyListener() {
 
             public void keyTyped(KeyEvent e) {
@@ -96,17 +93,23 @@ public class MainFrame extends JFrame {
 
 
 
-        JPanel showCaseWrapper = new JPanel();
+      
+
         showCaseWrapper.setLayout(new GridBagLayout());
         showCaseWrapper.add(showcase);
 
         setLayout(new BoxLayout(this.getContentPane(), BoxLayout.X_AXIS));
 
-        JPanel leftPanel = new JPanel();
+        toolBox=new ToolBox(this);
         leftPanel.setLayout(new GridBagLayout());
         paintOptionsPanel.setAlignmentY(TOP_ALIGNMENT);
-        leftPanel.add(paintOptionsPanel);
+        
+      
+        leftPanel.add(toolBox);
+//        leftPanel.add(paintOptionsPanel);
+        
         add(leftPanel);
+      
         add(showCaseWrapper);
 
 
@@ -117,13 +120,84 @@ public class MainFrame extends JFrame {
 
         this.pack();
         this.setVisible(true);
+    
+        
     }
 
-    private void initializeCommands(EvoPaint evopaint) {
+    public void initializeCommands(EvoPaint evopaint) {
+    	
+        CommandFactory commandFactory = new CommandFactory();
+        this.paintOptionsPanel = new PaintOptionsPanel(showcase,this); // FIXME: paintoptionspanel must be initialized before showcase or we get a nullpointer exception. the semantics to not express this!!
+        this.showcase = new Showcase(configuration, this, evopaint.getWorld(), evopaint.getPerception(), commandFactory);
+        this.menuBar = new MenuBar(evopaint, new SelectionListenerFactory(showcase));
+        commandFactory.GetSelectCommand().addSelectionListener(menuBar);
+        
         resumeCommand = new ResumeCommand(evopaint);
         pauseCommand = new PauseCommand(evopaint);
         zoomInCommand = new ZoomInCommand(showcase);
         zoomOutCommand = new ZoomOutCommand(showcase);
+      
+    }
+    
+ 
+    
+    public void initSecond(EvoPaint evopaint){
+ 
+        addKeyListener(new KeyListener() {
+
+            public void keyTyped(KeyEvent e) {
+               // System.out.println(""+e.getK)
+                
+                //System.out.println("adsf");
+                //throw new UnsupportedOperationException("Not supported yet.");
+            }
+
+            public void keyPressed(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_PLUS) {
+                    zoomInCommand.execute();
+                } else if (e.getKeyCode() == KeyEvent.VK_MINUS) {
+                    zoomOutCommand.execute();
+                } else if (e.getKeyCode() == KeyEvent.VK_SPACE) {
+                    if (configuration.isRunning()) {
+                        pauseCommand.execute();
+                    } else {
+                        resumeCommand.execute();
+                    }
+                }
+            }
+
+            public void keyReleased(KeyEvent e) {
+                //throw new UnsupportedOperationException("Not supported yet.");
+            }
+        });
+
+        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+
+        setJMenuBar(menuBar);
+
+        
+
+        showCaseWrapper.setLayout(new GridBagLayout());
+       
+        showCaseWrapper.add(showcase);
+
+        setLayout(new BoxLayout(this.getContentPane(), BoxLayout.X_AXIS));
+
+       
+        leftPanel.setLayout(new GridBagLayout());
+        paintOptionsPanel.setAlignmentY(TOP_ALIGNMENT);
+        leftPanel.add(paintOptionsPanel);
+        toolBox.getPanel().add(paintOptionsPanel);       
+        add(showCaseWrapper);
+
+
+        // XXX workaround to update size of toolmenu so it is displayed
+        // at the correct coordinates later
+        this.toolMenu.setVisible(true);
+        this.toolMenu.setVisible(false);
+
+        this.pack();
+        this.setVisible(true);
     }
 
     public Showcase getShowcase() {
@@ -147,6 +221,15 @@ public class MainFrame extends JFrame {
 
 	public PaintOptionsPanel getPop() {
 		return paintOptionsPanel;
+	}
+	
+	public void setConfiguration(Configuration conf) {
+		this.configuration=conf;
+	}
+	
+	public void removeGraf(){
+		 showCaseWrapper.remove(showcase);
+		 toolBox.getPanel().remove(paintOptionsPanel);
 	}
 
 }

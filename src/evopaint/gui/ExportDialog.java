@@ -14,15 +14,17 @@ import evopaint.EvoPaint;
 public class ExportDialog implements ActionListener {
 	private MainFrame frame;
 	private EvoPaint evopaint;
+	File file;
+	String path;
 	
-	public ExportDialog(MainFrame frame, EvoPaint evopaint){
-		this.frame = frame;
+	public ExportDialog(EvoPaint evopaint){
+		this.frame = evopaint.getFrame();
 		this.evopaint = evopaint;
 	}
 	
 	
     public void actionPerformed(java.awt.event.ActionEvent e) {
-    	File file= null;
+    	
     	evopaint.setRunning(false);
     	BufferedImage img = evopaint.getPerception().getImage();
     	
@@ -39,21 +41,27 @@ public class ExportDialog implements ActionListener {
 
     		int option = chooser.showSaveDialog(frame);
     		
-    
+    		
     		if(option == JFileChooser.APPROVE_OPTION){  
         		if(chooser.getSelectedFile()!=null){  
         			file = chooser.getSelectedFile();
         				            			
         			if((chooser.getFileFilter().getDescription()).compareTo("*.jpg")==0){
         			    				
-        				FileOutputStream fos = new FileOutputStream(file.getPath().concat(file.getName().concat(".jpg")));
+        				checkExtension(".jpg");
         				
+        				FileOutputStream fos = new FileOutputStream(path);
+        						
+        					
         			    ImageIO.write(img, "jpg", fos);
         			    fos.close();
         				
         			}
         			else{
-        				ImageIO.write(img, "png", new File(file.getPath().concat(file.getName().concat(".png"))));
+        				
+        				checkExtension(".png");
+        				
+        				ImageIO.write(img, "png", new File(path));
         			
         			}
         		}
@@ -69,5 +77,13 @@ public class ExportDialog implements ActionListener {
     	}
     	
     	evopaint.setRunning(true);
+    }
+    
+    public void checkExtension(String ending){
+		if(file.getPath().endsWith(ending)){
+			path=file.getPath();
+		}else{
+			path=file.getPath().concat(ending);
+		}
     }
 }

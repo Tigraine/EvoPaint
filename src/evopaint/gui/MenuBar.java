@@ -5,20 +5,30 @@
 
 package evopaint.gui;
 
+import evopaint.Configuration;
 import evopaint.EvoPaint;
 import evopaint.Manifest;
+import evopaint.Perception;
 import evopaint.Selection;
+import evopaint.World;
 import evopaint.gui.MainFrame;
 import evopaint.gui.listeners.SelectionListenerFactory;
 import evopaint.gui.listeners.SelectionSetNameListener;
+import evopaint.pixel.Pixel;
 import evopaint.util.logging.Logger;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -33,22 +43,43 @@ public class MenuBar extends JMenuBar implements SelectionObserver {
     private EvoPaint evopaint;
     private JMenu selectionMenu;
     private JMenu activeSelections;
+    private newWizard nw;
+    private MenuBar mb;
 
     public MenuBar(final EvoPaint evopaint, SelectionListenerFactory listenerFactory) {
         this.evopaint = evopaint;
-
+        this.mb=this;
         // World Menu
         JMenu worldMenu = new JMenu();
         worldMenu.setText("World");
         add(worldMenu);
 
-        // File Menu Items
-        worldMenu.add(new JMenuItem("New..."));
+        // File Menu Items        
+        JMenuItem newItem = new JMenuItem();
+        newItem.setText("New");
+        newItem.addActionListener(new ActionListener() {
+		
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				// TODO Auto-generated method stub
+				nw = new newWizard(mb);
+			}
+		});
+        
+        
+        worldMenu.add(newItem);
+        
         worldMenu.add(new JMenuItem("Open..."));
         worldMenu.add(new JMenuItem("Save"));
         worldMenu.add(new JMenuItem("Save as..."));
         worldMenu.add(new JMenuItem("Import..."));
-        worldMenu.add(new JMenuItem("Export..."));
+             
+        JMenuItem exportItem = new JMenuItem();
+        exportItem.setText("Export");
+        exportItem.addActionListener(new ExportDialog(evopaint));
+        
+        worldMenu.add(exportItem);
+        
         worldMenu.add(new JMenuItem("Options..."));
         JMenuItem endItem = new JMenuItem();
         endItem.setText("End");
@@ -176,4 +207,37 @@ public class MenuBar extends JMenuBar implements SelectionObserver {
             }
         }
     }
+
+	public void newEvolution(int x, int y) {
+		evopaint.getConfiguration().setRunning(false);
+		//todo wizard code & implementation of a new evolution
+		
+		Configuration newConf = new Configuration(new Dimension(x, y));
+		evopaint.setConfiguration(newConf);
+		
+		
+		evopaint.setWorld(new World(new Pixel[newConf.getDimension().width * newConf.getDimension().height],0, newConf));
+		evopaint.setPerception(new Perception(new BufferedImage
+                (newConf.getDimension().width, newConf.getDimension().height,
+                BufferedImage.TYPE_INT_RGB)));
+
+        evopaint.getPerception().createImage(evopaint.getWorld());
+       
+        //check evopaint
+		//check config
+		//check work
+		// implement
+		// new config 
+		// evopaint= config
+		// evopaint work
+        
+		evopaint.getFrame().setConfiguration(newConf);
+		evopaint.getFrame().removeGraf();
+		evopaint.getFrame().initializeCommands(evopaint);
+		evopaint.getFrame().initSecond(evopaint);
+		
+
+		evopaint.getConfiguration().setRunning(true);
+		
+	}
 }

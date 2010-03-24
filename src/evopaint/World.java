@@ -79,13 +79,13 @@ public class World extends ParallaxMap<Pixel> {
         System.out.println("Rule number1: '" + number1 + "'");
         System.out.println("Rule number2: '" + number2 + "'");
 
-        for (int y = 0; y < configuration.initialPopulation.height; y++) {
-            for (int x = 0; x < configuration.initialPopulation.width; x++) {
+        for (int y = 0; y < configuration.getInitPop().height; y++) {
+            for (int x = 0; x < configuration.getInitPop().width; x++) {
 
                 int energy = configuration.startingEnergy;
                 PixelColor color = new PixelColor(rng.nextPositiveInt());
-                AbsoluteCoordinate location = new AbsoluteCoordinate(configuration.dimension.width / 2 - configuration.initialPopulation.width / 2 + x,
-                        configuration.dimension.height / 2 - configuration.initialPopulation.height / 2 + y, this);
+                AbsoluteCoordinate location = new AbsoluteCoordinate(configuration.getDimension().width / 2 - configuration.getInitPop().width / 2 + x,
+                        configuration.getDimension().height / 2 - configuration.getInitPop().height / 2 + y, this);
                 Pixel pixie = new Pixel(energy, color, location);
                 pixie.learn(number1);
                 pixie.learn(number2);
@@ -196,7 +196,7 @@ public class World extends ParallaxMap<Pixel> {
     }
 
     public World(Pixel [] pixels, long time, Configuration configuration) {
-        super(pixels, configuration.dimension.width, configuration.dimension.height);
+        super(pixels, configuration.getDimension().width, configuration.getDimension().height);
         this.time = time;
         this.configuration = configuration;
         this.init();
