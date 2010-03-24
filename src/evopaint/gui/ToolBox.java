@@ -54,13 +54,13 @@ public class ToolBox extends JPanel {
     	this.mf=mf;
     	toolOptions=mf.getPop();
     	
-    	ImageIcon iconMove = new ImageIcon("..\\EvoPaint_merge\\graphics\\move.png");
-    	ImageIcon iconPaint = new ImageIcon("..\\EvoPaint_merge\\graphics\\brush.png");
-    	ImageIcon iconPick = new ImageIcon("..\\EvoPaint_merge\\graphics\\picker.png");
-    	ImageIcon iconSelect = new ImageIcon("..\\EvoPaint_merge\\graphics\\select.png");
-    	ImageIcon iconZoom = new ImageIcon("..\\EvoPaint_merge\\graphics\\zoom.png");
-    	ImageIcon iconGravitation = new ImageIcon("..\\EvoPaint_merge\\graphics\\grav.png");
-    	ImageIcon iconFill = new ImageIcon("..\\EvoPaint_merge\\graphics\\fill.png");
+    	ImageIcon iconMove = new ImageIcon("..\\EvoPaint_new\\graphics\\move.png");
+    	ImageIcon iconPaint = new ImageIcon("..\\EvoPaint_new\\graphics\\brush.png");
+    	ImageIcon iconPick = new ImageIcon("..\\EvoPaint_new\\graphics\\picker.png");
+    	ImageIcon iconSelect = new ImageIcon("..\\EvoPaint_new\\graphics\\select.png");
+    	ImageIcon iconZoom = new ImageIcon("..\\EvoPaint_new\\graphics\\zoom.png");
+    	ImageIcon iconGravitation = new ImageIcon("..\\EvoPaint_new\\graphics\\grav.png");
+    	ImageIcon iconFill = new ImageIcon("..\\EvoPaint_new\\graphics\\fill.png");
     	
     
     	
