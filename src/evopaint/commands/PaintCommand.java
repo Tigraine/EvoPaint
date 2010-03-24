@@ -7,8 +7,8 @@ import evopaint.pixel.Pixel;
 import evopaint.World;
 import evopaint.gui.PaintOptionsPanel;
 import evopaint.util.mapping.AbsoluteCoordinate;
-import evopaint.pixel.PixelColor;
 import evopaint.util.logging.Logger;
+import java.awt.Color;
 
 
 import java.awt.Point;
@@ -67,19 +67,21 @@ public class PaintCommand extends AbstractCommand {
                 int x = location.x + j;
                 int y = location.y + i;
                 Pixel pixie = this.world.get(x, y);
-                int pixelColorInteger = 0;
+                float hsb[] = {0,0,0};
                 switch (mf.getPop().getColorMode()) { // TODO move this to pixel construction
                     case PaintOptionsPanel.COLORMODE_FAIRY_DUST:
-                        pixelColorInteger = world.getRandomNumberGenerator().nextPositiveInt();
+                        for (int k = 0; k < 3; k++) {
+                            hsb[k] = world.getRandomNumberGenerator().nextFloat();
+                        }
                         break;
                     case PaintOptionsPanel.COLORMODE_USE_EXISTING:
                         if (pixie == null) {
                             continue;
                         }
-                        pixelColorInteger = pixie.getPixelColor().getInteger();
+                        hsb = pixie.getPixelColor().getHSB();
                         break;
                     case PaintOptionsPanel.COLORMODE_COLOR:
-                        pixelColorInteger = paintOptionsPanel.getColor().getRGB();
+                        hsb = Color.RGBtoHSB(paintOptionsPanel.getColor().getRed(), paintOptionsPanel.getColor().getGreen(), paintOptionsPanel.getColor().getBlue(), hsb);
                         break;
                     default:
                         Logger.log.error("colorMode not set", new Object());
@@ -90,7 +92,7 @@ public class PaintCommand extends AbstractCommand {
                     pixie = brush.createPixelAt(new AbsoluteCoordinate(x, y, world));
                     world.set(pixie);
                 } else {
-                    pixie.getPixelColor().setInteger(pixelColorInteger);
+                    pixie.getPixelColor().setHSB(hsb);
                 }
                 
             }

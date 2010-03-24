@@ -18,8 +18,6 @@ import evopaint.pixel.State;
 import evopaint.pixel.actions.RewardAction;
 import evopaint.pixel.interfaces.IAction;
 import evopaint.pixel.interfaces.IRule;
-import evopaint.pixel.misc.ColorComparisonOperator;
-import evopaint.pixel.misc.ColorMixMode;
 import evopaint.pixel.misc.IntegerComparisonOperator;
 import evopaint.util.mapping.AbsoluteCoordinate;
 
@@ -85,26 +83,26 @@ public class World extends ParallaxMap<Pixel> {
         directions.add(RelativeCoordinate.NORTH);
         directions.add(RelativeCoordinate.SOUTH);
         directions.add(RelativeCoordinate.EAST);
-        IAction action = new AssimilationAction(20, directions, ColorMixMode.HSB);
+        IAction action = new AssimilationAction(20, directions, PixelColor.HSB);
         rules.add(new Rule(conditions, action));
 
         conditions = new ArrayList<ICondition>();
         directions = new ArrayList<RelativeCoordinate>();
         directions.add(RelativeCoordinate.SELF);
-        conditions.add(new ColorCondition(directions, new PixelColor(0xFF0000FF), 94, ColorComparisonOperator.MINIMUM_BLUE_LIKENESS));
+        conditions.add(new ColorCondition(directions, new PixelColor(0xFF0000FF), 70, ColorCondition.SATURATION_LIKENESS_AT_LEAST));
         directions = new ArrayList<RelativeCoordinate>();
         directions.add(RelativeCoordinate.SELF);
         action = new RewardAction(0, directions, 80);
-        rules.add(new Rule(conditions, action));
+        //rules.add(new Rule(conditions, action));
 
         conditions = new ArrayList<ICondition>();
         directions = new ArrayList<RelativeCoordinate>();
         directions.add(RelativeCoordinate.SELF);
-        conditions.add(new ColorCondition(directions, new PixelColor(0xFFFF0000), 94, ColorComparisonOperator.MINIMUM_RED_LIKENESS));
+        conditions.add(new ColorCondition(directions, new PixelColor(0xFFFF0000), 70, ColorCondition.SATURATION_LIKENESS_AT_LEAST));
         directions = new ArrayList<RelativeCoordinate>();
         directions.add(RelativeCoordinate.SELF);
         action = new RewardAction(0, directions, 80);
-        rules.add(new Rule(conditions, action));
+        //rules.add(new Rule(conditions, action));
 
         List<State> possibleStates = new ArrayList();
         possibleStates.add(new State("START"));

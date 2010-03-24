@@ -5,7 +5,6 @@
 
 package evopaint.pixel.misc;
 
-import evopaint.pixel.State;
 import evopaint.util.logging.Logger;
 
 /**

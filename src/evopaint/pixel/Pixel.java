@@ -7,7 +7,6 @@ package evopaint.pixel;
 import evopaint.World;
 import evopaint.pixel.interfaces.IRule;
 import evopaint.util.mapping.AbsoluteCoordinate;
-import evopaint.util.mapping.RelativeCoordinate;
 import java.util.List;
 
 /**
