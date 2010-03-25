@@ -28,6 +28,7 @@ public class FillSelectionCommand extends AbstractCommand {
     private int energy;
     private RuleSet ruleSet;
     private Showcase showcase;
+    protected int density = 1;
 
     public FillSelectionCommand(Showcase showcase) {
         this.showcase = showcase;
@@ -44,6 +45,8 @@ public class FillSelectionCommand extends AbstractCommand {
         this.selection = showcase.getActiveSelection();
         for (int x = selection.getStartPoint().x; x < selection.getEndPoint().x; x++){
             for (int y = selection.getStartPoint().y; y < selection.getEndPoint().y; y++){
+                if ((x % density) == 0) continue;
+                if ((y % density) == 0) continue;
                 Pixel newPixel = new Pixel(new PixelColor(color), new AbsoluteCoordinate(x, y, configuration.world), energy, ruleSet);
                 configuration.world.set(newPixel);
             }

@@ -13,6 +13,7 @@ import evopaint.Selection;
 import evopaint.World;
 import evopaint.commands.CommandFactory;
 import evopaint.commands.FillSelectionCommand;
+import evopaint.commands.FillSelectionCommandScattered;
 import evopaint.gui.MainFrame;
 import evopaint.gui.listeners.SelectionListenerFactory;
 import evopaint.gui.listeners.SelectionSetNameListener;
@@ -107,6 +108,9 @@ public class MenuBar extends JMenuBar implements SelectionObserver {
         JMenuItem fillSelection = new JMenuItem("Fill");
         fillSelection.addActionListener(new FillSelectionCommand(showcase));
         selectionMenu.add(fillSelection);
+        JMenuItem fillHalfSelection = new JMenuItem("Fill 50%");
+        fillHalfSelection.addActionListener(new FillSelectionCommandScattered(showcase));
+        selectionMenu.add(fillHalfSelection);
         selectionMenu.add(new JMenuItem("Open as new"));
         selectionMenu.add(new JMenuItem("Copy"));
         selectionMenu.add(new JMenuItem("Options..."));
