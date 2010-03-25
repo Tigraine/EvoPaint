@@ -11,6 +11,7 @@ import evopaint.Manifest;
 import evopaint.Perception;
 import evopaint.Selection;
 import evopaint.World;
+import evopaint.commands.CommandFactory;
 import evopaint.gui.MainFrame;
 import evopaint.gui.listeners.SelectionListenerFactory;
 import evopaint.gui.listeners.SelectionSetNameListener;
@@ -106,6 +107,9 @@ public class MenuBar extends JMenuBar implements SelectionObserver {
         selectionMenu.add(new JMenuItem("Options..."));
         activeSelections = new JMenu("Selections");
         selectionMenu.add(activeSelections);
+        JMenuItem clearSelections = new JMenuItem("Clear Selections");
+        clearSelections.addActionListener(listenerFactory.CreateClearSelectionsListener());
+        selectionMenu.add(clearSelections);
 
         // info menu
         JMenu infoMenu = new JMenu();

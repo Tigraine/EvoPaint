@@ -246,4 +246,9 @@ public class Showcase extends JPanel implements MouseInputListener, MouseWheelLi
     public Selection getActiveSelection() {
         return activeSelection;
     }
+
+    public void clearSelections() {
+        this.activeSelection = null;
+        this.currentSelections.clear();
+    }
 }
