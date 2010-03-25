@@ -9,6 +9,7 @@ import evopaint.pixel.AbstractPixelCondition;
 import evopaint.World;
 import evopaint.pixel.Pixel;
 import evopaint.pixel.PixelColor;
+import evopaint.pixel.misc.NumberComparisonOperator;
 import evopaint.util.mapping.RelativeCoordinate;
 import java.util.List;
 
@@ -17,64 +18,61 @@ import java.util.List;
  * @author tam
  */
 public class ColorCondition extends AbstractPixelCondition {
-    public static final int LIKENESS_AT_LEAST= 0;
-    public static final int LIKENESS_LESS_THAN = 1;
 
-    public static final int HUE_LIKENESS_AT_LEAST= 2;
-    public static final int HUE_LIKENESS_LESS_THAN = 3;
-    public static final int SATURATION_LIKENESS_AT_LEAST= 4;
-    public static final int SATURATION_LIKENESS_LESS_THAN = 5;
-    public static final int BRIGHTNESS_LIKENESS_AT_LEAST= 6;
-    public static final int BRIGHTNESS_LIKENESS_LESS_THAN = 7;
-
-    private PixelColor desiredColor;
-    private int minLikenessPercentage;
-    int comparison;
+    private PixelColor comparedColor;
+    private int dimensions;
+    private int compareToLikenessPercentage;
+    private NumberComparisonOperator comparisonOperator;
 
     @Override
     public String toString() {
-        String ret = "color of ";
+        String ret = "likeness";
+        ret += "(dimensions: ";
+        switch(dimensions) {
+            case PixelColor.HSB: ret += "H,S,B";
+                break;
+            case PixelColor.H: ret += "H";
+                break;
+            case PixelColor.S: ret += "S";
+                break;
+            case PixelColor.B: ret += "B";
+                break;
+            case PixelColor.HS: ret += "H,S";
+                break;
+            case PixelColor.HB: ret += "H,B";
+                break;
+            case PixelColor.SB: ret += "S,B";
+                break;
+            default: assert(false);
+        }
+        ret += (") of ");
         ret += super.toString();
         ret += " is ";
-        switch (comparison) {
-            case LIKENESS_AT_LEAST: ret += "at least"; break;
-            case LIKENESS_LESS_THAN: ret += "less than"; break;
-            case HUE_LIKENESS_AT_LEAST: ret += "at least"; break;
-            case HUE_LIKENESS_LESS_THAN: ret += "less than"; break;
-            case SATURATION_LIKENESS_AT_LEAST: ret += "at least"; break;
-            case SATURATION_LIKENESS_LESS_THAN: ret += "less than"; break;
-            case BRIGHTNESS_LIKENESS_AT_LEAST: ret += "at least"; break;
-            case BRIGHTNESS_LIKENESS_LESS_THAN: ret += "less than"; break;
-        }
+        ret += comparisonOperator;
         ret += " ";
-        ret += minLikenessPercentage;
-        ret += "% like ";
-        ret += desiredColor;
+        ret += compareToLikenessPercentage;
+        ret += "% of ";
+        ret += comparedColor;
         return ret;
     }
 
     public boolean isMet(Pixel us, World world) {
         for (RelativeCoordinate direction : getDirections()) {
             Pixel them = world.get(us.getLocation(), direction);
-            int percentage = (int)PixelColor.likeness(them.getPixelColor(), desiredColor, comparison) * 100;
-            switch (comparison) {
-                case LIKENESS_AT_LEAST: return percentage >= minLikenessPercentage;
-                case LIKENESS_LESS_THAN: return percentage < minLikenessPercentage;
-                case HUE_LIKENESS_AT_LEAST: return percentage >= minLikenessPercentage;
-                case HUE_LIKENESS_LESS_THAN: return percentage < minLikenessPercentage;
-                case SATURATION_LIKENESS_AT_LEAST: return percentage >= minLikenessPercentage;
-                case SATURATION_LIKENESS_LESS_THAN: return percentage < minLikenessPercentage;
-                case BRIGHTNESS_LIKENESS_AT_LEAST: return percentage >= minLikenessPercentage;
-                case BRIGHTNESS_LIKENESS_LESS_THAN: return percentage < minLikenessPercentage;
-            }
+            double distance = them.getPixelColor().distanceTo(comparedColor, dimensions);
+            //System.out.println("distance: " + distance);
+            int likenessPercentage = (int)((1 - distance) * 100);
+            return comparisonOperator.compare(likenessPercentage, compareToLikenessPercentage);
         }
         return true;
     }
 
-    public ColorCondition(List<RelativeCoordinate> directions, PixelColor desiredColor, int minLikenessPercentage, int comparison) {
+    public ColorCondition(List<RelativeCoordinate> directions, NumberComparisonOperator comparisonOperator, int compareToLikenessPercentage, int dimensions, PixelColor comparedColor) {
         super(directions);
-        this.desiredColor = desiredColor;
-        this.minLikenessPercentage = minLikenessPercentage;
-        this.comparison = comparison;
+        this.comparisonOperator = comparisonOperator;
+        this.comparedColor = comparedColor;
+        this.compareToLikenessPercentage = compareToLikenessPercentage;
+        this.dimensions = dimensions;
+        this.comparedColor = comparedColor;
     }
 }

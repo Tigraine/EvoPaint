@@ -7,7 +7,7 @@ package evopaint.pixel;
 
 import evopaint.World;
 import evopaint.pixel.conditions.EnergyCondition;
-import evopaint.pixel.misc.IntegerComparisonOperator;
+import evopaint.pixel.misc.NumberComparisonOperator;
 import evopaint.pixel.interfaces.IRule;
 import evopaint.pixel.interfaces.IAction;
 import evopaint.pixel.interfaces.ICondition;
@@ -75,10 +75,10 @@ public class Rule implements IRule {
         for (ICondition condition : conditions) {
             if (condition.getClass() == EnergyCondition.class) {
                 if (((EnergyCondition)condition).getDirections().contains(RelativeCoordinate.SELF)) {
-                    IntegerComparisonOperator comparisonOperator = ((EnergyCondition)condition).getComparisonOperator();
-                    if (comparisonOperator == IntegerComparisonOperator.EQUAL ||
-                            comparisonOperator == IntegerComparisonOperator.GREATER_THAN ||
-                            comparisonOperator == IntegerComparisonOperator.GREATER_OR_EQUAL) {
+                    NumberComparisonOperator comparisonOperator = ((EnergyCondition)condition).getComparisonOperator();
+                    if (comparisonOperator == NumberComparisonOperator.EQUAL ||
+                            comparisonOperator == NumberComparisonOperator.GREATER_THAN ||
+                            comparisonOperator == NumberComparisonOperator.GREATER_OR_EQUAL) {
                         if (((EnergyCondition)condition).getEnergyValue() > action.getCost() * action.getDirections().size()) {
                             return null;
                         }

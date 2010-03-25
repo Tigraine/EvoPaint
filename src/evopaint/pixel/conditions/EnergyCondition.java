@@ -5,7 +5,7 @@
 
 package evopaint.pixel.conditions;
 
-import evopaint.pixel.misc.IntegerComparisonOperator;
+import evopaint.pixel.misc.NumberComparisonOperator;
 import evopaint.pixel.AbstractPixelCondition;
 import evopaint.World;
 import evopaint.pixel.Pixel;
@@ -18,10 +18,10 @@ import java.util.List;
  */
 public class EnergyCondition extends AbstractPixelCondition {
 
-    private IntegerComparisonOperator comparisonOperator;
+    private NumberComparisonOperator comparisonOperator;
     private int energyValue;
 
-    public IntegerComparisonOperator getComparisonOperator() {
+    public NumberComparisonOperator getComparisonOperator() {
         return comparisonOperator;
     }
 
@@ -52,7 +52,7 @@ public class EnergyCondition extends AbstractPixelCondition {
         return true;
     }
 
-    public EnergyCondition(List<RelativeCoordinate> directions, IntegerComparisonOperator comparisonOperator, int energyValue) {
+    public EnergyCondition(List<RelativeCoordinate> directions, NumberComparisonOperator comparisonOperator, int energyValue) {
         super(directions);
         this.comparisonOperator = comparisonOperator;
         this.energyValue = energyValue;

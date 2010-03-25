@@ -7,8 +7,11 @@
 
 package evopaint.pixel;
 
+import evopaint.interfaces.IRandomNumberGenerator;
 import java.awt.Color;
 
+// hsb color space is a cylinder with
+// radius = saturation, angle = hue and height = brightness
 
 /**
  *
@@ -20,112 +23,162 @@ public class PixelColor {
     public static final int S = 2;
     public static final int B = 3;
     public static final int HS = 4;
-    public static final int SB = 5;
-    public static final int BH = 6;
+    public static final int HB = 5;
+    public static final int SB = 6;
     
-    private float [] hsb;
+    private float hue;
+    private float saturation;
+    private float brightness;
 
     public float[] getHSB() {
-        return hsb;
+        return new float [] {hue, saturation, brightness};
     }
 
-    public float getH() {
-        return hsb[0];
+    public float getBrightness() {
+        return brightness;
     }
-    
-    public float getS() {
-        return hsb[1];
+
+    public float getHue() {
+        return hue;
     }
-        
-    public float getB() {
-        return hsb[2];
+
+    public float getSaturation() {
+        return saturation;
+    }
+
+    public void setHSB(float hue, float saturation, float brightness) {
+        this.hue = hue;
+        this.saturation = saturation;
+        this.brightness = brightness;
+    }
+
+    public void setInteger(int integer, IRandomNumberGenerator rng) {
+        float [] hsb = null;
+        hsb = Color.RGBtoHSB(integer >> 16 & 0xFF, integer >> 8 & 0xFF, integer & 0xFF, hsb);
+        this.hue = (integer & 0xFFFFFF) == 0 || // because red is default and you wonder why your picture becomes all red..
+                (integer & 0xFFFFFF) == 0xFFFFFF ? rng.nextFloat() : hsb[0];
+        this.saturation = hsb[1];
+        this.brightness = hsb[2];
     }
 
     public int getInteger() {
-        return Color.HSBtoRGB(hsb[0], hsb[1], hsb[2]);
+        return Color.HSBtoRGB(hue, saturation, brightness);
     }
 
     public void setHSB(float[] hsb) {
-        this.hsb = hsb;
+        this.hue = hsb[0];
+        this.saturation = hsb[1];
+        this.brightness = hsb[2];
     }
 
     @Override
     public String toString() {
-        return "#" + Integer.toHexString(Color.HSBtoRGB(hsb[0], hsb[1], hsb[2])).substring(2).toUpperCase();
+        return "#" + Integer.toHexString(Color.HSBtoRGB(hue, saturation, brightness)).substring(2).toUpperCase();
     }
 
-    public static double likeness(PixelColor ourColor, PixelColor theirColor, int mode) {
-        float[] ourHSB = ourColor.getHSB();
-        float[] theirHSB = theirColor.getHSB();
-
-        switch (mode) {
+    public double distanceTo(PixelColor theirColor, int dimensions) {
+        double distance = 1;
+        
+        switch (dimensions) {
             case HSB:
-                return (compareCyclic(ourHSB[0], theirHSB[0]) +
-                        compareLinear(ourHSB[1], theirHSB[1]) +
-                        compareLinear(ourHSB[2], theirHSB[2])
-                        ) / 3;
+                // this is difficult. we need to come up with a distance that
+                // is at least somewhat comparable
+                // to what we percieve as a "distance" between colors...
+                
+                // let us define black as black
+                
+                
+                // let's start with hue, for that is what makes color colorful
+                distance = distanceCyclic(hue, theirColor.getHue());
+
+                // if one of the colors is very colorful, it does not matter
+                // whether the other is almost white or not, so we take the biggest one
+                // the same holds true for very dark colors
+                // now we need to find some means to weight the color distance
+                // with these. let us try multiplying them for now
+                distance = distance * Math.max(saturation, theirColor.getSaturation())
+                            * Math.max(brightness, theirColor.getBrightness());
+                break;
             case H:
-                return compareCyclic(ourHSB[0], theirHSB[0]);
+                distance = distanceCyclic(hue, theirColor.getHue());
+                break;
             case S:
-                return compareLinear(ourHSB[1], theirHSB[1]);
+                distance = distanceLinear(saturation, theirColor.getSaturation());
+                break;
             case B:
-                return compareLinear(ourHSB[2], theirHSB[2]);
+                distance = distanceLinear(brightness, theirColor.getBrightness());
+                break;
             case HS:
-                return (compareCyclic(ourHSB[0], theirHSB[0]) +
-                        compareLinear(ourHSB[1], theirHSB[1])
-                        ) / 2;
+                // see HSB
+                distance = distanceCyclic(hue, theirColor.getHue());
+                distance *= Math.max(saturation, theirColor.getSaturation());
+                break;
+            case HB:
+                // see HSB
+                distance = distanceCyclic(hue, theirColor.getHue());
+                distance *= Math.max(brightness, theirColor.getBrightness());
+                break;
             case SB:
-                return (compareLinear(ourHSB[1], theirHSB[1]) +
-                        compareLinear(ourHSB[2], theirHSB[2])
+                // finally, something easy (I hope)
+                distance = (distanceLinear(saturation, theirColor.getSaturation()) +
+                        distanceLinear(brightness, theirColor.getBrightness())
                         ) / 2;
-            case BH:
-                return (compareLinear(ourHSB[2], theirHSB[2]) +
-                        compareCyclic(ourHSB[0], theirHSB[0])
-                        ) / 2;
+                break;
+            default: assert(false);
         }
-        assert(false);
-        return 0;
+        
+        return distance;
     }
 
-    private static double compareCyclic(double a, double b) {
+    private static double distanceCyclic(double a, double b) {
+        //System.out.print("distance between " + a + " and " + b + " is ");
         double delta = Math.abs(a - b);
-        return Math.min(delta, 1 - delta);
+        //System.out.println(delta);
+        return Math.min(delta, 1 - delta) * 2; // * 2 to norm to max distance 1
     }
 
-    private static double compareLinear(double a, double b) {
+    private static double distanceLinear(double a, double b) {
         return Math.abs(a - b);
     }
 
-    public static float [] mix(PixelColor us, PixelColor them, float theirShare, int mode) {
-        //System.out.print(us.toString() + " + " + them.toString() + " = ");
-        float [] ret = new float[3];
-        float[] ourHSB = us.getHSB();
-        float[] theirHSB = them.getHSB();
-        
-        // hsb color space is a cylinder with
-        // radius = saturation, angle = hue and height = brightness
-
-        // use atan2 to calculate the angle (hue)
-        //double x1 = Math.cos(ourHSB[0] * 360);
-        //double y1 = Math.sin(ourHSB[0] * 360);
-        //double x2 = Math.cos(theirHSB[0] * 360);
-        //double y2 = Math.sin(theirHSB[0] * 360);
-        //double x = Math.min(x1, x2) + Math.abs(x1 - x2) / 2;
-        //double y = Math.min(y1, y2) + Math.abs(y1 - y2) / 2;
-        //ret[0] = (float)(Math.atan2(y, x) / 360);
-        ret[0] = mixCyclic(ourHSB[0], theirHSB[0], theirShare);
-
-        // saturation and brightness are plain cartesian coordinates
-        ret[1] = (float)mixLinear(ourHSB[1], theirHSB[1], theirShare);
-        ret[2] = (float)mixLinear(ourHSB[2], theirHSB[2], theirShare);
-        //System.out.println(Integer.toHexString(Color.HSBtoRGB(ret[0], ret[1], ret[2])));
-        return ret;
+    public void mixWith(PixelColor theirColor, float theirShare, int dimensions) {
+        //System.out.print(toString() + " + " + theirColor.toString() + " = ");
+        switch (dimensions) {
+            case HSB:
+                hue = (float)mixCyclic(hue, theirColor.getHue(), theirShare);
+                saturation = (float)mixLinear(saturation, theirColor.getSaturation(), theirShare);
+                brightness = (float)mixLinear(brightness, theirColor.getBrightness(), theirShare);
+                break;
+            case H:
+                hue = (float)mixCyclic(hue, theirColor.getHue(), theirShare);
+                break;
+            case S:
+                saturation = (float)mixLinear(saturation, theirColor.getSaturation(), theirShare);
+                break;
+            case B:
+                brightness = (float)mixLinear(brightness, theirColor.getBrightness(), theirShare);
+                break;
+            case HS:
+                hue = (float)mixCyclic(hue, theirColor.getHue(), theirShare);
+                saturation = (float)mixLinear(saturation, theirColor.getSaturation(), theirShare);
+                break;
+            case HB:
+                hue = (float)mixCyclic(hue, theirColor.getHue(), theirShare);
+                brightness = (float)mixLinear(brightness, theirColor.getBrightness(), theirShare);
+                break;
+            case SB:
+                saturation = (float)mixLinear(saturation, theirColor.getSaturation(), theirShare);
+                brightness = (float)mixLinear(brightness, theirColor.getBrightness(), theirShare);
+                break;
+            default: assert(false);
+        }
+        //System.out.println(toString());
     }
 
-    private static float mixCyclic(float a, float b, float shareOfB) {
-        float ret = 0.0f;
-        float min = Math.min(a, b);
-        float delta = Math.abs(a - b);
+    private static double mixCyclic(double a, double b, double shareOfB) {
+        double ret = 0.0f;
+        double min = Math.min(a, b);
+        double delta = Math.abs(a - b);
         boolean isWrapped = false;
         if (delta > 1 - delta) {
             isWrapped = true;
@@ -153,15 +206,19 @@ public class PixelColor {
         }
     }
 
-    public PixelColor(float[] hsb) {
-        this.hsb = hsb;
+    public PixelColor(float hue, float saturation, float brightness) {
+        this.hue = hue;
+        this.saturation = saturation;
+        this.brightness = brightness;
     }
 
-    public PixelColor(int integer) {
-        this.hsb = Color.RGBtoHSB(integer >> 16 & 0xFF, integer >> 8 & 0xFF, integer & 0xFF, this.hsb);
+    public PixelColor(int integer, IRandomNumberGenerator rng) {
+        setInteger(integer, rng);
     }
 
     public PixelColor(PixelColor pixelColor) {
-        this.hsb = pixelColor.hsb.clone();
+        this.hue = pixelColor.hue;
+        this.saturation = pixelColor.saturation;
+        this.brightness = pixelColor.brightness;
     }
 }

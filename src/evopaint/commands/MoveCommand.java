@@ -46,7 +46,7 @@ public class MoveCommand extends AbstractCommand {
     }
 
     public MoveCommand(Configuration configuration) {
-        this.at = configuration.getAffineTransform();
+        this.at = configuration.affineTransform;
         this.imageWidth = configuration.dimension.width;
         this.imageHeight = configuration.dimension.height;
     }

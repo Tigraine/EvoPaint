@@ -5,7 +5,7 @@
 
 package evopaint.gui.ruleeditor;
 
-import evopaint.pixel.misc.IntegerComparisonOperator;
+import evopaint.pixel.misc.NumberComparisonOperator;
 import javax.swing.DefaultComboBoxModel;
 
 /**
@@ -15,11 +15,11 @@ import javax.swing.DefaultComboBoxModel;
 public class ComparisonOperationsComboBoxModel extends DefaultComboBoxModel {
 
     public ComparisonOperationsComboBoxModel() {
-        addElement(IntegerComparisonOperator.GREATER_THAN);
-        addElement(IntegerComparisonOperator.LESS_THAN);
-        addElement(IntegerComparisonOperator.EQUAL);
-        addElement(IntegerComparisonOperator.GREATER_OR_EQUAL);
-        addElement(IntegerComparisonOperator.LESS_OR_EQUAL);
+        addElement(NumberComparisonOperator.GREATER_THAN);
+        addElement(NumberComparisonOperator.LESS_THAN);
+        addElement(NumberComparisonOperator.EQUAL);
+        addElement(NumberComparisonOperator.GREATER_OR_EQUAL);
+        addElement(NumberComparisonOperator.LESS_OR_EQUAL);
     }
 
 }

@@ -15,6 +15,8 @@ import java.util.List;
 public class RuleSet {
     private String name;
     private List<IRule> rules;
+    private List<State> availableStates;
+    private State initialState;
 
     public String getName() {
         return name;
@@ -41,8 +43,33 @@ public class RuleSet {
         this.rules = rules;
     }
 
-    public RuleSet(String name, List<IRule> rules) {
+    public List<State> getAvailableStates() {
+        return availableStates;
+    }
+
+    public void setAvailableStates(List<State> availableStates) {
+        this.availableStates = availableStates;
+    }
+
+    public State getInitialState() {
+        return initialState;
+    }
+
+    public void setInitialState(State initialState) {
+        this.initialState = initialState;
+    }
+
+    public RuleSet(String name, List<IRule> rules, List<State> availableStates, State initialState) {
         this.name = name;
         this.rules = rules;
+        this.availableStates = availableStates;
+        this.initialState = initialState;
+    }
+
+    public RuleSet(RuleSet ruleSet) {
+        this.name = ruleSet.name;
+        this.rules = ruleSet.rules;
+        this.availableStates = ruleSet.availableStates;
+        this.initialState = ruleSet.initialState;
     }
 }

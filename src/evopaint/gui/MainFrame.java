@@ -57,7 +57,7 @@ public class MainFrame extends JFrame {
 
 
         CommandFactory commandFactory = new CommandFactory(configuration);
-        this.paintOptionsPanel = new PaintOptionsPanel(showcase,this); // FIXME: paintoptionspanel must be initialized before showcase or we get a nullpointer exception. the semantics to not express this!!
+        this.paintOptionsPanel = new PaintOptionsPanel(configuration, showcase, this); // FIXME: paintoptionspanel must be initialized before showcase or we get a nullpointer exception. the semantics to not express this!!
         this.showcase = new Showcase(configuration, this, evopaint.getWorld(), evopaint.getPerception(), commandFactory);
         this.menuBar = new MenuBar(evopaint, new SelectionListenerFactory(showcase));
         commandFactory.GetSelectCommand().addSelectionListener(menuBar);
@@ -107,7 +107,7 @@ public class MainFrame extends JFrame {
     public void initializeCommands(EvoPaint evopaint) {
     	
         CommandFactory commandFactory = new CommandFactory(configuration);
-        this.paintOptionsPanel = new PaintOptionsPanel(showcase,this); // FIXME: paintoptionspanel must be initialized before showcase or we get a nullpointer exception. the semantics to not express this!!
+        this.paintOptionsPanel = new PaintOptionsPanel(configuration, showcase, this); // FIXME: paintoptionspanel must be initialized before showcase or we get a nullpointer exception. the semantics to not express this!!
         this.showcase = new Showcase(configuration, this, evopaint.getWorld(), evopaint.getPerception(), commandFactory);
         this.menuBar = new MenuBar(evopaint, new SelectionListenerFactory(showcase));
         commandFactory.GetSelectCommand().addSelectionListener(menuBar);
@@ -138,7 +138,7 @@ public class MainFrame extends JFrame {
                 } else if (e.getKeyCode() == KeyEvent.VK_MINUS) {
                     zoomOutCommand.execute();
                 } else if (e.getKeyCode() == KeyEvent.VK_SPACE) {
-                    if (configuration.isRunning()) {
+                    if (configuration.running) {
                         pauseCommand.execute();
                     } else {
                         resumeCommand.execute();
@@ -226,7 +226,7 @@ public class MainFrame extends JFrame {
             } else if (e.getKeyCode() == KeyEvent.VK_MINUS) {
                 zoomOutCommand.execute();
             } else if (e.getKeyCode() == KeyEvent.VK_SPACE) {
-                if (configuration.isRunning()) {
+                if (configuration.running) {
                     pauseCommand.execute();
                 } else {
                     resumeCommand.execute();

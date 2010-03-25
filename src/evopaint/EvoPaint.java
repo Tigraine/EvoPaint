@@ -61,7 +61,7 @@ public class EvoPaint {
     public void work() {
         while (true) {
 
-            if (configuration.isRunning() == false) {
+            if (configuration.running == false) {
                 try {
                     Thread.sleep(500);
                 } catch (InterruptedException e) {
@@ -95,14 +95,18 @@ public class EvoPaint {
         // create empty world
         long time = 0;
         this.world = new World(
-                new Pixel[configuration.getDimension().width * configuration.getDimension().height],
+                new Pixel[configuration.dimension.width * configuration.dimension.height],
                 time, configuration);
 
-        this.perception = new Perception(new BufferedImage(configuration.getDimension().width, configuration.getDimension().height,
+        this.configuration.world = world;
+
+        this.perception = new Perception(new BufferedImage(configuration.dimension.width, configuration.dimension.height,
                 BufferedImage.TYPE_INT_RGB));
 
         this.perception.createImage(world);
 
         this.frame = new MainFrame(configuration, this);
+
+        world.init();
     }
 }

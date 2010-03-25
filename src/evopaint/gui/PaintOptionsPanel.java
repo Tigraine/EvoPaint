@@ -1,21 +1,19 @@
 package evopaint.gui;
 
+import evopaint.Brush;
+import evopaint.Configuration;
 import evopaint.gui.ruleeditor.JRuleEditor;
+import evopaint.pixel.PixelColor;
 import evopaint.pixel.RuleSet;
-import java.awt.BorderLayout;
 import java.awt.Checkbox;
-import java.awt.event.MouseEvent;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import java.awt.Color;
-import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseListener;
-import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
@@ -29,37 +27,23 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 public class PaintOptionsPanel extends JPanel {
-    public static final int COLORMODE_COLOR = 0;
-    public static final int COLORMODE_FAIRY_DUST = 1;
-    public static final int COLORMODE_USE_EXISTING = 2;
 
-    private Color color;
+    //private Color color;
     private JRadioButton radioColor;
+    private Color selectedColor;
+    private boolean radioColorToggle;
     private RuleSet ruleSet;
     private JButton buttonRuleSet;
-    private int colorMode;
-    private int brushsize;
-    private boolean colorSelected;
-    //JColorChooser colorChooser;
-    //JSpinner spinnerBrushSize;
+    private Configuration configuration;
     Showcase showcase;
     MainFrame mainFrame;
     Checkbox checkboxRandom;
 
-    public int getColorMode() {
-        return colorMode;
-    }
+    public PaintOptionsPanel(Configuration configuration, final Showcase showcase, final MainFrame mainFrame) {
 
-    public void setColorMode(int colorMode) {
-        this.colorMode = colorMode;
-    }
-
-    public PaintOptionsPanel(final Showcase showcase, final MainFrame mainFrame) {
-
+        this.configuration = configuration;
         this.mainFrame = mainFrame;
         this.showcase = showcase;
-        this.color = Color.red;
-        this.brushsize = 10;
 
         // here we go, this is going to be one butt-ugly long constructor
         setBorder(new TitledBorder("Paint Options"));
@@ -81,12 +65,14 @@ public class PaintOptionsPanel extends JPanel {
 
         // on that we add our two buttons, the one for the color chooser
         radioColor = new JRadioButton("#" +
-                Integer.toHexString(this.color.getRGB()).substring(2).toUpperCase());
+                Integer.toHexString(configuration.brush.getColor().getInteger()).substring(2).toUpperCase());
         //labelColorString.setOpaque(true);
-        radioColor.setForeground(this.color);
+        radioColor.setForeground(new Color(configuration.brush.getColor().getInteger()));
         radioColor.addActionListener(new RadioColorListener(this));
         radioColor.setSelected(true);
-        colorSelected = true;
+        selectedColor = new Color(configuration.brush.getColor().getInteger());
+        radioColorToggle = true;
+        this.configuration.brush.setMode(Brush.COLOR);
         panelForColorButtons.add(radioColor);
 
         // and the one for the fairy dust
@@ -112,7 +98,7 @@ public class PaintOptionsPanel extends JPanel {
         JLabel labelForSpinner = new JLabel("Size");
         panelBrushSize.add(labelForSpinner);
 
-        SpinnerNumberModel spinnerModel = new SpinnerNumberModel(this.brushsize, 1, 100, 1);
+        SpinnerNumberModel spinnerModel = new SpinnerNumberModel(configuration.brush.getBrushSize(), 1, 100, 1);
         JSpinner spinnerBrushSize = new JSpinner(spinnerModel);
         spinnerBrushSize.addChangeListener(new SpinnerBrushSizeListener(this, spinnerBrushSize));
         labelForSpinner.setLabelFor(spinnerBrushSize);
@@ -140,23 +126,11 @@ public class PaintOptionsPanel extends JPanel {
         this.ruleSet = ruleSet;
     }
 
-    public int getBrushsize() {
-        return brushsize;
-    }
-
-    public void setBrushsize(int brushsize) {
-        this.brushsize = brushsize;
-    }
-
-    public Color getColor() {
-        return color;
-    }
-
     public void setColor(Color color) {
-        this.color = color;
+        selectedColor = color;
         this.radioColor.setText("#" +
-                Integer.toHexString(this.color.getRGB()).substring(2).toUpperCase());
-        this.radioColor.setForeground(this.color);
+                Integer.toHexString(color.getRGB()).substring(2).toUpperCase());
+        this.radioColor.setForeground(color);
         //this.labelColorString.setBackground(this.color);
         //float [] hsbvals = new float[3];
         //Color.RGBtoHSB(color.getRed(), color.getGreen(), color.getBlue(), hsbvals);
@@ -176,13 +150,14 @@ public class PaintOptionsPanel extends JPanel {
         }
 
         public void actionPerformed(ActionEvent e) {
-            paintOptionsPanel.colorMode = COLORMODE_COLOR;
+            configuration.brush.setMode(Brush.COLOR);
+            configuration.brush.setColor(new PixelColor(selectedColor.getRGB(), configuration.rng));
             
-            if (paintOptionsPanel.colorSelected == false) {
-                paintOptionsPanel.colorSelected = true;
+            if (radioColorToggle == false) {
+                radioColorToggle = true;
                 return;
             }
-
+            Color color = new Color(configuration.brush.getColor().getInteger());
             JColorChooser colorChooser = new JColorChooser(color);
             colorChooser.setPreviewPanel(new JPanel());
             JDialog dialog = JColorChooser.createDialog(paintOptionsPanel, "Choose Color", true,
@@ -200,8 +175,8 @@ public class PaintOptionsPanel extends JPanel {
         }
 
         public void actionPerformed(ActionEvent e) {
-            paintOptionsPanel.colorSelected = false;
-            paintOptionsPanel.colorMode = COLORMODE_FAIRY_DUST;
+            paintOptionsPanel.radioColorToggle = false;
+            configuration.brush.setMode(Brush.FAIRY_DUST);
         }
     }
 
@@ -213,8 +188,8 @@ public class PaintOptionsPanel extends JPanel {
         }
 
         public void actionPerformed(ActionEvent e) {
-            paintOptionsPanel.colorSelected = false;
-            paintOptionsPanel.colorMode = COLORMODE_USE_EXISTING;
+            paintOptionsPanel.radioColorToggle = false;
+            configuration.brush.setMode(Brush.USE_EXISTING);
         }
     }
 
@@ -228,8 +203,10 @@ public class PaintOptionsPanel extends JPanel {
         }
 
         public void actionPerformed(ActionEvent e) {
-            paintOptionsPanel.colorSelected = true;
-            paintOptionsPanel.setColor(colorChooser.getColor());
+            paintOptionsPanel.radioColorToggle = true;
+            Color c = colorChooser.getColor();
+            paintOptionsPanel.setColor(c);
+            configuration.brush.setColor(new PixelColor(c.getRGB(), configuration.rng));
         }
     }
 
@@ -249,7 +226,7 @@ public class PaintOptionsPanel extends JPanel {
         }
 
         public void stateChanged(ChangeEvent e) {
-            paintOptionsPanel.setBrushsize((Integer)spinnerBrushSize.getValue());
+            configuration.brush.setBrushSize((Integer)spinnerBrushSize.getValue());
         }
     }
 

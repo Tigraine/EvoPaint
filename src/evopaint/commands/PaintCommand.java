@@ -2,13 +2,9 @@ package evopaint.commands;
 
 
 import evopaint.Brush;
-import evopaint.gui.MainFrame;
-import evopaint.pixel.Pixel;
+import evopaint.Configuration;
 import evopaint.World;
-import evopaint.gui.PaintOptionsPanel;
-import evopaint.util.mapping.AbsoluteCoordinate;
 import evopaint.util.logging.Logger;
-import java.awt.Color;
 
 
 import java.awt.Point;
@@ -16,11 +12,10 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.NoninvertibleTransformException;
 
 public class PaintCommand extends AbstractCommand {
-    private World world;
-    private MainFrame mf;
-    private PaintOptionsPanel paintOptionsPanel;
+    private Brush brush;
     private double scale;
     private final AffineTransform affineTransform;
+    private Point location;
 
     public double getScale() {
         return scale;
@@ -29,6 +24,11 @@ public class PaintCommand extends AbstractCommand {
     public void setScale(double scale) {
         this.scale = scale;
     }
+
+    public Brush getBrush() {
+        return brush;
+    }
+    
     public Point getLocation() {
         return location;
     }
@@ -45,58 +45,16 @@ public class PaintCommand extends AbstractCommand {
         }
     }
 
-    private Point location;
-
-    public PaintCommand(World world, MainFrame mf, double scale, AffineTransform affineTransform, PaintOptionsPanel paintOptionsPanel) {
-    	//public PaintCommand(World world, double scale, AffineTransform affineTransform, int radius, int color) {
-    	this.mf=mf;
-        this.world = world;
-        this.paintOptionsPanel = paintOptionsPanel;
+    public PaintCommand(Configuration configuration, double scale, AffineTransform affineTransform) {
+        this.brush = configuration.brush;
         this.scale = scale;
         this.affineTransform = affineTransform;
-
-        // TODO: make the new attributes a parameter
     }
 
     public void execute() {
         //Config.log.debug(this);
         Logger.log.information("Executing Paint command on x: %s y: %s", location.x, location.y);
-        int brushSize = paintOptionsPanel.getBrushsize();
-        for (int i = 0; i < brushSize; i++) {
-            for (int j = 0; j < brushSize; j++) {
-                int x = location.x + j;
-                int y = location.y + i;
-                Pixel pixie = this.world.get(x, y);
-                float hsb[] = {0,0,0};
-                switch (mf.getPop().getColorMode()) { // TODO move this to pixel construction
-                    case PaintOptionsPanel.COLORMODE_FAIRY_DUST:
-                        for (int k = 0; k < 3; k++) {
-                            hsb[k] = world.getRandomNumberGenerator().nextFloat();
-                        }
-                        break;
-                    case PaintOptionsPanel.COLORMODE_USE_EXISTING:
-                        if (pixie == null) {
-                            continue;
-                        }
-                        hsb = pixie.getPixelColor().getHSB();
-                        break;
-                    case PaintOptionsPanel.COLORMODE_COLOR:
-                        hsb = Color.RGBtoHSB(paintOptionsPanel.getColor().getRed(), paintOptionsPanel.getColor().getGreen(), paintOptionsPanel.getColor().getBlue(), hsb);
-                        break;
-                    default:
-                        Logger.log.error("colorMode not set", new Object());
-                        System.exit(1);
-                }
-                if (pixie == null) {
-                    Brush brush = world.getConfiguration().getBrush();
-                    pixie = brush.createPixelAt(new AbsoluteCoordinate(x, y, world));
-                    world.set(pixie);
-                } else {
-                    pixie.getPixelColor().setHSB(hsb);
-                }
-                
-            }
-        }
+        brush.paint(location.x, location.y);
     }
 }
 

@@ -7,7 +7,6 @@ package evopaint.pixel;
 import evopaint.World;
 import evopaint.pixel.interfaces.IRule;
 import evopaint.util.mapping.AbsoluteCoordinate;
-import java.util.List;
 
 /**
  *
@@ -20,10 +19,13 @@ public class Pixel {
     private int energy;
     private RuleSet ruleSet;
     private State state;
-    private List<State> possibleStates;
 
     public PixelColor getPixelColor() {
         return pixelColor;
+    }
+
+    public void setPixelColor(PixelColor pixelColor) {
+        this.pixelColor = pixelColor;
     }
 
     public AbsoluteCoordinate getLocation() {
@@ -32,6 +34,10 @@ public class Pixel {
 
     public int getEnergy() {
         return energy;
+    }
+
+    public void setLocation(AbsoluteCoordinate location) {
+        this.location = location;
     }
 
     public RuleSet getRuleSet() {
@@ -50,14 +56,6 @@ public class Pixel {
         this.state = state;
     }
 
-    public List<State> getPossibleStates() {
-        return possibleStates;
-    }
-
-    public void setPossibleStates(List<State> possibleStates) {
-        this.possibleStates = possibleStates;
-    }
-
     public boolean isAlive() {
         return energy > 0;
     }
@@ -74,13 +72,12 @@ public class Pixel {
         }
     }
 
-    public Pixel(PixelColor pixelColor, AbsoluteCoordinate location, int energy, RuleSet ruleSet, State state, List<State> possibleStates) {
+    public Pixel(PixelColor pixelColor, AbsoluteCoordinate location, int energy, RuleSet ruleSet) {
         this.pixelColor = pixelColor;
         this.location = location;
         this.energy = energy;
         this.ruleSet = ruleSet;
-        this.state = state;
-        this.possibleStates = possibleStates;
+        this.state = ruleSet.getInitialState();
     }
 
     public Pixel(Pixel pixel) {
@@ -88,7 +85,6 @@ public class Pixel {
         this.location = pixel.location; // absolute coordinates stay the same (or change when moving)
         this.energy = pixel.energy; // primitive
         this.ruleSet = pixel.ruleSet; // if we mix rulesets later, we will serialize them anyway
-        this.state = new State(pixel.state);
-        this.possibleStates = pixel.possibleStates; // will have to be serialized together with the ruleset
+        this.state = pixel.state; // states are the same objects. if I change the name of a state it shall be changed everywhere
     }
 }

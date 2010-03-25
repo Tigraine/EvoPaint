@@ -18,20 +18,20 @@ import java.util.List;
  */
 public class AssimilationAction extends AbstractAction {
 
-    private int colorMixMode;
+    private int dimensionsToMix;
 
     @Override
     public String toString() {
         String ret = "assimilate(";
-        ret += "mode: ";
-        switch (colorMixMode) {
-            case PixelColor.HSB: ret += "HSB"; break;
+        ret += "in dimensions: ";
+        switch (dimensionsToMix) {
+            case PixelColor.HSB: ret += "H,S,B"; break;
             case PixelColor.H: ret += "H"; break;
             case PixelColor.S: ret += "S"; break;
             case PixelColor.B: ret += "B"; break;
-            case PixelColor.HS: ret += "HS"; break;
-            case PixelColor.SB: ret += "SB"; break;
-            case PixelColor.BH: ret += "BH"; break;
+            case PixelColor.HS: ret += "H,S"; break;
+            case PixelColor.HB: ret += "H,B"; break;
+            case PixelColor.SB: ret += "S,B"; break;
             default: assert(false);
         }
         ret += ", ";
@@ -43,8 +43,7 @@ public class AssimilationAction extends AbstractAction {
 
         for (RelativeCoordinate direction : getDirections()) {
             Pixel them = world.get(us.getLocation(), direction);
-            them.getPixelColor().setHSB(PixelColor.mix(us.getPixelColor(),
-                    them.getPixelColor(), 0.5f, colorMixMode));
+            them.getPixelColor().mixWith(us.getPixelColor(), 0.5f, dimensionsToMix);
         }
 
         return getCost() * getDirections().size();
@@ -52,6 +51,6 @@ public class AssimilationAction extends AbstractAction {
 
     public AssimilationAction(int reward, List<RelativeCoordinate> directions, int colorMixMode) {
         super(reward, directions);
-        this.colorMixMode = colorMixMode;
+        this.dimensionsToMix = colorMixMode;
     }
 }

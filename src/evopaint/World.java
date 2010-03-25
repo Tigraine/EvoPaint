@@ -4,32 +4,13 @@
  */
 package evopaint;
 
-import evopaint.pixel.interfaces.ICondition;
 import evopaint.pixel.Pixel;
-import evopaint.util.RandomNumberGeneratorWrapper;
-import evopaint.interfaces.IRandomNumberGenerator;
-import evopaint.pixel.Rule;
-import evopaint.pixel.actions.AssimilationAction;
-import evopaint.pixel.conditions.EnergyCondition;
-import evopaint.pixel.conditions.ColorCondition;
 import evopaint.pixel.PixelColor;
 import evopaint.pixel.RuleSet;
-import evopaint.pixel.State;
-import evopaint.pixel.actions.RewardAction;
-import evopaint.pixel.interfaces.IAction;
-import evopaint.pixel.interfaces.IRule;
-import evopaint.pixel.misc.IntegerComparisonOperator;
-import evopaint.util.mapping.AbsoluteCoordinate;
 
 import evopaint.util.logging.Logger;
+import evopaint.util.mapping.AbsoluteCoordinate;
 import evopaint.util.mapping.ParallaxMap;
-import evopaint.util.mapping.RelativeCoordinate;
-import java.util.ArrayList;
-import java.util.List;
-import org.uncommons.maths.random.CellularAutomatonRNG;
-import org.uncommons.maths.random.DefaultSeedGenerator;
-import org.uncommons.maths.random.SeedException;
-import org.uncommons.maths.random.SeedGenerator;
 
 /**
  *
@@ -39,10 +20,8 @@ public class World extends ParallaxMap<Pixel> {
 
     private Configuration configuration;
     private long time;
-    private IRandomNumberGenerator rng;
 
     public void init() {
-        this.initRNG();
         this.createPixels();
     }
 
@@ -70,60 +49,20 @@ public class World extends ParallaxMap<Pixel> {
     }
 
     private void createPixels() {
-        
-
-        List<IRule> rules = new ArrayList<IRule>();
-
-        List<ICondition> conditions = new ArrayList<ICondition>();
-        List<RelativeCoordinate> directions = new ArrayList<RelativeCoordinate>();
-        directions.add(RelativeCoordinate.SELF);
-        conditions.add(new EnergyCondition(directions, IntegerComparisonOperator.GREATER_THAN, 80));
-        directions = new ArrayList<RelativeCoordinate>();
-        directions.add(RelativeCoordinate.WEST);
-        directions.add(RelativeCoordinate.NORTH);
-        directions.add(RelativeCoordinate.SOUTH);
-        directions.add(RelativeCoordinate.EAST);
-        IAction action = new AssimilationAction(20, directions, PixelColor.HSB);
-        rules.add(new Rule(conditions, action));
-
-        conditions = new ArrayList<ICondition>();
-        directions = new ArrayList<RelativeCoordinate>();
-        directions.add(RelativeCoordinate.SELF);
-        conditions.add(new ColorCondition(directions, new PixelColor(0xFF0000FF), 70, ColorCondition.SATURATION_LIKENESS_AT_LEAST));
-        directions = new ArrayList<RelativeCoordinate>();
-        directions.add(RelativeCoordinate.SELF);
-        action = new RewardAction(0, directions, 80);
-        //rules.add(new Rule(conditions, action));
-
-        conditions = new ArrayList<ICondition>();
-        directions = new ArrayList<RelativeCoordinate>();
-        directions.add(RelativeCoordinate.SELF);
-        conditions.add(new ColorCondition(directions, new PixelColor(0xFFFF0000), 70, ColorCondition.SATURATION_LIKENESS_AT_LEAST));
-        directions = new ArrayList<RelativeCoordinate>();
-        directions.add(RelativeCoordinate.SELF);
-        action = new RewardAction(0, directions, 80);
-        //rules.add(new Rule(conditions, action));
-
-        List<State> possibleStates = new ArrayList();
-        possibleStates.add(new State("START"));
-
-        RuleSet ruleSet = new RuleSet("test ruleset", rules);
+        RuleSet ruleSet = configuration.createDefaultRuleSet();
 
         System.out.println("Test with the following rules for every pixel:");
         System.out.println(ruleSet.toString());
-
-        for (int y = 0; y < configuration.getInitialPopulation().height; y++) {
-            for (int x = 0; x < configuration.getInitialPopulation().width; x++) {
-
-                int energy = configuration.startingEnergy;
-                PixelColor color = new PixelColor(rng.nextPositiveInt());
+        
+        for (int y = 0; y < configuration.initialPopulation.height; y++) {
+            for (int x = 0; x < configuration.initialPopulation.width; x++) {
 
                 AbsoluteCoordinate location = new AbsoluteCoordinate(configuration.dimension.width / 2 - configuration.initialPopulation.width / 2 + x,
                         configuration.dimension.height / 2 - configuration.initialPopulation.height / 2 + y, this);
 
-                Pixel pixie = new Pixel(color, location, energy, ruleSet, possibleStates.get(0), possibleStates);
+                PixelColor pixelColor = new PixelColor(configuration.rng.nextPositiveInt(), configuration.rng);
 
-                set(pixie);
+                set(new Pixel(pixelColor, location, configuration.startingEnergy, ruleSet));
             }
         }
     }
@@ -133,7 +72,7 @@ public class World extends ParallaxMap<Pixel> {
     }
 
     private void serial() {
-        int [] indices = getShuffledIndices(rng);
+        int [] indices = getShuffledIndices(configuration.rng);
         
         for (int i = 0; i < indices.length; i++) {
             Pixel pixie = get(indices[i]);
@@ -200,39 +139,9 @@ public class World extends ParallaxMap<Pixel> {
         return configuration;
     }
 
-    private void initRNG() {
-        // Random, SecureRandom, AESCounterRNG, CellularAutomatonRNG,
-        // CMWC4096RNG, JavaRNG, MersenneTwisterRNG, XORShiftRNG
-
-        // default seed size for cellularAutomatonRNG is 4 bytes;
-        int seed_size_bytes = 4;
-
-        // set fixed seed or null for generation
-        byte [] seed = null;
-       // byte [] seed = new byte [] { 1, 2, 3, 4 };
-
-        // default seed generator checks some different approaches and will
-        // always succeed
-        if (seed == null) {
-            SeedGenerator sg = DefaultSeedGenerator.getInstance();
-            try {
-                seed = sg.generateSeed(4);
-            } catch (SeedException e) {
-                Logger.log.error("got seed exception from default seed generator. this should not have happened.");
-                java.lang.System.exit(1);
-            }
-        }
-        rng = new RandomNumberGeneratorWrapper(new CellularAutomatonRNG(seed));
-    }
-
-    public IRandomNumberGenerator getRandomNumberGenerator() {
-        return rng;
-    }
-
     public World(Pixel [] pixels, long time, Configuration configuration) {
-        super(pixels, configuration.getDimension().width, configuration.getDimension().height);
+        super(pixels, configuration.dimension.width, configuration.dimension.height);
         this.time = time;
         this.configuration = configuration;
-        this.init();
     }
 }

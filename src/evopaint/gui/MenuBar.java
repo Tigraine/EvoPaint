@@ -209,17 +209,17 @@ public class MenuBar extends JMenuBar implements SelectionObserver {
     }
 
 	public void newEvolution(int x, int y) {
-		evopaint.getConfiguration().setRunning(false);
+		evopaint.getConfiguration().running = false;
 		//todo wizard code & implementation of a new evolution
 		
 		Configuration newConf = new Configuration();
-                newConf.setDimension(new Dimension(x,y));
+                newConf.dimension = new Dimension(x,y);
 		evopaint.setConfiguration(newConf);
 		
 		
-		evopaint.setWorld(new World(new Pixel[newConf.getDimension().width * newConf.getDimension().height],0, newConf));
+		evopaint.setWorld(new World(new Pixel[newConf.dimension.width * newConf.dimension.height],0, newConf));
 		evopaint.setPerception(new Perception(new BufferedImage
-                (newConf.getDimension().width, newConf.getDimension().height,
+                (newConf.dimension.width, newConf.dimension.height,
                 BufferedImage.TYPE_INT_RGB)));
 
         evopaint.getPerception().createImage(evopaint.getWorld());
@@ -238,7 +238,7 @@ public class MenuBar extends JMenuBar implements SelectionObserver {
 		evopaint.getFrame().initSecond(evopaint);
 		
 
-		evopaint.getConfiguration().setRunning(true);
+		evopaint.getConfiguration().running = true;
 		
 	}
 }
