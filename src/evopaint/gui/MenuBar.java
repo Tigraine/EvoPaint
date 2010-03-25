@@ -12,6 +12,7 @@ import evopaint.Perception;
 import evopaint.Selection;
 import evopaint.World;
 import evopaint.commands.CommandFactory;
+import evopaint.commands.FillSelectionCommand;
 import evopaint.gui.MainFrame;
 import evopaint.gui.listeners.SelectionListenerFactory;
 import evopaint.gui.listeners.SelectionSetNameListener;
@@ -42,13 +43,15 @@ import java.util.Observer;
  */
 public class MenuBar extends JMenuBar implements SelectionObserver {
     private EvoPaint evopaint;
+    private Showcase showcase;
     private JMenu selectionMenu;
     private JMenu activeSelections;
     private newWizard nw;
     private MenuBar mb;
 
-    public MenuBar(final EvoPaint evopaint, SelectionListenerFactory listenerFactory) {
+    public MenuBar(final EvoPaint evopaint, SelectionListenerFactory listenerFactory, Showcase showcase) {
         this.evopaint = evopaint;
+        this.showcase = showcase;
         this.mb=this;
         // World Menu
         JMenu worldMenu = new JMenu();
@@ -101,6 +104,9 @@ public class MenuBar extends JMenuBar implements SelectionObserver {
         JMenuItem selectionSetName = new JMenuItem("Set Name...");
         selectionMenu.add(selectionSetName);
         selectionSetName.addActionListener(listenerFactory.CreateSelectionSetNameListener());
+        JMenuItem fillSelection = new JMenuItem("Fill");
+        fillSelection.addActionListener(new FillSelectionCommand(showcase));
+        selectionMenu.add(fillSelection);
         selectionMenu.add(new JMenuItem("Open as new"));
         selectionMenu.add(new JMenuItem("Copy"));
         selectionMenu.add(new JMenuItem("Options..."));

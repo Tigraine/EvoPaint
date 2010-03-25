@@ -2,6 +2,8 @@ package evopaint.commands;
 
 import evopaint.Configuration;
 
+import java.awt.event.ActionListener;
+
 /**
  * Created by IntelliJ IDEA.
  * User: daniel

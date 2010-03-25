@@ -34,6 +34,19 @@ public class Showcase extends JPanel implements MouseInputListener, MouseWheelLi
 
     private Perception perception;
     private MainFrame mainFrame;
+
+    public Configuration getConfiguration() {
+        return configuration;
+    }
+
+    public AffineTransform getAffineTransform() {
+        return affineTransform;
+    }
+
+    public double getScale() {
+        return scale;
+    }
+
     private Configuration configuration;
 
     private AffineTransform affineTransform = new AffineTransform();

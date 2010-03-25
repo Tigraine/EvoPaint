@@ -59,7 +59,7 @@ public class MainFrame extends JFrame {
         CommandFactory commandFactory = new CommandFactory(configuration);
         this.paintOptionsPanel = new PaintOptionsPanel(configuration, showcase, this); // FIXME: paintoptionspanel must be initialized before showcase or we get a nullpointer exception. the semantics to not express this!!
         this.showcase = new Showcase(configuration, this, evopaint.getWorld(), evopaint.getPerception(), commandFactory);
-        this.menuBar = new MenuBar(evopaint, new SelectionListenerFactory(showcase));
+        this.menuBar = new MenuBar(evopaint, new SelectionListenerFactory(showcase), showcase);
         commandFactory.GetSelectCommand().addSelectionListener(menuBar);
 
         initializeCommands(evopaint);
@@ -109,7 +109,7 @@ public class MainFrame extends JFrame {
         CommandFactory commandFactory = new CommandFactory(configuration);
         this.paintOptionsPanel = new PaintOptionsPanel(configuration, showcase, this); // FIXME: paintoptionspanel must be initialized before showcase or we get a nullpointer exception. the semantics to not express this!!
         this.showcase = new Showcase(configuration, this, evopaint.getWorld(), evopaint.getPerception(), commandFactory);
-        this.menuBar = new MenuBar(evopaint, new SelectionListenerFactory(showcase));
+        this.menuBar = new MenuBar(evopaint, new SelectionListenerFactory(showcase), showcase);
         commandFactory.GetSelectCommand().addSelectionListener(menuBar);
         
         resumeCommand = new ResumeCommand(evopaint);
