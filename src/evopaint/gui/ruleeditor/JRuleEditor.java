@@ -13,7 +13,7 @@ import evopaint.pixel.RuleSet;
 import evopaint.pixel.actions.AssimilationAction;
 import evopaint.pixel.actions.RewardAction;
 import evopaint.pixel.conditions.EnergyCondition;
-import evopaint.pixel.conditions.ColorCondition;
+import evopaint.pixel.conditions.ColorLikenessCondition;
 import evopaint.pixel.PixelColor;
 import evopaint.util.mapping.RelativeCoordinate;
 import java.awt.GridBagLayout;

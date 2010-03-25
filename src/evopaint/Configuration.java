@@ -13,7 +13,7 @@ import evopaint.pixel.RuleSet;
 import evopaint.pixel.State;
 import evopaint.pixel.actions.AssimilationAction;
 import evopaint.pixel.actions.RewardAction;
-import evopaint.pixel.conditions.ColorCondition;
+import evopaint.pixel.conditions.ColorLikenessCondition;
 import evopaint.pixel.conditions.EnergyCondition;
 import evopaint.pixel.interfaces.IAction;
 import evopaint.pixel.interfaces.ICondition;
@@ -88,7 +88,7 @@ public class Configuration {
         conditions = new ArrayList<ICondition>();
         directions = new ArrayList<RelativeCoordinate>();
         directions.add(RelativeCoordinate.SELF);
-        conditions.add(new ColorCondition(directions, NumberComparisonOperator.LESS_THAN, 75, PixelColor.H, new PixelColor(0x00FF00, rng)));
+        conditions.add(new ColorLikenessCondition(directions, NumberComparisonOperator.LESS_THAN, 75, PixelColor.H, new PixelColor(0x00FF00, rng)));
         directions = new ArrayList<RelativeCoordinate>();
         directions.add(RelativeCoordinate.SELF);
         action = new RewardAction(0, directions, 80);
@@ -97,7 +97,7 @@ public class Configuration {
         conditions = new ArrayList<ICondition>();
         directions = new ArrayList<RelativeCoordinate>();
         directions.add(RelativeCoordinate.SELF);
-        conditions.add(new ColorCondition(directions, NumberComparisonOperator.GREATER_OR_EQUAL, 90, PixelColor.H, new PixelColor(0x0000ff, rng)));
+        conditions.add(new ColorLikenessCondition(directions, NumberComparisonOperator.GREATER_OR_EQUAL, 90, PixelColor.H, new PixelColor(0x0000ff, rng)));
         directions = new ArrayList<RelativeCoordinate>();
         directions.add(RelativeCoordinate.SELF);
         action = new RewardAction(0, directions, 80);

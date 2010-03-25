@@ -23,7 +23,7 @@ public class AssimilationAction extends AbstractAction {
     @Override
     public String toString() {
         String ret = "assimilate(";
-        ret += "in dimensions: ";
+        ret += "in dimensions: [";
         switch (dimensionsToMix) {
             case PixelColor.HSB: ret += "H,S,B"; break;
             case PixelColor.H: ret += "H"; break;
@@ -34,7 +34,7 @@ public class AssimilationAction extends AbstractAction {
             case PixelColor.SB: ret += "S,B"; break;
             default: assert(false);
         }
-        ret += ", ";
+        ret += "], ";
         ret += super.toString();
         return ret;
     }

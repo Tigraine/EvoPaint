@@ -22,7 +22,7 @@ public abstract class AbstractAction implements IAction {
 
     @Override
     public String toString() {
-        String ret = "cost: " + cost + ") -> [";
+        String ret = "cost: " + cost + "*" + directions.size() + ") -> [";
         for (Iterator<RelativeCoordinate> ii = directions.iterator(); ii.hasNext();) {
             ret += ii.next().toString();
             if (ii.hasNext()) {

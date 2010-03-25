@@ -17,7 +17,7 @@ import java.util.List;
  *
  * @author tam
  */
-public class ColorCondition extends AbstractPixelCondition {
+public class ColorLikenessCondition extends AbstractPixelCondition {
 
     private PixelColor comparedColor;
     private int dimensions;
@@ -26,8 +26,11 @@ public class ColorCondition extends AbstractPixelCondition {
 
     @Override
     public String toString() {
-        String ret = "likeness";
-        ret += "(dimensions: ";
+        String ret = "color-likeness of ";
+        ret += super.toString();
+        ret += " compared to ";
+        ret += comparedColor;
+        ret += " in dimensions [";
         switch(dimensions) {
             case PixelColor.HSB: ret += "H,S,B";
                 break;
@@ -45,14 +48,12 @@ public class ColorCondition extends AbstractPixelCondition {
                 break;
             default: assert(false);
         }
-        ret += (") of ");
-        ret += super.toString();
-        ret += " is ";
+        ret += "] is ";
         ret += comparisonOperator;
         ret += " ";
         ret += compareToLikenessPercentage;
-        ret += "% of ";
-        ret += comparedColor;
+        ret += "%";
+        
         return ret;
     }
 
@@ -67,7 +68,7 @@ public class ColorCondition extends AbstractPixelCondition {
         return true;
     }
 
-    public ColorCondition(List<RelativeCoordinate> directions, NumberComparisonOperator comparisonOperator, int compareToLikenessPercentage, int dimensions, PixelColor comparedColor) {
+    public ColorLikenessCondition(List<RelativeCoordinate> directions, NumberComparisonOperator comparisonOperator, int compareToLikenessPercentage, int dimensions, PixelColor comparedColor) {
         super(directions);
         this.comparisonOperator = comparisonOperator;
         this.comparedColor = comparedColor;
