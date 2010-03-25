@@ -101,7 +101,6 @@ public class MenuBar extends JMenuBar implements SelectionObserver {
         JMenuItem selectionSetName = new JMenuItem("Set Name...");
         selectionMenu.add(selectionSetName);
         selectionSetName.addActionListener(listenerFactory.CreateSelectionSetNameListener());
-        selectionMenu.add(new JMenuItem("Invert"));
         selectionMenu.add(new JMenuItem("Open as new"));
         selectionMenu.add(new JMenuItem("Copy"));
         selectionMenu.add(new JMenuItem("Options..."));
