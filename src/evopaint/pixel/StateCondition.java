@@ -12,7 +12,7 @@ import evopaint.pixel.interfaces.ICondition;
 /**
  *
  * @author tam
- */
+ *//*
 public class StateCondition implements ICondition {
 
     private State state;
@@ -32,4 +32,7 @@ public class StateCondition implements ICondition {
         this.state = state;
         this.comparisonOperator = comparisonOperator;
     }
+ 
+ 
 }
+ */

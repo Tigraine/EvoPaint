@@ -7,6 +7,7 @@ package evopaint;
 
 import evopaint.interfaces.IRandomNumberGenerator;
 import evopaint.interfaces.ITool;
+import evopaint.pixel.Pixel;
 import evopaint.pixel.PixelColor;
 import evopaint.pixel.Rule;
 import evopaint.pixel.RuleSet;
@@ -43,6 +44,8 @@ public class Configuration {
     public Dimension dimension = new Dimension(300, 300);
     public final Dimension initialPopulation = new Dimension(300, 300);
     public final int stepsPerRendering = 1;
+
+    public final int pixelType = Pixel.RULESET;
    
     //public final int numThreads = 1;
     public final int backgroundColor = 0;

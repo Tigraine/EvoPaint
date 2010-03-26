@@ -8,6 +8,7 @@ package evopaint;
 import evopaint.interfaces.IRandomNumberGenerator;
 import evopaint.pixel.Pixel;
 import evopaint.pixel.PixelColor;
+import evopaint.pixel.RuleBasedPixel;
 import evopaint.pixel.RuleSet;
 import evopaint.pixel.State;
 import evopaint.util.mapping.AbsoluteCoordinate;
@@ -95,8 +96,14 @@ public class Brush {
                     default:
                         assert(false);
                 }
-                
-                Pixel newPixel = new Pixel(new PixelColor(color), new AbsoluteCoordinate(x + j, y + i, configuration.world), energy, ruleSet);
+
+                Pixel newPixel = null;
+                switch (configuration.pixelType) {
+                    case Pixel.RULESET:
+                        newPixel = new RuleBasedPixel(new PixelColor(color), new AbsoluteCoordinate(x + j, y + i, configuration.world), energy, ruleSet);
+                        break;
+                    default: assert(false);
+                }
                 configuration.world.set(newPixel);
             }
         }
