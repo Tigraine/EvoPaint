@@ -16,7 +16,9 @@ import java.util.List;
  *
  * @author tam
  */
-public class EmptyCondition extends AbstractPixelCondition {
+public class IsEmptyCondition extends AbstractPixelCondition {
+    public static final String name = "isEmpty";
+
     private ObjectComparisonOperator comparisonOperator;
 
     @Override
@@ -36,7 +38,7 @@ public class EmptyCondition extends AbstractPixelCondition {
         return true;
     }
 
-    public EmptyCondition(List<RelativeCoordinate> directions, ObjectComparisonOperator comparisonOperator) {
+    public IsEmptyCondition(List<RelativeCoordinate> directions, ObjectComparisonOperator comparisonOperator) {
         super(directions);
         this.comparisonOperator = comparisonOperator;
     }

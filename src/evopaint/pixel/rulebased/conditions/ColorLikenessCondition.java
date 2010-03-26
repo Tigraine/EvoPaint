@@ -18,6 +18,7 @@ import java.util.List;
  * @author tam
  */
 public class ColorLikenessCondition extends AbstractPixelCondition {
+    public static final String name = "colorLikeness";
 
     private PixelColor comparedColor;
     private int dimensions;

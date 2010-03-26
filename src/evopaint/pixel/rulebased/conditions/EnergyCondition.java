@@ -17,6 +17,7 @@ import java.util.List;
  * @author tam
  */
 public class EnergyCondition extends AbstractPixelCondition {
+    public static final String name = "energy";
 
     private NumberComparisonOperator comparisonOperator;
     private int energyValue;

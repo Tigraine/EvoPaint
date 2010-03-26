@@ -17,6 +17,7 @@ import java.util.List;
  * @author tam
  */
 public class AssimilationAction extends AbstractAction {
+    public static final String name = "assimilate";
 
     private int dimensionsToMix;
 

@@ -22,29 +22,13 @@ import javax.swing.JPanel;
 public class JAction extends JPanel implements ActionListener {
     private JButton closeButton;
 
-    public JAction(List<IAction> actions) {
-
-        DefaultComboBoxModel comboBoxModelforActions = new DefaultComboBoxModel();
-        for (IAction action : actions) {
-            comboBoxModelforActions.addElement(action.toString());
-        }
-        JComboBox comboBoxActions = new JComboBox(comboBoxModelforActions);
+    public JAction(IAction action, DefaultComboBoxModel availableAcctions) {
+        
+        JComboBox comboBoxActions = new JComboBox(availableAcctions);
         add(comboBoxActions);
 
-        DefaultComboBoxModel comboBoxModelForDirections = new DefaultComboBoxModel();
-        comboBoxModelForDirections.addElement(RelativeCoordinate.SELF);
-        comboBoxModelForDirections.addElement(RelativeCoordinate.ALL);
-        comboBoxModelForDirections.addElement(RelativeCoordinate.NORTH);
-        comboBoxModelForDirections.addElement(RelativeCoordinate.NORTH_EAST);
-        comboBoxModelForDirections.addElement(RelativeCoordinate.EAST);
-        comboBoxModelForDirections.addElement(RelativeCoordinate.SOUTH_EAST);
-        comboBoxModelForDirections.addElement(RelativeCoordinate.SOUTH);
-        comboBoxModelForDirections.addElement(RelativeCoordinate.SOUTH_WEST);
-        comboBoxModelForDirections.addElement(RelativeCoordinate.WEST);
-        comboBoxModelForDirections.addElement(RelativeCoordinate.NORTH_WEST);
-
-        JComboBox comboBoxDirections = new JComboBox(comboBoxModelForDirections);
-        add(comboBoxDirections);
+        JTargetPicker targetPicker = new JTargetPicker();
+        add(targetPicker);
 
         this.closeButton = new JButton("X");
         this.closeButton.addActionListener(this);

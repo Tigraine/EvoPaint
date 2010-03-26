@@ -16,6 +16,7 @@ import java.util.List;
  * @author tam
  */
 public class RewardAction extends AbstractAction {
+    public static final String name = "reward";
     
     private int rewardValue;
 

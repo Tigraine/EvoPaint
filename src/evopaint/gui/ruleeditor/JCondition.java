@@ -6,51 +6,28 @@
 package evopaint.gui.ruleeditor;
 
 import evopaint.pixel.rulebased.interfaces.ICondition;
-import evopaint.util.mapping.RelativeCoordinate;
-import java.awt.Component;
-import java.awt.Graphics;
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.List;
+import javax.swing.BoxLayout;
 import javax.swing.DefaultComboBoxModel;
-import javax.swing.Icon;
-import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JPanel;
-import javax.swing.JToggleButton;
+import javax.swing.border.SoftBevelBorder;
 
 /**
  *
  * @author tam
  */
-public class JCondition extends JPanel implements ActionListener {
-    private JButton closeButton;
+public class JCondition extends JPanel {
 
-    public JCondition(List<ICondition> conditions) {
-        JComboBox comboBoxDirections = new JComboBox(new TargetsComboBoxModel());
-        add(comboBoxDirections);
+    public JCondition(ICondition condition, DefaultComboBoxModel availableConditions) {
 
-        DefaultComboBoxModel comboBoxModelforConditions = new DefaultComboBoxModel();
-        for (ICondition condition : conditions) {
-            comboBoxModelforConditions.addElement(condition.toString());
-        }
-        JComboBox comboBoxConditions = new JComboBox(comboBoxModelforConditions);
+        setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
+        setBorder(new SoftBevelBorder(SoftBevelBorder.RAISED));
+
+        JTargetPicker targetPicker = new JTargetPicker();
+        add(targetPicker);
+
+        JComboBox comboBoxConditions = new JComboBox(availableConditions);
         add(comboBoxConditions);
-
-        this.closeButton = new JButton("X");
-        this.closeButton.addActionListener(this);
-        add(this.closeButton);
-    }
-
-    public void actionPerformed(ActionEvent e) {
-        if (e.getSource() == this.closeButton &&
-                ((JPanel)getParent()).getComponentCount() > 1) {
-            JPanel parent = (JPanel)getParent();
-            parent.remove(this);
-            parent.revalidate();
-            return;
-        }
-    }
-
-    
+    }    
 }
