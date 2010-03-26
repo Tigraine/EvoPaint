@@ -3,10 +3,12 @@
  * and open the template in the editor.
  */
 
-package evopaint.pixel;
+package evopaint.pixel.rulebased;
 
 import evopaint.World;
-import evopaint.pixel.interfaces.IRule;
+import evopaint.pixel.Pixel;
+import evopaint.pixel.PixelColor;
+import evopaint.pixel.rulebased.interfaces.IRule;
 import evopaint.util.mapping.AbsoluteCoordinate;
 
 /**

@@ -3,7 +3,7 @@
  * and open the template in the editor.
  */
 
-package evopaint.pixel.misc;
+package evopaint.pixel.rulebased;
 
 import evopaint.util.logging.Logger;
 

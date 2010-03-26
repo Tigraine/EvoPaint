@@ -5,15 +5,15 @@
 
 package evopaint.gui.ruleeditor;
 
-import evopaint.pixel.interfaces.IAction;
-import evopaint.pixel.interfaces.ICondition;
-import evopaint.pixel.interfaces.IRule;
-import evopaint.pixel.Rule;
-import evopaint.pixel.RuleSet;
-import evopaint.pixel.actions.AssimilationAction;
-import evopaint.pixel.actions.RewardAction;
-import evopaint.pixel.conditions.EnergyCondition;
-import evopaint.pixel.conditions.ColorLikenessCondition;
+import evopaint.pixel.rulebased.interfaces.IAction;
+import evopaint.pixel.rulebased.interfaces.ICondition;
+import evopaint.pixel.rulebased.interfaces.IRule;
+import evopaint.pixel.rulebased.Rule;
+import evopaint.pixel.rulebased.RuleSet;
+import evopaint.pixel.rulebased.actions.AssimilationAction;
+import evopaint.pixel.rulebased.actions.RewardAction;
+import evopaint.pixel.rulebased.conditions.EnergyCondition;
+import evopaint.pixel.rulebased.conditions.ColorLikenessCondition;
 import evopaint.pixel.PixelColor;
 import evopaint.util.mapping.RelativeCoordinate;
 import java.awt.GridBagLayout;

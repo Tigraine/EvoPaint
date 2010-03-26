@@ -6,8 +6,8 @@ package evopaint;
 
 import evopaint.pixel.Pixel;
 import evopaint.pixel.PixelColor;
-import evopaint.pixel.RuleBasedPixel;
-import evopaint.pixel.RuleSet;
+import evopaint.pixel.rulebased.RuleBasedPixel;
+import evopaint.pixel.rulebased.RuleSet;
 
 import evopaint.util.logging.Logger;
 import evopaint.util.mapping.AbsoluteCoordinate;

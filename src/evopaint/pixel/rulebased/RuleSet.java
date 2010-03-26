@@ -3,9 +3,10 @@
  * and open the template in the editor.
  */
 
-package evopaint.pixel;
+package evopaint.pixel.rulebased;
 
-import evopaint.pixel.interfaces.IRule;
+import evopaint.pixel.State;
+import evopaint.pixel.rulebased.interfaces.IRule;
 import java.util.List;
 
 /**

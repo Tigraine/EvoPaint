@@ -5,8 +5,8 @@
 
 package evopaint.gui.ruleeditor;
 
-import evopaint.pixel.interfaces.IRule;
-import evopaint.pixel.RuleSet;
+import evopaint.pixel.rulebased.interfaces.IRule;
+import evopaint.pixel.rulebased.RuleSet;
 import javax.swing.DefaultListModel;
 import javax.swing.JList;
 

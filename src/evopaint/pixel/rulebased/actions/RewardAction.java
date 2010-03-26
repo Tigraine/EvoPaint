@@ -3,9 +3,9 @@
  * and open the template in the editor.
  */
 
-package evopaint.pixel.actions;
+package evopaint.pixel.rulebased.actions;
 
-import evopaint.pixel.AbstractAction;
+import evopaint.pixel.rulebased.AbstractAction;
 import evopaint.World;
 import evopaint.pixel.Pixel;
 import evopaint.util.mapping.RelativeCoordinate;

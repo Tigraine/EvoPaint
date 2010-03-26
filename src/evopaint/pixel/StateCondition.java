@@ -6,8 +6,8 @@
 package evopaint.pixel;
 
 import evopaint.World;
-import evopaint.pixel.misc.ObjectComparisonOperator;
-import evopaint.pixel.interfaces.ICondition;
+import evopaint.pixel.rulebased.ObjectComparisonOperator;
+import evopaint.pixel.rulebased.interfaces.ICondition;
 
 /**
  *

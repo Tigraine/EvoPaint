@@ -3,11 +3,11 @@
  * and open the template in the editor.
  */
 
-package evopaint.pixel.conditions;
+package evopaint.pixel.rulebased.conditions;
 
 import evopaint.World;
-import evopaint.pixel.misc.ObjectComparisonOperator;
-import evopaint.pixel.AbstractPixelCondition;
+import evopaint.pixel.rulebased.ObjectComparisonOperator;
+import evopaint.pixel.rulebased.AbstractPixelCondition;
 import evopaint.pixel.Pixel;
 import evopaint.util.mapping.RelativeCoordinate;
 import java.util.List;

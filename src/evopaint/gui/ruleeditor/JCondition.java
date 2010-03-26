@@ -5,7 +5,7 @@
 
 package evopaint.gui.ruleeditor;
 
-import evopaint.pixel.interfaces.ICondition;
+import evopaint.pixel.rulebased.interfaces.ICondition;
 import evopaint.util.mapping.RelativeCoordinate;
 import java.awt.Component;
 import java.awt.Graphics;
