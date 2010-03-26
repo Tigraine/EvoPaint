@@ -1,4 +1,4 @@
-package evopaint.gui.ruleeditor;
+package evopaint.gui;
 
 import evopaint.Selection;
 

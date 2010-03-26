@@ -1,12 +1,9 @@
 package evopaint.commands;
 
 import evopaint.Selection;
-import evopaint.gui.SelectionObserver;
-import evopaint.gui.ruleeditor.SelectionList;
+import evopaint.gui.SelectionList;
 
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.Observer;
 
 /**
  * Created by IntelliJ IDEA.

@@ -9,7 +9,7 @@ import evopaint.commands.*;
 import evopaint.Selection;
 import evopaint.World;
 import evopaint.Perception;
-import evopaint.gui.ruleeditor.SelectionList;
+import evopaint.gui.SelectionList;
 import evopaint.util.logging.Logger;
 import java.awt.Cursor;
 import java.awt.Dimension;

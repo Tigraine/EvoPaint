@@ -1,9 +1,7 @@
 package evopaint.commands;
 
 import evopaint.Configuration;
-import evopaint.gui.ruleeditor.SelectionList;
-
-import java.awt.event.ActionListener;
+import evopaint.gui.SelectionList;
 
 /**
  * Created by IntelliJ IDEA.
