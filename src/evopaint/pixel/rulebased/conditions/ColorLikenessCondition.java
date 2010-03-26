@@ -5,7 +5,7 @@
 
 package evopaint.pixel.rulebased.conditions;
 
-import evopaint.pixel.rulebased.AbstractPixelCondition;
+import evopaint.pixel.rulebased.AbstractCondition;
 import evopaint.World;
 import evopaint.pixel.Pixel;
 import evopaint.pixel.PixelColor;
@@ -17,13 +17,49 @@ import java.util.List;
  *
  * @author tam
  */
-public class ColorLikenessCondition extends AbstractPixelCondition {
-    public static final String name = "colorLikeness";
+public class ColorLikenessCondition extends AbstractCondition {
+    private static final String NAME = "color likeness";
 
     private PixelColor comparedColor;
     private int dimensions;
     private int compareToLikenessPercentage;
     private NumberComparisonOperator comparisonOperator;
+
+    public int getCompareToLikenessPercentage() {
+        return compareToLikenessPercentage;
+    }
+
+    public void setCompareToLikenessPercentage(int compareToLikenessPercentage) {
+        this.compareToLikenessPercentage = compareToLikenessPercentage;
+    }
+
+    public PixelColor getComparedColor() {
+        return comparedColor;
+    }
+
+    public void setComparedColor(PixelColor comparedColor) {
+        this.comparedColor = comparedColor;
+    }
+
+    public NumberComparisonOperator getComparisonOperator() {
+        return comparisonOperator;
+    }
+
+    public void setComparisonOperator(NumberComparisonOperator comparisonOperator) {
+        this.comparisonOperator = comparisonOperator;
+    }
+
+    public int getDimensions() {
+        return dimensions;
+    }
+
+    public void setDimensions(int dimensions) {
+        this.dimensions = dimensions;
+    }
+
+    public String getName() {
+        return NAME;
+    }
 
     @Override
     public String toString() {
@@ -76,5 +112,8 @@ public class ColorLikenessCondition extends AbstractPixelCondition {
         this.compareToLikenessPercentage = compareToLikenessPercentage;
         this.dimensions = dimensions;
         this.comparedColor = comparedColor;
+    }
+
+    public ColorLikenessCondition() {
     }
 }

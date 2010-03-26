@@ -18,7 +18,7 @@ import java.util.List;
  *
  * @author tam
  */
-public abstract class AbstractPixelCondition implements ICondition {
+public abstract class AbstractCondition implements ICondition {
 
     private List<RelativeCoordinate> directions;
     
@@ -41,7 +41,14 @@ public abstract class AbstractPixelCondition implements ICondition {
         return directions;
     }
 
-    public AbstractPixelCondition(List<RelativeCoordinate> directions) {
+    public void setDirections(List<RelativeCoordinate> directions) {
         this.directions = directions;
+    }
+
+    public AbstractCondition(List<RelativeCoordinate> directions) {
+        this.directions = directions;
+    }
+
+    public AbstractCondition() {
     }
 }

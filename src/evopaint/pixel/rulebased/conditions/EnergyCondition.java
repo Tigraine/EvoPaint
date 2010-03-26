@@ -6,7 +6,7 @@
 package evopaint.pixel.rulebased.conditions;
 
 import evopaint.pixel.rulebased.NumberComparisonOperator;
-import evopaint.pixel.rulebased.AbstractPixelCondition;
+import evopaint.pixel.rulebased.AbstractCondition;
 import evopaint.World;
 import evopaint.pixel.Pixel;
 import evopaint.util.mapping.RelativeCoordinate;
@@ -16,8 +16,8 @@ import java.util.List;
  *
  * @author tam
  */
-public class EnergyCondition extends AbstractPixelCondition {
-    public static final String name = "energy";
+public class EnergyCondition extends AbstractCondition {
+    private static final String NAME = "energy";
 
     private NumberComparisonOperator comparisonOperator;
     private int energyValue;
@@ -26,8 +26,20 @@ public class EnergyCondition extends AbstractPixelCondition {
         return comparisonOperator;
     }
 
+    public void setComparisonOperator(NumberComparisonOperator comparisonOperator) {
+        this.comparisonOperator = comparisonOperator;
+    }
+
     public int getEnergyValue() {
         return energyValue;
+    }
+
+    public void setEnergyValue(int energyValue) {
+        this.energyValue = energyValue;
+    }
+
+    public String getName() {
+        return NAME;
     }
 
     @Override
@@ -57,5 +69,8 @@ public class EnergyCondition extends AbstractPixelCondition {
         super(directions);
         this.comparisonOperator = comparisonOperator;
         this.energyValue = energyValue;
+    }
+
+    public EnergyCondition() {
     }
 }

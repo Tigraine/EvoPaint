@@ -21,6 +21,22 @@ public abstract class AbstractAction implements IAction {
     private int cost;
     private List<RelativeCoordinate> directions;
 
+    public int getCost() {
+        return cost;
+    }
+
+    public void setCost(int cost) {
+        this.cost = cost;
+    }
+
+    public List<RelativeCoordinate> getDirections() {
+        return directions;
+    }
+
+    public void setDirections(List<RelativeCoordinate> directions) {
+        this.directions = directions;
+    }
+
     @Override
     public String toString() {
         String ret = "cost: " + cost + "*" + directions.size() + ") -> [";
@@ -34,18 +50,15 @@ public abstract class AbstractAction implements IAction {
         return ret;
     }
 
-    public List<RelativeCoordinate> getDirections() {
-        return directions;
-    }
-
-    public int getCost() {
-        return cost;
-    }
-
     public abstract int execute(Pixel actor, World world);
+
+    public abstract String getName();
 
     protected AbstractAction(int cost, List<RelativeCoordinate> directions) {
         this.cost = cost;
         this.directions = directions;
+    }
+
+    public AbstractAction() {
     }
 }

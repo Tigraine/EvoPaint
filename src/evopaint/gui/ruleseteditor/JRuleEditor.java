@@ -3,16 +3,17 @@
  * and open the template in the editor.
  */
 
-package evopaint.gui.ruleeditor;
+package evopaint.gui.ruleseteditor;
 
 import evopaint.pixel.rulebased.interfaces.ICondition;
 import evopaint.pixel.rulebased.interfaces.IRule;
-import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.List;
 import javax.swing.BoxLayout;
-import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.TitledBorder;
@@ -32,33 +33,29 @@ public class JRuleEditor extends JPanel {
         this.rule = rule;
     }
 
-    public JRuleEditor(IRule rule, DefaultComboBoxModel availableConditions, DefaultComboBoxModel availableActions) {
+    public JRuleEditor(IRule rule) {
         this.rule = rule;
 
-        setLayout(new GridBagLayout());
+        
+        
+        //setLayout(new GridBagLayout());
         setBorder(new TitledBorder("Edit Rule"));
 
         JLabel labelIf = new JLabel("<html><b>&nbsp;IF&nbsp;</b><html>", JLabel.CENTER);
         add(labelIf);
 
         // conditions
-        JPanel panelConditionsWrapper = new JPanel();
-        panelConditionsWrapper.setLayout(new BoxLayout(panelConditionsWrapper, BoxLayout.Y_AXIS));
-        add(panelConditionsWrapper);
+        //JPanel panelConditionsWrapper = new JPanel();
+        //panelConditionsWrapper.setLayout(new BoxLayout(panelConditionsWrapper, BoxLayout.Y_AXIS));
+        //add(panelConditionsWrapper);
 
-        JPanel panelForConditions = new JPanel();
-        panelForConditions.setLayout(new BoxLayout(panelForConditions, BoxLayout.Y_AXIS));
-        panelConditionsWrapper.add(panelForConditions);
+        JConditionList jConditionList = new JConditionList(rule.getConditions());
+        add(jConditionList);
 
-        JButton buttonANDCondition = new JButton("AND");
-        buttonANDCondition.addActionListener(new AddConditionButtonListener(panelForConditions));
-        panelConditionsWrapper.add(buttonANDCondition);
-
-        for (ICondition condition : rule.getConditions()) {
-            JCondition jCondition = new JCondition(condition, availableConditions);
-            panelForConditions.add(jCondition);
-        }
-
+        //JButton buttonANDCondition = new JButton("AND");
+        //buttonANDCondition.addActionListener(new AddConditionButtonListener(panelForConditions));
+        //panelConditionsWrapper.add(buttonANDCondition);
+        //add(buttonANDCondition);
 
         add(new JLabel("<html><b>&nbsp;THEN&nbsp;</b><html>", JLabel.CENTER));
 
@@ -81,7 +78,7 @@ public class JRuleEditor extends JPanel {
         panelForActions.add(jAction);
         */
         
-        add(new JAction(rule.getAction(), availableActions));
+        add(new JAction(rule.getAction()));
     }
 
     /* // for multiple actions
@@ -97,6 +94,7 @@ public class JRuleEditor extends JPanel {
         }
     }
     */
+
     
     private class AddConditionButtonListener implements ActionListener {
         private JPanel panelForConditions;
@@ -106,7 +104,9 @@ public class JRuleEditor extends JPanel {
         }
 
         public void actionPerformed(ActionEvent e) {
-            //this.panelForConditions.add(new JCondition(conditions));
+            this.panelForConditions.add(new JLabel("<html><b>&nbsp;AND&nbsp;</b><html>", JLabel.CENTER));
+            //this.panelForConditions.add(new JCondition(null));
+            //((JFrame)this.panelForConditions.getParent().getParent().getParent().getParent().getParent()).pack();
         }
     }
 }

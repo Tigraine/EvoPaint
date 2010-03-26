@@ -16,9 +16,21 @@ import java.util.List;
  * @author tam
  */
 public class RewardAction extends AbstractAction {
-    public static final String name = "reward";
+    private static final String NAME = "reward";
     
     private int rewardValue;
+
+    public int getRewardValue() {
+        return rewardValue;
+    }
+
+    public void setRewardValue(int rewardValue) {
+        this.rewardValue = rewardValue;
+    }
+    
+    public String getName() {
+        return NAME;
+    }
 
     @Override
     public String toString() {
@@ -40,5 +52,8 @@ public class RewardAction extends AbstractAction {
     public RewardAction(int cost, List<RelativeCoordinate> directions, int rewardValue) {
         super(cost, directions);
         this.rewardValue = rewardValue;
+    }
+
+    public RewardAction() {
     }
 }

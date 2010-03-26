@@ -17,9 +17,21 @@ import java.util.List;
  * @author tam
  */
 public class AssimilationAction extends AbstractAction {
-    public static final String name = "assimilate";
+    private static final String NAME = "assimilate";
 
     private int dimensionsToMix;
+
+    public int getDimensionsToMix() {
+        return dimensionsToMix;
+    }
+
+    public void setDimensionsToMix(int dimensionsToMix) {
+        this.dimensionsToMix = dimensionsToMix;
+    }
+
+    public String getName() {
+        return NAME;
+    }
 
     @Override
     public String toString() {
@@ -53,5 +65,8 @@ public class AssimilationAction extends AbstractAction {
     public AssimilationAction(int reward, List<RelativeCoordinate> directions, int colorMixMode) {
         super(reward, directions);
         this.dimensionsToMix = colorMixMode;
+    }
+
+    public AssimilationAction() {
     }
 }

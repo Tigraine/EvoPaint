@@ -2,7 +2,7 @@ package evopaint.gui;
 
 import evopaint.Brush;
 import evopaint.Configuration;
-import evopaint.gui.ruleeditor.JRuleSetEditor;
+import evopaint.gui.ruleseteditor.JRuleSetEditor;
 import evopaint.pixel.PixelColor;
 import evopaint.pixel.rulebased.RuleSet;
 import java.awt.Checkbox;
@@ -232,10 +232,13 @@ public class PaintOptionsPanel extends JPanel {
 
     private class ButtonRuleSetListener implements ActionListener {
         public void actionPerformed(ActionEvent e) {
-            JDialog dialog = new JDialog(mainFrame, "Rule Set Editor", true);
-            dialog.add(new JRuleSetEditor(configuration.brush.getRuleSet()));
-            dialog.pack();
-            dialog.setVisible(true);
+            //JDialog dialog = new JDialog(mainFrame, "Rule Set Editor", true);
+            //dialog.add(new JRuleSetEditor(configuration.brush.getRuleSet()));
+            //dialog.pack();
+            //dialog.setVisible(true);
+            JRuleSetEditor ruleSetEditor = new JRuleSetEditor(configuration.brush.getRuleSet());
+            ruleSetEditor.pack();
+            ruleSetEditor.setVisible(true);
         }
     }
 }

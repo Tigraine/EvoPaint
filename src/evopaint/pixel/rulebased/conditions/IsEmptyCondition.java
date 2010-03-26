@@ -7,7 +7,7 @@ package evopaint.pixel.rulebased.conditions;
 
 import evopaint.World;
 import evopaint.pixel.rulebased.ObjectComparisonOperator;
-import evopaint.pixel.rulebased.AbstractPixelCondition;
+import evopaint.pixel.rulebased.AbstractCondition;
 import evopaint.pixel.Pixel;
 import evopaint.util.mapping.RelativeCoordinate;
 import java.util.List;
@@ -16,10 +16,14 @@ import java.util.List;
  *
  * @author tam
  */
-public class IsEmptyCondition extends AbstractPixelCondition {
-    public static final String name = "isEmpty";
+public class IsEmptyCondition extends AbstractCondition {
+    private static final String NAME = "isEmpty";
 
     private ObjectComparisonOperator comparisonOperator;
+
+    public String getName() {
+        return NAME;
+    }
 
     @Override
     public String toString() {
@@ -41,5 +45,8 @@ public class IsEmptyCondition extends AbstractPixelCondition {
     public IsEmptyCondition(List<RelativeCoordinate> directions, ObjectComparisonOperator comparisonOperator) {
         super(directions);
         this.comparisonOperator = comparisonOperator;
+    }
+
+    public IsEmptyCondition() {
     }
 }

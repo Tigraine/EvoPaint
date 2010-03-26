@@ -7,13 +7,12 @@ package evopaint.pixel.rulebased.interfaces;
 
 import evopaint.World;
 import evopaint.pixel.Pixel;
-import evopaint.util.mapping.RelativeCoordinate;
-import java.util.List;
 
 /**
  *
  * @author tam
  */
 public interface ICondition {
+    public String getName();
     public boolean isMet(Pixel us, World world);
 }

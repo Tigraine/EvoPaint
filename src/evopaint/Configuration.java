@@ -80,6 +80,8 @@ public class Configuration {
         List<RelativeCoordinate> directions = new ArrayList<RelativeCoordinate>();
         directions.add(RelativeCoordinate.SELF);
         conditions.add(new EnergyCondition(directions, NumberComparisonOperator.GREATER_THAN, 80));
+        conditions.add(new EnergyCondition(directions, NumberComparisonOperator.GREATER_THAN, 80));
+        conditions.add(new EnergyCondition(directions, NumberComparisonOperator.GREATER_THAN, 80));
         directions = new ArrayList<RelativeCoordinate>();
         directions.add(RelativeCoordinate.WEST);
         directions.add(RelativeCoordinate.NORTH);

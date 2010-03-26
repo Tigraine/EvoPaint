@@ -3,10 +3,11 @@
  * and open the template in the editor.
  */
 
-package evopaint.gui.ruleeditor;
+package evopaint.gui.ruleseteditor;
 
 import evopaint.pixel.rulebased.interfaces.IRule;
 import evopaint.pixel.rulebased.RuleSet;
+import java.awt.Dimension;
 import javax.swing.DefaultListModel;
 import javax.swing.JList;
 
@@ -25,7 +26,8 @@ public class JRuleList extends JList {
         }
 
         setModel(listModel);
-        setVisibleRowCount(5);
+        //setVisibleRowCount(5);
+        //setPreferredSize(new Dimension(10, 200));
 
         
         // make me look pretty

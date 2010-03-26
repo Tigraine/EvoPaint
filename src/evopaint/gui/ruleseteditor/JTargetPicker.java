@@ -3,9 +3,10 @@
  * and open the template in the editor.
  */
 
-package evopaint.gui.ruleeditor;
+package evopaint.gui.ruleseteditor;
 
 import evopaint.util.mapping.RelativeCoordinate;
+import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -38,19 +39,47 @@ public class JTargetPicker extends JPanel implements ActionListener {
         setBorder(new TitledBorder("targets"));
 
         targets = new IdentityHashMap<JToggleButton, RelativeCoordinate>();
-        targets.put(new JToggleButton("\\"), RelativeCoordinate.NORTH_WEST);
-        targets.put(new JToggleButton("|"), RelativeCoordinate.NORTH);
-        targets.put(new JToggleButton("/"), RelativeCoordinate.NORTH_EAST);
-        targets.put(new JToggleButton("-"), RelativeCoordinate.WEST);
-        targets.put(new JToggleButton("*"), RelativeCoordinate.SELF);
-        targets.put(new JToggleButton("-"), RelativeCoordinate.EAST);
-        targets.put(new JToggleButton("/"), RelativeCoordinate.SOUTH_WEST);
-        targets.put(new JToggleButton("|"), RelativeCoordinate.SOUTH);
-        targets.put(new JToggleButton("\\"), RelativeCoordinate.SOUTH_EAST);
+
+        JToggleButton btn = new JToggleButton("\\");
+        add(btn);
+        targets.put(btn, RelativeCoordinate.NORTH_WEST);
+
+        btn = new JToggleButton("|");
+        add(btn);
+        targets.put(btn, RelativeCoordinate.NORTH);
+
+        btn = new JToggleButton("/");
+        add(btn);
+        targets.put(btn, RelativeCoordinate.NORTH_EAST);
+
+        btn = new JToggleButton("-");
+        add(btn);
+        targets.put(btn, RelativeCoordinate.WEST);
+
+        btn = new JToggleButton("*");
+        add(btn);
+        targets.put(btn, RelativeCoordinate.SELF);
+
+        btn = new JToggleButton("-");
+        add(btn);
+        targets.put(btn, RelativeCoordinate.EAST);
+
+        btn = new JToggleButton("/");
+        add(btn);
+        targets.put(btn, RelativeCoordinate.SOUTH_WEST);
+
+        btn = new JToggleButton("|");
+        add(btn);
+        targets.put(btn, RelativeCoordinate.SOUTH);
+
+        btn = new JToggleButton("\\");
+        add(btn);
+        targets.put(btn, RelativeCoordinate.SOUTH_EAST);
 
         // TODO evaluate if needed
-        for (JToggleButton btn : targets.keySet()) {
-            btn.addActionListener(this);
+        for (JToggleButton b : targets.keySet()) {
+            b.setPreferredSize(new Dimension(25, 25));
+            b.addActionListener(this);
         }
     }
 
