@@ -174,14 +174,16 @@ public class MenuBar extends JMenuBar implements SelectionObserver {
     }
 
     public void addSelection(Selection selection) {
-        activeSelections.add(new SelectionWrapper(selection));
+        activeSelections.add(new SelectionWrapper(selection, showcase));
     }
 
     private class SelectionWrapper extends JMenuItem implements Observer
     {
         private Selection selection;
+        private SelectionManager selectionManager;
 
-        private SelectionWrapper(Selection selection) {
+        private SelectionWrapper(Selection selection, SelectionManager manager) {
+            selectionManager = manager;
             selection.addObserver(this);
             this.selection = selection;
             UpdateName(selection);
@@ -199,16 +201,12 @@ public class MenuBar extends JMenuBar implements SelectionObserver {
 
         private class SelectionMouseListener implements MouseListener
         {
-            public void mouseClicked(MouseEvent e) {
-                //To change body of implemented methods use File | Settings | File Templates.
-            }
+            public void mouseClicked(MouseEvent e) {}
 
-            public void mousePressed(MouseEvent e) {
-                //To change body of implemented methods use File | Settings | File Templates.
-            }
+            public void mousePressed(MouseEvent e) {}
 
             public void mouseReleased(MouseEvent e) {
-                //To change body of implemented methods use File | Settings | File Templates.
+                selectionManager.setActiveSelection(selection);
             }
 
             public void mouseEntered(MouseEvent e) {
