@@ -9,6 +9,7 @@ import evopaint.commands.*;
 import evopaint.Selection;
 import evopaint.World;
 import evopaint.Perception;
+import evopaint.gui.ruleeditor.SelectionList;
 import evopaint.util.logging.Logger;
 import java.awt.Cursor;
 import java.awt.Dimension;
@@ -59,7 +60,7 @@ public class Showcase extends JPanel implements MouseInputListener, MouseWheelLi
     private MoveCommand moveCommand;
     private SelectCommand selectCommand;
 
-    private ArrayList<Selection> currentSelections = new ArrayList<Selection>();
+    private SelectionList currentSelections = new SelectionList();
     private Selection activeSelection;
 
     private boolean isDrawingSelection = false;
