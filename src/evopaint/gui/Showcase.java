@@ -38,18 +38,6 @@ public class Showcase extends JPanel implements MouseInputListener, MouseWheelLi
     private Perception perception;
     private MainFrame mainFrame;
 
-    public Configuration getConfiguration() {
-        return configuration;
-    }
-
-    public AffineTransform getAffineTransform() {
-        return affineTransform;
-    }
-
-    public double getScale() {
-        return scale;
-    }
-
     private Configuration configuration;
 
     private AffineTransform affineTransform = new AffineTransform();
@@ -62,16 +50,49 @@ public class Showcase extends JPanel implements MouseInputListener, MouseWheelLi
     private MoveCommand moveCommand;
     private SelectCommand selectCommand;
 
-    public SelectionList getCurrentSelections() {
-        return currentSelections;
-    }
-
     private SelectionList currentSelections = new SelectionList();
     private Selection activeSelection;
 
     private boolean isDrawingSelection = false;
     private Point selectionStartPoint;
-    private Point currentMouseDragPosition; 
+    private Point currentMouseDragPosition;
+
+    public Showcase(Configuration configuration, MainFrame mf, World world, Perception perception, CommandFactory commandFactory) {
+        this.configuration = configuration;
+        this.mainFrame = mf;
+        this.perception = perception;
+        this.configuration.affineTransform = affineTransform;
+        this.paintCommand = new PaintCommand(configuration, this.scale, affineTransform);
+        this.moveCommand = new MoveCommand(configuration);
+        this.selectCommand = commandFactory.GetSelectCommand(currentSelections);
+
+        this.currentSelections.addObserver(this);
+
+        addMouseWheelListener(this);
+        addMouseListener(this);
+        addMouseMotionListener(this);
+
+        setCursor(new Cursor(Cursor.MOVE_CURSOR));
+
+        this.zoom = 10;
+        this.rescale();
+    }
+
+    public Configuration getConfiguration() {
+        return configuration;
+    }
+
+    public AffineTransform getAffineTransform() {
+        return affineTransform;
+    }
+
+    public double getScale() {
+        return scale;
+    }
+
+    public SelectionList getCurrentSelections() {
+        return currentSelections;
+    }
 
     @Override
     public void paintComponent(Graphics g) {
@@ -232,28 +253,6 @@ public class Showcase extends JPanel implements MouseInputListener, MouseWheelLi
     }
 
     public void mouseMoved(MouseEvent e) {
-    }
-
-
-    public Showcase(Configuration configuration, MainFrame mf, World world, Perception perception, CommandFactory commandFactory) {
-        this.configuration = configuration;
-        this.mainFrame = mf;
-        this.perception = perception;
-        this.configuration.affineTransform = affineTransform;
-        this.paintCommand = new PaintCommand(configuration, this.scale, affineTransform);
-        this.moveCommand = new MoveCommand(configuration);
-        this.selectCommand = commandFactory.GetSelectCommand(currentSelections);
-
-        this.currentSelections.addObserver(this);
-
-        addMouseWheelListener(this);
-        addMouseListener(this);
-        addMouseMotionListener(this);
-
-        setCursor(new Cursor(Cursor.MOVE_CURSOR));
-
-        this.zoom = 10;
-        this.rescale();
     }
 
     public Selection getActiveSelection() {

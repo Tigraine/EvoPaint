@@ -28,18 +28,6 @@ public class MainFrame extends JFrame {
     private ZoomCommand zoomOutCommand;
     private ZoomCommand zoomInCommand;
 
-    public JPopupMenu getToolMenu() {
-        return toolMenu;
-    }
-
-    public Class getActiveTool() {
-        return activeTool;
-    }
-
-    public void setActiveTool(Class activeTool) {
-        this.activeTool = activeTool;
-    }
-    
     public MainFrame(Configuration configuration, EvoPaint evopaint) {
         this.configuration = configuration;
 
@@ -50,7 +38,7 @@ public class MainFrame extends JFrame {
         }
 
         setDefaultCloseOperation(this.EXIT_ON_CLOSE);
-        
+
         activeTool = MoveCommand.class;
 
         this.toolMenu = new ToolMenu(this);
@@ -60,7 +48,6 @@ public class MainFrame extends JFrame {
         this.paintOptionsPanel = new PaintOptionsPanel(configuration, showcase, this); // FIXME: paintoptionspanel must be initialized before showcase or we get a nullpointer exception. the semantics to not express this!!
         this.showcase = new Showcase(configuration, this, evopaint.getWorld(), evopaint.getPerception(), commandFactory);
         this.menuBar = new MenuBar(evopaint, new SelectionListenerFactory(showcase), showcase);
-        //commandFactory.GetSelectCommand(showcase.getCurrentSelections());
 
         initializeCommands(evopaint);
 
@@ -73,7 +60,7 @@ public class MainFrame extends JFrame {
 
 
 
-      
+
 
         showCaseWrapper.setLayout(new GridBagLayout());
         showCaseWrapper.add(showcase);
@@ -83,13 +70,13 @@ public class MainFrame extends JFrame {
         toolBox=new ToolBox(this);
         leftPanel.setLayout(new GridBagLayout());
         paintOptionsPanel.setAlignmentY(TOP_ALIGNMENT);
-        
-      
+
+
         leftPanel.add(toolBox);
 //        leftPanel.add(paintOptionsPanel);
-        
+
         add(leftPanel);
-      
+
         add(showCaseWrapper);
 
 
@@ -100,8 +87,20 @@ public class MainFrame extends JFrame {
 
         this.pack();
         this.setVisible(true);
-    
-        
+
+
+    }
+
+    public JPopupMenu getToolMenu() {
+        return toolMenu;
+    }
+
+    public Class getActiveTool() {
+        return activeTool;
+    }
+
+    public void setActiveTool(Class activeTool) {
+        this.activeTool = activeTool;
     }
 
     public void initializeCommands(EvoPaint evopaint) {
