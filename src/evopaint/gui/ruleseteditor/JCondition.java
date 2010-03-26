@@ -70,6 +70,8 @@ public class JCondition extends JPanel {
 
         // do the combo box magic
         DefaultComboBoxModel model = new DefaultComboBoxModel();
+
+        /* //automatic class discovery. sometimes slow and can be buggy depending on packaging.
         Set<Class> types = null;
         try {
             HashSet<String> packages = new HashSet<String>();
@@ -81,8 +83,9 @@ public class JCondition extends JPanel {
             e.printStackTrace();
             System.exit(1);
         }
+        */
 
-        for (Class type : types) {
+        for (Class type : Configuration.availableConditions) {
             try {
                 model.addElement((ICondition) type.newInstance());
             } catch (InstantiationException ex) {
@@ -108,7 +111,6 @@ public class JCondition extends JPanel {
 
         collapsedPanel.setPreferredSize(new Dimension((int)expandedPanel.getPreferredSize().getWidth(), (int)collapsedPanel.getPreferredSize().getHeight()));
         collapse();
-
     }
 
     public void collapse() {

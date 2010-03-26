@@ -7,8 +7,11 @@ package evopaint;
 
 import evopaint.pixel.Pixel;
 import evopaint.gui.MainFrame;
+import evopaint.pixel.rulebased.interfaces.IAction;
 
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *

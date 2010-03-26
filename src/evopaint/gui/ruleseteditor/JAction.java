@@ -40,6 +40,7 @@ public class JAction extends JPanel implements ActionListener {
         setBorder(new SoftBevelBorder(SoftBevelBorder.RAISED));
 
         DefaultComboBoxModel model = new DefaultComboBoxModel();
+        /* //automatic class discovery. sometimes slow and can be buggy depending on packaging.
         Set<Class> types = null;
         try {
             HashSet<String> packages = new HashSet<String>();
@@ -50,9 +51,9 @@ public class JAction extends JPanel implements ActionListener {
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
             System.exit(1);
-        }
+        }*/
 
-        for (Class type : types) {
+        for (Class type : Configuration.availableActions) {
             try {
                 model.addElement((IAction) type.newInstance());
             } catch (InstantiationException ex) {
