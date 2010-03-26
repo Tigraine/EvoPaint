@@ -1,10 +1,9 @@
 package evopaint.commands;
 
 import evopaint.Selection;
-import evopaint.gui.SelectionObserver;
+import evopaint.gui.SelectionList;
 
 import java.awt.*;
-import java.util.ArrayList;
 
 /**
  * Created by IntelliJ IDEA.
@@ -14,22 +13,24 @@ import java.util.ArrayList;
  * To change this template use File | Settings | File Templates.
  */
 public class SelectCommand extends AbstractCommand {
-    private ArrayList<SelectionObserver> observers = new ArrayList<SelectionObserver>();
-
-    public void addSelectionListener(SelectionObserver observer) {
-        observers.add(observer);
-    }
+    private SelectionList observableSelectionList;
 
     public enum State { IDLE, STARTED }
     private State CurrentState = State.IDLE;
 
     private Point mouseLocation;
 
-    public SelectCommand(){
+    public SelectCommand(SelectionList list){
+        observableSelectionList = list;
     }
 
-    public void setLocation(Point location){
-        mouseLocation = location;
+    public void setLocation(Point location, double scale){
+        mouseLocation = TranslatePointToScale(location, scale);
+    }
+
+    public static Point TranslatePointToScale(Point location, double scale) {
+        Point point = new Point((int)(location.x / scale), (int)(location.y / scale));
+        return point;
     }
 
     private Point startPoint;
@@ -47,7 +48,7 @@ public class SelectCommand extends AbstractCommand {
             Selection selection = new Selection(startPoint, endPoint);
             selection.setSelectionName("New Selection " + nextSelectionId);
             nextSelectionId++;
-            signalReceivers(selection);
+            observableSelectionList.add(selection);
         }
     }
 
@@ -56,12 +57,6 @@ public class SelectCommand extends AbstractCommand {
             Point temp = endPoint;
             endPoint = startPoint;
             startPoint = temp;
-        }
-    }
-
-    private void signalReceivers(Selection selection){
-        for(SelectionObserver observer : observers){
-            observer.addSelection(selection);
         }
     }
 }

@@ -11,15 +11,15 @@ import evopaint.Manifest;
 import evopaint.Perception;
 import evopaint.Selection;
 import evopaint.World;
-import evopaint.gui.MainFrame;
+import evopaint.commands.DeleteCurrentSelectionCommand;
+import evopaint.commands.FillSelectionCommand;
+import evopaint.commands.FillSelectionCommandScattered;
 import evopaint.gui.listeners.SelectionListenerFactory;
-import evopaint.gui.listeners.SelectionSetNameListener;
+import evopaint.gui.SelectionList;
 import evopaint.pixel.Pixel;
 import evopaint.util.logging.Logger;
 
-import javax.imageio.ImageIO;
 import javax.swing.*;
-import javax.swing.filechooser.FileNameExtensionFilter;
 
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
@@ -27,8 +27,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -39,16 +37,19 @@ import java.util.Observer;
  *
  * @author tam
  */
-public class MenuBar extends JMenuBar implements SelectionObserver {
+public class MenuBar extends JMenuBar implements Observer {
     private EvoPaint evopaint;
+    private Showcase showcase;
     private JMenu selectionMenu;
     private JMenu activeSelections;
     private newWizard nw;
     private MenuBar mb;
 
-    public MenuBar(final EvoPaint evopaint, SelectionListenerFactory listenerFactory) {
+    public MenuBar(final EvoPaint evopaint, SelectionListenerFactory listenerFactory, Showcase showcase) {
         this.evopaint = evopaint;
+        this.showcase = showcase;
         this.mb=this;
+        showcase.getCurrentSelections().addObserver(this);
         // World Menu
         JMenu worldMenu = new JMenu();
         worldMenu.setText("World");
@@ -100,12 +101,23 @@ public class MenuBar extends JMenuBar implements SelectionObserver {
         JMenuItem selectionSetName = new JMenuItem("Set Name...");
         selectionMenu.add(selectionSetName);
         selectionSetName.addActionListener(listenerFactory.CreateSelectionSetNameListener());
-        selectionMenu.add(new JMenuItem("Invert"));
+        JMenuItem fillSelection = new JMenuItem("Fill");
+        fillSelection.addActionListener(new FillSelectionCommand(showcase));
+        selectionMenu.add(fillSelection);
+        JMenuItem fillHalfSelection = new JMenuItem("Fill 50%");
+        fillHalfSelection.addActionListener(new FillSelectionCommandScattered(showcase));
+        selectionMenu.add(fillHalfSelection);
         selectionMenu.add(new JMenuItem("Open as new"));
         selectionMenu.add(new JMenuItem("Copy"));
         selectionMenu.add(new JMenuItem("Options..."));
         activeSelections = new JMenu("Selections");
+        JMenuItem deleteCurrentSelection = new JMenuItem("Delete current");
+        selectionMenu.add(deleteCurrentSelection);
+        deleteCurrentSelection.addActionListener(new DeleteCurrentSelectionCommand(showcase));
         selectionMenu.add(activeSelections);
+        JMenuItem clearSelections = new JMenuItem("Clear Selections");
+        clearSelections.addActionListener(listenerFactory.CreateClearSelectionsListener());
+        selectionMenu.add(clearSelections);
 
         // info menu
         JMenu infoMenu = new JMenu();
@@ -159,16 +171,37 @@ public class MenuBar extends JMenuBar implements SelectionObserver {
         infoMenu.add(about);
 
     }
-
+/*
     public void addSelection(Selection selection) {
-        activeSelections.add(new SelectionWrapper(selection));
+        activeSelections.add(new SelectionWrapper(selection, showcase));
+    }*/
+
+    public void update(Observable o, Object arg) {
+        SelectionList.SelectionListUpdateArgs updateEvent = (SelectionList.SelectionListUpdateArgs) arg;
+        if (updateEvent.getChangeType() == SelectionList.ChangeType.LIST_CLEARED) {
+            activeSelections.removeAll();
+        }
+        if (updateEvent.getChangeType() == SelectionList.ChangeType.ITEM_ADDED) {
+            activeSelections.add(new SelectionWrapper(updateEvent.getSelection(), showcase));
+        }
+        if (updateEvent.getChangeType() == SelectionList.ChangeType.ITEM_DELETED) {
+            for(int i = 0; i < activeSelections.getItemCount(); i++) {
+                SelectionWrapper wrapper = (SelectionWrapper)activeSelections.getItem(i);
+                if (wrapper.selection == updateEvent.getSelection()) {
+                    activeSelections.remove(i);
+                    break;
+                }
+            }
+        }
     }
 
     private class SelectionWrapper extends JMenuItem implements Observer
     {
         private Selection selection;
+        private SelectionManager selectionManager;
 
-        private SelectionWrapper(Selection selection) {
+        private SelectionWrapper(Selection selection, SelectionManager manager) {
+            selectionManager = manager;
             selection.addObserver(this);
             this.selection = selection;
             UpdateName(selection);
@@ -186,16 +219,12 @@ public class MenuBar extends JMenuBar implements SelectionObserver {
 
         private class SelectionMouseListener implements MouseListener
         {
-            public void mouseClicked(MouseEvent e) {
-                //To change body of implemented methods use File | Settings | File Templates.
-            }
+            public void mouseClicked(MouseEvent e) {}
 
-            public void mousePressed(MouseEvent e) {
-                //To change body of implemented methods use File | Settings | File Templates.
-            }
+            public void mousePressed(MouseEvent e) {}
 
             public void mouseReleased(MouseEvent e) {
-                //To change body of implemented methods use File | Settings | File Templates.
+                selectionManager.setActiveSelection(selection);
             }
 
             public void mouseEntered(MouseEvent e) {

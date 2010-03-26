@@ -1,6 +1,7 @@
 package evopaint.commands;
 
 import evopaint.Configuration;
+import evopaint.gui.SelectionList;
 
 /**
  * Created by IntelliJ IDEA.
@@ -22,9 +23,9 @@ public class CommandFactory {
         return moveCommand;
     }
 
-    public SelectCommand GetSelectCommand() {
+    public SelectCommand GetSelectCommand(SelectionList list) {
         if (selectionCommand == null)
-            selectionCommand = new SelectCommand();
+            selectionCommand = new SelectCommand(list);
         return selectionCommand;
     }
 

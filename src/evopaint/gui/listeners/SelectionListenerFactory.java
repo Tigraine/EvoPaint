@@ -1,6 +1,9 @@
 package evopaint.gui.listeners;
 
+import evopaint.commands.ClearSelectionCommand;
 import evopaint.gui.SelectionManager;
+
+import java.awt.event.ActionListener;
 
 /**
  * Created by IntelliJ IDEA.
@@ -18,5 +21,9 @@ public class SelectionListenerFactory {
 
     public SelectionSetNameListener CreateSelectionSetNameListener(){
         return new SelectionSetNameListener(manager);
+    }
+
+    public ActionListener CreateClearSelectionsListener() {
+        return new ClearSelectionCommand(manager);
     }
 }

@@ -9,6 +9,7 @@ import evopaint.commands.*;
 import evopaint.Selection;
 import evopaint.World;
 import evopaint.Perception;
+import evopaint.gui.SelectionList;
 import evopaint.util.logging.Logger;
 import java.awt.Cursor;
 import java.awt.Dimension;
@@ -21,7 +22,8 @@ import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
-import java.util.ArrayList;
+import java.util.Observable;
+import java.util.Observer;
 import javax.swing.JPanel;
 import javax.swing.event.MouseInputListener;
 
@@ -30,10 +32,11 @@ import javax.swing.event.MouseInputListener;
  * @author tam
  */
 
-public class Showcase extends JPanel implements MouseInputListener, MouseWheelListener, SelectionObserver, SelectionManager {
+public class Showcase extends JPanel implements MouseInputListener, MouseWheelListener, Observer, SelectionManager {
 
     private Perception perception;
     private MainFrame mainFrame;
+
     private Configuration configuration;
 
     private AffineTransform affineTransform = new AffineTransform();
@@ -46,12 +49,49 @@ public class Showcase extends JPanel implements MouseInputListener, MouseWheelLi
     private MoveCommand moveCommand;
     private SelectCommand selectCommand;
 
-    private ArrayList<Selection> currentSelections = new ArrayList<Selection>();
+    private SelectionList currentSelections = new SelectionList();
     private Selection activeSelection;
 
     private boolean isDrawingSelection = false;
     private Point selectionStartPoint;
-    private Point currentMouseDragPosition; 
+    private Point currentMouseDragPosition;
+
+    public Showcase(Configuration configuration, MainFrame mf, World world, Perception perception, CommandFactory commandFactory) {
+        this.configuration = configuration;
+        this.mainFrame = mf;
+        this.perception = perception;
+        this.configuration.affineTransform = affineTransform;
+        this.paintCommand = new PaintCommand(configuration, this.scale, affineTransform);
+        this.moveCommand = new MoveCommand(configuration);
+        this.selectCommand = commandFactory.GetSelectCommand(currentSelections);
+
+        this.currentSelections.addObserver(this);
+
+        addMouseWheelListener(this);
+        addMouseListener(this);
+        addMouseMotionListener(this);
+
+        setCursor(new Cursor(Cursor.MOVE_CURSOR));
+
+        this.zoom = 10;
+        this.rescale();
+    }
+
+    public Configuration getConfiguration() {
+        return configuration;
+    }
+
+    public AffineTransform getAffineTransform() {
+        return affineTransform;
+    }
+
+    public double getScale() {
+        return scale;
+    }
+
+    public SelectionList getCurrentSelections() {
+        return currentSelections;
+    }
 
     @Override
     public void paintComponent(Graphics g) {
@@ -160,9 +200,9 @@ public class Showcase extends JPanel implements MouseInputListener, MouseWheelLi
                 moveCommand.setSource(e.getPoint());
                 //moveCommand.setScale(this.scale);
             } else if (mainFrame.getActiveTool() == SelectCommand.class) {
-                this.selectionStartPoint = e.getPoint();
+                this.selectionStartPoint = SelectCommand.TranslatePointToScale(e.getPoint(), scale);
                 this.isDrawingSelection = true;
-                selectCommand.setLocation(e.getPoint());
+                selectCommand.setLocation(e.getPoint(), scale);
                 selectCommand.execute();
             }
         } else if (e.getButton() == MouseEvent.BUTTON3) {
@@ -177,7 +217,7 @@ public class Showcase extends JPanel implements MouseInputListener, MouseWheelLi
             leftButtonPressed = false;
             if (mainFrame.getActiveTool() == SelectCommand.class) {
                 this.isDrawingSelection = false;
-                selectCommand.setLocation(e.getPoint());
+                selectCommand.setLocation(e.getPoint(), scale);
                 selectCommand.execute();
             }
         } else if (e.getButton() == MouseEvent.BUTTON3) {
@@ -187,7 +227,7 @@ public class Showcase extends JPanel implements MouseInputListener, MouseWheelLi
 
     public void mouseDragged(MouseEvent e) {
         if (leftButtonPressed == true) {
-            this.currentMouseDragPosition = e.getPoint();
+            this.currentMouseDragPosition = SelectCommand.TranslatePointToScale(e.getPoint(), scale);
             if (mainFrame.getActiveTool() == PaintCommand.class) {
                 // TODO: paint pixels between mouse drags
                 // TODO: Maybe refactor state into PaintCommand
@@ -214,36 +254,37 @@ public class Showcase extends JPanel implements MouseInputListener, MouseWheelLi
     public void mouseMoved(MouseEvent e) {
     }
 
-
-    public Showcase(Configuration configuration, MainFrame mf, World world, Perception perception, CommandFactory commandFactory) {
-        this.configuration = configuration;
-        this.mainFrame = mf;
-        this.perception = perception;
-        this.configuration.affineTransform = affineTransform;
-        this.paintCommand = new PaintCommand(configuration, this.scale, affineTransform);
-
-        this.moveCommand = new MoveCommand(configuration);
-
-        this.selectCommand = commandFactory.GetSelectCommand();
-        selectCommand.addSelectionListener(this);
-
-        addMouseWheelListener(this);
-        addMouseListener(this);
-        addMouseMotionListener(this);
-
-        setCursor(new Cursor(Cursor.MOVE_CURSOR));
-
-        this.zoom = 10;
-        this.rescale();
-    }
-
-    public void addSelection(Selection selection) {
-        this.currentSelections.add(selection);
-        this.activeSelection = selection;
-        Logger.log.error("Selection from %s-%s to %s-%s", selection.getStartPoint().getX(), selection.getStartPoint().getY(), selection.getEndPoint().getX(), selection.getEndPoint().getY());
-    }
-
     public Selection getActiveSelection() {
         return activeSelection;
+    }
+
+    public void clearSelections() {
+        this.activeSelection = null;
+        this.currentSelections.clear();
+    }
+
+    public void setActiveSelection(Selection selection) {
+        this.activeSelection = selection;
+        ClearSelectionHighlight();
+    }
+
+    private void ClearSelectionHighlight() {
+        for(Selection sel : currentSelections ){
+            sel.setHighlighted(false);
+        }
+    }
+
+    public void removeActiveSelection() {
+        this.currentSelections.remove(activeSelection);
+        activeSelection = null;
+    }
+
+    public void update(Observable o, Object arg) {
+        SelectionList.SelectionListUpdateArgs selectionUpdate = (SelectionList.SelectionListUpdateArgs) arg;
+        if (selectionUpdate.getChangeType() == SelectionList.ChangeType.ITEM_ADDED) {
+            Selection selection = selectionUpdate.getSelection();
+            this.activeSelection = selection;
+            Logger.log.error("Selection from %s-%s to %s-%s", selection.getStartPoint().getX(), selection.getStartPoint().getY(), selection.getEndPoint().getX(), selection.getEndPoint().getY());
+        }
     }
 }
