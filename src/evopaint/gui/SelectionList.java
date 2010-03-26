@@ -32,7 +32,6 @@ public class SelectionList extends Observable implements Collection<Selection> {
 
     private void notifyOfChange(ChangeType type, Object o) {
         this.setChanged();
-        System.out.println(countObservers());
         notifyObservers(new SelectionListUpdateArgs(type, (Selection)o));
     }
 
