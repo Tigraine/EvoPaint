@@ -10,6 +10,7 @@ import evopaint.pixel.rulebased.AbstractCondition;
 import evopaint.World;
 import evopaint.pixel.Pixel;
 import evopaint.util.mapping.RelativeCoordinate;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -72,5 +73,8 @@ public class EnergyCondition extends AbstractCondition {
     }
 
     public EnergyCondition() {
+        super(new ArrayList<RelativeCoordinate>(9));
+        this.comparisonOperator = NumberComparisonOperator.EQUAL;
+        this.energyValue = 0;
     }
 }

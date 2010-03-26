@@ -11,6 +11,7 @@ import evopaint.pixel.Pixel;
 import evopaint.pixel.PixelColor;
 import evopaint.pixel.rulebased.NumberComparisonOperator;
 import evopaint.util.mapping.RelativeCoordinate;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -111,9 +112,13 @@ public class ColorLikenessCondition extends AbstractCondition {
         this.comparedColor = comparedColor;
         this.compareToLikenessPercentage = compareToLikenessPercentage;
         this.dimensions = dimensions;
-        this.comparedColor = comparedColor;
     }
 
     public ColorLikenessCondition() {
+        super(new ArrayList<RelativeCoordinate>(9));
+        this.comparisonOperator = NumberComparisonOperator.EQUAL;
+        this.comparedColor = new PixelColor(0, 0, 0);
+        this.compareToLikenessPercentage = 0;
+        this.dimensions = PixelColor.HSB;
     }
 }

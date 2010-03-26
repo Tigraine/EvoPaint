@@ -10,6 +10,7 @@ import evopaint.World;
 import evopaint.pixel.Pixel;
 import evopaint.pixel.PixelColor;
 import evopaint.util.mapping.RelativeCoordinate;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -68,5 +69,7 @@ public class AssimilationAction extends AbstractAction {
     }
 
     public AssimilationAction() {
+        super(0, new ArrayList<RelativeCoordinate>(9));
+        this.dimensionsToMix = PixelColor.HSB;
     }
 }

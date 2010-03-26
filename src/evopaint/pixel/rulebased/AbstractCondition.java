@@ -48,7 +48,4 @@ public abstract class AbstractCondition implements ICondition {
     public AbstractCondition(List<RelativeCoordinate> directions) {
         this.directions = directions;
     }
-
-    public AbstractCondition() {
-    }
 }

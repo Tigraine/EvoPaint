@@ -9,6 +9,7 @@ import evopaint.pixel.rulebased.AbstractAction;
 import evopaint.World;
 import evopaint.pixel.Pixel;
 import evopaint.util.mapping.RelativeCoordinate;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -55,5 +56,6 @@ public class RewardAction extends AbstractAction {
     }
 
     public RewardAction() {
+        super(0, new ArrayList<RelativeCoordinate>(9));
     }
 }

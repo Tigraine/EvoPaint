@@ -58,7 +58,4 @@ public abstract class AbstractAction implements IAction {
         this.cost = cost;
         this.directions = directions;
     }
-
-    public AbstractAction() {
-    }
 }

@@ -7,9 +7,9 @@ package evopaint.gui.ruleseteditor;
 
 import evopaint.pixel.rulebased.RuleSet;
 import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.GridBagLayout;
+import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.border.TitledBorder;
 
@@ -31,10 +31,16 @@ public class JRuleSetEditor extends JFrame {
         scrollPaneForRuleList.setBackground(getBackground());
         add(scrollPaneForRuleList, BorderLayout.NORTH);
 
-        add(new JRuleEditor(ruleSet.getRules().get(0)), BorderLayout.SOUTH);
-    }
+        add(new JRuleEditor(ruleSet.getRules().get(0)), BorderLayout.CENTER);
 
-    
+        JPanel panelButtons = new JPanel();
+        add(panelButtons, BorderLayout.SOUTH);
+        //panelButtons.setLayout(null);
+
+        panelButtons.add(new JButton("Save & Close"));
+        panelButtons.add(new JButton("Cancel"));
+
+    }
 }
 
 

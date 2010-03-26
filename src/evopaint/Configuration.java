@@ -20,7 +20,7 @@ import evopaint.pixel.rulebased.interfaces.IAction;
 import evopaint.pixel.rulebased.interfaces.ICondition;
 import evopaint.pixel.rulebased.interfaces.IRule;
 import evopaint.pixel.rulebased.NumberComparisonOperator;
-import evopaint.pixel.rulebased.conditions.IsEmptyCondition;
+import evopaint.pixel.rulebased.conditions.EmptyCondition;
 import evopaint.util.RandomNumberGeneratorWrapper;
 import evopaint.util.logging.Logger;
 import evopaint.util.mapping.RelativeCoordinate;
@@ -49,7 +49,7 @@ public class Configuration {
     public final int pixelType = Pixel.RULESET;
 
     public static final List<Class> availableConditions = new ArrayList<Class>() {{
-        add(IsEmptyCondition.class);
+        add(EmptyCondition.class);
         add(ColorLikenessCondition.class);
         add(EnergyCondition.class);
     }};

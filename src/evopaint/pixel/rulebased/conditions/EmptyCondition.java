@@ -10,14 +10,15 @@ import evopaint.pixel.rulebased.ObjectComparisonOperator;
 import evopaint.pixel.rulebased.AbstractCondition;
 import evopaint.pixel.Pixel;
 import evopaint.util.mapping.RelativeCoordinate;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  *
  * @author tam
  */
-public class IsEmptyCondition extends AbstractCondition {
-    private static final String NAME = "isEmpty";
+public class EmptyCondition extends AbstractCondition {
+    private static final String NAME = "empty";
 
     private ObjectComparisonOperator comparisonOperator;
 
@@ -28,7 +29,11 @@ public class IsEmptyCondition extends AbstractCondition {
     @Override
     public String toString() {
         String ret = super.toString();
-        ret += "empty?";
+        ret += " is";
+        if (comparisonOperator == ObjectComparisonOperator.NOT_EQUAL) {
+            ret += "not";
+        }
+        ret += " empty";
         return ret;
     }
 
@@ -42,11 +47,13 @@ public class IsEmptyCondition extends AbstractCondition {
         return true;
     }
 
-    public IsEmptyCondition(List<RelativeCoordinate> directions, ObjectComparisonOperator comparisonOperator) {
+    public EmptyCondition(List<RelativeCoordinate> directions, ObjectComparisonOperator comparisonOperator) {
         super(directions);
         this.comparisonOperator = comparisonOperator;
     }
 
-    public IsEmptyCondition() {
+    public EmptyCondition() {
+        super(new ArrayList<RelativeCoordinate>(9));
+        this.comparisonOperator = ObjectComparisonOperator.EQUAL;
     }
 }
