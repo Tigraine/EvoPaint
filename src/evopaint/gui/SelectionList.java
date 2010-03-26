@@ -32,7 +32,7 @@ public class SelectionList extends Observable implements Collection<Selection> {
 
     private void notifyOfChange(ChangeType type, Object o) {
         this.setChanged();
-        notifyObservers(new SelectionListUpdateArgs(type, (Selection)o));
+        notifyObservers(new SelectionListEventArgs(type, (Selection)o));
     }
 
     public boolean containsAll(Collection<?> c) {
@@ -82,7 +82,7 @@ public class SelectionList extends Observable implements Collection<Selection> {
 
     public enum ChangeType { ITEM_ADDED, ITEM_DELETED, LIST_CLEARED };
 
-    public class SelectionListUpdateArgs {
+    public class SelectionListEventArgs {
         private ChangeType changeType;
         private Selection selection;
 
@@ -90,7 +90,7 @@ public class SelectionList extends Observable implements Collection<Selection> {
             return changeType;
         }
 
-        public SelectionListUpdateArgs(ChangeType changeType, Selection selection) {
+        public SelectionListEventArgs(ChangeType changeType, Selection selection) {
             this.changeType = changeType;
             this.selection = selection;
         }
