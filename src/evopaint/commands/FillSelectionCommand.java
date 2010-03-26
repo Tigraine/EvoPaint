@@ -6,7 +6,8 @@ import evopaint.Selection;
 import evopaint.gui.Showcase;
 import evopaint.pixel.Pixel;
 import evopaint.pixel.PixelColor;
-import evopaint.pixel.RuleSet;
+import evopaint.pixel.rulebased.RuleBasedPixel;
+import evopaint.pixel.rulebased.RuleSet;
 import evopaint.util.mapping.AbsoluteCoordinate;
 
 import java.awt.geom.AffineTransform;
@@ -45,9 +46,9 @@ public class FillSelectionCommand extends AbstractCommand {
         this.selection = showcase.getActiveSelection();
         for (int x = selection.getStartPoint().x; x < selection.getEndPoint().x; x++){
             for (int y = selection.getStartPoint().y; y < selection.getEndPoint().y; y++){
-                if ((x % density) == 0) continue;
-                if ((y % density) == 0) continue;
-                Pixel newPixel = new Pixel(new PixelColor(color), new AbsoluteCoordinate(x, y, configuration.world), energy, ruleSet);
+                if ((x % density) != 0) continue;
+                if ((y % density) != 0) continue;
+                Pixel newPixel = new RuleBasedPixel(new PixelColor(color), new AbsoluteCoordinate(x, y, configuration.world), energy, ruleSet);
                 configuration.world.set(newPixel);
             }
         }
