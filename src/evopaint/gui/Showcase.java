@@ -23,6 +23,8 @@ import java.awt.event.MouseWheelListener;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
+import java.util.Observable;
+import java.util.Observer;
 import javax.swing.JPanel;
 import javax.swing.event.MouseInputListener;
 
@@ -31,7 +33,7 @@ import javax.swing.event.MouseInputListener;
  * @author tam
  */
 
-public class Showcase extends JPanel implements MouseInputListener, MouseWheelListener, SelectionObserver, SelectionManager {
+public class Showcase extends JPanel implements MouseInputListener, MouseWheelListener, Observer, SelectionManager {
 
     private Perception perception;
     private MainFrame mainFrame;
@@ -59,6 +61,10 @@ public class Showcase extends JPanel implements MouseInputListener, MouseWheelLi
     private PaintCommand paintCommand;
     private MoveCommand moveCommand;
     private SelectCommand selectCommand;
+
+    public SelectionList getCurrentSelections() {
+        return currentSelections;
+    }
 
     private SelectionList currentSelections = new SelectionList();
     private Selection activeSelection;
@@ -235,11 +241,10 @@ public class Showcase extends JPanel implements MouseInputListener, MouseWheelLi
         this.perception = perception;
         this.configuration.affineTransform = affineTransform;
         this.paintCommand = new PaintCommand(configuration, this.scale, affineTransform);
-
         this.moveCommand = new MoveCommand(configuration);
+        this.selectCommand = commandFactory.GetSelectCommand(currentSelections);
 
-        this.selectCommand = commandFactory.GetSelectCommand();
-        selectCommand.addSelectionListener(this);
+        this.currentSelections.addObserver(this);
 
         addMouseWheelListener(this);
         addMouseListener(this);
@@ -249,12 +254,6 @@ public class Showcase extends JPanel implements MouseInputListener, MouseWheelLi
 
         this.zoom = 10;
         this.rescale();
-    }
-
-    public void addSelection(Selection selection) {
-        this.currentSelections.add(selection);
-        this.activeSelection = selection;
-        Logger.log.error("Selection from %s-%s to %s-%s", selection.getStartPoint().getX(), selection.getStartPoint().getY(), selection.getEndPoint().getX(), selection.getEndPoint().getY());
     }
 
     public Selection getActiveSelection() {
@@ -268,5 +267,19 @@ public class Showcase extends JPanel implements MouseInputListener, MouseWheelLi
 
     public void setActiveSelection(Selection selection) {
         this.activeSelection = selection;
+    }
+
+    public void removeActiveSelection() {
+        this.currentSelections.remove(activeSelection);
+        activeSelection = null;
+    }
+
+    public void update(Observable o, Object arg) {
+        SelectionList.SelectionListUpdateArgs selectionUpdate = (SelectionList.SelectionListUpdateArgs) arg;
+        if (selectionUpdate.getChangeType() == SelectionList.ChangeType.ITEM_ADDED) {
+            Selection selection = selectionUpdate.getSelection();
+            this.activeSelection = selection;
+            Logger.log.error("Selection from %s-%s to %s-%s", selection.getStartPoint().getX(), selection.getStartPoint().getY(), selection.getEndPoint().getX(), selection.getEndPoint().getY());
+        }
     }
 }

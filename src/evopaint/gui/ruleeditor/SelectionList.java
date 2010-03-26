@@ -19,14 +19,21 @@ public class SelectionList extends Observable implements Collection<Selection> {
 
     public boolean add(Selection selection) {
         boolean retVal = selections.add(selection);
-        notifyObservers(selections);
+
+        notifyOfChange(ChangeType.ITEM_ADDED, selection);
         return retVal;
     }
 
     public boolean remove(Object o) {
         boolean retVal = selections.remove(o);
-        notifyObservers(selections);
+        notifyOfChange(ChangeType.ITEM_DELETED, o);
         return retVal;
+    }
+
+    private void notifyOfChange(ChangeType type, Object o) {
+        this.setChanged();
+        System.out.println(countObservers());
+        notifyObservers(new SelectionListUpdateArgs(type, (Selection)o));
     }
 
     public boolean containsAll(Collection<?> c) {
@@ -47,7 +54,7 @@ public class SelectionList extends Observable implements Collection<Selection> {
 
     public void clear() {
         selections.clear();
-        notifyObservers(selections);
+        notifyOfChange(ChangeType.LIST_CLEARED, null);
     }
 
     public int size() {
@@ -72,5 +79,25 @@ public class SelectionList extends Observable implements Collection<Selection> {
 
     public <T> T[] toArray(T[] a) {
         return selections.toArray(a);
+    }
+
+    public enum ChangeType { ITEM_ADDED, ITEM_DELETED, LIST_CLEARED };
+
+    public class SelectionListUpdateArgs {
+        private ChangeType changeType;
+        private Selection selection;
+
+        public ChangeType getChangeType() {
+            return changeType;
+        }
+
+        public SelectionListUpdateArgs(ChangeType changeType, Selection selection) {
+            this.changeType = changeType;
+            this.selection = selection;
+        }
+
+        public Selection getSelection() {
+            return selection;
+        }
     }
 }
