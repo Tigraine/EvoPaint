@@ -27,8 +27,13 @@ public class SelectCommand extends AbstractCommand {
         observableSelectionList = list;
     }
 
-    public void setLocation(Point location){
-        mouseLocation = location;
+    public void setLocation(Point location, double scale){
+        mouseLocation = TranslatePointToScale(location, scale);
+    }
+
+    public static Point TranslatePointToScale(Point location, double scale) {
+        Point point = new Point((int)(location.x / scale), (int)(location.y / scale));
+        return point;
     }
 
     private Point startPoint;

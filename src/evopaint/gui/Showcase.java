@@ -22,7 +22,6 @@ import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
-import java.util.ArrayList;
 import java.util.Observable;
 import java.util.Observer;
 import javax.swing.JPanel;
@@ -201,9 +200,9 @@ public class Showcase extends JPanel implements MouseInputListener, MouseWheelLi
                 moveCommand.setSource(e.getPoint());
                 //moveCommand.setScale(this.scale);
             } else if (mainFrame.getActiveTool() == SelectCommand.class) {
-                this.selectionStartPoint = e.getPoint();
+                this.selectionStartPoint = SelectCommand.TranslatePointToScale(e.getPoint(), scale);
                 this.isDrawingSelection = true;
-                selectCommand.setLocation(e.getPoint());
+                selectCommand.setLocation(e.getPoint(), scale);
                 selectCommand.execute();
             }
         } else if (e.getButton() == MouseEvent.BUTTON3) {
@@ -218,7 +217,7 @@ public class Showcase extends JPanel implements MouseInputListener, MouseWheelLi
             leftButtonPressed = false;
             if (mainFrame.getActiveTool() == SelectCommand.class) {
                 this.isDrawingSelection = false;
-                selectCommand.setLocation(e.getPoint());
+                selectCommand.setLocation(e.getPoint(), scale);
                 selectCommand.execute();
             }
         } else if (e.getButton() == MouseEvent.BUTTON3) {
@@ -228,7 +227,7 @@ public class Showcase extends JPanel implements MouseInputListener, MouseWheelLi
 
     public void mouseDragged(MouseEvent e) {
         if (leftButtonPressed == true) {
-            this.currentMouseDragPosition = e.getPoint();
+            this.currentMouseDragPosition = SelectCommand.TranslatePointToScale(e.getPoint(), scale);
             if (mainFrame.getActiveTool() == PaintCommand.class) {
                 // TODO: paint pixels between mouse drags
                 // TODO: Maybe refactor state into PaintCommand
@@ -266,6 +265,13 @@ public class Showcase extends JPanel implements MouseInputListener, MouseWheelLi
 
     public void setActiveSelection(Selection selection) {
         this.activeSelection = selection;
+        ClearSelectionHighlight();
+    }
+
+    private void ClearSelectionHighlight() {
+        for(Selection sel : currentSelections ){
+            sel.setHighlighted(false);
+        }
     }
 
     public void removeActiveSelection() {

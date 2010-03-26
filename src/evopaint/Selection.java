@@ -50,7 +50,8 @@ public class Selection extends Observable {
         draw(gfx, selection.getStartPoint(), selection.getEndPoint(), scale);
     }
     public static void draw(Graphics2D gfx, Point startPoint, Point endPoint, double scale){
-        gfx.drawRect((int)(startPoint.x / scale), (int)(startPoint.y / scale), (int)((endPoint.x - startPoint.x) / scale), (int)((endPoint.y - startPoint.y) / scale));
+        gfx.drawRect(startPoint.x, startPoint.y, endPoint.x - startPoint.x, endPoint.y - startPoint.y);
+        //gfx.drawRect((int)(startPoint.x / scale), (int)(startPoint.y / scale), (int)((endPoint.x - startPoint.x) / scale), (int)((endPoint.y - startPoint.y) / scale));
     }
 
     public boolean isHighlighted() {
