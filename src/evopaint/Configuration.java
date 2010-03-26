@@ -7,18 +7,19 @@ package evopaint;
 
 import evopaint.interfaces.IRandomNumberGenerator;
 import evopaint.interfaces.ITool;
+import evopaint.pixel.Pixel;
 import evopaint.pixel.PixelColor;
-import evopaint.pixel.Rule;
-import evopaint.pixel.RuleSet;
+import evopaint.pixel.rulebased.Rule;
+import evopaint.pixel.rulebased.RuleSet;
 import evopaint.pixel.State;
-import evopaint.pixel.actions.AssimilationAction;
-import evopaint.pixel.actions.RewardAction;
-import evopaint.pixel.conditions.ColorLikenessCondition;
-import evopaint.pixel.conditions.EnergyCondition;
-import evopaint.pixel.interfaces.IAction;
-import evopaint.pixel.interfaces.ICondition;
-import evopaint.pixel.interfaces.IRule;
-import evopaint.pixel.misc.NumberComparisonOperator;
+import evopaint.pixel.rulebased.actions.AssimilationAction;
+import evopaint.pixel.rulebased.actions.RewardAction;
+import evopaint.pixel.rulebased.conditions.ColorLikenessCondition;
+import evopaint.pixel.rulebased.conditions.EnergyCondition;
+import evopaint.pixel.rulebased.interfaces.IAction;
+import evopaint.pixel.rulebased.interfaces.ICondition;
+import evopaint.pixel.rulebased.interfaces.IRule;
+import evopaint.pixel.rulebased.NumberComparisonOperator;
 import evopaint.util.RandomNumberGeneratorWrapper;
 import evopaint.util.logging.Logger;
 import evopaint.util.mapping.RelativeCoordinate;
@@ -43,6 +44,8 @@ public class Configuration {
     public Dimension dimension = new Dimension(300, 300);
     public final Dimension initialPopulation = new Dimension(300, 300);
     public final int stepsPerRendering = 1;
+
+    public final int pixelType = Pixel.RULESET;
    
     //public final int numThreads = 1;
     public final int backgroundColor = 0;

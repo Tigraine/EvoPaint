@@ -3,17 +3,21 @@
  * and open the template in the editor.
  */
 
-package evopaint.pixel.interfaces;
+package evopaint.pixel.rulebased.interfaces;
 
 import evopaint.World;
 import evopaint.pixel.Pixel;
-import evopaint.util.mapping.RelativeCoordinate;
 import java.util.List;
 
 /**
  *
  * @author tam
  */
-public interface ICondition {
-    public boolean isMet(Pixel us, World world);
+public interface IRule {
+
+    public IAction getAction();
+
+    public List<ICondition> getConditions();
+    
+    public boolean apply(Pixel pixel, World world);
 }

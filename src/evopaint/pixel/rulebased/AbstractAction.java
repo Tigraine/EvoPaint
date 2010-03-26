@@ -3,10 +3,11 @@
  * and open the template in the editor.
  */
 
-package evopaint.pixel;
+package evopaint.pixel.rulebased;
 
 import evopaint.World;
-import evopaint.pixel.interfaces.IAction;
+import evopaint.pixel.Pixel;
+import evopaint.pixel.rulebased.interfaces.IAction;
 import evopaint.util.mapping.RelativeCoordinate;
 import java.util.Iterator;
 import java.util.List;

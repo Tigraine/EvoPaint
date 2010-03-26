@@ -4,7 +4,7 @@ import evopaint.Brush;
 import evopaint.Configuration;
 import evopaint.gui.ruleeditor.JRuleEditor;
 import evopaint.pixel.PixelColor;
-import evopaint.pixel.RuleSet;
+import evopaint.pixel.rulebased.RuleSet;
 import java.awt.Checkbox;
 
 import javax.swing.JLabel;

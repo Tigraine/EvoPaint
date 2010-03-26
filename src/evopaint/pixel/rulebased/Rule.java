@@ -3,14 +3,14 @@
  * and open the template in the editor.
  */
 
-package evopaint.pixel;
+package evopaint.pixel.rulebased;
 
 import evopaint.World;
-import evopaint.pixel.conditions.EnergyCondition;
-import evopaint.pixel.misc.NumberComparisonOperator;
-import evopaint.pixel.interfaces.IRule;
-import evopaint.pixel.interfaces.IAction;
-import evopaint.pixel.interfaces.ICondition;
+import evopaint.pixel.Pixel;
+import evopaint.pixel.rulebased.conditions.EnergyCondition;
+import evopaint.pixel.rulebased.interfaces.IRule;
+import evopaint.pixel.rulebased.interfaces.IAction;
+import evopaint.pixel.rulebased.interfaces.ICondition;
 import evopaint.util.mapping.RelativeCoordinate;
 import java.util.Iterator;
 import java.util.List;

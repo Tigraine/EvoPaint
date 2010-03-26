@@ -6,7 +6,8 @@ package evopaint;
 
 import evopaint.pixel.Pixel;
 import evopaint.pixel.PixelColor;
-import evopaint.pixel.RuleSet;
+import evopaint.pixel.rulebased.RuleBasedPixel;
+import evopaint.pixel.rulebased.RuleSet;
 
 import evopaint.util.logging.Logger;
 import evopaint.util.mapping.AbsoluteCoordinate;
@@ -62,7 +63,14 @@ public class World extends ParallaxMap<Pixel> {
 
                 PixelColor pixelColor = new PixelColor(configuration.rng.nextPositiveInt(), configuration.rng);
 
-                set(new Pixel(pixelColor, location, configuration.startingEnergy, ruleSet));
+                Pixel newPixel = null;
+                switch (configuration.pixelType) {
+                    case Pixel.RULESET:
+                        newPixel = new RuleBasedPixel(pixelColor, location, configuration.startingEnergy, ruleSet);
+                                break;
+                    default: assert(false);
+                }
+                set(newPixel);
             }
         }
     }

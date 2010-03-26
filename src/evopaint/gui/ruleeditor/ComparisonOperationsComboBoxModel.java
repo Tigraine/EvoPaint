@@ -5,7 +5,7 @@
 
 package evopaint.gui.ruleeditor;
 
-import evopaint.pixel.misc.NumberComparisonOperator;
+import evopaint.pixel.rulebased.NumberComparisonOperator;
 import javax.swing.DefaultComboBoxModel;
 
 /**

@@ -6,13 +6,13 @@
 package evopaint.pixel;
 
 import evopaint.World;
-import evopaint.pixel.misc.ObjectComparisonOperator;
-import evopaint.pixel.interfaces.ICondition;
+import evopaint.pixel.rulebased.ObjectComparisonOperator;
+import evopaint.pixel.rulebased.interfaces.ICondition;
 
 /**
  *
  * @author tam
- */
+ *//*
 public class StateCondition implements ICondition {
 
     private State state;
@@ -32,4 +32,7 @@ public class StateCondition implements ICondition {
         this.state = state;
         this.comparisonOperator = comparisonOperator;
     }
+ 
+ 
 }
+ */

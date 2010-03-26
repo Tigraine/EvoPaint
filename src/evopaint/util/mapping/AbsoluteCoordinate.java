@@ -16,6 +16,11 @@ public class AbsoluteCoordinate extends Coordinate {
         return "(" + x + "/" + y + ")";
     }
 
+    public void move(RelativeCoordinate rc, ParallaxMap map) {
+        this.x = ParallaxMap.clamp(x, map.width);
+        this.y = ParallaxMap.clamp(y, map.height);
+    }
+
     public AbsoluteCoordinate(int x, int y, ParallaxMap map) {
         super(x, y);
         this.x = ParallaxMap.clamp(x, map.width);
@@ -28,5 +33,9 @@ public class AbsoluteCoordinate extends Coordinate {
         this.y += rc.y;
         this.x = ParallaxMap.clamp(x, map.width);
         this.y = ParallaxMap.clamp(y, map.height);
+    }
+
+    public AbsoluteCoordinate(AbsoluteCoordinate ac) {
+        super(ac.x, ac.y); // no need to clamp because either ac is valid, or we would have screwed up before this point anyways
     }
 }
