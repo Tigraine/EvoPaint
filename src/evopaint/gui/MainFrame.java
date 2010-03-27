@@ -18,8 +18,8 @@ public class MainFrame extends JFrame {
     private JPopupMenu toolMenu;
     private PaintOptionsPanel paintOptionsPanel;
     private ToolBox toolBox;
-    private JPanel showCaseWrapper = new JPanel();
-    private JPanel leftPanel = new JPanel();
+    //private JPanel showCaseWrapper = new JPanel();
+    private JPanel leftPanel;
     private Configuration configuration;
 
     private Class activeTool = null;
@@ -30,6 +30,10 @@ public class MainFrame extends JFrame {
 
     public MainFrame(Configuration configuration, EvoPaint evopaint) {
         this.configuration = configuration;
+        initializeCommands(evopaint);
+        
+        activeTool = MoveCommand.class;
+        CommandFactory commandFactory = new CommandFactory(configuration);
 
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
@@ -37,62 +41,75 @@ public class MainFrame extends JFrame {
             // TODO handle exceptions
         }
 
-        setDefaultCloseOperation(this.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(EXIT_ON_CLOSE);
+        setLayout(new BorderLayout(0, 0));
 
-        activeTool = MoveCommand.class;
 
         this.toolMenu = new ToolMenu(this);
-
-
-        CommandFactory commandFactory = new CommandFactory(configuration);
         this.paintOptionsPanel = new PaintOptionsPanel(configuration, showcase, this); // FIXME: paintoptionspanel must be initialized before showcase or we get a nullpointer exception. the semantics to not express this!!
         this.showcase = new Showcase(configuration, this, evopaint.getWorld(), evopaint.getPerception(), commandFactory);
         this.menuBar = new MenuBar(evopaint, new SelectionListenerFactory(showcase), showcase);
-
-        initializeCommands(evopaint);
+        setJMenuBar(menuBar);
 
         addKeyListener(new MainFrameKeyListener());
 
 
-        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        // some hand crafted GUI stuff for the panel on the left
+        leftPanel = new JPanel();
+        leftPanel.setBackground(getBackground());
+        add(leftPanel, BorderLayout.WEST);
 
-        setJMenuBar(menuBar);
+        JPanel wrapperPanelLeft = new JPanel();
+        wrapperPanelLeft.setLayout(new BoxLayout(wrapperPanelLeft, BoxLayout.Y_AXIS));
+        wrapperPanelLeft.setBackground(getBackground());
+        leftPanel.add(wrapperPanelLeft);
 
+        JPanel wrapperPanelToolBox = new JPanel();
+        wrapperPanelToolBox.setBackground(getBackground());
+        wrapperPanelLeft.add(wrapperPanelToolBox);
+        
+        toolBox = new ToolBox(this);
+        wrapperPanelToolBox.add(toolBox);
+        wrapperPanelLeft.add(Box.createVerticalStrut(10));
+        wrapperPanelLeft.add(paintOptionsPanel);
 
+        // and the right side
+        JScrollPane showCaseScrollPane = new JScrollPane(showcase,
+                JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
+                JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        showCaseScrollPane.setBackground(getBackground());
 
+        // THIS IS NOT OBJECT ORIENTED! IT TOOK HOURS TO FIND THIS SHIT!
+        showCaseScrollPane.setViewportBorder(null); 
+        // showCaseScrollPane.getViewport().setBackground(new JPanel().getBackground());
+        // ^ does not seem to work for viewports workaround v
+        showCaseScrollPane.getViewport().setOpaque(false);
+        // and if we do not set a null border we get a nice 1px solix black border "for free"
+        // the JScrollPane is by far the most unpolished Swing component I have seen so far
+        showCaseScrollPane.setBorder(null);
 
+        showCaseScrollPane.getViewport().addMouseWheelListener(showcase);
+        add(showCaseScrollPane, BorderLayout.CENTER);
 
-        showCaseWrapper.setLayout(new GridBagLayout());
-        showCaseWrapper.add(showcase);
-
-        setLayout(new BoxLayout(this.getContentPane(), BoxLayout.X_AXIS));
-
-        toolBox=new ToolBox(this);
-        leftPanel.setLayout(new GridBagLayout());
-        paintOptionsPanel.setAlignmentY(TOP_ALIGNMENT);
-
-
-        leftPanel.add(toolBox);
-//        leftPanel.add(paintOptionsPanel);
-
-        add(leftPanel);
-
-        add(showCaseWrapper);
-
+        //showCaseScrollPane.repaint();
 
         // XXX workaround to update size of toolmenu so it is displayed
         // at the correct coordinates later
         this.toolMenu.setVisible(true);
         this.toolMenu.setVisible(false);
 
+        setPreferredSize(new Dimension(800, 600));
+
         this.pack();
         this.setVisible(true);
-
-
     }
 
     public JPopupMenu getToolMenu() {
         return toolMenu;
+    }
+
+    public ToolBox getToolBox() {
+        return toolBox;
     }
 
     public Class getActiveTool() {
@@ -154,19 +171,13 @@ public class MainFrame extends JFrame {
         setJMenuBar(menuBar);
 
         
-
-        showCaseWrapper.setLayout(new GridBagLayout());
-       
-        showCaseWrapper.add(showcase);
-
         setLayout(new BoxLayout(this.getContentPane(), BoxLayout.X_AXIS));
 
        
         leftPanel.setLayout(new GridBagLayout());
         paintOptionsPanel.setAlignmentY(TOP_ALIGNMENT);
         leftPanel.add(paintOptionsPanel);
-        toolBox.getPanel().add(paintOptionsPanel);       
-        add(showCaseWrapper);
+        toolBox.add(paintOptionsPanel);       
 
 
         // XXX workaround to update size of toolmenu so it is displayed
@@ -203,11 +214,6 @@ public class MainFrame extends JFrame {
 
     public void setConfiguration(Configuration conf) {
         this.configuration = conf;
-    }
-
-    public void removeGraf() {
-        showCaseWrapper.remove(showcase);
-        toolBox.getPanel().remove(paintOptionsPanel);
     }
 
     private class MainFrameKeyListener implements KeyListener {

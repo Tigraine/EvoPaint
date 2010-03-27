@@ -6,6 +6,8 @@
 package evopaint.pixel.rulebased;
 
 import evopaint.util.logging.Logger;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.JComboBox;
 
 /**
  *
@@ -45,6 +47,17 @@ public class NumberComparisonOperator {
         }
         Logger.log.error("tried to compare with unknown type", new Object());
         return false;
+    }
+
+    public static DefaultComboBoxModel createComboBoxModel() {
+        DefaultComboBoxModel ret = new DefaultComboBoxModel();
+        ret.addElement(EQUAL.toString());
+        ret.addElement(NOT_EQUAL.toString());
+        ret.addElement(GREATER_THAN.toString());
+        ret.addElement(LESS_THAN.toString());
+        ret.addElement(GREATER_OR_EQUAL.toString());
+        ret.addElement(LESS_OR_EQUAL.toString());
+        return ret;
     }
 
     private NumberComparisonOperator(int type, String name) {

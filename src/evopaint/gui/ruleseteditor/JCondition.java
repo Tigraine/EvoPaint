@@ -6,6 +6,7 @@
 package evopaint.gui.ruleseteditor;
 
 import evopaint.Configuration;
+import evopaint.pixel.rulebased.conditions.EnergyCondition;
 import evopaint.pixel.rulebased.interfaces.ICondition;
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -135,10 +136,13 @@ public class JCondition extends JPanel {
         wrapTargetsParameters.add(new JTargetPicker());
         JPanel panelParameters = new JPanel();
         panelParameters.setBorder(new TitledBorder("Parameters"));
-        panelParameters.setPreferredSize(new Dimension(100, 30));
+        panelParameters.add(((EnergyCondition)condition).createParametersPanel());
+        //panelParameters.setPreferredSize(new Dimension(150,150));
         wrapTargetsParameters.add(panelParameters);
         expandedPanelContent.add(wrapTargetsParameters);
-        expandedPanelContent.setMaximumSize(expandedPanel.getPreferredSize());
+        //expandedPanelContent.setMaximumSize(expandedPanel.getPreferredSize());
+
+        
 
         collapse();
     }

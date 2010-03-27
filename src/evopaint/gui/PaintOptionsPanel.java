@@ -11,6 +11,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -26,6 +27,7 @@ import javax.swing.JRadioButton;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingUtilities;
+import javax.swing.border.BevelBorder;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -50,7 +52,8 @@ public class PaintOptionsPanel extends JPanel {
         this.showcase = showcase;
 
         // here we go, this is going to be one butt-ugly long constructor
-        setBorder(new TitledBorder("Paint Options"));
+        //setBorder(new TitledBorder("Paint Options"));
+        setBorder(new BevelBorder(BevelBorder.RAISED));
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
         // on wich our color stuff panel will reside

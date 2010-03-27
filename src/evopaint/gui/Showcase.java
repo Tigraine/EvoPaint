@@ -9,7 +9,6 @@ import evopaint.commands.*;
 import evopaint.Selection;
 import evopaint.World;
 import evopaint.Perception;
-import evopaint.gui.SelectionList;
 import evopaint.util.logging.Logger;
 import java.awt.Cursor;
 import java.awt.Dimension;
@@ -24,7 +23,11 @@ import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.util.Observable;
 import java.util.Observer;
-import javax.swing.JPanel;
+import javax.swing.JComponent;
+import javax.swing.JScrollPane;
+import javax.swing.Scrollable;
+import javax.swing.SwingConstants;
+import javax.swing.border.BevelBorder;
 import javax.swing.event.MouseInputListener;
 
 /**
@@ -32,7 +35,7 @@ import javax.swing.event.MouseInputListener;
  * @author tam
  */
 
-public class Showcase extends JPanel implements MouseInputListener, MouseWheelListener, Observer, SelectionManager {
+public class Showcase extends JComponent implements MouseInputListener, MouseWheelListener, Observer, SelectionManager, Scrollable {
 
     private Perception perception;
     private MainFrame mainFrame;
@@ -67,14 +70,16 @@ public class Showcase extends JPanel implements MouseInputListener, MouseWheelLi
 
         this.currentSelections.addObserver(this);
 
-        addMouseWheelListener(this);
+        //addMouseWheelListener(this);
         addMouseListener(this);
         addMouseMotionListener(this);
 
         setCursor(new Cursor(Cursor.MOVE_CURSOR));
 
         this.zoom = 10;
-        this.rescale();
+        rescale();
+        
+        setBorder(null);
     }
 
     public Configuration getConfiguration() {
@@ -172,11 +177,14 @@ public class Showcase extends JPanel implements MouseInputListener, MouseWheelLi
         this.paintCommand.setScale(this.scale);
         this.moveCommand.setScale(this.scale);
         setPreferredSize(new Dimension(
-                (int) (perception.getImage().getWidth() * this.scale),
-                (int) (perception.getImage().getHeight() * this.scale)));
-
+                (int) Math.ceil(perception.getImage().getWidth() * this.scale),
+                (int) Math.ceil(perception.getImage().getHeight() * this.scale)));
+        //((JScrollPane)getParent().getParent().getParent().getParent()).setMaximumSize(getPreferredSize());
+//        ((JScrollPane)getParent().getParent().getParent().getParent()).repaint();
+  //      ((JScrollPane)getParent().getParent().getParent().getParent()).revalidate();
+        //((Box)getParent().getParent().getParent()).revalidate();
         revalidate();
-        mainFrame.pack();
+        //mainFrame.pack();
     }
 
 
@@ -287,4 +295,86 @@ public class Showcase extends JPanel implements MouseInputListener, MouseWheelLi
             Logger.log.error("Selection from %s-%s to %s-%s", selection.getStartPoint().getX(), selection.getStartPoint().getY(), selection.getEndPoint().getX(), selection.getEndPoint().getY());
         }
     }
+
+    /**
+     * Components that display logical rows or columns shouls compute the scroll increment that
+     * will completely expos one block of rows or columns depending upon the orientation.
+     *
+     * Graphics components should compute how much of the image one wants to scroll each time
+     * the view port is moved by a Unit Increment. In this case, it is a percentage (10%) of
+     * the overall image.
+     *
+     * Scrolling containers like JScrollPane will use this methode each time the user requests
+     * a block scroll.
+     *
+     * This value comes into play when one clicks the scroll bar in the area above or below
+     * the slider. The JScrollPane then moves the view to the next visible area.
+     *
+     * @param &lt;b&gt;visibleRect&lt;/b&gt; - The view area visible within the viewport.
+     * @param &lt;b&gt;orientation&lt;/b&gt; - Either &lt;b&gt;SwingConstants.VERTICAL&lt;/b&gt; or &lt;b&gt;SwingConstants.HORIZONTAL&lt;/b&gt;
+     * @param &lt;b&gt;direction&lt;/b&gt; - If less than zero scroll up/left. If greater than zero scroll down/right.
+     * @return The "Block" increment for scrolling in a specific direction.
+     *
+     */
+    public int getScrollableBlockIncrement(Rectangle visibleRect, int orientation, int direction) {
+        return (orientation == SwingConstants.VERTICAL) ? visibleRect.height / 10 : visibleRect.width / 10;
+    }
+
+    /**
+     * Components that display logical rows or columns should compute the scroll increment that
+     * will completely expos one block of rows or columns depending upon the orientation.
+     *
+     * Graphics components should compute how much of the image one wants to scroll each time
+     * the view port is moved by a Unit Increment. In this case, it is a percentage (10%) of
+     * the overall image.
+     *
+     * Scrolling containers like JScrollPane will use this method each time the user requests
+     * a unit scroll.
+     *
+     * @param &lt;b&gt;visibleRect&lt;/b&gt; - The view area visible within the viewport.
+     * @param &lt;b&gt;orientation&lt;/b&gt; - Either &lt;b&gt;SwingConstants.VERTICAL&lt;/b&gt; or &lt;b&gt;SwingConstants.HORIZONTAL&lt;/b&gt;
+     * @param &lt;b&gt;direction&lt;/b&gt; - If less than zero scroll up/left. If greater than zero scroll down/right.
+     * @return The "Block" increment for scrolling in a specific direction.
+     *
+     */
+    public int getScrollableUnitIncrement(Rectangle visibleRect, int orientation, int direction) {
+
+        return (orientation == SwingConstants.VERTICAL) ? visibleRect.height / 10 : visibleRect.width / 10;
+    }
+
+    /**
+     * Returns the preferred size of the viewport for a view component. This is the size of it requires
+     * to display the entire size of the component. A component without any properties that would
+     * effect the viewport size should return getPreferredSize() here.
+     */
+    public Dimension getPreferredScrollableViewportSize() {
+        return this.getPreferredSize();
+    }
+
+    /**
+     * Returns true if a viewport should always force the width of this Scrollable to
+     * match the width of the viewport. For example a normal text view that supported
+     * line wrapping would return a true here, since it would be undesirable for wrapped
+     * lines to dissappear beyond the right edge of the viewport. Not that returning
+     * a true for a Scrollable whose ancestor is a JScrollPane effectively disables
+     * horizontal scrolling!!!!
+     *
+     */
+    public boolean getScrollableTracksViewportWidth() {
+        return false;
+    }
+
+    /**
+     * Returns true if a viewport should always force the height of this Scrollable to
+     * match the width of the viewport. For example a normal text view that supported
+     * columnar text that flowed text in left to right columns would return a true here,
+     * to effectively disable vertical scrolling.
+     *
+     * Returing a true for a Scrollable whose ancestor is a JScrollPane effectively disables
+     * vertical scrolling!!!!
+     */
+    public boolean getScrollableTracksViewportHeight() {
+        return false;
+    }
+
 }

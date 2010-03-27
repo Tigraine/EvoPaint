@@ -10,8 +10,20 @@ import evopaint.pixel.rulebased.AbstractCondition;
 import evopaint.World;
 import evopaint.pixel.Pixel;
 import evopaint.util.mapping.RelativeCoordinate;
+import java.awt.Dimension;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.util.ArrayList;
 import java.util.List;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.JComboBox;
+import javax.swing.JFormattedTextField;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JSpinner;
+import javax.swing.SpinnerNumberModel;
+import javax.swing.SwingUtilities;
 
 /**
  *
@@ -64,6 +76,48 @@ public class EnergyCondition extends AbstractCondition {
             }
         }
         return true;
+    }
+
+    public JPanel createParametersPanel() {
+        JPanel ret = new JPanel();
+        ret.setLayout(new BoxLayout(ret, BoxLayout.Y_AXIS));
+
+        Box a = Box.createHorizontalBox();
+        a.add(new JLabel("Comparison:"));
+        a.add(Box.createHorizontalGlue());
+        ret.add(a);
+        JComboBox comparisonComboBox = new JComboBox(NumberComparisonOperator.createComboBoxModel());
+        comparisonComboBox.setSelectedItem(comparisonOperator.toString());
+        comparisonComboBox.setPreferredSize(new Dimension(50, 25));
+        ret.add(comparisonComboBox);
+       
+        Box b = Box.createHorizontalBox();
+        b.add(new JLabel("Value:"));
+        b.add(Box.createHorizontalGlue());
+        ret.add(b);
+        SpinnerNumberModel spinnerModel = new SpinnerNumberModel(energyValue, 0, Integer.MAX_VALUE, 1);
+        JSpinner energyValueSpinner = new JSpinner(spinnerModel);
+        energyValueSpinner.setPreferredSize(new Dimension(50, 25));
+        final JFormattedTextField spinnerText = ((JSpinner.DefaultEditor)energyValueSpinner.getEditor()).getTextField();
+
+        spinnerText.addFocusListener(new FocusListener() {
+
+            public void focusGained(FocusEvent e) {
+                SwingUtilities.invokeLater(new Runnable() { // only seems to work this way
+                        public void run() {
+                            spinnerText.selectAll();
+                        }
+                });
+            }
+
+            public void focusLost(FocusEvent e) {
+                //throw new UnsupportedOperationException("Not supported yet.");
+            }
+        });
+        energyValueSpinner.grabFocus();
+        ret.add(energyValueSpinner);
+
+        return ret;
     }
 
     public EnergyCondition(List<RelativeCoordinate> directions, NumberComparisonOperator comparisonOperator, int energyValue) {

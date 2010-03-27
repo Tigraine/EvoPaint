@@ -1,148 +1,122 @@
 package evopaint.gui;
 
-import java.awt.*;
 
 import evopaint.commands.MoveCommand;
 import evopaint.commands.PaintCommand;
-import javax.swing.*;
-import javax.swing.border.EtchedBorder;
-
-
-import evopaint.commands.MoveCommand;
-import evopaint.commands.PaintCommand;
+import evopaint.commands.SelectCommand;
 import java.awt.Cursor;
+import java.awt.Dimension;
 import java.awt.GridLayout;
-import java.awt.event.MouseEvent;
 import java.util.ArrayList;
-import javax.swing.JMenuItem;
-import javax.swing.JPopupMenu;
+import java.util.List;
+import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
+import javax.swing.JPanel;
+import javax.swing.JToggleButton;
+import javax.swing.border.BevelBorder;
 
 
 public class ToolBox extends JPanel {
-	
-    FlowLayout buttonFl = new FlowLayout();
-    GridLayout toolGl = new GridLayout(2,4);
-    GridLayout panels = new GridLayout(2,1);
-    
-    JPanel jPanelTools = new JPanel();
-    JPanel toolOptions;
-    
-    public void setToolOptions(JPanel toolOptions) {
-		this.toolOptions = toolOptions;
-	}
 
-	JPanel toolOptionsMove = new JPanel();
-    JPanel toolOptionsPaint = new JPanel();
-    JPanel toolOptionsPick = new JPanel();
-    JPanel toolOptionsSelect = new JPanel();
-    JPanel toolOptionsZoom = new JPanel();
-    JPanel toolOptionsGravitation = new JPanel();
-    JPanel toolOptionsFill = new JPanel();
+    private List<JToggleButton> buttons = new ArrayList<JToggleButton>(8);
 
-    JToggleButton jButtonMove = new JToggleButton();
-    JToggleButton jButtonPaint = new JToggleButton();
-    JToggleButton jButtonPick = new JToggleButton();
-    JToggleButton jButtonSelect = new JToggleButton();
-    JToggleButton jButtonZoom = new JToggleButton();
-    JToggleButton jButtonGravitation= new JToggleButton();
-    JToggleButton jButtonFill = new JToggleButton();
-    
-    private MainFrame mf=null;
+    private void select(JToggleButton selectedButton) {
+        for (JToggleButton btn : buttons) {
+            if (btn.isSelected() && btn != selectedButton) {
+                btn.setSelected(false);
+                return; // only one button is selected at any given time
+            }
+        }
+    }
   
-    public ToolBox(final MainFrame mf){
-     	super();
-    	this.mf=mf;
-    	toolOptions=mf.getPop();
-    	
-    	ImageIcon iconMove = new ImageIcon("..\\EvoPaint_new\\EvoPaint\\graphics\\move.png");
-    	ImageIcon iconPaint = new ImageIcon("..\\EvoPaint_new\\EvoPaint\\graphics\\brush.png");
-    	ImageIcon iconPick = new ImageIcon("..\\EvoPaint_new\\EvoPaint\\graphics\\picker.png");
-    	ImageIcon iconSelect = new ImageIcon("..\\EvoPaint_new\\EvoPaint\\graphics\\select.png");
-    	ImageIcon iconZoom = new ImageIcon("..\\EvoPaint_new\\EvoPaint\\graphics\\zoom.png");
-    	ImageIcon iconGravitation = new ImageIcon("..\\EvoPaint_new\\EvoPaint\\graphics\\grav.png");
-    	ImageIcon iconFill = new ImageIcon("..\\EvoPaint_new\\EvoPaint\\graphics\\fill.png");
-    	
-    
-    	
+    public ToolBox(final MainFrame mf) {
+        setLayout(new GridLayout(0, 3, 3, 3));
+        setBorder(new BevelBorder(BevelBorder.RAISED));
 
-    	
+        for (int i = 0; i < 7; i++) {
+            JToggleButton btn = new JToggleButton(Integer.toString(i));
+            buttons.add(btn);
+            btn.setPreferredSize(new Dimension(35, 35));
+            add(btn);
+        }
 
-    	jButtonMove.setIcon(iconMove);
-    	jButtonMove.setBorderPainted(false);
-       
-//    	jButtonMove.addMouseListener(new java.awt.event.MouseAdapter() {
-//
-//            public void mouseEntered(MouseEvent e) {
-//                mf.setActiveTool(MoveCommand.class);
-//                mf.setCursor(new Cursor(Cursor.MOVE_CURSOR));
-//            }
-//        });
-   	jButtonMove.addActionListener(new java.awt.event.ActionListener() {
-      public void actionPerformed(java.awt.event.ActionEvent e) {
-          if(jButtonMove.isSelected()){
-          	mf.setActiveTool(MoveCommand.class);
-              mf.setCursor(new Cursor(Cursor.MOVE_CURSOR));
-              jButtonPaint.setSelected(false);
-         }
-      }
-  });
+        final JToggleButton jButtonMove = buttons.get(0);
+        jButtonMove.setText("M");
+        jButtonMove.setIcon(new ImageIcon("..\\EvoPaint_new\\EvoPaint\\graphics\\move.png"));
+        jButtonMove.addActionListener(new java.awt.event.ActionListener() {
 
-    		
-    	
-    	
-    	jButtonPaint.setIcon(iconPaint);
-    	jButtonPaint.setBorderPainted(false);
-//    	
-//    	jButtonPaint.addMouseListener(new java.awt.event.MouseAdapter() {
-//
-//            public void mouseEntered(MouseEvent e) {
-//              mf.setActiveTool(PaintCommand.class);
-//              mf.setCursor(new Cursor(Cursor.HAND_CURSOR));
-//            }
-//        });
-    	jButtonPaint.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent e) {
-                if(jButtonPaint.isSelected()){
-				      mf.setActiveTool(PaintCommand.class);
-				      mf.setCursor(new Cursor(Cursor.HAND_CURSOR));
-				      jButtonMove.setSelected(false);
-               }
+                    mf.setActiveTool(MoveCommand.class);
+                    mf.getShowcase().setCursor(new Cursor(Cursor.MOVE_CURSOR));
+                    select(jButtonMove);
             }
         });
-    	jButtonPick.setIcon(iconPick);
-    	jButtonPick.setBorderPainted(false);
-    	jButtonSelect.setIcon(iconSelect);
-    	jButtonSelect.setBorderPainted(false);
-    	jButtonZoom.setIcon(iconZoom);
-    	jButtonZoom.setBorderPainted(false);
-    	jButtonGravitation.setIcon(iconGravitation);
-    	jButtonGravitation.setBorderPainted(false);
-    	jButtonFill.setIcon(iconFill);
-    	jButtonFill.setBorderPainted(false);
-        	
-    	jPanelTools.add(jButtonMove);
-    	jPanelTools.add(jButtonPaint); 
-    	jPanelTools.add(jButtonPick);
-    	jPanelTools.add(jButtonSelect); 
-    	jPanelTools.add(jButtonZoom);
-    	jPanelTools.add(jButtonGravitation); 
-    	jPanelTools.add(jButtonFill);
-    	
-    	this.setLayout(panels);
-    	this.add(jPanelTools);
-    	this.add(toolOptions);
-    	
-    	toolOptions.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED));
-    
 
-    	jPanelTools.setLayout(toolGl);
-    	
-    	
-    	this.setVisible(true);
-    	
-    }
-    
-    public JPanel getPanel(){
-    	return this;
+        final JToggleButton jButtonPaint = buttons.get(1);
+        jButtonPaint.setText("P");
+    	jButtonPaint.setIcon(new ImageIcon("..\\EvoPaint_new\\EvoPaint\\graphics\\brush.png"));
+        jButtonPaint.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent e) {
+                  mf.setActiveTool(PaintCommand.class);
+                  mf.getShowcase().setCursor(new Cursor(Cursor.HAND_CURSOR));
+                select(jButtonPaint);
+            }
+        });
+
+        final JToggleButton jButtonSelect = buttons.get(2);
+        jButtonSelect.setText("S");
+        jButtonSelect.setIcon(new ImageIcon("..\\EvoPaint_new\\EvoPaint\\graphics\\select.png"));
+        jButtonSelect.addActionListener(new java.awt.event.ActionListener() {
+
+            public void actionPerformed(java.awt.event.ActionEvent e) {
+                mf.setActiveTool(SelectCommand.class);
+                mf.getShowcase().setCursor(new Cursor(Cursor.CROSSHAIR_CURSOR));
+                select(jButtonSelect);
+            }
+        });
+
+        final JToggleButton jButtonPick = buttons.get(3);
+        jButtonPick.setIcon(new ImageIcon("..\\EvoPaint_new\\EvoPaint\\graphics\\picker.png"));
+        jButtonPick.addActionListener(new java.awt.event.ActionListener() {
+
+            public void actionPerformed(java.awt.event.ActionEvent e) {
+                mf.setActiveTool(MoveCommand.class);
+                mf.getShowcase().setCursor(new Cursor(Cursor.MOVE_CURSOR));
+                select(jButtonPick);
+            }
+        });
+
+        final JToggleButton jButtonZoom = buttons.get(4);
+        jButtonZoom.setIcon(new ImageIcon("..\\EvoPaint_new\\EvoPaint\\graphics\\zoom.png"));
+        jButtonZoom.addActionListener(new java.awt.event.ActionListener() {
+
+            public void actionPerformed(java.awt.event.ActionEvent e) {
+                mf.setActiveTool(MoveCommand.class);
+                mf.getShowcase().setCursor(new Cursor(Cursor.MOVE_CURSOR));
+                select(jButtonZoom);
+            }
+        });
+
+        final JToggleButton jButtonFill = buttons.get(5);
+        jButtonFill.setIcon(new ImageIcon("..\\EvoPaint_new\\EvoPaint\\graphics\\fill.png"));
+        jButtonFill.addActionListener(new java.awt.event.ActionListener() {
+
+            public void actionPerformed(java.awt.event.ActionEvent e) {
+                mf.setActiveTool(MoveCommand.class);
+                mf.getShowcase().setCursor(new Cursor(Cursor.MOVE_CURSOR));
+                select(jButtonFill);
+            }
+        });
+
+        final JToggleButton jButtonErase = buttons.get(6);
+        jButtonErase.setIcon(new ImageIcon("..\\EvoPaint_new\\EvoPaint\\graphics\\erase.png"));
+        jButtonErase.addActionListener(new java.awt.event.ActionListener() {
+
+            public void actionPerformed(java.awt.event.ActionEvent e) {
+                mf.setActiveTool(MoveCommand.class);
+                mf.getShowcase().setCursor(new Cursor(Cursor.MOVE_CURSOR));
+                select(jButtonErase);
+            }
+        });
     }
 }
