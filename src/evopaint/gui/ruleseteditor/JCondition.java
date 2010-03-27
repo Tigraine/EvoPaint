@@ -12,9 +12,9 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.GridBagLayout;
-import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListCellRenderer;
@@ -23,9 +23,10 @@ import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
+import javax.swing.JToggleButton;
 import javax.swing.ListCellRenderer;
 import javax.swing.SwingUtilities;
-import javax.swing.border.Border;
+import javax.swing.border.LineBorder;
 import javax.swing.border.SoftBevelBorder;
 import javax.swing.border.TitledBorder;
 
@@ -56,33 +57,41 @@ public class JCondition extends JPanel {
         this.condition = condition;
         this.jConditionList = jConditionList;
 
+
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
         // set up collapsed view
         collapsedPanel = new JPanel();
-        collapsedPanel.setLayout(new GridBagLayout());
-        JButton expandButton = new JButton(condition.toString());
+        collapsedPanel.setLayout(new BoxLayout(collapsedPanel, BoxLayout.X_AXIS));
+        add(collapsedPanel);
+        JToggleButton expandButton = new JToggleButton(condition.toString());
+        
         expandButton.addActionListener(new ActionListener() {
 
             public void actionPerformed(ActionEvent e) {
-                jConditionList.collapseAll();
-                expand();
+                if (((JToggleButton)e.getSource()).isSelected()) {
+                    jConditionList.collapseAll();
+                    expand();
+                } else {
+                    collapse();
+                }
             }
         });
         collapsedPanel.add(expandButton);
         JButton deleteButtonCollapsed = new JButton("X");
         deleteButtonCollapsed.addActionListener(new DeleteButtonListener(this));
         collapsedPanel.add(deleteButtonCollapsed);
+        collapsedPanel.add(Box.createHorizontalGlue());
 
         // set up expanded view
         expandedPanel = new JPanel();
-        expandedPanel.setLayout(new BorderLayout());
-
-        JPanel panelInner = new JPanel();
-        panelInner.setLayout(new BorderLayout());
-        expandedPanel.add(panelInner, BorderLayout.CENTER);
-        panelInner.setBorder(new SoftBevelBorder(SoftBevelBorder.RAISED));
-        panelInner.add(new JTargetPicker(), BorderLayout.WEST);
+        expandedPanel.setLayout(new BoxLayout(expandedPanel, BoxLayout.X_AXIS));
+        add(expandedPanel);
+        JPanel expandedPanelContent = new JPanel();
+        expandedPanelContent.setLayout(new BoxLayout(expandedPanelContent, BoxLayout.Y_AXIS));
+        expandedPanelContent.setBorder(new SoftBevelBorder(SoftBevelBorder.RAISED));
+        expandedPanel.add(expandedPanelContent);
+        expandedPanel.add(Box.createHorizontalGlue());
 
         // do the combo box magic
         DefaultComboBoxModel model = new DefaultComboBoxModel();
@@ -117,47 +126,40 @@ public class JCondition extends JPanel {
         JComboBox comboBoxConditions = new JComboBox(model);
         comboBoxConditions.setRenderer(renderer);
         comboBoxConditions.addActionListener(new ComboBoxConditionsListener());
-        panelInner.add(comboBoxConditions, BorderLayout.NORTH);
+        comboBoxConditions.setBorder(new LineBorder(getBackground(), 10));
+        expandedPanelContent.add(comboBoxConditions);
 
+
+
+        Box wrapTargetsParameters = Box.createHorizontalBox();
+        wrapTargetsParameters.add(new JTargetPicker());
         JPanel panelParameters = new JPanel();
         panelParameters.setBorder(new TitledBorder("Parameters"));
         panelParameters.setPreferredSize(new Dimension(100, 30));
-        panelInner.add(panelParameters, BorderLayout.EAST);
+        wrapTargetsParameters.add(panelParameters);
+        expandedPanelContent.add(wrapTargetsParameters);
+        expandedPanelContent.setMaximumSize(expandedPanel.getPreferredSize());
 
-        JPanel panelButtons = new JPanel();
-        panelButtons.setLayout(new GridLayout(2, 1, 0, 0));
-        JButton buttonCollapse = new JButton("<");
-        buttonCollapse.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                collapse();
-            }
-        });
-        panelButtons.add(buttonCollapse);
-        JButton buttonDelete = new JButton("X");
-        buttonDelete.addActionListener(new DeleteButtonListener(this));
-        panelButtons.add(buttonDelete);
-        expandedPanel.add(panelButtons, BorderLayout.EAST);
-
-        collapsedPanel.setPreferredSize(new Dimension(
-                (int)Math.max(panelInner.getPreferredSize().getWidth(), collapsedPanel.getPreferredSize().getWidth()),
-                (int)collapsedPanel.getPreferredSize().getHeight()));
-        
         collapse();
     }
 
     public void collapse() {
         expanded = false;
-        removeAll();
-        add(collapsedPanel);
-        revalidate();
+        if (((JToggleButton)collapsedPanel.getComponent(0)).isSelected()) {
+            ((JToggleButton)collapsedPanel.getComponent(0)).setSelected(false);
+        }
+        expandedPanel.setVisible(false);
+        //revalidate();
     }
 
     public void expand() {
         expanded = true;
-        removeAll();
-        add(expandedPanel);
-        revalidate();
-        SwingUtilities.getWindowAncestor(this).pack();
+        expandedPanel.setVisible(true);
+        //collapsedPanel.revalidate();
+        //expandedPanel.revalidate();
+        //revalidate();
+        //((JPanel)getParent()).revalidate();
+        //SwingUtilities.getWindowAncestor(this).pack();
         // ^ this is way better than v
         //((JFrame)getParent().getParent().getParent().getParent().getParent().getParent()).pack();
     }
@@ -196,11 +198,13 @@ public class JCondition extends JPanel {
     private class ComboBoxConditionsListener implements ActionListener {
 
         public void actionPerformed(ActionEvent e) {
-            ((JButton)collapsedPanel.getComponent(0)).setText(((ICondition)((JComboBox)e.getSource()).getSelectedItem()).toString());
+            ((JToggleButton)collapsedPanel.getComponent(0)).setText(((ICondition)((JComboBox)e.getSource()).getSelectedItem()).toString());
             //collapsedPanel.revalidate();
             //revalidate();
+            //expandedPanel.revalidate();
             //jConditionList.setPreferredSize(new Dimension(500, jConditionList.getPreferredSize().height));
             //jConditionList.revalidate();
+            //((JPanel)jConditionList.getParent()).revalidate();
         }
 
     }

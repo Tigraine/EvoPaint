@@ -27,7 +27,6 @@ public class JRuleList extends JList {
 
         setModel(listModel);
         //setVisibleRowCount(5);
-        //setPreferredSize(new Dimension(10, 200));
 
         
         // make me look pretty

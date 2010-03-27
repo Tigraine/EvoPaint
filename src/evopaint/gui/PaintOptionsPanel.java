@@ -3,6 +3,7 @@ package evopaint.gui;
 import evopaint.Brush;
 import evopaint.Configuration;
 import evopaint.gui.ruleseteditor.JRuleSetEditor;
+import evopaint.gui.ruleseteditor.JRuleSetManager;
 import evopaint.pixel.PixelColor;
 import evopaint.pixel.rulebased.RuleSet;
 import java.awt.Checkbox;
@@ -236,9 +237,9 @@ public class PaintOptionsPanel extends JPanel {
             //dialog.add(new JRuleSetEditor(configuration.brush.getRuleSet()));
             //dialog.pack();
             //dialog.setVisible(true);
-            JRuleSetEditor ruleSetEditor = new JRuleSetEditor(configuration.brush.getRuleSet());
-            ruleSetEditor.pack();
-            ruleSetEditor.setVisible(true);
+            JRuleSetManager jRuleSetManager = new JRuleSetManager(configuration.brush.getRuleSet());
+            jRuleSetManager.pack();
+            jRuleSetManager.setVisible(true);
         }
     }
 }

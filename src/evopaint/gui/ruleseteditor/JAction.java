@@ -7,15 +7,11 @@ package evopaint.gui.ruleseteditor;
 
 import evopaint.Configuration;
 import evopaint.pixel.rulebased.interfaces.IAction;
-import evopaint.util.ClassList;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.JButton;
@@ -24,6 +20,7 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.ListCellRenderer;
+import javax.swing.border.LineBorder;
 import javax.swing.border.SoftBevelBorder;
 import javax.swing.border.TitledBorder;
 
@@ -36,7 +33,7 @@ public class JAction extends JPanel implements ActionListener {
 
     public JAction(IAction action) {
 
-        setLayout(new BorderLayout(10, 10));
+        setLayout(new BorderLayout(0, 0));
         setBorder(new SoftBevelBorder(SoftBevelBorder.RAISED));
 
         DefaultComboBoxModel model = new DefaultComboBoxModel();
@@ -70,6 +67,7 @@ public class JAction extends JPanel implements ActionListener {
         JComboBox comboBoxActions = new JComboBox(model);
         ComboBoxRenderer renderer = new ComboBoxRenderer();
         comboBoxActions.setRenderer(renderer);
+        comboBoxActions.setBorder(new LineBorder(getBackground(), 10));
         add(comboBoxActions, BorderLayout.NORTH);
 
         JTargetPicker targetPicker = new JTargetPicker();
@@ -79,7 +77,8 @@ public class JAction extends JPanel implements ActionListener {
         panelParameters.setBorder(new TitledBorder("Parameters"));
         panelParameters.setPreferredSize(new Dimension(100, 30));
         add(panelParameters, BorderLayout.WEST);
-        
+
+        setMaximumSize(getPreferredSize());
         //this.closeButton = new JButton("X");
         //this.closeButton.addActionListener(this);
         //add(this.closeButton);

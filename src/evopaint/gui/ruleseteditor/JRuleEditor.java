@@ -5,15 +5,11 @@
 
 package evopaint.gui.ruleseteditor;
 
-import evopaint.pixel.rulebased.interfaces.ICondition;
 import evopaint.pixel.rulebased.interfaces.IRule;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.ArrayList;
-import java.util.List;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import javax.swing.Box;
 import javax.swing.BoxLayout;
-import javax.swing.JButton;
-import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.TitledBorder;
@@ -35,27 +31,27 @@ public class JRuleEditor extends JPanel {
 
     public JRuleEditor(IRule rule) {
         this.rule = rule;
-
-        
-        
-        //setLayout(new GridBagLayout());
+        GridBagConstraints constraints = new GridBagConstraints();
+        constraints.fill = GridBagConstraints.NONE;
+        constraints.gridx = 0;
+        constraints.gridy = 0;
+        constraints.weightx = 0;
+        constraints.weighty = 0;
+        constraints.gridwidth = 4;
+        constraints.gridheight = 1;
+        GridBagLayout layout = new GridBagLayout();
+        layout.setConstraints(this, constraints);
+        //setLayout(layout);
+        setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
         setBorder(new TitledBorder("Edit Rule"));
 
+        add(Box.createHorizontalStrut(20));
         JLabel labelIf = new JLabel("<html><b>&nbsp;IF&nbsp;</b><html>", JLabel.CENTER);
         add(labelIf);
-
-        // conditions
-        //JPanel panelConditionsWrapper = new JPanel();
-        //panelConditionsWrapper.setLayout(new BoxLayout(panelConditionsWrapper, BoxLayout.Y_AXIS));
-        //add(panelConditionsWrapper);
 
         JConditionList jConditionList = new JConditionList(rule.getConditions());
         add(jConditionList);
 
-        //JButton buttonANDCondition = new JButton("AND");
-        //buttonANDCondition.addActionListener(new AddConditionButtonListener(panelForConditions));
-        //panelConditionsWrapper.add(buttonANDCondition);
-        //add(buttonANDCondition);
 
         add(new JLabel("<html><b>&nbsp;THEN&nbsp;</b><html>", JLabel.CENTER));
 
@@ -79,6 +75,7 @@ public class JRuleEditor extends JPanel {
         */
         
         add(new JAction(rule.getAction()));
+        add(Box.createHorizontalStrut(20));
     }
 
     /* // for multiple actions
@@ -95,18 +92,4 @@ public class JRuleEditor extends JPanel {
     }
     */
 
-    
-    private class AddConditionButtonListener implements ActionListener {
-        private JPanel panelForConditions;
-
-        public AddConditionButtonListener(JPanel panelForConditions) {
-            this.panelForConditions = panelForConditions;
-        }
-
-        public void actionPerformed(ActionEvent e) {
-            this.panelForConditions.add(new JLabel("<html><b>&nbsp;AND&nbsp;</b><html>", JLabel.CENTER));
-            //this.panelForConditions.add(new JCondition(null));
-            //((JFrame)this.panelForConditions.getParent().getParent().getParent().getParent().getParent()).pack();
-        }
-    }
 }

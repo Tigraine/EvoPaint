@@ -12,6 +12,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
+import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JPanel;
@@ -57,9 +58,12 @@ public class JConditionList extends JPanel {
             //revalidate();
         }
 
+        Box andGoesLeft = Box.createHorizontalBox();
         JButton buttonAnd = new JButton("AND");
         buttonAnd.addActionListener(new AndButtonListener(this));
-        add(buttonAnd);
+        andGoesLeft.add(buttonAnd);
+        andGoesLeft.add(Box.createHorizontalGlue());
+        add(andGoesLeft);
     }
 
     private class AndButtonListener implements ActionListener {
@@ -76,9 +80,9 @@ public class JConditionList extends JPanel {
                 JCondition jCondition = new JCondition(condition, jConditionList);
                 jConditions.add(jCondition);
                 jConditionList.add(jCondition, jConditions.size() - 1);
-                jConditionList.revalidate();
+                //jConditionList.revalidate();
                 //((GridLayout)getLayout()).setRows(((GridLayout)getLayout()).getRows() + 1);
-                SwingUtilities.getWindowAncestor(jConditionList).pack();
+                //SwingUtilities.getWindowAncestor(jConditionList).pack();
             } catch (InstantiationException ex) {
                 ex.printStackTrace();
                 System.exit(1);
