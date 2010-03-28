@@ -8,6 +8,7 @@ package evopaint.pixel.rulebased;
 import evopaint.World;
 import evopaint.pixel.Pixel;
 import evopaint.pixel.rulebased.interfaces.IAction;
+import evopaint.pixel.rulebased.interfaces.INamed;
 import evopaint.util.mapping.RelativeCoordinate;
 import java.util.Iterator;
 import java.util.List;
@@ -16,7 +17,7 @@ import java.util.List;
  *
  * @author tam
  */
-public abstract class AbstractAction implements IAction {
+public abstract class AbstractAction implements IAction, INamed {
 
     private int cost;
     private List<RelativeCoordinate> directions;

@@ -14,8 +14,7 @@ import java.util.List;
  *
  * @author tam
  */
-public interface IAction {
-    public String getName();
+public interface IAction extends INamed {
     public int getCost();
     public List<RelativeCoordinate> getDirections();
     public int execute(Pixel actor, World world);

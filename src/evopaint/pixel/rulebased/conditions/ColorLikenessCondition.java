@@ -5,26 +5,55 @@
 
 package evopaint.pixel.rulebased.conditions;
 
+import evopaint.Configuration;
 import evopaint.pixel.rulebased.AbstractCondition;
 import evopaint.World;
+import evopaint.gui.ruleseteditor.JRuleSetManager;
+import evopaint.gui.ruleseteditor.NamedObjectListCellRenderer;
+import evopaint.pixel.ColorDimensions;
 import evopaint.pixel.Pixel;
 import evopaint.pixel.PixelColor;
 import evopaint.pixel.rulebased.NumberComparisonOperator;
 import evopaint.util.mapping.RelativeCoordinate;
+import java.awt.Color;
+import java.awt.GridBagLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import javax.swing.JButton;
+import javax.swing.JColorChooser;
+import javax.swing.JComboBox;
+import javax.swing.JComponent;
+import javax.swing.JDialog;
+import javax.swing.JFormattedTextField;
+import javax.swing.JPanel;
+import javax.swing.JSpinner;
+import javax.swing.JToggleButton;
+import javax.swing.SpinnerNumberModel;
+import javax.swing.SwingUtilities;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 /**
  *
  * @author tam
  */
 public class ColorLikenessCondition extends AbstractCondition {
-    private static final String NAME = "color likeness";
 
     private PixelColor comparedColor;
-    private int dimensions;
+    private ColorDimensions dimensions;
     private int compareToLikenessPercentage;
     private NumberComparisonOperator comparisonOperator;
+
+    public String getName() {
+        return "Color Likeness";
+    }
 
     public int getCompareToLikenessPercentage() {
         return compareToLikenessPercentage;
@@ -50,16 +79,12 @@ public class ColorLikenessCondition extends AbstractCondition {
         this.comparisonOperator = comparisonOperator;
     }
 
-    public int getDimensions() {
+    public ColorDimensions getDimensions() {
         return dimensions;
     }
 
-    public void setDimensions(int dimensions) {
+    public void setDimensions(ColorDimensions dimensions) {
         this.dimensions = dimensions;
-    }
-
-    public String getName() {
-        return NAME;
     }
 
     @Override
@@ -68,25 +93,9 @@ public class ColorLikenessCondition extends AbstractCondition {
         ret += super.toString();
         ret += " compared to ";
         ret += comparedColor;
-        ret += " in dimensions [";
-        switch(dimensions) {
-            case PixelColor.HSB: ret += "H,S,B";
-                break;
-            case PixelColor.H: ret += "H";
-                break;
-            case PixelColor.S: ret += "S";
-                break;
-            case PixelColor.B: ret += "B";
-                break;
-            case PixelColor.HS: ret += "H,S";
-                break;
-            case PixelColor.HB: ret += "H,B";
-                break;
-            case PixelColor.SB: ret += "S,B";
-                break;
-            default: assert(false);
-        }
-        ret += "] is ";
+        ret += " in dimensions ";
+        ret += dimensions;
+        ret += " is ";
         ret += comparisonOperator;
         ret += " ";
         ret += compareToLikenessPercentage;
@@ -106,7 +115,65 @@ public class ColorLikenessCondition extends AbstractCondition {
         return true;
     }
 
-    public ColorLikenessCondition(List<RelativeCoordinate> directions, NumberComparisonOperator comparisonOperator, int compareToLikenessPercentage, int dimensions, PixelColor comparedColor) {
+    public LinkedHashMap<String,JComponent> getParametersForGUI() {
+        LinkedHashMap<String,JComponent> ret = new LinkedHashMap<String,JComponent>();
+
+        String colorString = "#" + Integer.toHexString(comparedColor.getInteger()).substring(2).toUpperCase();
+        JButton colorButton = new JButton(colorString);
+        colorButton.addMouseListener(new ColorListener(this, colorButton));
+        //colorButton.setPreferredSize(new Dimension(50, 25));
+        ret.put("Color", colorButton);
+
+        JPanel dimensionsPanel = new JPanel();
+        JToggleButton btnH = new JToggleButton("H");
+        JToggleButton btnS = new JToggleButton("S");
+        JToggleButton btnB = new JToggleButton("B");
+        DimensionsListener dimensionsListener = new DimensionsListener(btnH, btnS, btnB);
+        btnH.addActionListener(dimensionsListener);
+        btnS.addActionListener(dimensionsListener);
+        btnB.addActionListener(dimensionsListener);
+        if (dimensions.hue) {
+            btnH.setSelected(true);
+        }
+        if (dimensions.saturation) {
+            btnS.setSelected(true);
+        }
+        if (dimensions.brightness) {
+            btnB.setSelected(true);
+        }
+        dimensionsPanel.add(btnH);
+        dimensionsPanel.add(btnS);
+        dimensionsPanel.add(btnB);
+        ret.put("Dimensions", dimensionsPanel);
+
+        JComboBox comparisonComboBox = new JComboBox(NumberComparisonOperator.createComboBoxModel());
+        comparisonComboBox.setRenderer(new NamedObjectListCellRenderer());
+        comparisonComboBox.setSelectedItem(comparisonOperator);
+        comparisonComboBox.addActionListener(new ComparisonListener());
+        //comparisonComboBox.setPreferredSize(new Dimension(50, 25));
+        ret.put("Comparison", comparisonComboBox);
+
+        SpinnerNumberModel spinnerModel = new SpinnerNumberModel(compareToLikenessPercentage, 0, 100, 1);
+        JSpinner likenessPercentageSpinner = new JSpinner(spinnerModel);
+        final JFormattedTextField spinnerText = ((JSpinner.DefaultEditor)likenessPercentageSpinner.getEditor()).getTextField();
+        spinnerText.addFocusListener(new FocusListener() {
+            public void focusGained(FocusEvent e) {
+                SwingUtilities.invokeLater(new Runnable() { // only seems to work this way
+                        public void run() {
+                            spinnerText.selectAll();
+                        }
+                });
+            }
+            public void focusLost(FocusEvent e) {}
+        });
+        likenessPercentageSpinner.addChangeListener(new PercentageListener());
+        //likenessPercentageSpinner.setPreferredSize(new Dimension(50, 25));
+        ret.put("Likeness in %", likenessPercentageSpinner);
+
+        return ret;
+    }
+
+    public ColorLikenessCondition(List<RelativeCoordinate> directions, NumberComparisonOperator comparisonOperator, int compareToLikenessPercentage, ColorDimensions dimensions, PixelColor comparedColor) {
         super(directions);
         this.comparisonOperator = comparisonOperator;
         this.comparedColor = comparedColor;
@@ -119,6 +186,119 @@ public class ColorLikenessCondition extends AbstractCondition {
         this.comparisonOperator = NumberComparisonOperator.EQUAL;
         this.comparedColor = new PixelColor(0, 0, 0);
         this.compareToLikenessPercentage = 0;
-        this.dimensions = PixelColor.HSB;
+        this.dimensions = new ColorDimensions(true, true, true);
+    }
+
+    private class DimensionsListener implements ActionListener {
+        private JToggleButton btnH;
+        private JToggleButton btnS;
+        private JToggleButton btnB;
+
+        public DimensionsListener(JToggleButton btnH, JToggleButton btnS, JToggleButton btnB) {
+            this.btnH = btnH;
+            this.btnS = btnS;
+            this.btnB = btnB;
+        }
+
+        public void actionPerformed(ActionEvent e) {
+            JToggleButton source = (JToggleButton)e.getSource();
+
+            if (source == this.btnH) {
+                if (this.btnH.isSelected()) {
+                    dimensions.hue = true;
+                } else {
+                    dimensions.hue = false;
+                }
+                return;
+            }
+
+            if (source == this.btnS) {
+                if (this.btnS.isSelected()) {
+                    dimensions.saturation = true;
+                } else {
+                    dimensions.saturation = false;
+                }
+                return;
+            }
+
+            if (source == this.btnB) {
+                if (this.btnB.isSelected()) {
+                    dimensions.brightness = true;
+                } else {
+                    dimensions.brightness = false;
+                }
+                return;
+            }
+        }
+    }
+
+    private class ColorListener implements MouseListener {
+        ColorLikenessCondition colorLikenessCondition;
+        private JButton colorButton;
+
+        public ColorListener(ColorLikenessCondition colorLikenessCondition, JButton colorLabel) {
+            this.colorLikenessCondition = colorLikenessCondition;
+            this.colorButton = colorLabel;
+        }
+
+        public void mouseClicked(MouseEvent e) {
+            Color color = new Color(comparedColor.getInteger());
+            final JColorChooser colorChooser = new JColorChooser(color);
+            colorChooser.setPreviewPanel(new JPanel());
+            JDialog dialog = JColorChooser.createDialog(this.colorButton, "Choose Color", true,
+                    colorChooser, new ColorChooserOKListener(this.colorLikenessCondition, colorChooser, this.colorButton), new ColorChooserCancelListener());
+            dialog.pack();
+            dialog.setVisible(true);
+        }
+
+        public void mousePressed(MouseEvent e) {}
+
+        public void mouseReleased(MouseEvent e) {}
+
+        public void mouseEntered(MouseEvent e) {}
+
+        public void mouseExited(MouseEvent e) {}
+
+        private class ColorChooserOKListener implements ActionListener {
+            ColorLikenessCondition colorLikenessCondition;
+            JColorChooser colorChooser;
+            JButton owner;
+
+            public ColorChooserOKListener(ColorLikenessCondition colorLikenessCondition, JColorChooser colorChooser, JButton owner) {
+                this.colorLikenessCondition = colorLikenessCondition;
+                this.colorChooser = colorChooser;
+                this.owner = owner;
+            }
+
+            public void actionPerformed(ActionEvent e) {
+                Color c = colorChooser.getColor();
+                Configuration config = ((JRuleSetManager) SwingUtilities.getWindowAncestor(this.owner)).getConfiguration();
+                colorLikenessCondition.getComparedColor().setInteger(c.getRGB(), config.rng);
+                owner.setText("#" + Integer.toHexString(comparedColor.getInteger()).substring(2).toUpperCase());
+                owner.setForeground(c);
+            }
+        }
+
+        private class ColorChooserCancelListener implements ActionListener {
+
+            public void actionPerformed(ActionEvent e) {
+                // NOOP
+            }
+        }
+    }
+
+    private class ComparisonListener implements ActionListener {
+
+        public void actionPerformed(ActionEvent e) {
+            setComparisonOperator((NumberComparisonOperator) ((JComboBox) (e.getSource())).getSelectedItem());
+        }
+    }
+
+    private class PercentageListener implements ChangeListener {
+
+        public void stateChanged(ChangeEvent e) {
+            setCompareToLikenessPercentage((Integer)((JSpinner)e.getSource()).getValue());
+        }
+
     }
 }

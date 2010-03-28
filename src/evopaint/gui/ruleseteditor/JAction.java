@@ -8,18 +8,13 @@ package evopaint.gui.ruleseteditor;
 import evopaint.Configuration;
 import evopaint.pixel.rulebased.interfaces.IAction;
 import java.awt.BorderLayout;
-import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.DefaultComboBoxModel;
-import javax.swing.DefaultListCellRenderer;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
-import javax.swing.JLabel;
-import javax.swing.JList;
 import javax.swing.JPanel;
-import javax.swing.ListCellRenderer;
 import javax.swing.border.LineBorder;
 import javax.swing.border.SoftBevelBorder;
 import javax.swing.border.TitledBorder;
@@ -50,23 +45,13 @@ public class JAction extends JPanel implements ActionListener {
             System.exit(1);
         }*/
 
-        for (Class type : Configuration.availableActions) {
-            try {
-                model.addElement((IAction) type.newInstance());
-            } catch (InstantiationException ex) {
-                ex.printStackTrace();
-                System.exit(1);
-                //Logger.getLogger(JCondition.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (IllegalAccessException ex) {
-                ex.printStackTrace();
-                System.exit(1);
-                //Logger.getLogger(JCondition.class.getName()).log(Level.SEVERE, null, ex);
-            }
+        for (IAction a : Configuration.availableActions) {
+            model.addElement(a);
         }
 
         JComboBox comboBoxActions = new JComboBox(model);
-        ComboBoxRenderer renderer = new ComboBoxRenderer();
-        comboBoxActions.setRenderer(renderer);
+        comboBoxActions.setRenderer(new NamedObjectListCellRenderer());
+        comboBoxActions.setSelectedItem(action);
         comboBoxActions.setBorder(new LineBorder(getBackground(), 10));
         add(comboBoxActions, BorderLayout.NORTH);
 
@@ -93,7 +78,7 @@ public class JAction extends JPanel implements ActionListener {
             return;
         }
     }
-
+/*
     private class ComboBoxRenderer extends JLabel implements ListCellRenderer {
 
         public ComboBoxRenderer() {
@@ -111,4 +96,5 @@ public class JAction extends JPanel implements ActionListener {
         isSelected, cellHasFocus);
         }
     }
+    */
 }

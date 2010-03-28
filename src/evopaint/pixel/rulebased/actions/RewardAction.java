@@ -17,9 +17,12 @@ import java.util.List;
  * @author tam
  */
 public class RewardAction extends AbstractAction {
-    private static final String NAME = "reward";
     
     private int rewardValue;
+
+    public String getName() {
+        return "reward";
+    }
 
     public int getRewardValue() {
         return rewardValue;
@@ -27,10 +30,6 @@ public class RewardAction extends AbstractAction {
 
     public void setRewardValue(int rewardValue) {
         this.rewardValue = rewardValue;
-    }
-    
-    public String getName() {
-        return NAME;
     }
 
     @Override

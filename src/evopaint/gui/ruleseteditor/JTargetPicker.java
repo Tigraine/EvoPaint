@@ -81,6 +81,8 @@ public class JTargetPicker extends JPanel implements ActionListener {
             b.setPreferredSize(new Dimension(25, 25));
             b.addActionListener(this);
         }
+
+        setMaximumSize(new Dimension(90, 110));
     }
 
     public void actionPerformed(ActionEvent e) {

@@ -258,7 +258,7 @@ public class PaintOptionsPanel extends JPanel {
             //dialog.add(new JRuleSetEditor(configuration.brush.getRuleSet()));
             //dialog.pack();
             //dialog.setVisible(true);
-            JRuleSetManager jRuleSetManager = new JRuleSetManager(configuration.brush.getRuleSet());
+            JRuleSetManager jRuleSetManager = new JRuleSetManager(configuration.brush.getRuleSet(), configuration);
             jRuleSetManager.pack();
             jRuleSetManager.setVisible(true);
         }

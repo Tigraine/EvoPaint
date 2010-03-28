@@ -6,6 +6,7 @@
 package evopaint.gui.ruleseteditor;
 
 import evopaint.Configuration;
+import evopaint.pixel.rulebased.conditions.EmptyCondition;
 import evopaint.pixel.rulebased.interfaces.ICondition;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
@@ -26,10 +27,18 @@ public class JConditionList extends JPanel {
     private List<ICondition> conditions;
     private List<JCondition> jConditions;
 
-    public void remove(JCondition jCondition) {
+    public void removeCondition(JCondition jCondition) {
         jConditions.remove(jCondition);
         conditions.remove(jCondition.getCondition());
-        remove((Component)jCondition);
+        remove(jCondition);
+    }
+
+    public void replaceCondition(JCondition old, JCondition fresh) { // yes I called it "new" at first...
+        int i = jConditions.indexOf(old);
+        jConditions.set(i, fresh);
+        conditions.set(i, fresh.getCondition());
+        add(fresh, i);
+        remove(old);
     }
 
     public void collapseAll() {
@@ -74,8 +83,8 @@ public class JConditionList extends JPanel {
         }
         
         public void actionPerformed(ActionEvent e) {
-            try {
-                ICondition condition = (ICondition) Configuration.availableConditions.get(0).newInstance();
+           // try {
+                ICondition condition = new EmptyCondition(); // XXX maybe chose another? or place a placeholder?
                 conditions.add(condition);
                 JCondition jCondition = new JCondition(condition, jConditionList);
                 jConditions.add(jCondition);
@@ -83,7 +92,7 @@ public class JConditionList extends JPanel {
                 //jConditionList.revalidate();
                 //((GridLayout)getLayout()).setRows(((GridLayout)getLayout()).getRows() + 1);
                 //SwingUtilities.getWindowAncestor(jConditionList).pack();
-            } catch (InstantiationException ex) {
+           /*} catch (InstantiationException ex) {
                 ex.printStackTrace();
                 System.exit(1);
                 //Logger.getLogger(JConditionList.class.getName()).log(Level.SEVERE, null, ex);
@@ -92,6 +101,7 @@ public class JConditionList extends JPanel {
                 System.exit(1);
                 //Logger.getLogger(JConditionList.class.getName()).log(Level.SEVERE, null, ex);
             }
+            */
         }
     }
 }

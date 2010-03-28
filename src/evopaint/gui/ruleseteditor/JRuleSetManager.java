@@ -5,6 +5,7 @@
 
 package evopaint.gui.ruleseteditor;
 
+import evopaint.Configuration;
 import evopaint.pixel.rulebased.RuleSet;
 import java.awt.Dimension;
 import javax.swing.BoxLayout;
@@ -19,7 +20,20 @@ import javax.swing.border.TitledBorder;
  * @author tam
  */
 public class JRuleSetManager extends JFrame {
-    public JRuleSetManager(RuleSet ruleSet) {        
+
+    protected Configuration configuration;
+
+    public Configuration getConfiguration() {
+        return configuration;
+    }
+
+    public void setConfiguration(Configuration configuration) {
+        this.configuration = configuration;
+    }
+
+    public JRuleSetManager(RuleSet ruleSet, Configuration configuration) {
+        this.configuration = configuration;
+
         JRuleSetBrowser jRuleSetBrowser = new JRuleSetBrowser();
         JRuleSetControlPanel jRuleSetControlPanel = new JRuleSetControlPanel();
         

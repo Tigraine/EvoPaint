@@ -7,6 +7,7 @@ package evopaint;
 
 import evopaint.interfaces.IRandomNumberGenerator;
 import evopaint.interfaces.ITool;
+import evopaint.pixel.ColorDimensions;
 import evopaint.pixel.Pixel;
 import evopaint.pixel.PixelColor;
 import evopaint.pixel.rulebased.Rule;
@@ -48,15 +49,16 @@ public class Configuration {
 
     public final int pixelType = Pixel.RULESET;
 
-    public static final List<Class> availableConditions = new ArrayList<Class>() {{
-        add(EmptyCondition.class);
-        add(ColorLikenessCondition.class);
-        add(EnergyCondition.class);
+    // TODO make to list of objects of ICondition
+    public static final List<ICondition> availableConditions = new ArrayList<ICondition>() {{
+        add(new EmptyCondition());
+        add(new EnergyCondition());
+        add(new ColorLikenessCondition());
     }};
 
-    public static final List<Class> availableActions = new ArrayList<Class>() {{
-        add(AssimilationAction.class);
-        add(RewardAction.class);
+    public static final List<IAction> availableActions = new ArrayList<IAction>() {{
+        add(new AssimilationAction());
+        add(new RewardAction());
     }};
    
     //public final int numThreads = 1;
@@ -97,13 +99,13 @@ public class Configuration {
         directions.add(RelativeCoordinate.NORTH);
         directions.add(RelativeCoordinate.SOUTH);
         directions.add(RelativeCoordinate.EAST);
-        IAction action = new AssimilationAction(20, directions, PixelColor.HSB);
+        IAction action = new AssimilationAction(20, directions, new ColorDimensions(true, true, true));
         rules.add(new Rule(conditions, action));
 
         conditions = new ArrayList<ICondition>();
         directions = new ArrayList<RelativeCoordinate>();
         directions.add(RelativeCoordinate.SELF);
-        conditions.add(new ColorLikenessCondition(directions, NumberComparisonOperator.LESS_THAN, 75, PixelColor.H, new PixelColor(0x00FF00, rng)));
+        conditions.add(new ColorLikenessCondition(directions, NumberComparisonOperator.LESS_THAN, 75, new ColorDimensions(true, false, false), new PixelColor(0x00FF00, rng)));
         directions = new ArrayList<RelativeCoordinate>();
         directions.add(RelativeCoordinate.SELF);
         action = new RewardAction(0, directions, 80);
@@ -112,7 +114,7 @@ public class Configuration {
         conditions = new ArrayList<ICondition>();
         directions = new ArrayList<RelativeCoordinate>();
         directions.add(RelativeCoordinate.SELF);
-        conditions.add(new ColorLikenessCondition(directions, NumberComparisonOperator.GREATER_OR_EQUAL, 90, PixelColor.H, new PixelColor(0x0000ff, rng)));
+        conditions.add(new ColorLikenessCondition(directions, NumberComparisonOperator.GREATER_OR_EQUAL, 90, new ColorDimensions(true, false, false), new PixelColor(0x0000ff, rng)));
         directions = new ArrayList<RelativeCoordinate>();
         directions.add(RelativeCoordinate.SELF);
         action = new RewardAction(0, directions, 80);

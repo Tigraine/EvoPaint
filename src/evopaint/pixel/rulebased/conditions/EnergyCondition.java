@@ -8,32 +8,38 @@ package evopaint.pixel.rulebased.conditions;
 import evopaint.pixel.rulebased.NumberComparisonOperator;
 import evopaint.pixel.rulebased.AbstractCondition;
 import evopaint.World;
+import evopaint.gui.ruleseteditor.NamedObjectListCellRenderer;
 import evopaint.pixel.Pixel;
 import evopaint.util.mapping.RelativeCoordinate;
 import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
-import javax.swing.Box;
-import javax.swing.BoxLayout;
 import javax.swing.JComboBox;
+import javax.swing.JComponent;
 import javax.swing.JFormattedTextField;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingUtilities;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 /**
  *
  * @author tam
  */
 public class EnergyCondition extends AbstractCondition {
-    private static final String NAME = "energy";
 
     private NumberComparisonOperator comparisonOperator;
     private int energyValue;
+
+    public String getName() {
+        return "Energy";
+    }
 
     public NumberComparisonOperator getComparisonOperator() {
         return comparisonOperator;
@@ -49,10 +55,6 @@ public class EnergyCondition extends AbstractCondition {
 
     public void setEnergyValue(int energyValue) {
         this.energyValue = energyValue;
-    }
-
-    public String getName() {
-        return NAME;
     }
 
     @Override
@@ -78,26 +80,20 @@ public class EnergyCondition extends AbstractCondition {
         return true;
     }
 
-    public JPanel createParametersPanel() {
-        JPanel ret = new JPanel();
-        ret.setLayout(new BoxLayout(ret, BoxLayout.Y_AXIS));
+    public LinkedHashMap<String,JComponent> getParametersForGUI() {
+        LinkedHashMap<String,JComponent> ret = new LinkedHashMap<String,JComponent>();
 
-        Box a = Box.createHorizontalBox();
-        a.add(new JLabel("Comparison:"));
-        a.add(Box.createHorizontalGlue());
-        ret.add(a);
         JComboBox comparisonComboBox = new JComboBox(NumberComparisonOperator.createComboBoxModel());
+        comparisonComboBox.setRenderer(new NamedObjectListCellRenderer());
         comparisonComboBox.setSelectedItem(comparisonOperator.toString());
-        comparisonComboBox.setPreferredSize(new Dimension(50, 25));
-        ret.add(comparisonComboBox);
+        comparisonComboBox.addActionListener(new ComparisonListener());
+        //comparisonComboBox.setPreferredSize(new Dimension(50, 25));
+        ret.put("Comparison", comparisonComboBox);
        
-        Box b = Box.createHorizontalBox();
-        b.add(new JLabel("Value:"));
-        b.add(Box.createHorizontalGlue());
-        ret.add(b);
         SpinnerNumberModel spinnerModel = new SpinnerNumberModel(energyValue, 0, Integer.MAX_VALUE, 1);
         JSpinner energyValueSpinner = new JSpinner(spinnerModel);
-        energyValueSpinner.setPreferredSize(new Dimension(50, 25));
+        energyValueSpinner.addChangeListener(new ValueListener());
+        //energyValueSpinner.setPreferredSize(new Dimension(50, 25));
         final JFormattedTextField spinnerText = ((JSpinner.DefaultEditor)energyValueSpinner.getEditor()).getTextField();
 
         spinnerText.addFocusListener(new FocusListener() {
@@ -110,12 +106,9 @@ public class EnergyCondition extends AbstractCondition {
                 });
             }
 
-            public void focusLost(FocusEvent e) {
-                //throw new UnsupportedOperationException("Not supported yet.");
-            }
+            public void focusLost(FocusEvent e) {}
         });
-        energyValueSpinner.grabFocus();
-        ret.add(energyValueSpinner);
+        ret.put("Value", energyValueSpinner);
 
         return ret;
     }
@@ -130,5 +123,20 @@ public class EnergyCondition extends AbstractCondition {
         super(new ArrayList<RelativeCoordinate>(9));
         this.comparisonOperator = NumberComparisonOperator.EQUAL;
         this.energyValue = 0;
+    }
+
+    private class ComparisonListener implements ActionListener {
+
+        public void actionPerformed(ActionEvent e) {
+            setComparisonOperator((NumberComparisonOperator) ((JComboBox) (e.getSource())).getSelectedItem());
+        }
+    }
+
+    private class ValueListener implements ChangeListener {
+
+        public void stateChanged(ChangeEvent e) {
+            setEnergyValue((Integer)((JSpinner)e.getSource()).getValue());
+        }
+
     }
 }

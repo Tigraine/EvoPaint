@@ -18,13 +18,6 @@ import java.awt.Color;
  * @author tam
  */
 public class PixelColor {
-    public static final int HSB = 0;
-    public static final int H = 1;
-    public static final int S = 2;
-    public static final int B = 3;
-    public static final int HS = 4;
-    public static final int HB = 5;
-    public static final int SB = 6;
     
     private float hue;
     private float saturation;
@@ -76,11 +69,10 @@ public class PixelColor {
         return "#" + Integer.toHexString(Color.HSBtoRGB(hue, saturation, brightness)).substring(2).toUpperCase();
     }
 
-    public double distanceTo(PixelColor theirColor, int dimensions) {
+    public double distanceTo(PixelColor theirColor, ColorDimensions dimensions) {
         double distance = 1;
         
-        switch (dimensions) {
-            case HSB:
+        if (dimensions.hue && dimensions.saturation && dimensions.brightness) {
                 // this is difficult. we need to come up with a distance that
                 // is at least somewhat comparable
                 // to what we percieve as a "distance" between colors...
@@ -98,33 +90,34 @@ public class PixelColor {
                 // with these. let us try multiplying them for now
                 distance = distance * Math.max(saturation, theirColor.getSaturation())
                             * Math.max(brightness, theirColor.getBrightness());
-                break;
-            case H:
-                distance = distanceCyclic(hue, theirColor.getHue());
-                break;
-            case S:
-                distance = distanceLinear(saturation, theirColor.getSaturation());
-                break;
-            case B:
-                distance = distanceLinear(brightness, theirColor.getBrightness());
-                break;
-            case HS:
+
+        } else if (dimensions.hue && dimensions.saturation) {
                 // see HSB
                 distance = distanceCyclic(hue, theirColor.getHue());
                 distance *= Math.max(saturation, theirColor.getSaturation());
-                break;
-            case HB:
+
+        } else if (dimensions.hue && dimensions.brightness) {
                 // see HSB
                 distance = distanceCyclic(hue, theirColor.getHue());
                 distance *= Math.max(brightness, theirColor.getBrightness());
-                break;
-            case SB:
+
+        } else if (dimensions.saturation && dimensions.brightness) {
                 // finally, something easy (I hope)
                 distance = (distanceLinear(saturation, theirColor.getSaturation()) +
                         distanceLinear(brightness, theirColor.getBrightness())
                         ) / 2;
-                break;
-            default: assert(false);
+
+        } else if (dimensions.hue) {
+            distance = distanceCyclic(hue, theirColor.getHue());
+
+        } else if (dimensions.saturation) {
+            distance = distanceLinear(saturation, theirColor.getSaturation());
+
+        } else if (dimensions.brightness) {
+            distance = distanceLinear(brightness, theirColor.getBrightness());
+
+        } else {
+            assert(false);
         }
         
         return distance;
@@ -141,37 +134,39 @@ public class PixelColor {
         return Math.abs(a - b);
     }
 
-    public void mixWith(PixelColor theirColor, float theirShare, int dimensions) {
+    public void mixWith(PixelColor theirColor, float theirShare, ColorDimensions dimensions) {
         //System.out.print(toString() + " + " + theirColor.toString() + " = ");
-        switch (dimensions) {
-            case HSB:
+        
+        if (dimensions.hue && dimensions.saturation && dimensions.brightness) {
+            hue = (float)mixCyclic(hue, theirColor.getHue(), theirShare);
+            saturation = (float)mixLinear(saturation, theirColor.getSaturation(), theirShare);
+            brightness = (float)mixLinear(brightness, theirColor.getBrightness(), theirShare);
+
+        } else if (dimensions.hue && dimensions.saturation) {
                 hue = (float)mixCyclic(hue, theirColor.getHue(), theirShare);
                 saturation = (float)mixLinear(saturation, theirColor.getSaturation(), theirShare);
-                brightness = (float)mixLinear(brightness, theirColor.getBrightness(), theirShare);
-                break;
-            case H:
-                hue = (float)mixCyclic(hue, theirColor.getHue(), theirShare);
-                break;
-            case S:
-                saturation = (float)mixLinear(saturation, theirColor.getSaturation(), theirShare);
-                break;
-            case B:
-                brightness = (float)mixLinear(brightness, theirColor.getBrightness(), theirShare);
-                break;
-            case HS:
-                hue = (float)mixCyclic(hue, theirColor.getHue(), theirShare);
-                saturation = (float)mixLinear(saturation, theirColor.getSaturation(), theirShare);
-                break;
-            case HB:
+
+        } else if (dimensions.hue && dimensions.brightness) {
                 hue = (float)mixCyclic(hue, theirColor.getHue(), theirShare);
                 brightness = (float)mixLinear(brightness, theirColor.getBrightness(), theirShare);
-                break;
-            case SB:
+
+        } else if (dimensions.saturation && dimensions.brightness) {
                 saturation = (float)mixLinear(saturation, theirColor.getSaturation(), theirShare);
                 brightness = (float)mixLinear(brightness, theirColor.getBrightness(), theirShare);
-                break;
-            default: assert(false);
+
+        } else if (dimensions.hue) {
+            hue = (float)mixCyclic(hue, theirColor.getHue(), theirShare);
+
+        } else if (dimensions.saturation) {
+            saturation = (float)mixLinear(saturation, theirColor.getSaturation(), theirShare);
+
+        } else if (dimensions.brightness) {
+            brightness = (float)mixLinear(brightness, theirColor.getBrightness(), theirShare);
+
+        } else {
+            assert(false);
         }
+        
         //System.out.println(toString());
     }
 

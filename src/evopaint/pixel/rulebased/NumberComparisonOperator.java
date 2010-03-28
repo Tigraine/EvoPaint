@@ -5,15 +5,20 @@
 
 package evopaint.pixel.rulebased;
 
+import evopaint.pixel.rulebased.interfaces.INamed;
 import evopaint.util.logging.Logger;
+import java.awt.Component;
 import javax.swing.DefaultComboBoxModel;
-import javax.swing.JComboBox;
+import javax.swing.DefaultListCellRenderer;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.ListCellRenderer;
 
 /**
  *
  * @author tam
  */
-public class NumberComparisonOperator {
+public class NumberComparisonOperator implements INamed {
     private static final int TYPE_EQUAL = 0;
     private static final int TYPE_NOT_EQUAL = 1;
     private static final int TYPE_GREATER_THAN = 2;
@@ -30,6 +35,10 @@ public class NumberComparisonOperator {
 
     private int type;
     private String name;
+
+    public String getName() {
+        return name;
+    }
 
     @Override
     public String toString() {
@@ -51,12 +60,12 @@ public class NumberComparisonOperator {
 
     public static DefaultComboBoxModel createComboBoxModel() {
         DefaultComboBoxModel ret = new DefaultComboBoxModel();
-        ret.addElement(EQUAL.toString());
-        ret.addElement(NOT_EQUAL.toString());
-        ret.addElement(GREATER_THAN.toString());
-        ret.addElement(LESS_THAN.toString());
-        ret.addElement(GREATER_OR_EQUAL.toString());
-        ret.addElement(LESS_OR_EQUAL.toString());
+        ret.addElement(EQUAL);
+        ret.addElement(NOT_EQUAL);
+        ret.addElement(GREATER_THAN);
+        ret.addElement(LESS_THAN);
+        ret.addElement(GREATER_OR_EQUAL);
+        ret.addElement(LESS_OR_EQUAL);
         return ret;
     }
 

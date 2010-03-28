@@ -7,8 +7,8 @@ package evopaint.pixel.rulebased.actions;
 
 import evopaint.pixel.rulebased.AbstractAction;
 import evopaint.World;
+import evopaint.pixel.ColorDimensions;
 import evopaint.pixel.Pixel;
-import evopaint.pixel.PixelColor;
 import evopaint.util.mapping.RelativeCoordinate;
 import java.util.ArrayList;
 import java.util.List;
@@ -18,37 +18,27 @@ import java.util.List;
  * @author tam
  */
 public class AssimilationAction extends AbstractAction {
-    private static final String NAME = "assimilate";
 
-    private int dimensionsToMix;
+    private ColorDimensions dimensionsToMix;
 
-    public int getDimensionsToMix() {
+    public String getName() {
+        return "assimilate";
+    }
+
+    public ColorDimensions getDimensionsToMix() {
         return dimensionsToMix;
     }
 
-    public void setDimensionsToMix(int dimensionsToMix) {
+    public void setDimensionsToMix(ColorDimensions dimensionsToMix) {
         this.dimensionsToMix = dimensionsToMix;
-    }
-
-    public String getName() {
-        return NAME;
     }
 
     @Override
     public String toString() {
         String ret = "assimilate(";
-        ret += "in dimensions: [";
-        switch (dimensionsToMix) {
-            case PixelColor.HSB: ret += "H,S,B"; break;
-            case PixelColor.H: ret += "H"; break;
-            case PixelColor.S: ret += "S"; break;
-            case PixelColor.B: ret += "B"; break;
-            case PixelColor.HS: ret += "H,S"; break;
-            case PixelColor.HB: ret += "H,B"; break;
-            case PixelColor.SB: ret += "S,B"; break;
-            default: assert(false);
-        }
-        ret += "], ";
+        ret += "in dimensions: ";
+        ret += dimensionsToMix;
+        ret += ", ";
         ret += super.toString();
         return ret;
     }
@@ -63,13 +53,13 @@ public class AssimilationAction extends AbstractAction {
         return getCost() * getDirections().size();
     }
 
-    public AssimilationAction(int reward, List<RelativeCoordinate> directions, int colorMixMode) {
+    public AssimilationAction(int reward, List<RelativeCoordinate> directions, ColorDimensions dimensionsToMix) {
         super(reward, directions);
-        this.dimensionsToMix = colorMixMode;
+        this.dimensionsToMix = dimensionsToMix;
     }
 
     public AssimilationAction() {
         super(0, new ArrayList<RelativeCoordinate>(9));
-        this.dimensionsToMix = PixelColor.HSB;
+        this.dimensionsToMix = new ColorDimensions(true, true, true);
     }
 }
