@@ -5,18 +5,22 @@
 
 package evopaint.gui.ruleseteditor;
 
+import evopaint.gui.ruleseteditor.util.NamedObjectListCellRenderer;
 import evopaint.Configuration;
 import evopaint.pixel.rulebased.interfaces.IAction;
-import java.awt.BorderLayout;
-import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.LinkedHashMap;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JComponent;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.border.LineBorder;
-import javax.swing.border.SoftBevelBorder;
+import javax.swing.border.BevelBorder;
 import javax.swing.border.TitledBorder;
 
 /**
@@ -28,45 +32,61 @@ public class JAction extends JPanel implements ActionListener {
 
     public JAction(IAction action) {
 
-        setLayout(new BorderLayout(0, 0));
-        setBorder(new SoftBevelBorder(SoftBevelBorder.RAISED));
+        setLayout(new GridBagLayout());
+        GridBagConstraints constraints = new GridBagConstraints();
+        setBorder(new BevelBorder(BevelBorder.RAISED));
+        constraints.anchor = GridBagConstraints.NORTHWEST;
 
         DefaultComboBoxModel model = new DefaultComboBoxModel();
-        /* //automatic class discovery. sometimes slow and can be buggy depending on packaging.
-        Set<Class> types = null;
-        try {
-            HashSet<String> packages = new HashSet<String>();
-            packages.add("evopaint.pixel.rulebased.actions");
-            Map<String, Set<Class>> m = ClassList.findClasses(
-                    (new Configuration()).getClass().getClassLoader(), null, packages, null);
-            types = m.get(null);
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-            System.exit(1);
-        }*/
 
+        IAction selection = null;
         for (IAction a : Configuration.availableActions) {
             model.addElement(a);
+            if (a.getClass() == action.getClass()) {
+                selection = a;
+            }
         }
+        assert(selection != null);
 
         JComboBox comboBoxActions = new JComboBox(model);
         comboBoxActions.setRenderer(new NamedObjectListCellRenderer());
-        comboBoxActions.setSelectedItem(action);
-        comboBoxActions.setBorder(new LineBorder(getBackground(), 10));
-        add(comboBoxActions, BorderLayout.NORTH);
-
-        JTargetPicker targetPicker = new JTargetPicker();
-        add(targetPicker, BorderLayout.EAST);
+        comboBoxActions.setSelectedItem(selection);
+        comboBoxActions.addActionListener(new ComboBoxActionsListener(this));
+        constraints.gridx = 0;
+        constraints.gridy = 0;
+        constraints.gridwidth = 2;
+        constraints.fill = GridBagConstraints.HORIZONTAL;
+        add(comboBoxActions, constraints);
 
         JPanel panelParameters = new JPanel();
         panelParameters.setBorder(new TitledBorder("Parameters"));
-        panelParameters.setPreferredSize(new Dimension(100, 30));
-        add(panelParameters, BorderLayout.WEST);
+        panelParameters.setLayout(new GridBagLayout());
+        constraints.gridx = 1;
+        constraints.gridy = 1;
+        constraints.gridwidth = 1;
+        add(panelParameters, constraints);
 
-        setMaximumSize(getPreferredSize());
-        //this.closeButton = new JButton("X");
-        //this.closeButton.addActionListener(this);
-        //add(this.closeButton);
+        LinkedHashMap<String,JComponent> parameters = action.getParametersForGUI();
+
+        constraints.gridx = 0;
+        constraints.gridy = 0;
+        constraints.anchor = GridBagConstraints.WEST;
+        constraints.fill = GridBagConstraints.BOTH;
+        for (String string : parameters.keySet()) {
+            constraints.gridx = 0;
+            constraints.insets = new Insets(0, 0, 5, 10);
+            panelParameters.add(new JLabel(string + ":"), constraints);
+            constraints.gridx = 1;
+            constraints.insets = new Insets(0, 0, 5, 0);
+            panelParameters.add(parameters.get(string), constraints);
+            constraints.gridy = constraints.gridy + 1;
+        }
+
+        constraints.fill = GridBagConstraints.NONE;
+        constraints.gridwidth = 1;
+        constraints.gridx = 0;
+        constraints.gridy = 1;
+        add(new JTargetPicker(action.getDirections()), constraints);
     }
 
     public void actionPerformed(ActionEvent e) {
@@ -78,23 +98,32 @@ public class JAction extends JPanel implements ActionListener {
             return;
         }
     }
-/*
-    private class ComboBoxRenderer extends JLabel implements ListCellRenderer {
 
-        public ComboBoxRenderer() {
+    private class ComboBoxActionsListener implements ActionListener {
+        private JAction jAction;
+
+        public ComboBoxActionsListener(JAction jCondition) {
+            this.jAction = jCondition;
         }
 
-        public Component getListCellRendererComponent(
-                                           JList list,
-                                           Object value,
-                                           int index,
-                                           boolean isSelected,
-                                           boolean cellHasFocus) {
-          
-            DefaultListCellRenderer defaultRenderer = new DefaultListCellRenderer();
-            return (JLabel) defaultRenderer.getListCellRendererComponent(list, ((IAction)value).getName(), index,
-        isSelected, cellHasFocus);
+        public void actionPerformed(ActionEvent e) {
+            try {
+                IAction prototype = (IAction)((JComboBox)e.getSource()).getSelectedItem();
+                IAction action = prototype.getClass().newInstance();
+                JAction newJAction = new JAction(action);
+                JPanel parent = (JPanel)jAction.getParent();
+                parent.remove(jAction);
+                parent.add(newJAction);
+                parent.revalidate();
+                parent.repaint(); // because of removed component
+            } catch (InstantiationException ex) {
+                ex.printStackTrace();
+                System.exit(1);
+            } catch (IllegalAccessException ex) {
+                ex.printStackTrace();
+                System.exit(1);
+                //Logger.getLogger(JCondition.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
     }
-    */
 }

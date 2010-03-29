@@ -10,7 +10,6 @@ import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
 import java.util.IdentityHashMap;
 import java.util.List;
 import javax.swing.JPanel;
@@ -21,20 +20,11 @@ import javax.swing.border.TitledBorder;
  *
  * @author tam
  */
-public class JTargetPicker extends JPanel implements ActionListener {
+public class JTargetPicker extends JPanel {
+    
     private IdentityHashMap<JToggleButton,RelativeCoordinate> targets;
 
-    public List<RelativeCoordinate> getTargetList() {
-        List<RelativeCoordinate> ret = new ArrayList<RelativeCoordinate>(1);
-        for (JToggleButton btn : targets.keySet()) {
-            if (btn.isSelected()) {
-                System.out.println("selected " + targets.get(btn));
-            }
-        }
-        return ret;
-    }
-
-    public JTargetPicker() {
+    public JTargetPicker(List<RelativeCoordinate> directions) {
         setLayout(new GridLayout(3, 3));
         setBorder(new TitledBorder("targets"));
 
@@ -79,16 +69,33 @@ public class JTargetPicker extends JPanel implements ActionListener {
         // TODO evaluate if needed
         for (JToggleButton b : targets.keySet()) {
             b.setPreferredSize(new Dimension(25, 25));
-            b.addActionListener(this);
+            b.setMaximumSize(b.getPreferredSize());
+            b.setMinimumSize(b.getPreferredSize());
+            b.addActionListener(new TargetActionListener(directions));
+            for (RelativeCoordinate rc : directions) {
+                if (rc == this.targets.get(b)) {
+                   b.setSelected(true);
+                }
+            }
         }
-
-        setMaximumSize(new Dimension(90, 110));
     }
 
-    public void actionPerformed(ActionEvent e) {
-        for (JToggleButton btn : targets.keySet()) {
-            if (e.getSource() == btn) {
-                // nop
+    private class TargetActionListener implements ActionListener {
+        private List<RelativeCoordinate> directions;
+
+        public TargetActionListener(List<RelativeCoordinate> directions) {
+            this.directions = directions;
+        }
+        
+        public void actionPerformed(ActionEvent e) {
+            JToggleButton actionButton = (JToggleButton)e.getSource();
+            RelativeCoordinate actionCoordinate = targets.get(actionButton);
+            if (actionButton.isSelected()) {
+                if (this.directions.contains(actionCoordinate) == false) {
+                    this.directions.add(actionCoordinate);
+                }
+            } else {
+                this.directions.remove(actionCoordinate);
             }
         }
     }

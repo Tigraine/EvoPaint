@@ -3,16 +3,11 @@
  * and open the template in the editor.
  */
 
-package evopaint.pixel.rulebased;
+package evopaint.pixel.rulebased.util;
 
 import evopaint.pixel.rulebased.interfaces.INamed;
 import evopaint.util.logging.Logger;
-import java.awt.Component;
 import javax.swing.DefaultComboBoxModel;
-import javax.swing.DefaultListCellRenderer;
-import javax.swing.JLabel;
-import javax.swing.JList;
-import javax.swing.ListCellRenderer;
 
 /**
  *

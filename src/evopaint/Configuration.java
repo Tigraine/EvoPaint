@@ -20,7 +20,7 @@ import evopaint.pixel.rulebased.conditions.EnergyCondition;
 import evopaint.pixel.rulebased.interfaces.IAction;
 import evopaint.pixel.rulebased.interfaces.ICondition;
 import evopaint.pixel.rulebased.interfaces.IRule;
-import evopaint.pixel.rulebased.NumberComparisonOperator;
+import evopaint.pixel.rulebased.util.NumberComparisonOperator;
 import evopaint.pixel.rulebased.conditions.EmptyCondition;
 import evopaint.util.RandomNumberGeneratorWrapper;
 import evopaint.util.logging.Logger;

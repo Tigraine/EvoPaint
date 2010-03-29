@@ -5,10 +5,10 @@
 
 package evopaint.pixel.rulebased.conditions;
 
-import evopaint.pixel.rulebased.NumberComparisonOperator;
+import evopaint.pixel.rulebased.util.NumberComparisonOperator;
 import evopaint.pixel.rulebased.AbstractCondition;
 import evopaint.World;
-import evopaint.gui.ruleseteditor.NamedObjectListCellRenderer;
+import evopaint.gui.ruleseteditor.util.NamedObjectListCellRenderer;
 import evopaint.pixel.Pixel;
 import evopaint.util.mapping.RelativeCoordinate;
 import java.awt.Dimension;
@@ -65,7 +65,6 @@ public class EnergyCondition extends AbstractCondition {
         ret += comparisonOperator.toString();
         ret += " ";
         ret += energyValue;
-        ret += "?";
         return ret;
     }
 
@@ -85,19 +84,17 @@ public class EnergyCondition extends AbstractCondition {
 
         JComboBox comparisonComboBox = new JComboBox(NumberComparisonOperator.createComboBoxModel());
         comparisonComboBox.setRenderer(new NamedObjectListCellRenderer());
-        comparisonComboBox.setSelectedItem(comparisonOperator.toString());
+        comparisonComboBox.setSelectedItem(comparisonOperator);
         comparisonComboBox.addActionListener(new ComparisonListener());
-        //comparisonComboBox.setPreferredSize(new Dimension(50, 25));
         ret.put("Comparison", comparisonComboBox);
        
         SpinnerNumberModel spinnerModel = new SpinnerNumberModel(energyValue, 0, Integer.MAX_VALUE, 1);
         JSpinner energyValueSpinner = new JSpinner(spinnerModel);
         energyValueSpinner.addChangeListener(new ValueListener());
-        //energyValueSpinner.setPreferredSize(new Dimension(50, 25));
+        // getting too big because Integer.MAX_VALUE can get pretty long, so let's cut it off
+        energyValueSpinner.setPreferredSize(new Dimension(100, energyValueSpinner.getPreferredSize().height));
         final JFormattedTextField spinnerText = ((JSpinner.DefaultEditor)energyValueSpinner.getEditor()).getTextField();
-
         spinnerText.addFocusListener(new FocusListener() {
-
             public void focusGained(FocusEvent e) {
                 SwingUtilities.invokeLater(new Runnable() { // only seems to work this way
                         public void run() {
@@ -105,7 +102,6 @@ public class EnergyCondition extends AbstractCondition {
                         }
                 });
             }
-
             public void focusLost(FocusEvent e) {}
         });
         ret.put("Value", energyValueSpinner);

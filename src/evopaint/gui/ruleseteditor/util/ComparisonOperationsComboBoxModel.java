@@ -3,9 +3,9 @@
  * and open the template in the editor.
  */
 
-package evopaint.gui.ruleseteditor;
+package evopaint.gui.ruleseteditor.util;
 
-import evopaint.pixel.rulebased.NumberComparisonOperator;
+import evopaint.pixel.rulebased.util.NumberComparisonOperator;
 import javax.swing.DefaultComboBoxModel;
 
 /**

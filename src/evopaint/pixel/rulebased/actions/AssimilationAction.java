@@ -7,11 +7,16 @@ package evopaint.pixel.rulebased.actions;
 
 import evopaint.pixel.rulebased.AbstractAction;
 import evopaint.World;
+import evopaint.gui.ruleseteditor.util.DimensionsListener;
 import evopaint.pixel.ColorDimensions;
 import evopaint.pixel.Pixel;
 import evopaint.util.mapping.RelativeCoordinate;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import javax.swing.JComponent;
+import javax.swing.JPanel;
+import javax.swing.JToggleButton;
 
 /**
  *
@@ -19,25 +24,25 @@ import java.util.List;
  */
 public class AssimilationAction extends AbstractAction {
 
-    private ColorDimensions dimensionsToMix;
+    private ColorDimensions dimensions;
 
     public String getName() {
-        return "assimilate";
+        return "Assimilate";
     }
 
     public ColorDimensions getDimensionsToMix() {
-        return dimensionsToMix;
+        return dimensions;
     }
 
     public void setDimensionsToMix(ColorDimensions dimensionsToMix) {
-        this.dimensionsToMix = dimensionsToMix;
+        this.dimensions = dimensionsToMix;
     }
 
     @Override
     public String toString() {
         String ret = "assimilate(";
         ret += "in dimensions: ";
-        ret += dimensionsToMix;
+        ret += dimensions;
         ret += ", ";
         ret += super.toString();
         return ret;
@@ -47,19 +52,47 @@ public class AssimilationAction extends AbstractAction {
 
         for (RelativeCoordinate direction : getDirections()) {
             Pixel them = world.get(us.getLocation(), direction);
-            them.getPixelColor().mixWith(us.getPixelColor(), 0.5f, dimensionsToMix);
+            them.getPixelColor().mixWith(us.getPixelColor(), 0.5f, dimensions);
         }
 
         return getCost() * getDirections().size();
     }
 
-    public AssimilationAction(int reward, List<RelativeCoordinate> directions, ColorDimensions dimensionsToMix) {
+    public LinkedHashMap<String,JComponent> getParametersForGUI() {
+        LinkedHashMap<String,JComponent> ret = new LinkedHashMap<String,JComponent>();
+
+        JPanel dimensionsPanel = new JPanel();
+        JToggleButton btnH = new JToggleButton("H");
+        JToggleButton btnS = new JToggleButton("S");
+        JToggleButton btnB = new JToggleButton("B");
+        DimensionsListener dimensionsListener = new DimensionsListener(dimensions, btnH, btnS, btnB);
+        btnH.addActionListener(dimensionsListener);
+        btnS.addActionListener(dimensionsListener);
+        btnB.addActionListener(dimensionsListener);
+        if (dimensions.hue) {
+            btnH.setSelected(true);
+        }
+        if (dimensions.saturation) {
+            btnS.setSelected(true);
+        }
+        if (dimensions.brightness) {
+            btnB.setSelected(true);
+        }
+        dimensionsPanel.add(btnH);
+        dimensionsPanel.add(btnS);
+        dimensionsPanel.add(btnB);
+        ret.put("Dimensions", dimensionsPanel);
+
+        return ret;
+    }
+
+    public AssimilationAction(int reward, List<RelativeCoordinate> directions, ColorDimensions dimensions) {
         super(reward, directions);
-        this.dimensionsToMix = dimensionsToMix;
+        this.dimensions = dimensions;
     }
 
     public AssimilationAction() {
         super(0, new ArrayList<RelativeCoordinate>(9));
-        this.dimensionsToMix = new ColorDimensions(true, true, true);
+        this.dimensions = new ColorDimensions(true, true, true);
     }
 }

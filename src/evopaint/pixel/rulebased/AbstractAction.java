@@ -44,7 +44,7 @@ public abstract class AbstractAction implements IAction, INamed {
         for (Iterator<RelativeCoordinate> ii = directions.iterator(); ii.hasNext();) {
             ret += ii.next().toString();
             if (ii.hasNext()) {
-                ret += " & ";
+                ret += ", ";
             }
         }
         ret += "] ";

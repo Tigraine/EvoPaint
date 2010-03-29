@@ -6,8 +6,8 @@
 package evopaint.pixel.rulebased.conditions;
 
 import evopaint.World;
-import evopaint.gui.ruleseteditor.NamedObjectListCellRenderer;
-import evopaint.pixel.rulebased.ObjectComparisonOperator;
+import evopaint.gui.ruleseteditor.util.NamedObjectListCellRenderer;
+import evopaint.pixel.rulebased.util.ObjectComparisonOperator;
 import evopaint.pixel.rulebased.AbstractCondition;
 import evopaint.pixel.Pixel;
 import evopaint.util.mapping.RelativeCoordinate;
@@ -68,9 +68,6 @@ public class EmptyCondition extends AbstractCondition {
         comparisonComboBox.setRenderer(new NamedObjectListCellRenderer());
         comparisonComboBox.setSelectedItem(comparisonOperator);
         comparisonComboBox.addActionListener(new ComparisonListener());
-        //comparisonComboBox.setMaximumSize(new Dimension(60, 25));
-        //comparisonComboBox.setMinimumSize(new Dimension(60, 25));
-        //comparisonComboBox.setPreferredSize(new Dimension(60, 25));
         ret.put("Comparison", comparisonComboBox);
 
         return ret;

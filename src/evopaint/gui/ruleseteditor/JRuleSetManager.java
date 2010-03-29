@@ -58,5 +58,7 @@ public class JRuleSetManager extends JFrame {
         scrollPaneForRuleSetBrowser.setMinimumSize(new Dimension(100, 0));
 
         add(splitPane);
+
+        setPreferredSize(new Dimension(1100,600));
     }
 }

@@ -6,8 +6,11 @@
 package evopaint.gui.ruleseteditor;
 
 import evopaint.pixel.rulebased.interfaces.IRule;
+import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Insets;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JLabel;
@@ -31,65 +34,32 @@ public class JRuleEditor extends JPanel {
 
     public JRuleEditor(IRule rule) {
         this.rule = rule;
-        GridBagConstraints constraints = new GridBagConstraints();
-        constraints.fill = GridBagConstraints.NONE;
-        constraints.gridx = 0;
-        constraints.gridy = 0;
-        constraints.weightx = 0;
-        constraints.weighty = 0;
-        constraints.gridwidth = 4;
-        constraints.gridheight = 1;
-        GridBagLayout layout = new GridBagLayout();
-        layout.setConstraints(this, constraints);
-        //setLayout(layout);
-        setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
+        
+        setLayout(new BorderLayout());
         setBorder(new TitledBorder("Edit Rule"));
 
-        add(Box.createHorizontalStrut(20));
+        JPanel fuckingWrapper = new JPanel();
+        fuckingWrapper.setLayout(new GridBagLayout());
+        add(fuckingWrapper, BorderLayout.WEST);
+
+        GridBagConstraints constraints = new GridBagConstraints();
+        constraints.anchor = GridBagConstraints.WEST;
+        constraints.insets = new Insets(10, 10, 10, 10);
+
         JLabel labelIf = new JLabel("<html><b>&nbsp;IF&nbsp;</b><html>", JLabel.CENTER);
-        add(labelIf);
+        constraints.gridx = 0;
+        fuckingWrapper.add(labelIf, constraints);
 
         JConditionList jConditionList = new JConditionList(rule.getConditions());
-        add(jConditionList);
+        constraints.gridx = 1;
+        fuckingWrapper.add(jConditionList, constraints);
 
+        constraints.gridx = 2;
+        fuckingWrapper.add(new JLabel("<html><b>&nbsp;THEN&nbsp;</b><html>", JLabel.CENTER), constraints);
 
-        add(new JLabel("<html><b>&nbsp;THEN&nbsp;</b><html>", JLabel.CENTER));
-
-
-        // actions
-        /* // code for multiple actions
-        JPanel panelForActionsWrapper = new JPanel();
-        panelForActionsWrapper.setLayout(new BoxLayout(panelForActionsWrapper, BoxLayout.Y_AXIS));
-        add(panelForActionsWrapper);
-
-        JPanel panelForActions = new JPanel();
-        panelForActions.setLayout(new BoxLayout(panelForActions, BoxLayout.Y_AXIS));
-        panelForActionsWrapper.add(panelForActions);
-
-        JButton buttonANDAction = new JButton("AND");
-        buttonANDAction.addActionListener(new AddActionButtonListener(panelForActions));
-        panelForActionsWrapper.add(buttonANDAction);
-
-        JAction jAction = new JAction(actions);
-        panelForActions.add(jAction);
-        */
-        
-        add(new JAction(rule.getAction()));
-        add(Box.createHorizontalStrut(20));
+        constraints.gridx = 3;
+        constraints.ipadx = 8;
+        constraints.ipady = 8;
+        fuckingWrapper.add(new JAction(rule.getAction()), constraints);
     }
-
-    /* // for multiple actions
-    private class AddActionButtonListener implements ActionListener {
-        private JPanel panelForActions;
-
-        public AddActionButtonListener(JPanel panelForActions) {
-            this.panelForActions = panelForActions;
-        }
-
-        public void actionPerformed(ActionEvent e) {
-            this.panelForActions.add(new JAction(actions));
-        }
-    }
-    */
-
 }

@@ -5,6 +5,7 @@
 
 package evopaint.pixel.rulebased;
 
+import evopaint.pixel.rulebased.util.NumberComparisonOperator;
 import evopaint.World;
 import evopaint.pixel.Pixel;
 import evopaint.pixel.rulebased.conditions.EnergyCondition;

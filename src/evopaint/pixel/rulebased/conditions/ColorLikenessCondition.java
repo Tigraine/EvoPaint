@@ -8,15 +8,15 @@ package evopaint.pixel.rulebased.conditions;
 import evopaint.Configuration;
 import evopaint.pixel.rulebased.AbstractCondition;
 import evopaint.World;
+import evopaint.gui.ruleseteditor.util.DimensionsListener;
 import evopaint.gui.ruleseteditor.JRuleSetManager;
-import evopaint.gui.ruleseteditor.NamedObjectListCellRenderer;
+import evopaint.gui.ruleseteditor.util.NamedObjectListCellRenderer;
 import evopaint.pixel.ColorDimensions;
 import evopaint.pixel.Pixel;
 import evopaint.pixel.PixelColor;
-import evopaint.pixel.rulebased.NumberComparisonOperator;
+import evopaint.pixel.rulebased.util.NumberComparisonOperator;
 import evopaint.util.mapping.RelativeCoordinate;
 import java.awt.Color;
-import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
@@ -128,7 +128,7 @@ public class ColorLikenessCondition extends AbstractCondition {
         JToggleButton btnH = new JToggleButton("H");
         JToggleButton btnS = new JToggleButton("S");
         JToggleButton btnB = new JToggleButton("B");
-        DimensionsListener dimensionsListener = new DimensionsListener(btnH, btnS, btnB);
+        DimensionsListener dimensionsListener = new DimensionsListener(dimensions, btnH, btnS, btnB);
         btnH.addActionListener(dimensionsListener);
         btnS.addActionListener(dimensionsListener);
         btnB.addActionListener(dimensionsListener);
@@ -187,49 +187,6 @@ public class ColorLikenessCondition extends AbstractCondition {
         this.comparedColor = new PixelColor(0, 0, 0);
         this.compareToLikenessPercentage = 0;
         this.dimensions = new ColorDimensions(true, true, true);
-    }
-
-    private class DimensionsListener implements ActionListener {
-        private JToggleButton btnH;
-        private JToggleButton btnS;
-        private JToggleButton btnB;
-
-        public DimensionsListener(JToggleButton btnH, JToggleButton btnS, JToggleButton btnB) {
-            this.btnH = btnH;
-            this.btnS = btnS;
-            this.btnB = btnB;
-        }
-
-        public void actionPerformed(ActionEvent e) {
-            JToggleButton source = (JToggleButton)e.getSource();
-
-            if (source == this.btnH) {
-                if (this.btnH.isSelected()) {
-                    dimensions.hue = true;
-                } else {
-                    dimensions.hue = false;
-                }
-                return;
-            }
-
-            if (source == this.btnS) {
-                if (this.btnS.isSelected()) {
-                    dimensions.saturation = true;
-                } else {
-                    dimensions.saturation = false;
-                }
-                return;
-            }
-
-            if (source == this.btnB) {
-                if (this.btnB.isSelected()) {
-                    dimensions.brightness = true;
-                } else {
-                    dimensions.brightness = false;
-                }
-                return;
-            }
-        }
     }
 
     private class ColorListener implements MouseListener {

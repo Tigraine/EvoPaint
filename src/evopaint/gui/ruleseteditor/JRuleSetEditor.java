@@ -33,12 +33,7 @@ public class JRuleSetEditor extends JPanel {
         add(scrollPaneForRuleList);
 
         JRuleEditor jRuleEditor = new JRuleEditor(ruleSet.getRules().get(0));
-        //JScrollPane scrollPaneForRuleEditor = new JScrollPane(jRuleEditor,
-        //        JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
-        //        JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-        //scrollPaneForRuleEditor.setBorder(new TitledBorder("Edit Rule"));
-        //scrollPaneForRuleEditor.setBackground(getBackground());
-        //scrollPaneForRuleEditor.setWheelScrollingEnabled(true);
+
         add(jRuleEditor);
     }
 }

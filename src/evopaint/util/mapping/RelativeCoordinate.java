@@ -64,19 +64,19 @@ public class RelativeCoordinate extends Coordinate {
         super(x, y);
         switch (x) {
             case -1: switch(y) {
-                case -1: name = "north west"; break;
-                case 0: name = "west"; break;
-                case 1: name = "south west"; break;
+                case -1: name = "NW"; break;
+                case 0: name = "W"; break;
+                case 1: name = "SW"; break;
             } break;
             case 0: switch(y) {
-                case -1: name = "north"; break;
-                case 0: name = "self"; break;
-                case 1: name = "south"; break;
+                case -1: name = "N"; break;
+                case 0: name = "*"; break;
+                case 1: name = "S"; break;
             } break;
             case 1: switch(y) {
-                case -1: name = "north east"; break;
-                case 0: name = "east"; break;
-                case 1: name = "south east"; break;
+                case -1: name = "NE"; break;
+                case 0: name = "E"; break;
+                case 1: name = "SE"; break;
             } break;
         }
     }

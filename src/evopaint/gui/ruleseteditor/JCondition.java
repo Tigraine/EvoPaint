@@ -5,10 +5,12 @@
 
 package evopaint.gui.ruleseteditor;
 
+import evopaint.gui.ruleseteditor.util.NamedObjectListCellRenderer;
 import evopaint.Configuration;
 import evopaint.pixel.rulebased.interfaces.ICondition;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.LinkedHashMap;
@@ -19,6 +21,7 @@ import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JToggleButton;
+import javax.swing.border.BevelBorder;
 import javax.swing.border.SoftBevelBorder;
 import javax.swing.border.TitledBorder;
 
@@ -30,25 +33,19 @@ public class JCondition extends JPanel {
     private ICondition condition;
     private JPanel expandedPanel;
     private JPanel collapsedPanel;
-    private JConditionList jConditionList;
+    //private JConditionList jConditionList;
     JPanel panelParameters;
-    private boolean expanded;
 
     public ICondition getCondition() {
         return condition;
     }
 
-    public boolean isExpanded() {
-        return expanded;
-    }
-
-    public void setExpanded(boolean expanded) {
-        this.expanded = expanded;
-    }
-
-    public JCondition(final ICondition condition, final JConditionList jConditionList) {
+    public JCondition(final ICondition condition,
+            ActionListener expansionListener,
+            ActionListener replaceListener,
+            ActionListener deleteListener) {
         this.condition = condition;
-        this.jConditionList = jConditionList;
+        //this.jConditionList = jConditionList;
 
         setLayout(new GridBagLayout());
         GridBagConstraints constraints = new GridBagConstraints();
@@ -59,29 +56,24 @@ public class JCondition extends JPanel {
         collapsedPanel.setLayout(getLayout());
         add(collapsedPanel, constraints);
         JToggleButton expandButton = new JToggleButton(condition.toString());
-        expandButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                if (((JToggleButton)e.getSource()).isSelected()) {
-                    jConditionList.collapseAll();
-                    expand();
-                } else {
-                    collapse();
-                }
-            }
-        });
+        expandButton.addActionListener(expansionListener);
         collapsedPanel.add(expandButton);
         JButton deleteButtonCollapsed = new JButton("X");
-        deleteButtonCollapsed.addActionListener(new DeleteButtonListener(this));
+        deleteButtonCollapsed.addActionListener(deleteListener);
         collapsedPanel.add(deleteButtonCollapsed);
 
         expandedPanel = new JPanel();
         //expandedPanel.setLayout(new BoxLayout(expandedPanel, BoxLayout.Y_AXIS));
         expandedPanel.setLayout(new GridBagLayout());
-        expandedPanel.setBorder(new SoftBevelBorder(SoftBevelBorder.RAISED));
+        expandedPanel.setBorder(new BevelBorder(BevelBorder.RAISED));
 
         constraints.gridx = 0;
         constraints.gridy = 1;
+        constraints.ipadx = 8;
+        constraints.ipady = 8;
         add(expandedPanel, constraints);
+        constraints.ipadx = 0;
+        constraints.ipady = 0;
 
         // do the combo box magic
         DefaultComboBoxModel model = new DefaultComboBoxModel();
@@ -111,9 +103,9 @@ public class JCondition extends JPanel {
 
         JComboBox comboBoxConditions = new JComboBox(model);
         comboBoxConditions.setRenderer(new NamedObjectListCellRenderer());
-
+        //comboBoxConditions.setMinimumSize(new Dimension(25, 25));
         comboBoxConditions.setSelectedItem(selection);
-        comboBoxConditions.addActionListener(new ComboBoxConditionsListener(this));
+        comboBoxConditions.addActionListener(replaceListener);
         constraints.gridx = 0;
         constraints.gridy = 0;
         constraints.gridwidth = 2;
@@ -124,7 +116,7 @@ public class JCondition extends JPanel {
         constraints.gridwidth = 1;
         constraints.gridx = 0;
         constraints.gridy = 1;
-        expandedPanel.add(new JTargetPicker(), constraints);
+        expandedPanel.add(new JTargetPicker(condition.getDirections()), constraints);
 
         panelParameters = new JPanel();
         panelParameters.setBorder(new TitledBorder("Parameters"));
@@ -134,12 +126,17 @@ public class JCondition extends JPanel {
         expandedPanel.add(panelParameters, constraints);
 
         LinkedHashMap<String,JComponent> parameters = condition.getParametersForGUI();
-        
+
+        constraints.gridx = 0;
         constraints.gridy = 0;
+        constraints.anchor = GridBagConstraints.WEST;
+        constraints.fill = GridBagConstraints.BOTH;
         for (String string : parameters.keySet()) {
             constraints.gridx = 0;
-            panelParameters.add(new JLabel(string), constraints);
+            constraints.insets = new Insets(0, 0, 5, 10);
+            panelParameters.add(new JLabel(string + ":"), constraints);
             constraints.gridx = 1;
+            constraints.insets = new Insets(0, 0, 5, 0);
             panelParameters.add(parameters.get(string), constraints);
             constraints.gridy = constraints.gridy + 1;
         }
@@ -148,66 +145,21 @@ public class JCondition extends JPanel {
     }
 
     public void collapse() {
-        expanded = false;
-        if (((JToggleButton)collapsedPanel.getComponent(0)).isSelected()) {
-            ((JToggleButton)collapsedPanel.getComponent(0)).setSelected(false);
+        JToggleButton ruleButton = (JToggleButton)collapsedPanel.getComponent(0);
+        ruleButton.setText(condition.toString());
+        if (ruleButton.isSelected()) {
+            ruleButton.setSelected(false);
         }
+        //remove(expandedPanel);
         expandedPanel.setVisible(false);
-        //revalidate();
+        revalidate();
     }
 
     public void expand() {
-        expanded = true;
+        if (((JToggleButton)collapsedPanel.getComponent(0)).isSelected() == false) {
+            ((JToggleButton)collapsedPanel.getComponent(0)).setSelected(true);
+        }
         expandedPanel.setVisible(true);
-        //collapsedPanel.revalidate();
-        //expandedPanel.revalidate();
-        //revalidate();
-        //((JPanel)getParent()).revalidate();
-        //SwingUtilities.getWindowAncestor(this).pack();
-        // ^ this is way better than v
-        //((JFrame)getParent().getParent().getParent().getParent().getParent().getParent()).pack();
+        revalidate();
     }
-
-    private class DeleteButtonListener implements ActionListener {
-        private JCondition jCondition;
-
-        public DeleteButtonListener(JCondition jCondition) {
-            this.jCondition = jCondition;
-        }
-        
-        public void actionPerformed(ActionEvent e) {
-            jConditionList.removeCondition(this.jCondition);
-            jConditionList.revalidate();
-        }
-    }
-
-    private class ComboBoxConditionsListener implements ActionListener {
-        private JCondition jCondition;
-
-        public ComboBoxConditionsListener(JCondition jCondition) {
-            this.jCondition = jCondition;
-        }
-
-        public void actionPerformed(ActionEvent e) {
-            try {
-                ICondition prototype = (ICondition)((JComboBox)e.getSource()).getSelectedItem();
-                ICondition condition = prototype.getClass().newInstance();
-                ((JToggleButton) collapsedPanel.getComponent(0)).setText(condition.toString());
-                JCondition newJCondition = new JCondition(condition, jConditionList);
-                ((JConditionList) getParent()).replaceCondition(jCondition, newJCondition);
-                newJCondition.expand();
-                jConditionList.revalidate();
-            } catch (InstantiationException ex) {
-                ex.printStackTrace();
-                System.exit(1);
-            } catch (IllegalAccessException ex) {
-                ex.printStackTrace();
-                System.exit(1);
-                //Logger.getLogger(JCondition.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }
-    }
-
-    
-    
 }
