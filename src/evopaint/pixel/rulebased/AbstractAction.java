@@ -10,6 +10,7 @@ import evopaint.pixel.Pixel;
 import evopaint.pixel.rulebased.interfaces.IAction;
 import evopaint.pixel.rulebased.interfaces.INamed;
 import evopaint.util.mapping.RelativeCoordinate;
+import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
 

@@ -8,6 +8,7 @@ package evopaint.pixel.rulebased.interfaces;
 import evopaint.World;
 import evopaint.pixel.Pixel;
 import evopaint.util.mapping.RelativeCoordinate;
+import java.io.Serializable;
 import java.util.LinkedHashMap;
 import java.util.List;
 import javax.swing.JComponent;
@@ -16,7 +17,7 @@ import javax.swing.JComponent;
  *
  * @author tam
  */
-public interface IAction extends INamed {
+public interface IAction extends INamed, Serializable {
     public int getCost();
     public void setCost(int cost);
     public List<RelativeCoordinate> getDirections();

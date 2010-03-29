@@ -7,8 +7,10 @@ package evopaint.gui.ruleseteditor;
 
 import evopaint.pixel.rulebased.interfaces.IRule;
 import evopaint.pixel.rulebased.RuleSet;
-import java.awt.Dimension;
+import java.awt.Component;
+import javax.swing.DefaultListCellRenderer;
 import javax.swing.DefaultListModel;
+import javax.swing.JLabel;
 import javax.swing.JList;
 
 /**
@@ -22,10 +24,11 @@ public class JRuleList extends JList {
         listModel = new DefaultListModel();
 
         for (IRule rule : ruleSet.getRules()) {
-            listModel.addElement(rule.toString());
+            listModel.addElement(rule);
         }
 
         setModel(listModel);
+        setCellRenderer(new RuleCellRenderer());
         //setVisibleRowCount(5);
 
         
@@ -34,5 +37,22 @@ public class JRuleList extends JList {
         //setAlignmentX(Component.CENTER_ALIGNMENT);
         //setBorder(new TitledBorder("Ruleset"));
         //set
+
+
+    }
+
+    private class RuleCellRenderer extends DefaultListCellRenderer {
+        @Override
+        public Component getListCellRendererComponent(
+                                           JList list,
+                                           Object value,
+                                           int index,
+                                           boolean isSelected,
+                                           boolean cellHasFocus) {
+
+            JLabel ret = (JLabel)super.getListCellRendererComponent(list, ((IRule)value).toString(), index, isSelected, cellHasFocus);
+
+            return ret;
+        }
     }
 }

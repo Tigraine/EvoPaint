@@ -5,11 +5,13 @@
 
 package evopaint.util.mapping;
 
+import java.io.Serializable;
+
 /**
  *
  * @author tam
  */
-public class Coordinate {
+public class Coordinate implements Serializable {
     public int x;
     public int y;
 

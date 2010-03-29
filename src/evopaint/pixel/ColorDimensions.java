@@ -5,11 +5,13 @@
 
 package evopaint.pixel;
 
+import java.io.Serializable;
+
 /**
  *
  * @author tam
  */
-public class ColorDimensions {
+public class ColorDimensions implements Serializable {
     public boolean hue;
     public boolean saturation;
     public boolean brightness;

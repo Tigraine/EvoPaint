@@ -5,7 +5,6 @@
 
 package evopaint.pixel.rulebased;
 
-import evopaint.pixel.State;
 import evopaint.pixel.rulebased.interfaces.IRule;
 import java.util.List;
 
@@ -15,9 +14,8 @@ import java.util.List;
  */
 public class RuleSet {
     private String name;
+    private String description;
     private List<IRule> rules;
-    private List<State> availableStates;
-    private State initialState;
 
     public String getName() {
         return name;
@@ -36,6 +34,14 @@ public class RuleSet {
         return ret;
     }
 
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
     public List<IRule> getRules() {
         return rules;
     }
@@ -44,33 +50,15 @@ public class RuleSet {
         this.rules = rules;
     }
 
-    public List<State> getAvailableStates() {
-        return availableStates;
-    }
-
-    public void setAvailableStates(List<State> availableStates) {
-        this.availableStates = availableStates;
-    }
-
-    public State getInitialState() {
-        return initialState;
-    }
-
-    public void setInitialState(State initialState) {
-        this.initialState = initialState;
-    }
-
-    public RuleSet(String name, List<IRule> rules, List<State> availableStates, State initialState) {
+    public RuleSet(String name, String description, List<IRule> rules) {
         this.name = name;
+        this.description = description;
         this.rules = rules;
-        this.availableStates = availableStates;
-        this.initialState = initialState;
     }
 
     public RuleSet(RuleSet ruleSet) {
         this.name = ruleSet.name;
+        this.description = ruleSet.description;
         this.rules = ruleSet.rules;
-        this.availableStates = ruleSet.availableStates;
-        this.initialState = ruleSet.initialState;
     }
 }

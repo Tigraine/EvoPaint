@@ -6,35 +6,38 @@
 package evopaint.pixel.rulebased.util;
 
 import evopaint.pixel.rulebased.interfaces.INamed;
-import evopaint.util.logging.Logger;
-import java.awt.Component;
+import java.io.Serializable;
 import javax.swing.DefaultComboBoxModel;
-import javax.swing.DefaultListCellRenderer;
-import javax.swing.JLabel;
-import javax.swing.JList;
-import javax.swing.ListCellRenderer;
 
 /**
  *
  * @author tam
  */
-public class ObjectComparisonOperator implements INamed {
-    private static final int TYPE_EQUAL = 0;
-    private static final int TYPE_NOT_EQUAL = 1;
+public class ObjectComparisonOperator implements INamed, Serializable {
+    public static final int TYPE_EQUAL = 0;
+    public static final int TYPE_NOT_EQUAL = 1;
     
-    public static final ObjectComparisonOperator EQUAL = new ObjectComparisonOperator(TYPE_EQUAL, "==");
-    public static final ObjectComparisonOperator NOT_EQUAL = new ObjectComparisonOperator(TYPE_NOT_EQUAL, "!=");
+    public static final ObjectComparisonOperator EQUAL = new ObjectComparisonOperator(TYPE_EQUAL);
+    public static final ObjectComparisonOperator NOT_EQUAL = new ObjectComparisonOperator(TYPE_NOT_EQUAL);
 
     private int type;
-    private String name;
 
-    public String getName() {
-        return name;
+    public int getType() {
+        return type;
     }
 
+    public String getName() {
+        return toString();
+    }
+    
     @Override
     public String toString() {
-        return name;
+        switch (this.type) {
+            case TYPE_EQUAL: return "==";
+            case TYPE_NOT_EQUAL: return "!=";
+        }
+        assert(false);
+        return null;
     }
 
     public boolean compare(Object a, Object b) {
@@ -42,7 +45,7 @@ public class ObjectComparisonOperator implements INamed {
             case TYPE_EQUAL: return a == b; // this is an ObjectID comparison
             case TYPE_NOT_EQUAL: return a != b; // this is an ObjectID comparison
         }
-        Logger.log.error("tried to compare with unknown type", new Object());
+        assert(false);
         return false;
     }
 
@@ -53,8 +56,16 @@ public class ObjectComparisonOperator implements INamed {
         return ret;
     }
 
-    private ObjectComparisonOperator(int type, String name) {
+    // preserve singleton through serialization
+    public Object readResolve() {
+        switch (this.type) {
+            case TYPE_EQUAL: return ObjectComparisonOperator.TYPE_EQUAL;
+            case TYPE_NOT_EQUAL: return ObjectComparisonOperator.TYPE_NOT_EQUAL;
+        }
+        return null;
+    }
+
+    private ObjectComparisonOperator(int type) {
         this.type = type;
-        this.name = name;
     }
 }

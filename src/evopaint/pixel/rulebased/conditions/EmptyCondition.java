@@ -11,7 +11,6 @@ import evopaint.pixel.rulebased.util.ObjectComparisonOperator;
 import evopaint.pixel.rulebased.AbstractCondition;
 import evopaint.pixel.Pixel;
 import evopaint.util.mapping.RelativeCoordinate;
-import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;

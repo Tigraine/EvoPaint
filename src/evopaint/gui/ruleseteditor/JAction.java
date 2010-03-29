@@ -8,26 +8,22 @@ package evopaint.gui.ruleseteditor;
 import evopaint.gui.ruleseteditor.util.NamedObjectListCellRenderer;
 import evopaint.Configuration;
 import evopaint.gui.util.AutoSelectOnFocusSpinner;
+import evopaint.pixel.rulebased.actions.NoAction;
 import evopaint.pixel.rulebased.interfaces.IAction;
-import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
 import java.util.LinkedHashMap;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
-import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
-import javax.swing.SwingUtilities;
 import javax.swing.border.BevelBorder;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.ChangeEvent;
@@ -68,10 +64,14 @@ public class JAction extends JPanel implements ActionListener {
         constraints.fill = GridBagConstraints.HORIZONTAL;
         add(comboBoxActions, constraints);
 
+        if (action instanceof NoAction) {
+            return;
+        }
+
         JPanel panelParameters = new JPanel();
         panelParameters.setBorder(new TitledBorder("Parameters"));
         panelParameters.setLayout(new GridBagLayout());
-        constraints.gridx = 1;
+        constraints.gridx = 0;
         constraints.gridy = 1;
         constraints.gridwidth = 1;
         add(panelParameters, constraints);
@@ -103,7 +103,7 @@ public class JAction extends JPanel implements ActionListener {
 
         constraints.fill = GridBagConstraints.NONE;
         constraints.gridwidth = 1;
-        constraints.gridx = 0;
+        constraints.gridx = 1;
         constraints.gridy = 1;
         add(new JTargetPicker(action.getDirections()), constraints);
     }

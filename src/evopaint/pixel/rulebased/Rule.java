@@ -8,14 +8,15 @@ package evopaint.pixel.rulebased;
 import evopaint.pixel.rulebased.util.NumberComparisonOperator;
 import evopaint.World;
 import evopaint.pixel.Pixel;
+import evopaint.pixel.rulebased.actions.NoAction;
 import evopaint.pixel.rulebased.conditions.EnergyCondition;
 import evopaint.pixel.rulebased.interfaces.IRule;
 import evopaint.pixel.rulebased.interfaces.IAction;
 import evopaint.pixel.rulebased.interfaces.ICondition;
 import evopaint.util.mapping.RelativeCoordinate;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import javax.swing.RowFilter.ComparisonType;
 
 /**
  *
@@ -29,8 +30,16 @@ public class Rule implements IRule {
         return conditions;
     }
 
+    public void setConditions(List<ICondition> conditions) {
+        this.conditions = conditions;
+    }
+
     public IAction getAction() {
         return action;
+    }
+
+    public void setAction(IAction action) {
+        this.action = action;
     }
 
     @Override
@@ -93,5 +102,10 @@ public class Rule implements IRule {
     public Rule(List<ICondition> conditions, IAction action) {
         this.conditions = conditions;
         this.action = action;
+    }
+
+    public Rule() {
+        this.conditions = new ArrayList<ICondition>();
+        this.action = new NoAction();
     }
 }

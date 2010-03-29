@@ -5,11 +5,13 @@
 
 package evopaint.util.mapping;
 
+import java.io.Serializable;
+
 /**
  *
  * @author tam
  */
-public class AbsoluteCoordinate extends Coordinate {
+public class AbsoluteCoordinate extends Coordinate implements Serializable {
 
     @Override
     public String toString() {

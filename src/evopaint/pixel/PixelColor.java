@@ -9,6 +9,7 @@ package evopaint.pixel;
 
 import evopaint.interfaces.IRandomNumberGenerator;
 import java.awt.Color;
+import java.io.Serializable;
 
 // hsb color space is a cylinder with
 // radius = saturation, angle = hue and height = brightness
@@ -17,7 +18,7 @@ import java.awt.Color;
  *
  * @author tam
  */
-public class PixelColor {
+public class PixelColor implements Serializable {
     
     private float hue;
     private float saturation;
