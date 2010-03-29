@@ -10,6 +10,7 @@ import evopaint.pixel.rulebased.AbstractCondition;
 import evopaint.World;
 import evopaint.gui.ruleseteditor.util.DimensionsListener;
 import evopaint.gui.ruleseteditor.JRuleSetManager;
+import evopaint.gui.util.AutoSelectOnFocusSpinner;
 import evopaint.gui.ruleseteditor.util.NamedObjectListCellRenderer;
 import evopaint.pixel.ColorDimensions;
 import evopaint.pixel.Pixel;
@@ -19,8 +20,6 @@ import evopaint.util.mapping.RelativeCoordinate;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
@@ -31,7 +30,6 @@ import javax.swing.JColorChooser;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
-import javax.swing.JFormattedTextField;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.JToggleButton;
@@ -150,24 +148,11 @@ public class ColorLikenessCondition extends AbstractCondition {
         comparisonComboBox.setRenderer(new NamedObjectListCellRenderer());
         comparisonComboBox.setSelectedItem(comparisonOperator);
         comparisonComboBox.addActionListener(new ComparisonListener());
-        //comparisonComboBox.setPreferredSize(new Dimension(50, 25));
         ret.put("Comparison", comparisonComboBox);
 
         SpinnerNumberModel spinnerModel = new SpinnerNumberModel(compareToLikenessPercentage, 0, 100, 1);
-        JSpinner likenessPercentageSpinner = new JSpinner(spinnerModel);
-        final JFormattedTextField spinnerText = ((JSpinner.DefaultEditor)likenessPercentageSpinner.getEditor()).getTextField();
-        spinnerText.addFocusListener(new FocusListener() {
-            public void focusGained(FocusEvent e) {
-                SwingUtilities.invokeLater(new Runnable() { // only seems to work this way
-                        public void run() {
-                            spinnerText.selectAll();
-                        }
-                });
-            }
-            public void focusLost(FocusEvent e) {}
-        });
+        JSpinner likenessPercentageSpinner = new AutoSelectOnFocusSpinner(spinnerModel);
         likenessPercentageSpinner.addChangeListener(new PercentageListener());
-        //likenessPercentageSpinner.setPreferredSize(new Dimension(50, 25));
         ret.put("Likeness in %", likenessPercentageSpinner);
 
         return ret;

@@ -8,6 +8,7 @@ package evopaint.pixel.rulebased.conditions;
 import evopaint.pixel.rulebased.util.NumberComparisonOperator;
 import evopaint.pixel.rulebased.AbstractCondition;
 import evopaint.World;
+import evopaint.gui.util.AutoSelectOnFocusSpinner;
 import evopaint.gui.ruleseteditor.util.NamedObjectListCellRenderer;
 import evopaint.pixel.Pixel;
 import evopaint.util.mapping.RelativeCoordinate;
@@ -89,21 +90,8 @@ public class EnergyCondition extends AbstractCondition {
         ret.put("Comparison", comparisonComboBox);
        
         SpinnerNumberModel spinnerModel = new SpinnerNumberModel(energyValue, 0, Integer.MAX_VALUE, 1);
-        JSpinner energyValueSpinner = new JSpinner(spinnerModel);
+        JSpinner energyValueSpinner = new AutoSelectOnFocusSpinner(spinnerModel);
         energyValueSpinner.addChangeListener(new ValueListener());
-        // getting too big because Integer.MAX_VALUE can get pretty long, so let's cut it off
-        energyValueSpinner.setPreferredSize(new Dimension(100, energyValueSpinner.getPreferredSize().height));
-        final JFormattedTextField spinnerText = ((JSpinner.DefaultEditor)energyValueSpinner.getEditor()).getTextField();
-        spinnerText.addFocusListener(new FocusListener() {
-            public void focusGained(FocusEvent e) {
-                SwingUtilities.invokeLater(new Runnable() { // only seems to work this way
-                        public void run() {
-                            spinnerText.selectAll();
-                        }
-                });
-            }
-            public void focusLost(FocusEvent e) {}
-        });
         ret.put("Value", energyValueSpinner);
 
         return ret;

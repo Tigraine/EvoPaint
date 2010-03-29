@@ -3,6 +3,7 @@ package evopaint.gui;
 import evopaint.Brush;
 import evopaint.Configuration;
 import evopaint.gui.ruleseteditor.JRuleSetManager;
+import evopaint.gui.util.AutoSelectOnFocusSpinner;
 import evopaint.pixel.PixelColor;
 import evopaint.pixel.rulebased.RuleSet;
 import java.awt.Checkbox;
@@ -106,25 +107,10 @@ public class PaintOptionsPanel extends JPanel {
         panelBrushSize.add(labelForSpinner);
 
         SpinnerNumberModel spinnerModel = new SpinnerNumberModel(configuration.brush.getBrushSize(), 1, 100, 1);
-        JSpinner spinnerBrushSize = new JSpinner(spinnerModel);
+        JSpinner spinnerBrushSize = new AutoSelectOnFocusSpinner(spinnerModel);
         spinnerBrushSize.addChangeListener(new SpinnerBrushSizeListener(this, spinnerBrushSize));
         labelForSpinner.setLabelFor(spinnerBrushSize);
         panelBrushSize.add(spinnerBrushSize);
-        final JFormattedTextField spinnerText = ((JSpinner.DefaultEditor)spinnerBrushSize.getEditor()).getTextField();
-        spinnerText.addFocusListener(new FocusListener() {
-
-            public void focusGained(FocusEvent e) {
-                SwingUtilities.invokeLater(new Runnable() { // only seems to work this way
-                        public void run() {
-                            spinnerText.selectAll();
-                        }
-                });
-            }
-
-            public void focusLost(FocusEvent e) {
-                //throw new UnsupportedOperationException("Not supported yet.");
-            }
-        });
 
         // aaaand the ruleset
         JPanel panelRuleSet = new JPanel();

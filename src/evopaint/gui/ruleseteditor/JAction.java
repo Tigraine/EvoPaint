@@ -7,6 +7,7 @@ package evopaint.gui.ruleseteditor;
 
 import evopaint.gui.ruleseteditor.util.NamedObjectListCellRenderer;
 import evopaint.Configuration;
+import evopaint.gui.util.AutoSelectOnFocusSpinner;
 import evopaint.pixel.rulebased.interfaces.IAction;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
@@ -78,24 +79,11 @@ public class JAction extends JPanel implements ActionListener {
         LinkedHashMap<String,JComponent> parameters = action.getParametersForGUI();
 
         SpinnerNumberModel spinnerModel = new SpinnerNumberModel(action.getCost(), 0, Integer.MAX_VALUE, 1);
-        JSpinner costSpinner = new JSpinner(spinnerModel);
+        JSpinner costSpinner = new AutoSelectOnFocusSpinner(spinnerModel);
         costSpinner.addChangeListener(new ChangeListener() {
             public void stateChanged(ChangeEvent e) {
                 action.setCost((Integer) ((JSpinner) e.getSource()).getValue());
             }
-        });
-        // getting too big because Integer.MAX_VALUE can get pretty long, so let's cut it off
-        costSpinner.setPreferredSize(new Dimension(100, costSpinner.getPreferredSize().height));
-        final JFormattedTextField spinnerText = ((JSpinner.DefaultEditor)costSpinner.getEditor()).getTextField();
-        spinnerText.addFocusListener(new FocusListener() {
-            public void focusGained(FocusEvent e) {
-                SwingUtilities.invokeLater(new Runnable() { // only seems to work this way
-                        public void run() {
-                            spinnerText.selectAll();
-                        }
-                });
-            }
-            public void focusLost(FocusEvent e) {}
         });
         parameters.put("Cost per target", costSpinner);
 
