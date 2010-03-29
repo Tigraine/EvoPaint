@@ -97,7 +97,7 @@ public class JAction extends JPanel implements ActionListener {
             }
             public void focusLost(FocusEvent e) {}
         });
-        parameters.put("Cost", costSpinner);
+        parameters.put("Cost per target", costSpinner);
 
         constraints.gridx = 0;
         constraints.gridy = 1;
@@ -143,8 +143,14 @@ public class JAction extends JPanel implements ActionListener {
                 IAction action = prototype.getClass().newInstance();
                 JAction newJAction = new JAction(action);
                 JPanel parent = (JPanel)jAction.getParent();
+                GridBagConstraints constraints = new GridBagConstraints();
+                constraints.anchor = GridBagConstraints.WEST;
+                constraints.insets = new Insets(10, 10, 10, 10);
+                constraints.gridx = 3;
+                constraints.ipadx = 8;
+                constraints.ipady = 8;
                 parent.remove(jAction);
-                parent.add(newJAction);
+                parent.add(newJAction, constraints);
                 parent.revalidate();
                 parent.repaint(); // because of removed component
             } catch (InstantiationException ex) {
