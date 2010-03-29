@@ -48,16 +48,20 @@ public class JRuleEditor extends JPanel {
 
         JLabel labelIf = new JLabel("<html><b>&nbsp;IF&nbsp;</b><html>", JLabel.CENTER);
         constraints.gridx = 0;
+        constraints.gridy = 0;
         fuckingWrapper.add(labelIf, constraints);
 
         JConditionList jConditionList = new JConditionList(rule.getConditions());
-        constraints.gridx = 1;
+        constraints.gridx = 0;
+        constraints.gridy = 1;
         fuckingWrapper.add(jConditionList, constraints);
 
-        constraints.gridx = 2;
+        constraints.gridx = 1;
+        constraints.gridy = 0;
         fuckingWrapper.add(new JLabel("<html><b>&nbsp;THEN&nbsp;</b><html>", JLabel.CENTER), constraints);
 
-        constraints.gridx = 3;
+        constraints.gridx = 1;
+        constraints.gridy = 1;
         constraints.ipadx = 8;
         constraints.ipady = 8;
         fuckingWrapper.add(new JAction(rule.getAction()), constraints);
