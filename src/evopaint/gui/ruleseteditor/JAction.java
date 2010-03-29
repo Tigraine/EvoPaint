@@ -8,20 +8,29 @@ package evopaint.gui.ruleseteditor;
 import evopaint.gui.ruleseteditor.util.NamedObjectListCellRenderer;
 import evopaint.Configuration;
 import evopaint.pixel.rulebased.interfaces.IAction;
+import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.util.LinkedHashMap;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
+import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JSpinner;
+import javax.swing.SpinnerNumberModel;
+import javax.swing.SwingUtilities;
 import javax.swing.border.BevelBorder;
 import javax.swing.border.TitledBorder;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 /**
  *
@@ -30,7 +39,7 @@ import javax.swing.border.TitledBorder;
 public class JAction extends JPanel implements ActionListener {
     private JButton closeButton;
 
-    public JAction(IAction action) {
+    public JAction(final IAction action) {
 
         setLayout(new GridBagLayout());
         GridBagConstraints constraints = new GridBagConstraints();
@@ -68,8 +77,30 @@ public class JAction extends JPanel implements ActionListener {
 
         LinkedHashMap<String,JComponent> parameters = action.getParametersForGUI();
 
+        SpinnerNumberModel spinnerModel = new SpinnerNumberModel(action.getCost(), 0, Integer.MAX_VALUE, 1);
+        JSpinner costSpinner = new JSpinner(spinnerModel);
+        costSpinner.addChangeListener(new ChangeListener() {
+            public void stateChanged(ChangeEvent e) {
+                action.setCost((Integer) ((JSpinner) e.getSource()).getValue());
+            }
+        });
+        // getting too big because Integer.MAX_VALUE can get pretty long, so let's cut it off
+        costSpinner.setPreferredSize(new Dimension(100, costSpinner.getPreferredSize().height));
+        final JFormattedTextField spinnerText = ((JSpinner.DefaultEditor)costSpinner.getEditor()).getTextField();
+        spinnerText.addFocusListener(new FocusListener() {
+            public void focusGained(FocusEvent e) {
+                SwingUtilities.invokeLater(new Runnable() { // only seems to work this way
+                        public void run() {
+                            spinnerText.selectAll();
+                        }
+                });
+            }
+            public void focusLost(FocusEvent e) {}
+        });
+        parameters.put("Cost", costSpinner);
+
         constraints.gridx = 0;
-        constraints.gridy = 0;
+        constraints.gridy = 1;
         constraints.anchor = GridBagConstraints.WEST;
         constraints.fill = GridBagConstraints.BOTH;
         for (String string : parameters.keySet()) {
