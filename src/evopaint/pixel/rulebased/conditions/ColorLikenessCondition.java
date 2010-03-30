@@ -5,36 +5,28 @@
 
 package evopaint.pixel.rulebased.conditions;
 
-import evopaint.Configuration;
 import evopaint.pixel.rulebased.AbstractCondition;
 import evopaint.World;
 import evopaint.gui.ruleseteditor.util.DimensionsListener;
-import evopaint.gui.ruleseteditor.JRuleSetManager;
 import evopaint.gui.util.AutoSelectOnFocusSpinner;
 import evopaint.gui.ruleseteditor.util.NamedObjectListCellRenderer;
+import evopaint.gui.ruleseteditor.util.ColorChooserLabel;
 import evopaint.pixel.ColorDimensions;
 import evopaint.pixel.Pixel;
 import evopaint.pixel.PixelColor;
 import evopaint.pixel.rulebased.util.NumberComparisonOperator;
 import evopaint.util.mapping.RelativeCoordinate;
-import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
-import javax.swing.JButton;
-import javax.swing.JColorChooser;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
-import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.JToggleButton;
 import javax.swing.SpinnerNumberModel;
-import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
@@ -133,11 +125,10 @@ public class ColorLikenessCondition extends AbstractCondition {
     public LinkedHashMap<String,JComponent> getParametersForGUI() {
         LinkedHashMap<String,JComponent> ret = new LinkedHashMap<String,JComponent>();
 
-        String colorString = "#" + Integer.toHexString(comparedColor.getInteger()).substring(2).toUpperCase();
-        JButton colorButton = new JButton(colorString);
-        colorButton.addMouseListener(new ColorListener(this, colorButton));
-        //colorButton.setPreferredSize(new Dimension(50, 25));
-        ret.put("Color", colorButton);
+        ColorChooserLabel colorLabel = new ColorChooserLabel(comparedColor);
+        JPanel wrapLabelToAvoidUncoloredStretchedBackground = new JPanel();
+        wrapLabelToAvoidUncoloredStretchedBackground.add(colorLabel);
+        ret.put("Color", wrapLabelToAvoidUncoloredStretchedBackground);
 
         JPanel dimensionsPanel = new JPanel();
         JToggleButton btnH = new JToggleButton("H");
@@ -189,61 +180,6 @@ public class ColorLikenessCondition extends AbstractCondition {
         this.comparedColor = new PixelColor(0, 0, 0);
         this.compareToLikenessPercentage = 0;
         this.dimensions = new ColorDimensions(true, true, true);
-    }
-
-    private class ColorListener implements MouseListener {
-        ColorLikenessCondition colorLikenessCondition;
-        private JButton colorButton;
-
-        public ColorListener(ColorLikenessCondition colorLikenessCondition, JButton colorLabel) {
-            this.colorLikenessCondition = colorLikenessCondition;
-            this.colorButton = colorLabel;
-        }
-
-        public void mouseClicked(MouseEvent e) {
-            Color color = new Color(comparedColor.getInteger());
-            final JColorChooser colorChooser = new JColorChooser(color);
-            colorChooser.setPreviewPanel(new JPanel());
-            JDialog dialog = JColorChooser.createDialog(this.colorButton, "Choose Color", true,
-                    colorChooser, new ColorChooserOKListener(this.colorLikenessCondition, colorChooser, this.colorButton), new ColorChooserCancelListener());
-            dialog.pack();
-            dialog.setVisible(true);
-        }
-
-        public void mousePressed(MouseEvent e) {}
-
-        public void mouseReleased(MouseEvent e) {}
-
-        public void mouseEntered(MouseEvent e) {}
-
-        public void mouseExited(MouseEvent e) {}
-
-        private class ColorChooserOKListener implements ActionListener {
-            ColorLikenessCondition colorLikenessCondition;
-            JColorChooser colorChooser;
-            JButton owner;
-
-            public ColorChooserOKListener(ColorLikenessCondition colorLikenessCondition, JColorChooser colorChooser, JButton owner) {
-                this.colorLikenessCondition = colorLikenessCondition;
-                this.colorChooser = colorChooser;
-                this.owner = owner;
-            }
-
-            public void actionPerformed(ActionEvent e) {
-                Color c = colorChooser.getColor();
-                Configuration config = ((JRuleSetManager) SwingUtilities.getWindowAncestor(this.owner)).getConfiguration();
-                colorLikenessCondition.getComparedColor().setInteger(c.getRGB(), config.rng);
-                owner.setText("#" + Integer.toHexString(comparedColor.getInteger()).substring(2).toUpperCase());
-                owner.setForeground(c);
-            }
-        }
-
-        private class ColorChooserCancelListener implements ActionListener {
-
-            public void actionPerformed(ActionEvent e) {
-                // NOOP
-            }
-        }
     }
 
     private class ComparisonListener implements ActionListener {

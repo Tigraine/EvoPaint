@@ -72,11 +72,10 @@ public class PaintOptionsPanel extends JPanel {
         panelForColor.add(panelForColorButtons);       
 
         // on that we add our two buttons, the one for the color chooser
-        radioColor = new JRadioButton("#" +
-                Integer.toHexString(configuration.brush.getColor().getInteger()).substring(2).toUpperCase());
-        //labelColorString.setOpaque(true);
-        radioColor.setForeground(new Color(configuration.brush.getColor().getInteger()));
+        radioColor = new JRadioButton("<html>" + configuration.brush.getColor().toHTML() + "</html>");
         radioColor.addActionListener(new RadioColorListener(this));
+        // XXX border is not displayed anyways.. maybe we need a radiobutton renderer?
+        //radioColor.setBorder(new BevelBorder(BevelBorder.LOWERED));
         radioColor.setSelected(true);
         selectedColor = new Color(configuration.brush.getColor().getInteger());
         radioColorToggle = true;
@@ -132,22 +131,6 @@ public class PaintOptionsPanel extends JPanel {
 
     public void setRuleSet(RuleSet ruleSet) {
         this.ruleSet = ruleSet;
-    }
-
-    public void setColor(Color color) {
-        selectedColor = color;
-        this.radioColor.setText("#" +
-                Integer.toHexString(color.getRGB()).substring(2).toUpperCase());
-        this.radioColor.setForeground(color);
-        //this.labelColorString.setBackground(this.color);
-        //float [] hsbvals = new float[3];
-        //Color.RGBtoHSB(color.getRed(), color.getGreen(), color.getBlue(), hsbvals);
-        //if (hsbvals[2] > 0.5f) {
-        //    this.labelColorString.setForeground(Color.BLACK);
-        //} else {
-        //    this.labelColorString.setForeground(Color.WHITE);
-        //}
-        mainFrame.pack(); // or else our showcase could get veeery small.. wtf?
     }
 
     private class RadioColorListener implements ActionListener {
@@ -213,8 +196,10 @@ public class PaintOptionsPanel extends JPanel {
         public void actionPerformed(ActionEvent e) {
             paintOptionsPanel.radioColorToggle = true;
             Color c = colorChooser.getColor();
-            paintOptionsPanel.setColor(c);
             configuration.brush.setColor(new PixelColor(c.getRGB(), configuration.rng));
+            selectedColor = c;
+            radioColor.setText("<html>" + configuration.brush.getColor().toHTML() + "</html>");
+            
         }
     }
 
