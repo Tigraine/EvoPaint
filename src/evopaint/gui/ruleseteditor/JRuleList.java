@@ -29,7 +29,7 @@ public class JRuleList extends JList {
 
         setModel(listModel);
         setCellRenderer(new RuleCellRenderer());
-        //setVisibleRowCount(5);
+        setVisibleRowCount(15);
 
         
         // make me look pretty

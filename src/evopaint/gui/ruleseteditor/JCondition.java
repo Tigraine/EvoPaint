@@ -7,7 +7,9 @@ package evopaint.gui.ruleseteditor;
 
 import evopaint.gui.ruleseteditor.util.NamedObjectListCellRenderer;
 import evopaint.Configuration;
+import evopaint.pixel.rulebased.conditions.NoCondition;
 import evopaint.pixel.rulebased.interfaces.ICondition;
+import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -22,7 +24,6 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JToggleButton;
 import javax.swing.border.BevelBorder;
-import javax.swing.border.SoftBevelBorder;
 import javax.swing.border.TitledBorder;
 
 /**
@@ -31,20 +32,68 @@ import javax.swing.border.TitledBorder;
  */
 public class JCondition extends JPanel {
     private ICondition condition;
-    private JPanel expandedPanel;
+
     private JPanel collapsedPanel;
-    //private JConditionList jConditionList;
+    JToggleButton expandButton;
+
+    private JPanel expandedPanel;
+    JComboBox comboBoxConditions;
+    JTargetPicker targetPicker;
     JPanel panelParameters;
 
     public ICondition getCondition() {
         return condition;
     }
 
-    public JCondition(final ICondition condition,
-            ActionListener expansionListener,
-            ActionListener replaceListener,
-            ActionListener deleteListener) {
+    public void setCondition(ICondition condition) {
         this.condition = condition;
+
+        expandButton.setText(condition.toString());
+
+        ICondition selection = null;
+        for (ICondition c : Configuration.availableConditions) {
+            if (c.getClass() == condition.getClass()) {
+                selection = c;
+            }
+        }
+        assert(selection != null);
+        comboBoxConditions.setSelectedItem(selection);
+
+        if (condition instanceof NoCondition) {
+            comboBoxConditions.setPreferredSize(new Dimension(200, 25));
+            targetPicker.setVisible(false);
+            panelParameters.setVisible(false);
+            return;
+        }
+        targetPicker.setDirections(condition.getDirections());
+
+
+        panelParameters.removeAll();
+        LinkedHashMap<String,JComponent> parameters = condition.getParametersForGUI();
+        GridBagConstraints constraints = new GridBagConstraints();
+        constraints.gridx = 0;
+        constraints.gridy = 0;
+        constraints.anchor = GridBagConstraints.WEST;
+        constraints.fill = GridBagConstraints.BOTH;
+        for (String string : parameters.keySet()) {
+            constraints.gridx = 0;
+            constraints.insets = new Insets(0, 0, 5, 10);
+            panelParameters.add(new JLabel(string + ":"), constraints);
+            constraints.gridx = 1;
+            constraints.insets = new Insets(0, 0, 5, 0);
+            panelParameters.add(parameters.get(string), constraints);
+            constraints.gridy = constraints.gridy + 1;
+        }
+
+        targetPicker.setVisible(true);
+        panelParameters.setVisible(true);
+        revalidate();
+        repaint();
+    }
+
+    public JCondition(ActionListener expansionListener,
+            ActionListener deleteListener) {
+        //this.condition = condition;
         //this.jConditionList = jConditionList;
 
         setLayout(new GridBagLayout());
@@ -55,7 +104,7 @@ public class JCondition extends JPanel {
         collapsedPanel = new JPanel();
         collapsedPanel.setLayout(getLayout());
         add(collapsedPanel, constraints);
-        JToggleButton expandButton = new JToggleButton(condition.toString());
+        expandButton = new JToggleButton();
         expandButton.addActionListener(expansionListener);
         collapsedPanel.add(expandButton);
         JButton deleteButtonCollapsed = new JButton("X");
@@ -77,35 +126,12 @@ public class JCondition extends JPanel {
 
         // do the combo box magic
         DefaultComboBoxModel model = new DefaultComboBoxModel();
-
-        /* //automatic class discovery. sometimes slow and can be buggy depending on packaging.
-        Set<Class> types = null;
-        try {
-            HashSet<String> packages = new HashSet<String>();
-            packages.add("evopaint.pixel.rulebased.conditions");
-            Map<String, Set<Class>> m = ClassList.findClasses(
-                    (new Configuration()).getClass().getClassLoader(), null, packages, null);
-            types = m.get(null);
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-            System.exit(1);
-        }
-        */
-
-        ICondition selection = null;
         for (ICondition c : Configuration.availableConditions) {
             model.addElement(c);
-            if (c.getClass() == condition.getClass()) {
-                selection = c;
-            }
         }
-        assert(selection != null);
-
-        JComboBox comboBoxConditions = new JComboBox(model);
+        comboBoxConditions = new JComboBox(model);
         comboBoxConditions.setRenderer(new NamedObjectListCellRenderer());
-        //comboBoxConditions.setMinimumSize(new Dimension(25, 25));
-        comboBoxConditions.setSelectedItem(selection);
-        comboBoxConditions.addActionListener(replaceListener);
+        comboBoxConditions.addActionListener(new JConditionReplaceListener());
         constraints.gridx = 0;
         constraints.gridy = 0;
         constraints.gridwidth = 2;
@@ -116,7 +142,8 @@ public class JCondition extends JPanel {
         constraints.gridwidth = 1;
         constraints.gridx = 0;
         constraints.gridy = 1;
-        expandedPanel.add(new JTargetPicker(condition.getDirections()), constraints);
+        targetPicker = new JTargetPicker();
+        expandedPanel.add(targetPicker, constraints);
 
         panelParameters = new JPanel();
         panelParameters.setBorder(new TitledBorder("Parameters"));
@@ -125,30 +152,15 @@ public class JCondition extends JPanel {
         constraints.gridy = 1;
         expandedPanel.add(panelParameters, constraints);
 
-        LinkedHashMap<String,JComponent> parameters = condition.getParametersForGUI();
-
-        constraints.gridx = 0;
-        constraints.gridy = 0;
-        constraints.anchor = GridBagConstraints.WEST;
-        constraints.fill = GridBagConstraints.BOTH;
-        for (String string : parameters.keySet()) {
-            constraints.gridx = 0;
-            constraints.insets = new Insets(0, 0, 5, 10);
-            panelParameters.add(new JLabel(string + ":"), constraints);
-            constraints.gridx = 1;
-            constraints.insets = new Insets(0, 0, 5, 0);
-            panelParameters.add(parameters.get(string), constraints);
-            constraints.gridy = constraints.gridy + 1;
-        }
-
         collapse();
     }
 
     public void collapse() {
-        JToggleButton ruleButton = (JToggleButton)collapsedPanel.getComponent(0);
-        ruleButton.setText(condition.toString());
-        if (ruleButton.isSelected()) {
-            ruleButton.setSelected(false);
+        if (condition != null) {
+            expandButton.setText(condition.toString());
+            if (expandButton.isSelected()) {
+                expandButton.setSelected(false);
+            }
         }
         //remove(expandedPanel);
         expandedPanel.setVisible(false);
@@ -161,5 +173,21 @@ public class JCondition extends JPanel {
         }
         expandedPanel.setVisible(true);
         revalidate();
+    }
+
+    private class JConditionReplaceListener implements ActionListener {
+        public void actionPerformed(ActionEvent e) {
+            try {
+                ICondition prototype = (ICondition)((JComboBox)e.getSource()).getSelectedItem();
+                ICondition condition = prototype.getClass().newInstance();
+                setCondition(condition);
+            } catch (InstantiationException ex) {
+                ex.printStackTrace();
+                System.exit(1);
+            } catch (IllegalAccessException ex) {
+                ex.printStackTrace();
+                System.exit(1);
+            }
+        }
     }
 }

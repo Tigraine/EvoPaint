@@ -10,6 +10,7 @@ import evopaint.World;
 import evopaint.pixel.Pixel;
 import evopaint.pixel.rulebased.actions.NoAction;
 import evopaint.pixel.rulebased.conditions.EnergyCondition;
+import evopaint.pixel.rulebased.conditions.NoCondition;
 import evopaint.pixel.rulebased.interfaces.IRule;
 import evopaint.pixel.rulebased.interfaces.IAction;
 import evopaint.pixel.rulebased.interfaces.ICondition;
@@ -106,6 +107,7 @@ public class Rule implements IRule {
 
     public Rule() {
         this.conditions = new ArrayList<ICondition>();
+        this.conditions.add(new NoCondition());
         this.action = new NoAction();
     }
 }

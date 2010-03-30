@@ -12,7 +12,6 @@ import evopaint.pixel.Pixel;
 import evopaint.pixel.PixelColor;
 import evopaint.pixel.rulebased.Rule;
 import evopaint.pixel.rulebased.RuleSet;
-import evopaint.pixel.State;
 import evopaint.pixel.rulebased.actions.AssimilationAction;
 import evopaint.pixel.rulebased.actions.NoAction;
 import evopaint.pixel.rulebased.actions.RewardAction;
@@ -23,6 +22,7 @@ import evopaint.pixel.rulebased.interfaces.ICondition;
 import evopaint.pixel.rulebased.interfaces.IRule;
 import evopaint.pixel.rulebased.util.NumberComparisonOperator;
 import evopaint.pixel.rulebased.conditions.EmptyCondition;
+import evopaint.pixel.rulebased.conditions.NoCondition;
 import evopaint.util.RandomNumberGeneratorWrapper;
 import evopaint.util.logging.Logger;
 import evopaint.util.mapping.RelativeCoordinate;
@@ -52,6 +52,7 @@ public class Configuration {
 
     // TODO make to list of objects of ICondition
     public static final List<ICondition> availableConditions = new ArrayList<ICondition>() {{
+        add(new NoCondition());
         add(new EmptyCondition());
         add(new EnergyCondition());
         add(new ColorLikenessCondition());

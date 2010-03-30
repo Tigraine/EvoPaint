@@ -21,10 +21,25 @@ import javax.swing.border.TitledBorder;
  * @author tam
  */
 public class JTargetPicker extends JPanel {
-    
+
+    private List<RelativeCoordinate> directions;
     private IdentityHashMap<JToggleButton,RelativeCoordinate> targets;
 
-    public JTargetPicker(List<RelativeCoordinate> directions) {
+    public void setDirections(List<RelativeCoordinate> directions) {
+        this.directions = directions;
+
+        for (JToggleButton b : targets.keySet()) {
+            b.setSelected(false);
+            for (RelativeCoordinate rc : directions) {
+                if (rc == this.targets.get(b)) {
+                   b.setSelected(true);
+                   break;
+                }
+            }
+        }
+    }
+
+    public JTargetPicker() {
         setLayout(new GridLayout(3, 3));
         setBorder(new TitledBorder("targets"));
 
@@ -66,36 +81,25 @@ public class JTargetPicker extends JPanel {
         add(btn);
         targets.put(btn, RelativeCoordinate.SOUTH_EAST);
 
-        // TODO evaluate if needed
         for (JToggleButton b : targets.keySet()) {
             b.setPreferredSize(new Dimension(25, 25));
             b.setMaximumSize(b.getPreferredSize());
             b.setMinimumSize(b.getPreferredSize());
-            b.addActionListener(new TargetActionListener(directions));
-            for (RelativeCoordinate rc : directions) {
-                if (rc == this.targets.get(b)) {
-                   b.setSelected(true);
-                }
-            }
+            b.addActionListener(new TargetActionListener());
         }
     }
 
     private class TargetActionListener implements ActionListener {
-        private List<RelativeCoordinate> directions;
 
-        public TargetActionListener(List<RelativeCoordinate> directions) {
-            this.directions = directions;
-        }
-        
         public void actionPerformed(ActionEvent e) {
             JToggleButton actionButton = (JToggleButton)e.getSource();
             RelativeCoordinate actionCoordinate = targets.get(actionButton);
             if (actionButton.isSelected()) {
-                if (this.directions.contains(actionCoordinate) == false) {
-                    this.directions.add(actionCoordinate);
+                if (directions.contains(actionCoordinate) == false) {
+                    directions.add(actionCoordinate);
                 }
             } else {
-                this.directions.remove(actionCoordinate);
+                directions.remove(actionCoordinate);
             }
         }
     }

@@ -11,6 +11,7 @@ import evopaint.pixel.rulebased.util.ObjectComparisonOperator;
 import evopaint.pixel.rulebased.AbstractCondition;
 import evopaint.pixel.Pixel;
 import evopaint.util.mapping.RelativeCoordinate;
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -67,6 +68,7 @@ public class EmptyCondition extends AbstractCondition {
         comparisonComboBox.setRenderer(new NamedObjectListCellRenderer());
         comparisonComboBox.setSelectedItem(comparisonOperator);
         comparisonComboBox.addActionListener(new ComparisonListener());
+        comparisonComboBox.setPreferredSize(new Dimension(80, 25));
         ret.put("Comparison", comparisonComboBox);
 
         return ret;

@@ -93,6 +93,6 @@ public class AssimilationAction extends AbstractAction {
 
     public AssimilationAction() {
         super(0, new ArrayList<RelativeCoordinate>(9));
-        this.dimensions = new ColorDimensions(true, true, true);
+        this.dimensions = new ColorDimensions(false, false, false);
     }
 }

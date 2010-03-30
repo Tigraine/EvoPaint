@@ -59,6 +59,6 @@ public class JRuleSetManager extends JFrame {
 
         add(splitPane);
 
-        setPreferredSize(new Dimension(1100,600));
+        setPreferredSize(new Dimension(1024,768));
     }
 }
