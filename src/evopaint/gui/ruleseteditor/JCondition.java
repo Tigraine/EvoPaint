@@ -38,6 +38,7 @@ public class JCondition extends JPanel {
 
     private JPanel expandedPanel;
     JComboBox comboBoxConditions;
+    ComboBoxConditionsListener comboBoxConditionsListener;
     JTargetPicker targetPicker;
     JPanel panelParameters;
 
@@ -57,7 +58,9 @@ public class JCondition extends JPanel {
             }
         }
         assert(selection != null);
+        comboBoxConditions.removeActionListener(comboBoxConditionsListener);
         comboBoxConditions.setSelectedItem(selection);
+        comboBoxConditions.addActionListener(comboBoxConditionsListener);
 
         if (condition instanceof NoCondition) {
             comboBoxConditions.setPreferredSize(new Dimension(200, 25));
@@ -131,7 +134,7 @@ public class JCondition extends JPanel {
         }
         comboBoxConditions = new JComboBox(model);
         comboBoxConditions.setRenderer(new NamedObjectListCellRenderer());
-        comboBoxConditions.addActionListener(new JConditionReplaceListener());
+        comboBoxConditionsListener = new ComboBoxConditionsListener();
         constraints.gridx = 0;
         constraints.gridy = 0;
         constraints.gridwidth = 2;
@@ -175,7 +178,7 @@ public class JCondition extends JPanel {
         revalidate();
     }
 
-    private class JConditionReplaceListener implements ActionListener {
+    private class ComboBoxConditionsListener implements ActionListener {
         public void actionPerformed(ActionEvent e) {
             try {
                 ICondition prototype = (ICondition)((JComboBox)e.getSource()).getSelectedItem();

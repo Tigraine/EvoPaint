@@ -141,7 +141,6 @@ public class JRuleSetEditor extends JPanel {
                     int index = jRuleList.locationToIndex(e.getPoint());
                     jRuleEditor.setRule(ruleSet.getRules().get(index));
 
-                    System.out.println("per index: " + ruleSet.getRules().get(index));
                     wrapListControlDescription.setVisible(false);
                     jRuleEditor.setVisible(true);
                  }
@@ -164,9 +163,6 @@ public class JRuleSetEditor extends JPanel {
                     ((DefaultListModel)jRuleList.getModel()).set(
                             jRuleList.getSelectedIndex(),
                             jRuleEditor.getRule());
-                    System.out.println("adding to model: " + jRuleEditor.getRule());
-                    System.out.println("in model: " + ((DefaultListModel)jRuleList.getModel()).get(
-                            jRuleList.getSelectedIndex()));
                     jRuleList.revalidate();
                 }
             }

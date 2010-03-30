@@ -41,18 +41,16 @@ public class JAction extends JPanel {
     private IAction action;
     //private JButton closeButton;
     JComboBox comboBoxActions;
+    ComboBoxActionsListener comboBoxActionsListener;
     JTargetPicker targetPicker;
     JPanel panelParameters;
 
     public IAction getAction() {
-        // TODO get parameters out of panel and targets out of targetpicker, rinse repeat for conditions
-        System.out.println("returning " + action);
         return action;
     }
 
     public void setAction(final IAction action) {
         this.action = action;
-
         IAction selection = null;
         for (IAction a : Configuration.availableActions) {
             if (a.getClass() == action.getClass()) {
@@ -60,7 +58,10 @@ public class JAction extends JPanel {
             }
         }
         assert(selection != null);
+        comboBoxActions.removeActionListener(comboBoxActionsListener);
         comboBoxActions.setSelectedItem(selection);
+        comboBoxActions.addActionListener(comboBoxActionsListener);
+
 
         if (action instanceof NoAction) {
             comboBoxActions.setPreferredSize(new Dimension(200, 25));
@@ -117,7 +118,9 @@ public class JAction extends JPanel {
 
         comboBoxActions = new JComboBox(model);
         comboBoxActions.setRenderer(new NamedObjectListCellRenderer());
-        comboBoxActions.addActionListener(new ComboBoxActionsListener());
+        // we do not set the action listener here, because it will fire on
+        // setSelectedIndex()
+        comboBoxActionsListener = new ComboBoxActionsListener();
         constraints.gridx = 0;
         constraints.gridy = 0;
         constraints.gridwidth = 2;
@@ -155,7 +158,6 @@ public class JAction extends JPanel {
             try {
                 IAction prototype = (IAction)((JComboBox)e.getSource()).getSelectedItem();
                 IAction newAction = prototype.getClass().newInstance();
-                System.out.println("setting new " + newAction.getClass().getSimpleName());
                 setAction(newAction);
             } catch (InstantiationException ex) {
                 ex.printStackTrace();

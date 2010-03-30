@@ -23,21 +23,20 @@ import javax.swing.JToggleButton;
  * @author tam
  */
 public class JConditionList extends JPanel {
-    private List<ICondition> conditions;
     private List<JCondition> jConditions;
     private JPanel panelForConditionWrappers;
 
     public List<ICondition> getConditions() {
-       // List<ICondition> conditions = new ArrayList<ICondition>();
-//        for (JCondition jCondition : jConditions) {
-  //          conditions.add(jCondition.getCondition());
-    //    }
+        List<ICondition> conditions = new ArrayList<ICondition>();
+        for (JCondition jCondition : jConditions) {
+            conditions.add(jCondition.getCondition());
+        }
         return conditions;
     }
 
     public void setConditions(List<ICondition> conditions) {
-        this.conditions = conditions;
-
+        jConditions.clear();
+        
         GridBagConstraints constraints = new GridBagConstraints();
         constraints.gridx = 0;
         constraints.gridy = 0;
@@ -46,17 +45,18 @@ public class JConditionList extends JPanel {
 
         panelForConditionWrappers.removeAll();
 
+        constraints.gridy = 0;
         for (ICondition condition : conditions) {
             JPanel wrapper = new JPanel(new GridBagLayout());
-            constraints.gridy = 0;
             panelForConditionWrappers.add(wrapper, constraints);
             JCondition jCondition = new JCondition(new JConditionExpandedListener(),
                     new JConditionDeleteListener());
             jCondition.setCondition(condition);
-            wrapper.add(jCondition, constraints);
+            jConditions.add(jCondition);
+            wrapper.add(jCondition);
             constraints.gridy++;
-            //revalidate();
         }
+        //revalidate();
     }
 
     private void collapseAll() {
@@ -67,6 +67,7 @@ public class JConditionList extends JPanel {
     }
 
     public JConditionList() {
+        jConditions = new ArrayList<JCondition>();
         setLayout(new GridBagLayout());
         GridBagConstraints constraints = new GridBagConstraints();
 
@@ -89,11 +90,12 @@ public class JConditionList extends JPanel {
 
         public void actionPerformed(ActionEvent e) {
             ICondition condition = new NoCondition();
-            conditions.add(condition);
             
             JCondition jCondition = new JCondition(new JConditionExpandedListener(),
                     new JConditionDeleteListener());
             jCondition.setCondition(condition);
+
+            jConditions.add(jCondition);
 
             JPanel wrapper = new JPanel(new GridBagLayout());
             GridBagConstraints constraints = new GridBagConstraints();
@@ -125,14 +127,17 @@ public class JConditionList extends JPanel {
     private class JConditionDeleteListener implements ActionListener {
         public void actionPerformed(ActionEvent e) {
             JCondition jCondition = (JCondition)((JButton)e.getSource()).getParent().getParent();
-            ICondition condition = (ICondition)jCondition.getCondition();
-            System.out.println("from jCondition: " + condition.hashCode());
-            for (int i = 0; i < conditions.size(); i++) {
-                System.out.println("in conditions: " + conditions.get(i).hashCode());
+            
+            //ICondition condition = (ICondition)jCondition.getCondition();
+
+            if (jConditions.size() == 1) {
+                jConditions.get(0).setCondition(new NoCondition());
+                return;
             }
 
-            // remove jCondition from wrapperList and most importantly.......
+            jConditions.remove(jCondition);
 
+            // remove jCondition from wrapperList and most importantly.......
             Component [] components = panelForConditionWrappers.getComponents();
             for (int i = 0; i < components.length; i++) {
                 JPanel wrapper = (JPanel)components[i];
@@ -141,7 +146,6 @@ public class JConditionList extends JPanel {
                     panelForConditionWrappers.remove(wrapper);
                     panelForConditionWrappers.revalidate();
                     panelForConditionWrappers.repaint();
-                    System.out.println("removed " + jCondition.hashCode());
                     break;
                 }
             }
