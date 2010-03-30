@@ -5,9 +5,11 @@
 
 package evopaint.gui.ruleseteditor;
 
+import evopaint.gui.util.DragDropList;
 import evopaint.pixel.rulebased.interfaces.IRule;
-import evopaint.pixel.rulebased.RuleSet;
 import java.awt.Component;
+import java.util.ArrayList;
+import java.util.List;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.DefaultListModel;
 import javax.swing.JLabel;
@@ -17,28 +19,28 @@ import javax.swing.JList;
  *
  * @author tam
  */
-public class JRuleList extends JList {
+public class JRuleList extends DragDropList {
     private DefaultListModel listModel;
 
-    public JRuleList(RuleSet ruleSet) {
-        listModel = new DefaultListModel();
+    public List<IRule> getRules() {
+        List<IRule> rules = new ArrayList<IRule>(listModel.capacity());
+        for (int i = 0; i < listModel.size(); i++) {
+            rules.add((IRule)listModel.get(i));
+        }
+        return rules;
+    }
 
-        for (IRule rule : ruleSet.getRules()) {
+    public JRuleList(List<IRule> rules) {
+        super(new DefaultListModel());
+        listModel = (DefaultListModel)getModel();
+
+        for (IRule rule : rules) {
             listModel.addElement(rule);
         }
 
         setModel(listModel);
         setCellRenderer(new RuleCellRenderer());
         setVisibleRowCount(15);
-
-        
-        // make me look pretty
-        //setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-        //setAlignmentX(Component.CENTER_ALIGNMENT);
-        //setBorder(new TitledBorder("Ruleset"));
-        //set
-
-
     }
 
     private class RuleCellRenderer extends DefaultListCellRenderer {

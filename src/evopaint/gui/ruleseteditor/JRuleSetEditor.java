@@ -46,7 +46,7 @@ public class JRuleSetEditor extends JPanel {
         add(wrapListControlDescription);
         
         // rule list
-        jRuleList = new JRuleList(ruleSet);
+        jRuleList = new JRuleList(ruleSet.getRules());
         final JScrollPane scrollPaneForRuleList = new JScrollPane(jRuleList,
                 JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
                 JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
