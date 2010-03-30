@@ -17,7 +17,7 @@ import javax.swing.JComponent;
  *
  * @author tam
  */
-public interface IAction extends INamed, Serializable {
+public interface IAction extends INamed, IHTML, Serializable {
     public int getCost();
     public void setCost(int cost);
     public List<RelativeCoordinate> getDirections();

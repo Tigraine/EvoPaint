@@ -8,6 +8,7 @@
 package evopaint.pixel;
 
 import evopaint.interfaces.IRandomNumberGenerator;
+import evopaint.pixel.rulebased.interfaces.IHTML;
 import java.awt.Color;
 import java.io.Serializable;
 
@@ -18,7 +19,7 @@ import java.io.Serializable;
  *
  * @author tam
  */
-public class PixelColor implements Serializable {
+public class PixelColor implements IHTML, Serializable {
     
     private float hue;
     private float saturation;
@@ -68,6 +69,11 @@ public class PixelColor implements Serializable {
     @Override
     public String toString() {
         return "#" + Integer.toHexString(Color.HSBtoRGB(hue, saturation, brightness)).substring(2).toUpperCase();
+    }
+
+    public String toHTML() {
+        String s = toString();
+        return "<span style='background: " + s + ";" + (brightness < 0.5 ? "color: #FFFFFF;" : "") + "'>" + s + "</span>";
     }
 
     public double distanceTo(PixelColor theirColor, ColorDimensions dimensions) {

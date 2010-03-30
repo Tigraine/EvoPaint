@@ -14,6 +14,7 @@ import evopaint.pixel.rulebased.conditions.NoCondition;
 import evopaint.pixel.rulebased.interfaces.IRule;
 import evopaint.pixel.rulebased.interfaces.IAction;
 import evopaint.pixel.rulebased.interfaces.ICondition;
+import evopaint.pixel.rulebased.interfaces.IHTML;
 import evopaint.util.mapping.RelativeCoordinate;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -23,7 +24,7 @@ import java.util.List;
  *
  * @author tam
  */
-public class Rule implements IRule {
+public class Rule implements IRule, IHTML {
     private List<ICondition> conditions;
     private IAction action;
 
@@ -55,6 +56,20 @@ public class Rule implements IRule {
         }
         ret += " THEN ";
         ret += action.toString();
+        return ret;
+    }
+
+    public String toHTML() {
+        String ret = "<span style='color: #0000E6; font-weight: bold;'>IF</span> ";
+        for (Iterator<ICondition> ii = conditions.iterator(); ii.hasNext();) {
+            ICondition condition = ii.next();
+            ret += condition.toHTML();
+            if (ii.hasNext()) {
+                ret += " <span style='color: #0000E6; font-weight: bold;'>AND</span> ";
+            }
+        }
+        ret += " <span style='color: #0000E6; font-weight: bold;'>THEN</span> ";
+        ret += action.toHTML();
         return ret;
     }
 

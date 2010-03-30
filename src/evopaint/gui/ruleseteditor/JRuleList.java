@@ -50,8 +50,8 @@ public class JRuleList extends JList {
                                            boolean isSelected,
                                            boolean cellHasFocus) {
 
-            JLabel ret = (JLabel)super.getListCellRendererComponent(list, ((IRule)value).toString(), index, isSelected, cellHasFocus);
-
+            JLabel ret = (JLabel)super.getListCellRendererComponent(list, ((IRule)value).toHTML(), index, isSelected, cellHasFocus);
+            ret.setText("<html>" + ret.getText() + "</html>");
             return ret;
         }
     }

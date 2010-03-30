@@ -60,12 +60,25 @@ public class EnergyCondition extends AbstractCondition {
 
     @Override
     public String toString() {
-        String ret = "energy of ";
-        ret += super.toString();
-        ret += " ";
+         String ret = new String();
+        ret += getDirectionsString();
+        ret += super.getDirections().size() > 1 ? " have " : " has ";
         ret += comparisonOperator.toString();
         ret += " ";
         ret += energyValue;
+        ret += " energy";
+        return ret;
+    }
+
+    @Override
+    public String toHTML() {
+        String ret = new String();
+        ret += getDirectionsString();
+        ret += super.getDirections().size() > 1 ? " have " : " has ";
+        ret += comparisonOperator.toHTML();
+        ret += " ";
+        ret += energyValue;
+        ret += " energy";
         return ret;
     }
 

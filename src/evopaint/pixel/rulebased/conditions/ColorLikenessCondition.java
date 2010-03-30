@@ -87,18 +87,35 @@ public class ColorLikenessCondition extends AbstractCondition {
 
     @Override
     public String toString() {
-        String ret = "color-likeness of ";
-        ret += super.toString();
-        ret += " compared to ";
-        ret += comparedColor;
-        ret += " in dimensions ";
-        ret += dimensions;
-        ret += " is ";
-        ret += comparisonOperator;
+        String ret = new String();
+        ret += getDirectionsString();
+        ret += super.getDirections().size() > 1 ? " are " : " is ";
+        ret += "colored ";
+        ret += comparisonOperator.toString();
         ret += " ";
         ret += compareToLikenessPercentage;
-        ret += "%";
-        
+        ret += "% like ";
+        ret += comparedColor.toString();
+        ret += " (dimensions: ";
+        ret += dimensions.toString();
+        ret += ")";
+        return ret;
+    }
+
+    @Override
+    public String toHTML() {
+        String ret = new String();
+        ret += getDirectionsString();
+        ret += super.getDirections().size() > 1 ? " are " : " is ";
+        ret += "colored ";
+        ret += comparisonOperator.toHTML();
+        ret += " ";
+        ret += compareToLikenessPercentage;
+        ret += "% like ";
+        ret += comparedColor.toHTML();
+        ret += " <span style='color: #777777;'>(dimensions: ";
+        ret += dimensions.toHTML();
+        ret += ")</span>";
         return ret;
     }
 

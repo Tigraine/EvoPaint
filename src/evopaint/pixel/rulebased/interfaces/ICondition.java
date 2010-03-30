@@ -17,7 +17,7 @@ import javax.swing.JComponent;
  *
  * @author tam
  */
-public interface ICondition extends INamed, Serializable {
+public interface ICondition extends INamed, IHTML, Serializable {
     public List<RelativeCoordinate> getDirections();
     public boolean isMet(Pixel us, World world);
     public LinkedHashMap<String,JComponent> getParametersForGUI();

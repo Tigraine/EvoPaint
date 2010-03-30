@@ -5,8 +5,8 @@
 
 package evopaint.pixel.rulebased.util;
 
+import evopaint.pixel.rulebased.interfaces.IHTML;
 import evopaint.pixel.rulebased.interfaces.INamed;
-import evopaint.util.logging.Logger;
 import java.io.Serializable;
 import javax.swing.DefaultComboBoxModel;
 
@@ -14,7 +14,7 @@ import javax.swing.DefaultComboBoxModel;
  *
  * @author tam
  */
-public class NumberComparisonOperator implements INamed, Serializable {
+public class NumberComparisonOperator implements INamed, IHTML, Serializable {
     private static final int TYPE_EQUAL = 0;
     private static final int TYPE_NOT_EQUAL = 1;
     private static final int TYPE_GREATER_THAN = 2;
@@ -44,6 +44,19 @@ public class NumberComparisonOperator implements INamed, Serializable {
             case TYPE_LESS_THAN: return "<";
             case TYPE_GREATER_OR_EQUAL: return ">=";
             case TYPE_LESS_OR_EQUAL: return "<=";
+            default: assert(false);
+        }
+        return null;
+    }
+    
+    public String toHTML() {
+        switch (this.type) {
+            case TYPE_EQUAL: return "==";
+            case TYPE_NOT_EQUAL: return "!=";
+            case TYPE_GREATER_THAN: return "&gt;";
+            case TYPE_LESS_THAN: return "&lt;";
+            case TYPE_GREATER_OR_EQUAL: return "&gt;=";
+            case TYPE_LESS_OR_EQUAL: return "&lt;=";
             default: assert(false);
         }
         return null;

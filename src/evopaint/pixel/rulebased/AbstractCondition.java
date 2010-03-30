@@ -8,6 +8,7 @@ package evopaint.pixel.rulebased;
 import evopaint.World;
 import evopaint.pixel.Pixel;
 import evopaint.pixel.rulebased.interfaces.ICondition;
+import evopaint.pixel.rulebased.interfaces.IHTML;
 import evopaint.pixel.rulebased.interfaces.INamed;
 import evopaint.util.mapping.RelativeCoordinate;
 import java.util.Iterator;
@@ -17,12 +18,11 @@ import java.util.List;
  *
  * @author tam
  */
-public abstract class AbstractCondition implements ICondition, INamed {
+public abstract class AbstractCondition implements ICondition, INamed, IHTML {
 
     private List<RelativeCoordinate> directions;
     
-    @Override
-    public String toString() {
+    public String getDirectionsString() {
         String ret = "[";
         for (Iterator<RelativeCoordinate> ii = directions.iterator(); ii.hasNext();) {
             ret += ii.next().toString();
@@ -34,10 +34,21 @@ public abstract class AbstractCondition implements ICondition, INamed {
         return ret;
     }
 
+    @Override
+    public String toString() {
+        assert(false);
+        return null;
+    }
+
+    public String toHTML() {
+        assert(false);
+        return null;
+    }
+
     public abstract boolean isMet(Pixel us, World world);
 
     public abstract String getName();
-
+    
     public List<RelativeCoordinate> getDirections() {
         return directions;
     }

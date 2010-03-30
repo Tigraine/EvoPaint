@@ -42,12 +42,23 @@ public class EmptyCondition extends AbstractCondition {
 
     @Override
     public String toString() {
-        String ret = super.toString();
-        ret += " is";
+        String ret = getDirectionsString();
+        ret += super.getDirections().size() > 1 ? " are " : " is ";
         if (comparisonOperator == ObjectComparisonOperator.NOT_EQUAL) {
-            ret += "not";
+            ret += "not ";
         }
-        ret += " empty";
+        ret += "empty";
+        return ret;
+    }
+
+    @Override
+    public String toHTML() {
+        String ret = getDirectionsString();
+        ret += super.getDirections().size() > 1 ? " are " : " is ";
+        if (comparisonOperator == ObjectComparisonOperator.NOT_EQUAL) {
+            ret += "not ";
+        }
+        ret += "empty";
         return ret;
     }
 

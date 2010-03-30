@@ -42,9 +42,20 @@ public class RewardAction extends AbstractAction {
     @Override
     public String toString() {
         String ret = "reward(";
-        ret += "reward: " + rewardValue;
-        ret += ", ";
-        ret += super.toString();
+        ret += ", targets: " + getDirectionsString();
+        ret += ", reward: " + rewardValue;
+        ret += ", cost: " + getCost();
+        ret += ")";
+        return ret;
+    }
+
+    @Override
+    public String toHTML() {
+        String ret = "reward(";
+        ret += "<span style='color: #777777;'>targets:</span> " + getDirectionsString();
+        ret += ", <span style='color: #777777;'>reward:</span> " + rewardValue;
+        ret += ", <span style='color: #777777;'>cost:</span> " + getCost();
+        ret += ")";
         return ret;
     }
 

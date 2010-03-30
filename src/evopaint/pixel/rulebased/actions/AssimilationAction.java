@@ -41,10 +41,20 @@ public class AssimilationAction extends AbstractAction {
     @Override
     public String toString() {
         String ret = "assimilate(";
-        ret += "in dimensions: ";
-        ret += dimensions;
-        ret += ", ";
-        ret += super.toString();
+        ret += ", targets: " + getDirectionsString();
+        ret += ", dimensions: " + dimensions.toHTML();
+        ret += ", cost: " + getCost();
+        ret += ")";
+        return ret;
+    }
+
+    @Override
+    public String toHTML() {
+        String ret = "<b>assimilate</b>(";
+        ret += "<span style='color: #777777;'>targets:</span> " + getDirectionsString();
+        ret += ", <span style='color: #777777;'>dimensions:</span> " + dimensions.toHTML();
+        ret += ", <span style='color: #777777;'>cost:</span> " + getCost();
+        ret += ")";
         return ret;
     }
 

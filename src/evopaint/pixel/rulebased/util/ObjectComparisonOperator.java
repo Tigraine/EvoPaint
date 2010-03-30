@@ -5,6 +5,7 @@
 
 package evopaint.pixel.rulebased.util;
 
+import evopaint.pixel.rulebased.interfaces.IHTML;
 import evopaint.pixel.rulebased.interfaces.INamed;
 import java.io.Serializable;
 import javax.swing.DefaultComboBoxModel;
@@ -13,7 +14,7 @@ import javax.swing.DefaultComboBoxModel;
  *
  * @author tam
  */
-public class ObjectComparisonOperator implements INamed, Serializable {
+public class ObjectComparisonOperator implements INamed, IHTML, Serializable {
     public static final int TYPE_EQUAL = 0;
     public static final int TYPE_NOT_EQUAL = 1;
     
@@ -38,6 +39,10 @@ public class ObjectComparisonOperator implements INamed, Serializable {
         }
         assert(false);
         return null;
+    }
+
+    public String toHTML() {
+        return toString();
     }
 
     public boolean compare(Object a, Object b) {
