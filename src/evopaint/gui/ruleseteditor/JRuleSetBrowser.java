@@ -5,25 +5,40 @@
 
 package evopaint.gui.ruleseteditor;
 
-import evopaint.pixel.rulebased.interfaces.IRule;
-import javax.swing.DefaultListModel;
-import javax.swing.JList;
-import javax.swing.border.TitledBorder;
+import javax.swing.JTree;
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.DefaultTreeModel;
 
 /**
  *
  * @author tam
  */
-public class JRuleSetBrowser extends JList {
+public class JRuleSetBrowser extends JTree {
 
     public JRuleSetBrowser() {
-        DefaultListModel listModel = new DefaultListModel();
-
-        listModel.addElement("conway's game of life");
-        listModel.addElement("colorful");
-        listModel.addElement("lulz");
+        DefaultMutableTreeNode root = new DefaultMutableTreeNode();
         
-        setModel(listModel);
-    }
+        DefaultMutableTreeNode collection = new DefaultMutableTreeNode("conway's game of life");
+        collection.add(new DefaultMutableTreeNode("life pixel"));
+        root.add(collection);
 
+        collection = new DefaultMutableTreeNode("rainbows made of love");
+        collection.add(new DefaultMutableTreeNode("vertical love"));
+        collection.add(new DefaultMutableTreeNode("horizontal love"));
+        collection.add(new DefaultMutableTreeNode("love bomb"));
+        root.add(collection);
+
+        collection = new DefaultMutableTreeNode("suddenly, ants");
+        collection.add(new DefaultMutableTreeNode("hive"));
+        collection.add(new DefaultMutableTreeNode("ressource"));
+        collection.add(new DefaultMutableTreeNode("ant"));
+        collection.add(new DefaultMutableTreeNode("pheromone"));
+        root.add(collection);
+
+        DefaultTreeModel model = new DefaultTreeModel(root);
+        setModel(model);
+
+        setRootVisible(false);
+    }
 }

@@ -5,21 +5,26 @@ import evopaint.Configuration;
 import evopaint.EvoPaint;
 import evopaint.commands.*;
 import evopaint.gui.listeners.SelectionListenerFactory;
+import evopaint.gui.ruleseteditor.JRuleSetManager;
 
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import javax.swing.*;
 
 public class MainFrame extends JFrame {
-
-    public MenuBar menuBar;
+    private Container contentPane;
+    private JPanel mainPanel;
+    private MenuBar menuBar;
     private Showcase showcase;
     private JPopupMenu toolMenu;
     private PaintOptionsPanel paintOptionsPanel;
     private ToolBox toolBox;
     //private JPanel showCaseWrapper = new JPanel();
     private JPanel leftPanel;
+    private JRuleSetManager jRuleSetManager;
     private Configuration configuration;
 
     private Class activeTool = null;
@@ -28,9 +33,14 @@ public class MainFrame extends JFrame {
     private ZoomCommand zoomOutCommand;
     private ZoomCommand zoomInCommand;
 
+    public Configuration getConfiguration() {
+        return configuration;
+    }
+
     public MainFrame(Configuration configuration, EvoPaint evopaint) {
         this.configuration = configuration;
         initializeCommands(evopaint);
+        this.contentPane = getContentPane();
         
         activeTool = MoveCommand.class;
         CommandFactory commandFactory = new CommandFactory(configuration);
@@ -42,11 +52,18 @@ public class MainFrame extends JFrame {
         }
 
         setDefaultCloseOperation(EXIT_ON_CLOSE);
-        setLayout(new BorderLayout(0, 0));
+        getContentPane().setLayout(new CardLayout());
 
+        this.mainPanel = new JPanel();
+        mainPanel.setLayout(new BorderLayout(0, 0));
+        add(mainPanel, "main");
+        this.jRuleSetManager = new JRuleSetManager(configuration.brush.getRuleSet(),
+                configuration, new RuleSetManagerOKListener(), new RuleSetManagerCancelListener());
+        jRuleSetManager.setVisible(false);
+        add(jRuleSetManager, "rule manager");
 
         this.toolMenu = new ToolMenu(this);
-        this.paintOptionsPanel = new PaintOptionsPanel(configuration, showcase, this); // FIXME: paintoptionspanel must be initialized before showcase or we get a nullpointer exception. the semantics to not express this!!
+        this.paintOptionsPanel = new PaintOptionsPanel(configuration, showcase, this, new OpenRuleSetManagerListener()); // FIXME: paintoptionspanel must be initialized before showcase or we get a nullpointer exception. the semantics to not express this!!
         this.showcase = new Showcase(configuration, this, evopaint.getWorld(), evopaint.getPerception(), commandFactory);
         this.menuBar = new MenuBar(evopaint, new SelectionListenerFactory(showcase), showcase);
         setJMenuBar(menuBar);
@@ -57,7 +74,7 @@ public class MainFrame extends JFrame {
         // some hand crafted GUI stuff for the panel on the left
         leftPanel = new JPanel();
         leftPanel.setBackground(getBackground());
-        add(leftPanel, BorderLayout.WEST);
+        mainPanel.add(leftPanel, BorderLayout.WEST);
 
         JPanel wrapperPanelLeft = new JPanel();
         wrapperPanelLeft.setLayout(new BoxLayout(wrapperPanelLeft, BoxLayout.Y_AXIS));
@@ -89,7 +106,7 @@ public class MainFrame extends JFrame {
         showCaseScrollPane.setBorder(null);
 
         showCaseScrollPane.getViewport().addMouseWheelListener(showcase);
-        add(showCaseScrollPane, BorderLayout.CENTER);
+        mainPanel.add(showCaseScrollPane, BorderLayout.CENTER);
 
         //showCaseScrollPane.repaint();
 
@@ -98,7 +115,7 @@ public class MainFrame extends JFrame {
         this.toolMenu.setVisible(true);
         this.toolMenu.setVisible(false);
 
-        setPreferredSize(new Dimension(800, 600));
+        //setPreferredSize(new Dimension(800, 600));
 
         this.pack();
         this.setVisible(true);
@@ -123,7 +140,7 @@ public class MainFrame extends JFrame {
     public void initializeCommands(EvoPaint evopaint) {
     	
         CommandFactory commandFactory = new CommandFactory(configuration);
-        this.paintOptionsPanel = new PaintOptionsPanel(configuration, showcase, this); // FIXME: paintoptionspanel must be initialized before showcase or we get a nullpointer exception. the semantics to not express this!!
+        this.paintOptionsPanel = new PaintOptionsPanel(configuration, showcase, this, new OpenRuleSetManagerListener()); // FIXME: paintoptionspanel must be initialized before showcase or we get a nullpointer exception. the semantics to not express this!!
         this.showcase = new Showcase(configuration, this, evopaint.getWorld(), evopaint.getPerception(), commandFactory);
         this.menuBar = new MenuBar(evopaint, new SelectionListenerFactory(showcase), showcase);
         
@@ -240,6 +257,30 @@ public class MainFrame extends JFrame {
 
         public void keyReleased(KeyEvent e) {
             //throw new UnsupportedOperationException("Not supported yet.");
+        }
+    }
+
+    private class RuleSetManagerOKListener implements ActionListener {
+
+        public void actionPerformed(ActionEvent e) {
+            // TODO save rule
+            ((CardLayout)contentPane.getLayout()).show(contentPane, "main");
+        }
+
+    }
+
+    private class RuleSetManagerCancelListener implements ActionListener {
+
+        public void actionPerformed(ActionEvent e) {
+            ((CardLayout)contentPane.getLayout()).show(contentPane, "main");
+        }
+
+    }
+
+    private class OpenRuleSetManagerListener implements ActionListener {
+
+        public void actionPerformed(ActionEvent e) {
+            ((CardLayout)contentPane.getLayout()).show(contentPane, "rule manager");
         }
     }
 }

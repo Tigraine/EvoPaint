@@ -46,7 +46,7 @@ public class PaintOptionsPanel extends JPanel {
     MainFrame mainFrame;
     Checkbox checkboxRandom;
 
-    public PaintOptionsPanel(Configuration configuration, final Showcase showcase, final MainFrame mainFrame) {
+    public PaintOptionsPanel(Configuration configuration, final Showcase showcase, final MainFrame mainFrame, ActionListener openRuleSetManagerListener) {
 
         this.configuration = configuration;
         this.mainFrame = mainFrame;
@@ -121,7 +121,7 @@ public class PaintOptionsPanel extends JPanel {
 
         buttonRuleSet = new JButton();
         buttonRuleSet.setText("click for demo");
-        buttonRuleSet.addActionListener(new ButtonRuleSetListener());
+        buttonRuleSet.addActionListener(openRuleSetManagerListener);
         panelRuleSet.add(buttonRuleSet);
     }
 
@@ -220,18 +220,6 @@ public class PaintOptionsPanel extends JPanel {
 
         public void stateChanged(ChangeEvent e) {
             configuration.brush.setBrushSize((Integer)spinnerBrushSize.getValue());
-        }
-    }
-
-    private class ButtonRuleSetListener implements ActionListener {
-        public void actionPerformed(ActionEvent e) {
-            //JDialog dialog = new JDialog(mainFrame, "Rule Set Editor", true);
-            //dialog.add(new JRuleSetEditor(configuration.brush.getRuleSet()));
-            //dialog.pack();
-            //dialog.setVisible(true);
-            JRuleSetManager jRuleSetManager = new JRuleSetManager(configuration.brush.getRuleSet(), configuration);
-            jRuleSetManager.pack();
-            jRuleSetManager.setVisible(true);
         }
     }
 }

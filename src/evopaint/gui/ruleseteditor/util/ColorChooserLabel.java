@@ -6,14 +6,13 @@
 package evopaint.gui.ruleseteditor.util;
 
 import evopaint.Configuration;
-import evopaint.gui.ruleseteditor.JRuleSetManager;
+import evopaint.gui.MainFrame;
 import evopaint.pixel.PixelColor;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import javax.swing.JButton;
 import javax.swing.JColorChooser;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
@@ -72,7 +71,7 @@ public class ColorChooserLabel extends JLabel {
 
         public void actionPerformed(ActionEvent e) {
             Color c = colorChooser.getColor();
-            Configuration config = ((JRuleSetManager) SwingUtilities.getWindowAncestor(colorChooserLabel)).getConfiguration();
+            Configuration config = ((MainFrame) SwingUtilities.getWindowAncestor(colorChooserLabel)).getConfiguration();
             pixelColor.setInteger(c.getRGB(), config.rng);
             colorChooserLabel.setText("<html>" + pixelColor.toHTML() + "</html>");
         }
