@@ -22,9 +22,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTextPane;
-import javax.swing.JViewport;
 import javax.swing.border.LineBorder;
-import javax.swing.border.TitledBorder;
 
 /**
  *
