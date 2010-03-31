@@ -42,7 +42,7 @@ public class MenuBar extends JMenuBar implements Observer {
     private Showcase showcase;
     private JMenu selectionMenu;
     private JMenu activeSelections;
-    private newWizard nw;
+    private Wizard nw;
     private MenuBar mb;
 
     public MenuBar(final EvoPaint evopaint, SelectionListenerFactory listenerFactory, Showcase showcase) {
@@ -63,7 +63,7 @@ public class MenuBar extends JMenuBar implements Observer {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				// TODO Auto-generated method stub
-				nw = new newWizard(mb);
+				nw = new Wizard(mb);
 			}
 		});
         

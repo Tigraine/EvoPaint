@@ -15,13 +15,13 @@ import javax.swing.JTextField;
 import evopaint.EvoPaint;
 
 
-public class newWizard extends JFrame{
-	private MenuBar mb;
+public class Wizard extends JFrame{
+	private MenuBar menubar;
 	private JTextField xTf;
 	private JTextField yTf;
 	
-	public newWizard(final MenuBar mb){
-		this.mb=mb;
+	public Wizard(final MenuBar menubar){
+		this.menubar=menubar;
 		final JFrame jf= this;
 		String description="Relevant zb bei Regeln";
 		
@@ -80,7 +80,7 @@ public class newWizard extends JFrame{
 			public void actionPerformed(ActionEvent arg0) {
 				// TODO Auto-generated method stub
 				jf.setVisible(false);
-				mb.newEvolution(Integer.parseInt(xTf.getText()),Integer.parseInt(yTf.getText()));
+				menubar.newEvolution(Integer.parseInt(xTf.getText()),Integer.parseInt(yTf.getText()));
 			}
 		});
 		
