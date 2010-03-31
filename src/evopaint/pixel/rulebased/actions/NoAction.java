@@ -36,7 +36,7 @@ public class NoAction extends AbstractAction {
 
     @Override
     public String toHTML() {
-        return toString();
+        return "<b>do nothing</b>";
     }
 
     public LinkedHashMap<String,JComponent> getParametersForGUI() {
