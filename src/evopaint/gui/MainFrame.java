@@ -46,9 +46,13 @@ public class MainFrame extends JFrame {
         CommandFactory commandFactory = new CommandFactory(configuration);
 
         try {
-            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-        } catch(Exception e) {
-            // TODO handle exceptions
+            UIManager.setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel");
+        } catch (Exception e) {
+            try {
+                UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+            } catch (Exception ee) {
+                // mu!
+            }
         }
 
         setDefaultCloseOperation(EXIT_ON_CLOSE);
