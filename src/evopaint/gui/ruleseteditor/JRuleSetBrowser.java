@@ -5,8 +5,9 @@
 
 package evopaint.gui.ruleseteditor;
 
-import evopaint.pixel.rulebased.ExampleRuleSetFactory;
+import evopaint.pixel.rulebased.ExampleRuleSetCollectionFactory;
 import evopaint.pixel.rulebased.RuleSet;
+import evopaint.pixel.rulebased.RuleSetCollection;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.io.File;
@@ -18,6 +19,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import javax.swing.JFileChooser;
 import javax.swing.JTree;
+import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.DefaultTreeModel;
@@ -40,17 +42,16 @@ public class JRuleSetBrowser extends JTree {
             collectionsDir.mkdir();
             createExampleCollections(collectionsDir);
         }
-        File [] collectionDirs = collectionsDir.listFiles();
+        File [] collectionDir = collectionsDir.listFiles();
 
         root = new DefaultMutableTreeNode();
         try {
-            for (File collectionDir : collectionDirs) {
-                DefaultMutableTreeNode collectionNode = new DefaultMutableTreeNode(collectionDir.getName());
-                File [] ruleSetFiles = collectionDir.listFiles();
-                for (File ruleSetFile : ruleSetFiles) {
-                    ObjectInputStream in = new ObjectInputStream(new FileInputStream(ruleSetFile));
-                    RuleSet ruleSet = (RuleSet)in.readObject();
-                    in.close();
+            for (File collectionFile : collectionDir) {
+                ObjectInputStream in = new ObjectInputStream(new FileInputStream(collectionFile));
+                RuleSetCollection ruleSetCollection = (RuleSetCollection)in.readObject();
+                in.close();
+                DefaultMutableTreeNode collectionNode = new DefaultMutableTreeNode(ruleSetCollection);
+                for (RuleSet ruleSet : ruleSetCollection.getRulesets()) {
                     collectionNode.add(new DefaultMutableTreeNode(ruleSet));
                 }
                 root.add(collectionNode);
@@ -70,14 +71,12 @@ public class JRuleSetBrowser extends JTree {
     }
 
     public void createExampleCollections(File dir) {
-        RuleSet ruleSet = ExampleRuleSetFactory.createSimpleColorAssimilation();
+        RuleSetCollection ruleSetCollection = ExampleRuleSetCollectionFactory.createSimple();
         try {
-            File collectionDir = new File(dir, "simple");
-            collectionDir.mkdir();
-            File ruleSetFile = new File(collectionDir, ruleSet.getName().replace(" ", "_").toLowerCase() + ".eprs");
-            ruleSetFile.createNewFile();
-            ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(ruleSetFile));
-            out.writeObject(ruleSet);
+            File collectionFile = new File(dir, ruleSetCollection.getName().replace(" ", "_").toLowerCase() + ".epc");
+            collectionFile.createNewFile();
+            ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(collectionFile));
+            out.writeObject(ruleSetCollection);
             out.close();
         } catch (FileNotFoundException ex) {
             ex.printStackTrace();
@@ -88,11 +87,12 @@ public class JRuleSetBrowser extends JTree {
         } 
     }
 
-    public JRuleSetBrowser() {
+    public JRuleSetBrowser(TreeSelectionListener treeSelectionListener) {
         updateCollections();
         setRootVisible(false);
         setCellRenderer(new RuleSetTreeCellRenderer());
         setPreferredSize(new Dimension(250, 250));
+        addTreeSelectionListener(treeSelectionListener);
     }
 
     class RuleSetTreeCellRenderer extends DefaultTreeCellRenderer {
@@ -102,6 +102,9 @@ public class JRuleSetBrowser extends JTree {
             Object userObject = ((DefaultMutableTreeNode)value).getUserObject();
             if (userObject instanceof RuleSet) {
                 return super.getTreeCellRendererComponent(tree, new DefaultMutableTreeNode(((RuleSet)userObject).getName()), sel, expanded, leaf, row, hasFocus);
+            }
+            if (userObject instanceof RuleSetCollection) {
+                 return super.getTreeCellRendererComponent(tree, new DefaultMutableTreeNode(((RuleSetCollection)userObject).getName()), sel, expanded, leaf, row, hasFocus);
             }
             return super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf, row, hasFocus);
         }

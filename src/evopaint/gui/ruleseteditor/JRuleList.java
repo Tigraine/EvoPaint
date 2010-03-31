@@ -7,8 +7,11 @@ package evopaint.gui.ruleseteditor;
 
 import evopaint.gui.util.DragDropList;
 import evopaint.pixel.rulebased.interfaces.IRule;
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
@@ -35,6 +38,7 @@ public class JRuleList extends DragDropList {
 
     public void setRules(List<IRule> rules) {
         DefaultListModel listModel = (DefaultListModel)getModel();
+        listModel.clear();
         for (IRule rule : rules) {
             listModel.addElement(rule);
         }
@@ -56,6 +60,10 @@ public class JRuleList extends DragDropList {
                  }
             }
         });
+
+        setSelectionForeground(Color.BLACK);
+        setSelectionBackground(new Color(0xe9eff8));
+
         // DO NOT GIVE THIS LIST A PREFERRED SIZE, IT WILL FUCK UP THE H-SCROLLBAR
         // DON'T: // setPreferredSize(new Dimension(100,100));
     }

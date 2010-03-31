@@ -7,6 +7,7 @@ package evopaint.gui.ruleseteditor;
 
 import evopaint.Configuration;
 import evopaint.pixel.rulebased.RuleSet;
+import evopaint.pixel.rulebased.RuleSetCollection;
 import evopaint.pixel.rulebased.interfaces.IRule;
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
@@ -23,6 +24,9 @@ import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTextPane;
 import javax.swing.border.LineBorder;
+import javax.swing.event.TreeSelectionEvent;
+import javax.swing.event.TreeSelectionListener;
+import javax.swing.tree.DefaultMutableTreeNode;
 
 /**
  *
@@ -32,8 +36,11 @@ public class JRuleSetManager extends JPanel {
 
     private Container contentPane;
     private Configuration configuration;
+    private JRuleSetBrowser jRuleSetBrowser;
+    private JRuleSetDescriptionPane descriptionTextPane;
     private JRuleList jRuleList;
     private JRuleEditor jRuleEditor;
+    JSplitPane splitPaneVertical;
 
 
     public Configuration getConfiguration() {
@@ -57,7 +64,7 @@ public class JRuleSetManager extends JPanel {
 
         // FIRST CARD
         // create rule set browser and put it on a scroll pane
-        JRuleSetBrowser jRuleSetBrowser = new JRuleSetBrowser();
+        jRuleSetBrowser = new JRuleSetBrowser(new RuleSetBrowserSelectionListener());
         JScrollPane scrollPaneForRuleSetBrowser = new JScrollPane(jRuleSetBrowser,
                 JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
                 JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
@@ -66,12 +73,7 @@ public class JRuleSetManager extends JPanel {
         //scrollPaneForRuleSetBrowser.setPreferredSize(new Dimension(100, 100));
 
         // create description of rule set and put it on a scroll pane
-        String heading = "<h1 style='text-align: center;'>" + ruleSet.getName() + "</h1>";
-        String html = "<html><body>" + heading + "<p>" + ruleSet.getDescription() + "</p></body></html>";
-        JTextPane descriptionTextPane = new JTextPane();
-        descriptionTextPane.setContentType("text/html");
-        descriptionTextPane.setText(html);
-        descriptionTextPane.setEditable(false);
+        descriptionTextPane = new JRuleSetDescriptionPane();
         JScrollPane scrollPaneForDescription = new JScrollPane(descriptionTextPane,
                 JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
                 JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
@@ -110,11 +112,12 @@ public class JRuleSetManager extends JPanel {
         // fuse upper split pane with rule list panel to this:
         // split [ browser | description ]
         //       [       rule list       ]
-        JSplitPane splitPaneVertical = new JSplitPane(JSplitPane.VERTICAL_SPLIT,
+        splitPaneVertical = new JSplitPane(JSplitPane.VERTICAL_SPLIT,
                            upperSplitPane, ruleListPanel);
         //splitPaneVertical.setDividerLocation(200);
         splitPaneVertical.setContinuousLayout(true);
-        splitPaneVertical.setResizeWeight(0.5);
+        splitPaneVertical.setResizeWeight(0.1);
+        splitPaneVertical.getBottomComponent().setVisible(false);
 
         // set up a control panel for the whole rule set
         JPanel controlPanel = new JPanel();
@@ -156,6 +159,31 @@ public class JRuleSetManager extends JPanel {
 
         public void actionPerformed(ActionEvent e) {
             ((CardLayout)contentPane.getLayout()).show(contentPane, "manager");
+        }
+    }
+
+    private class RuleSetBrowserSelectionListener implements TreeSelectionListener {
+
+        public void valueChanged(TreeSelectionEvent e) {
+            DefaultMutableTreeNode node = (DefaultMutableTreeNode)
+                           jRuleSetBrowser.getLastSelectedPathComponent();
+            
+            if (node == null) { // dunno how that could be the case, but what the hell..
+                return;
+            }
+
+            Object userObject = node.getUserObject();
+            if (node.isLeaf()) {
+                RuleSet ruleSet = (RuleSet)userObject;
+                jRuleList.setRules(ruleSet.getRules());
+                descriptionTextPane.setBoth(ruleSet.getName(), ruleSet.getDescription());
+                splitPaneVertical.getBottomComponent().setVisible(true);
+                splitPaneVertical.setDividerLocation(300);
+            } else {
+                RuleSetCollection ruleSetCollection = (RuleSetCollection)userObject;
+                splitPaneVertical.getBottomComponent().setVisible(false);
+                descriptionTextPane.setBoth(ruleSetCollection.getName(), ruleSetCollection.getDescription());
+            }
         }
     }
 }
