@@ -31,7 +31,7 @@ import javax.swing.JPanel;
 public class JRuleListControlPanel extends JPanel {
 
     public JRuleListControlPanel(final JRuleSetManager jRuleSetManager, final JRuleList jRuleList) {
-        setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+        setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
 
         JButton btnAdd = new JButton("Add");
         btnAdd.addActionListener(new ActionListener() {

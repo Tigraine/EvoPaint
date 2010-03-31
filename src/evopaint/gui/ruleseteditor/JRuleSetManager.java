@@ -9,12 +9,14 @@ import evopaint.Configuration;
 import evopaint.pixel.rulebased.RuleSet;
 import evopaint.pixel.rulebased.interfaces.IRule;
 import java.awt.CardLayout;
+import java.awt.Color;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import javax.swing.BoxLayout;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JPanel;
@@ -56,9 +58,12 @@ public class JRuleSetManager extends JPanel {
         setLayout(new CardLayout());
 
         this.managingPanel = new JPanel();
-        managingPanel.setLayout(new GridBagLayout());
+        //managingPanel.setBackground(Color.red);
+        //managingPanel.setLayout(new GridBagLayout());
         
         GridBagConstraints constraints = new GridBagConstraints();
+        constraints.anchor = GridBagConstraints.NORTHWEST;
+        constraints.fill = GridBagConstraints.BOTH;
 
         // create rule set browser and put it on a scroll pane
         JRuleSetBrowser jRuleSetBrowser = new JRuleSetBrowser();
@@ -66,6 +71,7 @@ public class JRuleSetManager extends JPanel {
                 JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
                 JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         scrollPaneForRuleSetBrowser.setBorder(new TitledBorder("Rule Sets"));
+        scrollPaneForRuleSetBrowser.setPreferredSize(new Dimension(200, 200));
         scrollPaneForRuleSetBrowser.setBackground(getBackground());
 
         // create description of rule set
@@ -78,7 +84,7 @@ public class JRuleSetManager extends JPanel {
         //descriptionEditorPane.setEditable(false);
         JScrollPane scrollPaneForDescription = new JScrollPane(descriptionTextPane,
                 JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
-                JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+                JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         //scrollPaneForDescription.setBorder(new TitledBorder("Description"));
         //scrollPaneForDescription.setBackground(getBackground());
         scrollPaneForDescription.setViewportBorder(null);
@@ -89,6 +95,8 @@ public class JRuleSetManager extends JPanel {
         JSplitPane splitPaneHorizontal = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,
                            scrollPaneForRuleSetBrowser, scrollPaneForDescription);
         splitPaneHorizontal.setDividerLocation(200);
+        splitPaneHorizontal.setContinuousLayout(true);
+        splitPaneHorizontal.setResizeWeight(0);
         //scrollPaneForRuleSetBrowser.setMinimumSize(new Dimension(100, 0));
 
         // create rule list in scroll pane
@@ -97,14 +105,22 @@ public class JRuleSetManager extends JPanel {
         JScrollPane scrollPaneForRuleList = new JScrollPane(jRuleList,
                 JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
                 JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-        scrollPaneForRuleList.setBorder(new TitledBorder("Rules"));
         scrollPaneForRuleList.setBackground(getBackground());
+
+        JPanel ruleListPanel = new JPanel();
+        ruleListPanel.setLayout(new BoxLayout(ruleListPanel, BoxLayout.Y_AXIS));
+        ruleListPanel.setBorder(new TitledBorder("Rules"));
+        ruleListPanel.add(scrollPaneForRuleList);
+        ruleListPanel.add(new JRuleListControlPanel(this, jRuleList));
+        //ruleListPanel.setPreferredSize(new Dimension(400, 200));
 
         // split [ browser | description ]
         //       [       rule list       ]
         JSplitPane splitPaneVertical = new JSplitPane(JSplitPane.VERTICAL_SPLIT,
-                           splitPaneHorizontal, scrollPaneForRuleList);
+                           splitPaneHorizontal, ruleListPanel);
         splitPaneVertical.setDividerLocation(200);
+        splitPaneVertical.setContinuousLayout(true);
+        splitPaneVertical.setResizeWeight(0.5);
         
         this.managingPanel.add(splitPaneVertical, constraints);
 
@@ -118,8 +134,14 @@ public class JRuleSetManager extends JPanel {
         controlPanel.add(btnCancel);
         constraints.gridy = 1;
         this.managingPanel.add(controlPanel, constraints);
+        managingPanel.setPreferredSize(new Dimension(500, 500));
 
-        add(this.managingPanel, "manager");
+        JScrollPane fuckingScrollPane = new JScrollPane(managingPanel,
+                JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
+                JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        fuckingScrollPane.add(this.managingPanel);
+        fuckingScrollPane.setPreferredSize(new Dimension(500, 500));
+        add(managingPanel, "manager");
 
         //JRuleListControlPanel jRuleSetControlPanel = new JRuleListControlPanel(this, jRuleList);
         //add(jRuleSetControlPanel);
