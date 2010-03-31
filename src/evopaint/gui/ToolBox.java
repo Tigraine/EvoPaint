@@ -4,6 +4,7 @@ package evopaint.gui;
 import evopaint.commands.MoveCommand;
 import evopaint.commands.PaintCommand;
 import evopaint.commands.SelectCommand;
+import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.GridLayout;
@@ -14,6 +15,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 import javax.swing.JToggleButton;
 import javax.swing.border.BevelBorder;
+import javax.swing.border.LineBorder;
 
 
 public class ToolBox extends JPanel {
@@ -31,7 +33,7 @@ public class ToolBox extends JPanel {
   
     public ToolBox(final MainFrame mf) {
         setLayout(new GridLayout(0, 3, 3, 3));
-        setBorder(new BevelBorder(BevelBorder.RAISED));
+        setBorder(new LineBorder(Color.GRAY));
 
         for (int i = 0; i < 7; i++) {
             JToggleButton btn = new JToggleButton(Integer.toString(i));

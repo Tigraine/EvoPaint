@@ -73,6 +73,7 @@ public class JRuleSetManager extends JPanel {
         JTextPane descriptionTextPane = new JTextPane();
         descriptionTextPane.setContentType("text/html");
         descriptionTextPane.setText(html);
+        descriptionTextPane.setEditable(false);
         JScrollPane scrollPaneForDescription = new JScrollPane(descriptionTextPane,
                 JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
                 JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);

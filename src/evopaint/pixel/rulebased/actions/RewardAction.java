@@ -42,7 +42,7 @@ public class RewardAction extends AbstractAction {
     @Override
     public String toString() {
         String ret = "reward(";
-        ret += ", targets: " + getDirectionsString();
+        ret += "targets: " + getDirectionsString();
         ret += ", reward: " + rewardValue;
         ret += ", cost: " + getCost();
         ret += ")";

@@ -10,6 +10,7 @@ import evopaint.Configuration;
 import evopaint.gui.util.AutoSelectOnFocusSpinner;
 import evopaint.pixel.rulebased.actions.NoAction;
 import evopaint.pixel.rulebased.interfaces.IAction;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -17,17 +18,14 @@ import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.LinkedHashMap;
-import java.util.Observable;
-import java.util.Observer;
 import javax.swing.DefaultComboBoxModel;
-import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
-import javax.swing.border.BevelBorder;
+import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -108,7 +106,7 @@ public class JAction extends JPanel {
 
         setLayout(new GridBagLayout());
         GridBagConstraints constraints = new GridBagConstraints();
-        setBorder(new BevelBorder(BevelBorder.RAISED));
+        setBorder(new LineBorder(Color.GRAY));
         constraints.anchor = GridBagConstraints.NORTHWEST;
 
         DefaultComboBoxModel model = new DefaultComboBoxModel();

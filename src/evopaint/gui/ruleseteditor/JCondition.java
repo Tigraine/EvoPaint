@@ -9,6 +9,7 @@ import evopaint.gui.ruleseteditor.util.NamedObjectListCellRenderer;
 import evopaint.Configuration;
 import evopaint.pixel.rulebased.conditions.NoCondition;
 import evopaint.pixel.rulebased.interfaces.ICondition;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -23,7 +24,9 @@ import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JToggleButton;
+import javax.swing.SwingUtilities;
 import javax.swing.border.BevelBorder;
+import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
 
 /**
@@ -100,6 +103,7 @@ public class JCondition extends JPanel {
         //this.jConditionList = jConditionList;
 
         setLayout(new GridBagLayout());
+        //setBackground(Color.WHITE);
         GridBagConstraints constraints = new GridBagConstraints();
         constraints.anchor = GridBagConstraints.NORTHWEST;
 
@@ -117,7 +121,7 @@ public class JCondition extends JPanel {
         expandedPanel = new JPanel();
         //expandedPanel.setLayout(new BoxLayout(expandedPanel, BoxLayout.Y_AXIS));
         expandedPanel.setLayout(new GridBagLayout());
-        expandedPanel.setBorder(new BevelBorder(BevelBorder.RAISED));
+        expandedPanel.setBorder(new LineBorder(Color.GRAY));
 
         constraints.gridx = 0;
         constraints.gridy = 1;

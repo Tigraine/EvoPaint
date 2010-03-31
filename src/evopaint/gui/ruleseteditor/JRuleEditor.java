@@ -9,6 +9,8 @@ import evopaint.pixel.rulebased.Rule;
 import evopaint.pixel.rulebased.interfaces.IAction;
 import evopaint.pixel.rulebased.interfaces.ICondition;
 import evopaint.pixel.rulebased.interfaces.IRule;
+import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -18,7 +20,8 @@ import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.border.TitledBorder;
+import javax.swing.JScrollPane;
+import javax.swing.border.LineBorder;
 
 /**
  *
@@ -40,11 +43,16 @@ public class JRuleEditor extends JPanel {
     }
 
     public JRuleEditor(ActionListener OKListener, ActionListener CancelListener) {
-        setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+        setLayout(new BorderLayout(20, 20));
+        setBorder(new LineBorder(getBackground(), 6));
         
         JPanel rulePanel = new JPanel();
-        rulePanel.setBorder(new TitledBorder("Edit Rule"));
-        add(rulePanel);
+        JScrollPane scrollPaneForRulePanel = new JScrollPane(rulePanel,
+                JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
+                JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        scrollPaneForRulePanel.setBorder(new LineBorder(Color.GRAY));
+        scrollPaneForRulePanel.setViewportBorder(null);
+        add(scrollPaneForRulePanel, BorderLayout.CENTER);
 
         rulePanel.setLayout(new GridBagLayout());
 
@@ -82,9 +90,9 @@ public class JRuleEditor extends JPanel {
         btnCancel.addActionListener(CancelListener);
         controlPanel.add(btnCancel);
 
-        constraints.gridx = 0;
-        constraints.gridy = 2;
-        constraints.gridwidth = 2;
-        add(controlPanel, constraints);
+        //constraints.gridx = 0;
+        //constraints.gridy = 2;
+        //constraints.gridwidth = 2;
+        add(controlPanel, BorderLayout.SOUTH);
     }
 }

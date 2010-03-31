@@ -41,7 +41,7 @@ public class AssimilationAction extends AbstractAction {
     @Override
     public String toString() {
         String ret = "assimilate(";
-        ret += ", targets: " + getDirectionsString();
+        ret += "targets: " + getDirectionsString();
         ret += ", dimensions: " + dimensions.toHTML();
         ret += ", cost: " + getCost();
         ret += ")";
