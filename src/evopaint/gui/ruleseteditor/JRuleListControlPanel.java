@@ -63,6 +63,9 @@ public class JRuleListControlPanel extends JPanel {
                 }
                 int index = jRuleList.getSelectedIndex();
                 ((DefaultListModel)jRuleList.getModel()).remove(index);
+                if (index > 0) {
+                    jRuleList.setSelectedIndex(index - 1);
+                }
             }
         });
         add(btnDelete);
