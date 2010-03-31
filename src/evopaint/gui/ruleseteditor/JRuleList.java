@@ -43,7 +43,7 @@ public class JRuleList extends DragDropList {
     public JRuleList(final JRuleSetManager jRuleSetManager) {
         super(new DefaultListModel());
         setCellRenderer(new RuleCellRenderer());
-        setVisibleRowCount(5);
+        //setVisibleRowCount(5);
 
         // open rule editor on double click
         addMouseListener(new MouseAdapter() {
@@ -56,7 +56,8 @@ public class JRuleList extends DragDropList {
                  }
             }
         });
-        setPreferredSize(new Dimension(100,100));
+        // DO NOT GIVE THIS LIST A PREFERRED SIZE, IT WILL FUCK UP THE H-SCROLLBAR
+        // DON'T: // setPreferredSize(new Dimension(100,100));
     }
 
     private class RuleCellRenderer extends DefaultListCellRenderer {
