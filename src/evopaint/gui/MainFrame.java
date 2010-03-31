@@ -115,7 +115,7 @@ public class MainFrame extends JFrame {
         this.toolMenu.setVisible(true);
         this.toolMenu.setVisible(false);
 
-        //setPreferredSize(new Dimension(800, 600));
+        setPreferredSize(new Dimension(800, 600));
 
         this.pack();
         this.setVisible(true);

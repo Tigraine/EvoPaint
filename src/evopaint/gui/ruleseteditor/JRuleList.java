@@ -43,7 +43,7 @@ public class JRuleList extends DragDropList {
     public JRuleList(final JRuleSetManager jRuleSetManager) {
         super(new DefaultListModel());
         setCellRenderer(new RuleCellRenderer());
-        setVisibleRowCount(5);
+        //setVisibleRowCount(5);
 
         // open rule editor on double click
         addMouseListener(new MouseAdapter() {
