@@ -70,7 +70,6 @@ public class JRuleSetManager extends JPanel {
                 JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         scrollPaneForRuleSetBrowser.setBorder(new LineBorder(Color.GRAY));
         scrollPaneForRuleSetBrowser.setViewportBorder(null);
-        //scrollPaneForRuleSetBrowser.setPreferredSize(new Dimension(100, 100));
 
         // create description of rule set and put it on a scroll pane
         descriptionTextPane = new JRuleSetDescriptionPane();
@@ -85,7 +84,7 @@ public class JRuleSetManager extends JPanel {
         // [ browser | description ]
         JSplitPane upperSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,
                            scrollPaneForRuleSetBrowser, scrollPaneForDescription);
-        //upperSplitPane.setDividerLocation(200);
+        upperSplitPane.setDividerLocation(250);
         upperSplitPane.setContinuousLayout(true);
         upperSplitPane.setResizeWeight(0);
 

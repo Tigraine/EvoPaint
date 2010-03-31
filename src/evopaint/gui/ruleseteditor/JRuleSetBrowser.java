@@ -91,7 +91,9 @@ public class JRuleSetBrowser extends JTree {
         updateCollections();
         setRootVisible(false);
         setCellRenderer(new RuleSetTreeCellRenderer());
-        setPreferredSize(new Dimension(250, 250));
+        // don't set the preferred size! set the divider location instead
+        // or else the scrollpane will scroll even if the tree is empty
+        //setPreferredSize(new Dimension(250, 250));
         addTreeSelectionListener(treeSelectionListener);
     }
 
