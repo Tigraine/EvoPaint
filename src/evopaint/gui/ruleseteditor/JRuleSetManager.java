@@ -99,7 +99,7 @@ public class JRuleSetManager extends JPanel {
 
         // SECOND CARD
         // editor
-        this.jRuleEditor = new JRuleEditor(new RuleEditorOKListener(), new RuleEditorCancelListener());
+        this.jRuleEditor = new JRuleEditor(configuration, new RuleEditorOKListener(), new RuleEditorCancelListener());
         this.jRuleEditor.setVisible(false);
         add(jRuleEditor, "editor");
     }

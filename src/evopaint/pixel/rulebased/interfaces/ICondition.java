@@ -5,6 +5,7 @@
 
 package evopaint.pixel.rulebased.interfaces;
 
+import evopaint.Configuration;
 import evopaint.World;
 import evopaint.pixel.Pixel;
 import evopaint.util.mapping.RelativeCoordinate;
@@ -20,5 +21,5 @@ import javax.swing.JComponent;
 public interface ICondition extends INamed, IHTML, Serializable {
     public List<RelativeCoordinate> getDirections();
     public boolean isMet(Pixel us, World world);
-    public LinkedHashMap<String,JComponent> getParametersForGUI();
+    public LinkedHashMap<String,JComponent> getParametersForGUI(Configuration configuration);
 }

@@ -5,12 +5,15 @@
 
 package evopaint.pixel.rulebased.conditions;
 
+import evopaint.Configuration;
 import evopaint.pixel.rulebased.AbstractCondition;
 import evopaint.World;
+import evopaint.gui.MainFrame;
 import evopaint.gui.ruleseteditor.util.DimensionsListener;
 import evopaint.gui.util.AutoSelectOnFocusSpinner;
 import evopaint.gui.ruleseteditor.util.NamedObjectListCellRenderer;
 import evopaint.gui.ruleseteditor.util.ColorChooserLabel;
+import evopaint.interfaces.IRandomNumberGenerator;
 import evopaint.pixel.ColorDimensions;
 import evopaint.pixel.Pixel;
 import evopaint.pixel.PixelColor;
@@ -27,6 +30,7 @@ import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.JToggleButton;
 import javax.swing.SpinnerNumberModel;
+import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
@@ -122,10 +126,10 @@ public class ColorLikenessCondition extends AbstractCondition {
         return true;
     }
 
-    public LinkedHashMap<String,JComponent> getParametersForGUI() {
+    public LinkedHashMap<String,JComponent> getParametersForGUI(Configuration configuration) {
         LinkedHashMap<String,JComponent> ret = new LinkedHashMap<String,JComponent>();
 
-        ColorChooserLabel colorLabel = new ColorChooserLabel(comparedColor);
+        ColorChooserLabel colorLabel = new ColorChooserLabel(comparedColor, configuration.rng);
         JPanel wrapLabelToAvoidUncoloredStretchedBackground = new JPanel();
         wrapLabelToAvoidUncoloredStretchedBackground.add(colorLabel);
         ret.put("Color", wrapLabelToAvoidUncoloredStretchedBackground);

@@ -5,6 +5,7 @@
 
 package evopaint.gui.ruleseteditor;
 
+import evopaint.Configuration;
 import evopaint.pixel.rulebased.conditions.NoCondition;
 import evopaint.pixel.rulebased.interfaces.ICondition;
 import java.awt.BorderLayout;
@@ -26,6 +27,7 @@ import javax.swing.border.LineBorder;
  * @author tam
  */
 public class JConditionList extends JPanel {
+    private Configuration configuration;
     private List<JCondition> jConditions;
     private JPanel panelForConditionWrappers;
 
@@ -47,7 +49,7 @@ public class JConditionList extends JPanel {
     }
 
     public void addCondition(ICondition condition) {
-        JCondition jCondition = new JCondition();
+        JCondition jCondition = new JCondition(configuration);
         jCondition.setCondition(condition, true);
 
         jConditions.add(jCondition);
@@ -63,7 +65,8 @@ public class JConditionList extends JPanel {
         panelForConditionWrappers.revalidate(); // will not display anything without this revalidate here
     }
 
-    public JConditionList() {
+    public JConditionList(Configuration configuration) {
+        this.configuration = configuration;
         jConditions = new ArrayList<JCondition>();
         setLayout(new BorderLayout(10, 5));
 

@@ -5,6 +5,7 @@
 
 package evopaint.pixel.rulebased.actions;
 
+import evopaint.Configuration;
 import evopaint.pixel.rulebased.AbstractAction;
 import evopaint.World;
 import evopaint.gui.util.AutoSelectOnFocusSpinner;
@@ -59,7 +60,7 @@ public class RewardAction extends AbstractAction {
         return ret;
     }
 
-    public LinkedHashMap<String,JComponent> getParametersForGUI() {
+    public LinkedHashMap<String,JComponent> getParametersForGUI(Configuration configuration) {
         LinkedHashMap<String,JComponent> ret = new LinkedHashMap<String,JComponent>();
 
         SpinnerNumberModel spinnerModel = new SpinnerNumberModel(rewardValue, 0, Integer.MAX_VALUE, 1);

@@ -5,18 +5,14 @@
 
 package evopaint.pixel.rulebased.conditions;
 
+import evopaint.Configuration;
 import evopaint.World;
-import evopaint.gui.ruleseteditor.util.NamedObjectListCellRenderer;
-import evopaint.pixel.rulebased.util.ObjectComparisonOperator;
 import evopaint.pixel.rulebased.AbstractCondition;
 import evopaint.pixel.Pixel;
 import evopaint.util.mapping.RelativeCoordinate;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
-import javax.swing.JComboBox;
 import javax.swing.JComponent;
 
 /**
@@ -43,7 +39,7 @@ public class NoCondition extends AbstractCondition {
         return true;
     }
 
-    public LinkedHashMap<String,JComponent> getParametersForGUI() {
+    public LinkedHashMap<String,JComponent> getParametersForGUI(Configuration configuration) {
         LinkedHashMap<String,JComponent> ret = new LinkedHashMap<String,JComponent>();
         return ret;
     }

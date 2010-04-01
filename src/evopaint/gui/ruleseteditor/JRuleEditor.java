@@ -5,6 +5,7 @@
 
 package evopaint.gui.ruleseteditor;
 
+import evopaint.Configuration;
 import evopaint.pixel.rulebased.Rule;
 import evopaint.pixel.rulebased.interfaces.IAction;
 import evopaint.pixel.rulebased.interfaces.ICondition;
@@ -16,7 +17,6 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionListener;
 import java.util.List;
-import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -28,6 +28,7 @@ import javax.swing.border.LineBorder;
  * @author tam
  */
 public class JRuleEditor extends JPanel {
+    private Configuration configuration;
     JConditionList jConditionList;
     JAction jAction;
 
@@ -42,7 +43,8 @@ public class JRuleEditor extends JPanel {
         jAction.setIAction(rule.getAction(), true);
     }
 
-    public JRuleEditor(ActionListener OKListener, ActionListener CancelListener) {
+    public JRuleEditor(Configuration configuration, ActionListener OKListener, ActionListener CancelListener) {
+        this.configuration = configuration;
         setLayout(new BorderLayout(20, 20));
         setBorder(new LineBorder(getBackground(), 6));
 
@@ -55,13 +57,13 @@ public class JRuleEditor extends JPanel {
         constraints.gridx = 0;
         constraints.gridy = 0;
         constraints.anchor = GridBagConstraints.NORTHWEST;
-        jConditionList = new JConditionList();
+        jConditionList = new JConditionList(configuration);
         rulePanel.add(jConditionList, constraints);
 
         JPanel thenAlignmentPanel = new JPanel();
         JLabel thenLabel = new JLabel("<html><span style='color: #0000E6; font-weight: bold;'>THEN</span><html>");
         thenAlignmentPanel.add(thenLabel);
-        jAction = new JAction();
+        jAction = new JAction(configuration);
         thenAlignmentPanel.add(jAction);
 
         constraints.gridx = 0;

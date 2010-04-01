@@ -5,6 +5,7 @@
 
 package evopaint.pixel.rulebased.conditions;
 
+import evopaint.Configuration;
 import evopaint.World;
 import evopaint.gui.ruleseteditor.util.NamedObjectListCellRenderer;
 import evopaint.pixel.rulebased.util.ObjectComparisonOperator;
@@ -72,7 +73,7 @@ public class EmptyCondition extends AbstractCondition {
         return true;
     }
 
-    public LinkedHashMap<String,JComponent> getParametersForGUI() {
+    public LinkedHashMap<String,JComponent> getParametersForGUI(Configuration configuration) {
         LinkedHashMap<String,JComponent> ret = new LinkedHashMap<String,JComponent>();
         
         JComboBox comparisonComboBox = new JComboBox(ObjectComparisonOperator.createComboBoxModel());

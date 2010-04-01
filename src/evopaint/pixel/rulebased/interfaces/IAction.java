@@ -5,6 +5,7 @@
 
 package evopaint.pixel.rulebased.interfaces;
 
+import evopaint.Configuration;
 import evopaint.World;
 import evopaint.pixel.Pixel;
 import evopaint.util.mapping.RelativeCoordinate;
@@ -22,5 +23,5 @@ public interface IAction extends INamed, IHTML, Serializable {
     public void setCost(int cost);
     public List<RelativeCoordinate> getDirections();
     public int execute(Pixel actor, World world);
-    LinkedHashMap<String,JComponent> getParametersForGUI();
+    LinkedHashMap<String,JComponent> getParametersForGUI(Configuration configuration);
 }

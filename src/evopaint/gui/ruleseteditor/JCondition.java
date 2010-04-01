@@ -35,6 +35,7 @@ import javax.swing.border.TitledBorder;
  */
 public class JCondition extends JButton {
 
+    private Configuration configuration;
     private ICondition iCondition;
     private JDialog dialog;
     JComboBox comboBoxConditions;
@@ -73,7 +74,7 @@ public class JCondition extends JButton {
         targetPicker.setDirections(iCondition.getDirections());
 
         panelParameters.removeAll();
-        LinkedHashMap<String,JComponent> parameters = iCondition.getParametersForGUI();
+        LinkedHashMap<String,JComponent> parameters = iCondition.getParametersForGUI(configuration);
 
         GridBagConstraints constraints = new GridBagConstraints();
         constraints.gridx = 0;
@@ -94,7 +95,8 @@ public class JCondition extends JButton {
         panelParameters.setVisible(true);
     }
 
-    public JCondition() {
+    public JCondition(Configuration configuration) {
+        this.configuration = configuration;
         this.dialog = new JDialog((JFrame)SwingUtilities.getWindowAncestor(this), "Edit Action", true);
         dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
         dialog.setLayout(new GridBagLayout());
@@ -102,7 +104,7 @@ public class JCondition extends JButton {
             public void windowOpened(WindowEvent e) {}
             public void windowClosing(WindowEvent e) {}
             public void windowClosed(WindowEvent e) {
-                setText(iCondition.toString());
+                setText("<html>" + iCondition.toHTML() + "</html>");
             }
             public void windowIconified(WindowEvent e) {}
             public void windowDeiconified(WindowEvent e) {}

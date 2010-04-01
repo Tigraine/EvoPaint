@@ -40,7 +40,8 @@ import javax.swing.event.ChangeListener;
  * @author tam
  */
 public class JAction extends JButton {
-    
+
+    private Configuration configuration;
     private IAction iAction;
     private JDialog dialog;
     JComboBox comboBoxActions;
@@ -77,7 +78,7 @@ public class JAction extends JButton {
         }
 
         panelParameters.removeAll();
-        LinkedHashMap<String,JComponent> parameters = iAction.getParametersForGUI();
+        LinkedHashMap<String,JComponent> parameters = iAction.getParametersForGUI(configuration);
 
         SpinnerNumberModel spinnerModel = new SpinnerNumberModel(iAction.getCost(), 0, Integer.MAX_VALUE, 1);
         JSpinner costSpinner = new AutoSelectOnFocusSpinner(spinnerModel);
@@ -109,7 +110,8 @@ public class JAction extends JButton {
         panelParameters.setVisible(true);
     }
 
-    public JAction() {
+    public JAction(Configuration configuration) {
+        this.configuration = configuration;
         this.dialog = new JDialog((JFrame)SwingUtilities.getWindowAncestor(this), "Edit Action", true);
         dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
         dialog.setLayout(new GridBagLayout());
@@ -117,7 +119,7 @@ public class JAction extends JButton {
             public void windowOpened(WindowEvent e) {}
             public void windowClosing(WindowEvent e) {}
             public void windowClosed(WindowEvent e) {
-                setText(iAction.toString());
+                setText("<html>" + iAction.toHTML() + "</html>");
             }
             public void windowIconified(WindowEvent e) {}
             public void windowDeiconified(WindowEvent e) {}

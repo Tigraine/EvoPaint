@@ -5,6 +5,7 @@
 
 package evopaint.pixel.rulebased.actions;
 
+import evopaint.Configuration;
 import evopaint.pixel.rulebased.AbstractAction;
 import evopaint.World;
 import evopaint.gui.ruleseteditor.util.DimensionsListener;
@@ -68,7 +69,7 @@ public class AssimilationAction extends AbstractAction {
         return getCost() * getDirections().size();
     }
 
-    public LinkedHashMap<String,JComponent> getParametersForGUI() {
+    public LinkedHashMap<String,JComponent> getParametersForGUI(Configuration configuration) {
         LinkedHashMap<String,JComponent> ret = new LinkedHashMap<String,JComponent>();
 
         JPanel dimensionsPanel = new JPanel();
