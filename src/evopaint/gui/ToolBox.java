@@ -40,7 +40,7 @@ public class ToolBox extends JPanel {
         setBorder(new BevelBorder(BevelBorder.RAISED));
 
         for (int i = 0; i < 7; i++) {
-            JToggleButton btn = new JToggleButton(Integer.toString(i));
+            JToggleButton btn = new JToggleButton();
             buttons.add(btn);
             btn.setPreferredSize(new Dimension(35, 35));
             add(btn);
