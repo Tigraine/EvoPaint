@@ -17,6 +17,18 @@ public class RuleSetCollection implements Serializable {
     private String description;
     private List<RuleSet> rulesets;
 
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setRulesets(List<RuleSet> rulesets) {
+        this.rulesets = rulesets;
+    }
+
     public String getDescription() {
         return description;
     }

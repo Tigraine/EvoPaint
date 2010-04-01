@@ -5,7 +5,7 @@
 
 package evopaint.gui.ruleseteditor;
 
-import evopaint.pixel.rulebased.ExampleRuleSetCollectionFactory;
+import evopaint.util.FileHandler;
 import evopaint.pixel.rulebased.RuleSet;
 import evopaint.pixel.rulebased.RuleSetCollection;
 import java.awt.BorderLayout;
@@ -13,23 +13,19 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import java.util.ArrayList;
+import java.util.Enumeration;
 import javax.swing.JButton;
-import javax.swing.JFileChooser;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTree;
+import javax.swing.SwingUtilities;
 import javax.swing.border.LineBorder;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.TreePath;
 
 /**
  *
@@ -43,34 +39,33 @@ public class JRuleSetBrowser extends JPanel {
     }
 
     public void updateCollections() {
-        FileHandler fh = FileHandler.getHandler();
-        File collectionsDir = fh.getCollectionsDir();
-        File [] collectionFiles = collectionsDir.listFiles();
 
+        // save expansion state
+        ArrayList<Integer> expandedRows = new ArrayList<Integer>();
+        Enumeration expandedDescendants =
+                tree.getExpandedDescendants(new TreePath(tree.getModel().getRoot()));
+        while (expandedDescendants.hasMoreElements()) {
+            TreePath p = (TreePath)expandedDescendants.nextElement();
+            expandedRows.add(tree.getRowForPath(p));
+        }
+
+        // read collections
+        FileHandler fh = FileHandler.getHandler();
         DefaultMutableTreeNode root = new DefaultMutableTreeNode();
-        try {
-            for (File collectionFile : collectionFiles) {
-                ObjectInputStream in = new ObjectInputStream(new FileInputStream(collectionFile));
-                RuleSetCollection ruleSetCollection = (RuleSetCollection)in.readObject();
-                in.close();
-                DefaultMutableTreeNode collectionNode = new DefaultMutableTreeNode(ruleSetCollection);
-                for (RuleSet ruleSet : ruleSetCollection.getRulesets()) {
-                    collectionNode.add(new DefaultMutableTreeNode(ruleSet));
-                }
-                root.add(collectionNode);
+        for (RuleSetCollection collection : fh.getCollections()) {
+            DefaultMutableTreeNode collectionNode = new DefaultMutableTreeNode(collection);
+            for (RuleSet ruleSet : collection.getRulesets()) {
+                collectionNode.add(new DefaultMutableTreeNode(ruleSet));
             }
-        } catch (FileNotFoundException ex) {
-            ex.printStackTrace();
-            System.exit(1);
-        } catch (IOException ex) {
-            ex.printStackTrace();
-            System.exit(1);
-        } catch (ClassNotFoundException ex) {
-            ex.printStackTrace();
-            System.exit(1);
+            root.add(collectionNode);
         }
         DefaultTreeModel model = new DefaultTreeModel(root);
         tree.setModel(model);
+
+        // restore expansion state
+        for (Integer rowNumber : expandedRows) {
+            tree.expandRow(rowNumber);
+        }
     }
 
 
@@ -120,7 +115,7 @@ public class JRuleSetBrowser extends JPanel {
 
         add(scrollPaneForTree, BorderLayout.CENTER);
         add(controlPanel, BorderLayout.SOUTH);
-        
+
         updateCollections();
     }
 

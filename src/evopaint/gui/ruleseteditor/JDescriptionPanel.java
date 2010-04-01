@@ -24,10 +24,7 @@ import javax.swing.border.LineBorder;
  * @author tam
  */
 public class JDescriptionPanel extends JPanel {
-    public static final int SET = 0;
-    public static final int COLLECTION = 1;
 
-    private int type;
     private String title; // cos getName() was declared in super class
     private String description;
     private JPanel contentPane;
@@ -36,20 +33,13 @@ public class JDescriptionPanel extends JPanel {
     private JTextField editorTitleField;
     private JTextArea editorDescriptionArea;
 
-    public int getType() {
-        return type;
-    }
-
-    public void setType(int type) {
-        this.type = type;
-    }
-
     public String getDescription() {
         return description;
     }
 
     public void setDescription(String description) {
         this.description = description;
+        render();
     }
 
     public String getTitle() {

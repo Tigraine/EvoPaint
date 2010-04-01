@@ -5,6 +5,7 @@
 
 package evopaint.gui.ruleseteditor;
 
+import evopaint.util.FileHandler;
 import evopaint.Configuration;
 import evopaint.pixel.rulebased.RuleSet;
 import evopaint.pixel.rulebased.RuleSetCollection;
@@ -32,8 +33,10 @@ import javax.swing.tree.DefaultMutableTreeNode;
  */
 public class JRuleSetManager extends JPanel {
 
-    private Container contentPane;
     private Configuration configuration;
+    private RuleSetCollection currentCollection;
+    private RuleSet currentRuleSet;
+    private Container contentPane;
     private JRuleSetBrowser jRuleSetBrowser;
     private JDescriptionPanel jDescriptionPanel;
     private JRuleList jRuleList;
@@ -131,17 +134,17 @@ public class JRuleSetManager extends JPanel {
 
             Object userObject = node.getUserObject();
             if (node.isLeaf()) {
-                RuleSet ruleSet = (RuleSet)userObject;
-                jRuleList.setRules(ruleSet.getRules());
-                jDescriptionPanel.setType(JDescriptionPanel.SET);
-                jDescriptionPanel.setBoth(ruleSet.getName(), ruleSet.getDescription());
+                currentCollection = (RuleSetCollection)((DefaultMutableTreeNode)node.getParent()).getUserObject();
+                currentRuleSet = (RuleSet)userObject;
+                jRuleList.setRules(currentRuleSet.getRules());
+                jDescriptionPanel.setBoth(currentRuleSet.getName(), currentRuleSet.getDescription());
                 splitPaneVertical.getBottomComponent().setVisible(true);
                 splitPaneVertical.setDividerLocation(260);
             } else {
-                RuleSetCollection ruleSetCollection = (RuleSetCollection)userObject;
+                currentCollection = (RuleSetCollection)userObject;
+                currentRuleSet = null;
                 splitPaneVertical.getBottomComponent().setVisible(false);
-                jDescriptionPanel.setType(JDescriptionPanel.COLLECTION);
-                jDescriptionPanel.setBoth(ruleSetCollection.getName(), ruleSetCollection.getDescription());
+                jDescriptionPanel.setBoth(currentCollection.getName(), currentCollection.getDescription());
             }
             jDescriptionPanel.showEditButton(true);
         }
@@ -150,36 +153,29 @@ public class JRuleSetManager extends JPanel {
     private class DescriptionEditorBtnSaveListener implements ActionListener {
 
         public void actionPerformed(ActionEvent e) {
+            final FileHandler fh = FileHandler.getHandler();
+            final String oldName = currentCollection.getName();
+
+            if (currentRuleSet != null &&
+                !currentRuleSet.getName().equals(jDescriptionPanel.getEditedTitle())) {
+                currentRuleSet.setName(jDescriptionPanel.getEditedTitle());
+                jDescriptionPanel.setTitle(currentRuleSet.getName());
+            } else if (!currentCollection.getName().equals(jDescriptionPanel.getEditedTitle())) {
+                currentCollection.setName(jDescriptionPanel.getEditedTitle());
+                jDescriptionPanel.setTitle(currentCollection.getName());
+            }
+            if (currentRuleSet != null &&
+                !currentRuleSet.getDescription().equals(jDescriptionPanel.getEditedDescription())) {
+                currentRuleSet.setDescription(jDescriptionPanel.getEditedDescription());
+                jDescriptionPanel.setDescription(currentRuleSet.getDescription());
+            } else if (!currentCollection.getDescription().equals(jDescriptionPanel.getEditedDescription())) {
+                currentCollection.setDescription(jDescriptionPanel.getEditedDescription());
+                jDescriptionPanel.setDescription(currentCollection.getDescription());
+            }
             SwingUtilities.invokeLater(new Runnable() {
                 public void run() {
-                    FileHandler fh = FileHandler.getHandler();
-                    if (!jDescriptionPanel.getTitle().equals(jDescriptionPanel.getEditedTitle())) {
-                        switch (jDescriptionPanel.getType()) {
-                            case JDescriptionPanel.SET: fh.updateSetTitle(
-                                    jDescriptionPanel.getTitle(), jDescriptionPanel.getEditedTitle());
-                            break;
-                            case JDescriptionPanel.COLLECTION: fh.updateCollectionTitle(
-                                    jDescriptionPanel.getTitle(), jDescriptionPanel.getEditedTitle());
-                            break;
-                            default: assert(false);
-                            return;
-                        }
-                        jDescriptionPanel.setTitle(jDescriptionPanel.getEditedTitle());
-                        jRuleSetBrowser.updateCollections(); // XXX this resets the tree view completely. re-expand the correct node
-                    }
-                    if (!jDescriptionPanel.getDescription().equals(jDescriptionPanel.getEditedDescription())) {
-                        switch (jDescriptionPanel.getType()) {
-                            case JDescriptionPanel.SET: fh.updateSetDescription(
-                                    jDescriptionPanel.getTitle(), jDescriptionPanel.getEditedDescription());
-                            break;
-                            case JDescriptionPanel.COLLECTION: fh.updateSetDescription(
-                                    jDescriptionPanel.getTitle(), jDescriptionPanel.getEditedDescription());
-                            break;
-                            default: assert(false);
-                            return;
-                        }
-                        jDescriptionPanel.setDescription(jDescriptionPanel.getEditedDescription());
-                    }
+                    fh.writeCollection(currentCollection, oldName);
+                    jRuleSetBrowser.updateCollections();
                 }
             });
         }
