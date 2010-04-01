@@ -6,13 +6,14 @@
 package evopaint.pixel.rulebased;
 
 import evopaint.pixel.rulebased.interfaces.IRule;
+import java.io.Serializable;
 import java.util.List;
 
 /**
  *
  * @author tam
  */
-public class RuleSet {
+public class RuleSet implements Serializable {
     private String name;
     private String description;
     private List<IRule> rules;
