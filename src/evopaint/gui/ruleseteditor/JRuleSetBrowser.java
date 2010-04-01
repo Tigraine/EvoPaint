@@ -43,21 +43,13 @@ public class JRuleSetBrowser extends JPanel {
     }
 
     public void updateCollections() {
-        File userDir = new JFileChooser().getFileSystemView().getDefaultDirectory();
-        File home = new File(userDir, ".evopaint");
-        if (home.exists() == false) {
-            home.mkdir();
-        }
-        File collectionsDir = new File(home, "collections");
-        if (collectionsDir.exists() == false) {
-            collectionsDir.mkdir();
-            createExampleCollections(collectionsDir);
-        }
-        File [] collectionDir = collectionsDir.listFiles();
+        FileHandler fh = FileHandler.getHandler();
+        File collectionsDir = fh.getCollectionsDir();
+        File [] collectionFiles = collectionsDir.listFiles();
 
         DefaultMutableTreeNode root = new DefaultMutableTreeNode();
         try {
-            for (File collectionFile : collectionDir) {
+            for (File collectionFile : collectionFiles) {
                 ObjectInputStream in = new ObjectInputStream(new FileInputStream(collectionFile));
                 RuleSetCollection ruleSetCollection = (RuleSetCollection)in.readObject();
                 in.close();
@@ -81,22 +73,6 @@ public class JRuleSetBrowser extends JPanel {
         tree.setModel(model);
     }
 
-    public void createExampleCollections(File dir) {
-        RuleSetCollection ruleSetCollection = ExampleRuleSetCollectionFactory.createSimple();
-        try {
-            File collectionFile = new File(dir, ruleSetCollection.getName().replace(" ", "_").toLowerCase() + ".epc");
-            collectionFile.createNewFile();
-            ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(collectionFile));
-            out.writeObject(ruleSetCollection);
-            out.close();
-        } catch (FileNotFoundException ex) {
-            ex.printStackTrace();
-            System.exit(1);
-        } catch (IOException ex) {
-            ex.printStackTrace();
-            System.exit(1);
-        } 
-    }
 
     public JRuleSetBrowser(TreeSelectionListener treeSelectionListener) {
         setLayout(new BorderLayout());

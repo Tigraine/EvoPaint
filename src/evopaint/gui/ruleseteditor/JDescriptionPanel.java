@@ -8,7 +8,6 @@ package evopaint.gui.ruleseteditor;
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.JButton;
@@ -17,6 +16,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
+import javax.swing.SwingUtilities;
 import javax.swing.border.LineBorder;
 
 /**
@@ -24,11 +24,25 @@ import javax.swing.border.LineBorder;
  * @author tam
  */
 public class JDescriptionPanel extends JPanel {
-    private String myName; // cos getName() was declared in super class
+    public static final int SET = 0;
+    public static final int COLLECTION = 1;
+
+    private int type;
+    private String title; // cos getName() was declared in super class
     private String description;
     private JPanel contentPane;
     private JTextPane viewerTextPane;
     private JPanel viewerControlPanel;
+    private JTextField editorTitleField;
+    private JTextArea editorDescriptionArea;
+
+    public int getType() {
+        return type;
+    }
+
+    public void setType(int type) {
+        this.type = type;
+    }
 
     public String getDescription() {
         return description;
@@ -38,23 +52,31 @@ public class JDescriptionPanel extends JPanel {
         this.description = description;
     }
 
-    public String getMyName() {
-        return myName;
+    public String getTitle() {
+        return title;
     }
 
-    public void setMyName(String myName) {
-        this.myName = myName;
+    public void setTitle(String title) {
+        this.title = title;
         render();
     }
 
-    public void setBoth(String myName, String description) {
-        this.myName = myName;
+    public void setBoth(String title, String description) {
+        this.title = title;
         this.description = description;
         render();
     }
 
+    public String getEditedTitle() {
+        return editorTitleField.getText();
+    }
+
+    public String getEditedDescription() {
+        return editorDescriptionArea.getText();
+    }
+
     public void clear() {
-        myName = null;
+        title = null;
         description = null;
         render();
     }
@@ -64,8 +86,8 @@ public class JDescriptionPanel extends JPanel {
     }
 
     private void render() {
-        if (myName != null) {
-            String heading = "<h1 style='text-align: center;'>" + myName + "</h1>";
+        if (title != null) {
+            String heading = "<h1 style='text-align: center;'>" + title + "</h1>";
             String html = "<html><body>" + heading + "<p>" + description + "</p></body></html>";
             viewerTextPane.setText(html);
             return;
@@ -75,9 +97,7 @@ public class JDescriptionPanel extends JPanel {
         viewerTextPane.setText(html);
     }
 
-    
-
-    public JDescriptionPanel() {
+    public JDescriptionPanel(ActionListener descriptionEditorBtnSaveListener) {
         this.contentPane = this;
 
         setBorder(new LineBorder(Color.GRAY));
@@ -104,6 +124,8 @@ public class JDescriptionPanel extends JPanel {
         btnEdit.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                     ((CardLayout)contentPane.getLayout()).show(contentPane, "editor");
+                editorTitleField.setText(title);
+                editorDescriptionArea.setText(description);
             }
         });
         viewerControlPanel.add(btnEdit);
@@ -114,31 +136,33 @@ public class JDescriptionPanel extends JPanel {
         // editor
         JPanel editor = new JPanel();
         editor.setLayout(new BorderLayout());
-        JTextField nameField = new JTextField();
-        JTextArea descriptionArea = new JTextArea();
+        editor.setBackground(new Color(0xF2F2F5));
+        editorTitleField = new JTextField();
+        editorDescriptionArea = new JTextArea();
+        editorDescriptionArea.setLineWrap(true);
         JPanel editorControlPanel = new JPanel();
-        JButton btnOK = new JButton("OK");
-        btnOK.addActionListener(new ActionListener() {
+        editorControlPanel.setBackground(new Color(0xF2F2F5));
+        JButton btnSave = new JButton("Save");
+        btnSave.addActionListener(descriptionEditorBtnSaveListener);
+        btnSave.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                    ((CardLayout)contentPane.getLayout()).show(contentPane, "viewer");
+               ((CardLayout)contentPane.getLayout()).show(contentPane, "viewer");
             }
         });
-        editorControlPanel.add(btnOK);
+        editorControlPanel.add(btnSave);
         JButton btnCancel = new JButton("Cancel");
         btnCancel.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                    ((CardLayout)contentPane.getLayout()).show(contentPane, "viewer");
+                ((CardLayout)contentPane.getLayout()).show(contentPane, "viewer");
             }
         });
         editorControlPanel.add(btnCancel);
-        editor.add(nameField, BorderLayout.NORTH);
-        editor.add(descriptionArea, BorderLayout.CENTER);
+        editor.add(editorTitleField, BorderLayout.NORTH);
+        editor.add(editorDescriptionArea, BorderLayout.CENTER);
         editor.add(editorControlPanel, BorderLayout.SOUTH);
 
         add(viewer, "viewer");
         add(editor, "editor");
-
-        setBackground(Color.RED);
         
         render();
     }

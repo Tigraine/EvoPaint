@@ -20,6 +20,7 @@ import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JSplitPane;
+import javax.swing.SwingUtilities;
 import javax.swing.border.LineBorder;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
@@ -48,10 +49,6 @@ public class JRuleSetManager extends JPanel {
         this.configuration = configuration;
     }
 
-    public void openRuleEditor(IRule rule) {
-        
-    }
-
     public JRuleSetManager(RuleSet ruleSet, Configuration configuration, ActionListener OKListener, ActionListener CancelListener) {
         this.configuration = configuration;
         this.contentPane = this;
@@ -60,7 +57,7 @@ public class JRuleSetManager extends JPanel {
 
         // FIRST CARD
         jRuleSetBrowser = new JRuleSetBrowser(new RuleSetBrowserSelectionListener());
-        jDescriptionPanel = new JDescriptionPanel();
+        jDescriptionPanel = new JDescriptionPanel(new DescriptionEditorBtnSaveListener());
 
         // [ browser | description ]
         JSplitPane upperSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,
@@ -136,15 +133,55 @@ public class JRuleSetManager extends JPanel {
             if (node.isLeaf()) {
                 RuleSet ruleSet = (RuleSet)userObject;
                 jRuleList.setRules(ruleSet.getRules());
+                jDescriptionPanel.setType(JDescriptionPanel.SET);
                 jDescriptionPanel.setBoth(ruleSet.getName(), ruleSet.getDescription());
                 splitPaneVertical.getBottomComponent().setVisible(true);
-                splitPaneVertical.setDividerLocation(300);
+                splitPaneVertical.setDividerLocation(260);
             } else {
                 RuleSetCollection ruleSetCollection = (RuleSetCollection)userObject;
                 splitPaneVertical.getBottomComponent().setVisible(false);
+                jDescriptionPanel.setType(JDescriptionPanel.COLLECTION);
                 jDescriptionPanel.setBoth(ruleSetCollection.getName(), ruleSetCollection.getDescription());
             }
             jDescriptionPanel.showEditButton(true);
+        }
+    }
+
+    private class DescriptionEditorBtnSaveListener implements ActionListener {
+
+        public void actionPerformed(ActionEvent e) {
+            SwingUtilities.invokeLater(new Runnable() {
+                public void run() {
+                    FileHandler fh = FileHandler.getHandler();
+                    if (!jDescriptionPanel.getTitle().equals(jDescriptionPanel.getEditedTitle())) {
+                        switch (jDescriptionPanel.getType()) {
+                            case JDescriptionPanel.SET: fh.updateSetTitle(
+                                    jDescriptionPanel.getTitle(), jDescriptionPanel.getEditedTitle());
+                            break;
+                            case JDescriptionPanel.COLLECTION: fh.updateCollectionTitle(
+                                    jDescriptionPanel.getTitle(), jDescriptionPanel.getEditedTitle());
+                            break;
+                            default: assert(false);
+                            return;
+                        }
+                        jDescriptionPanel.setTitle(jDescriptionPanel.getEditedTitle());
+                        jRuleSetBrowser.updateCollections(); // XXX this resets the tree view completely. re-expand the correct node
+                    }
+                    if (!jDescriptionPanel.getDescription().equals(jDescriptionPanel.getEditedDescription())) {
+                        switch (jDescriptionPanel.getType()) {
+                            case JDescriptionPanel.SET: fh.updateSetDescription(
+                                    jDescriptionPanel.getTitle(), jDescriptionPanel.getEditedDescription());
+                            break;
+                            case JDescriptionPanel.COLLECTION: fh.updateSetDescription(
+                                    jDescriptionPanel.getTitle(), jDescriptionPanel.getEditedDescription());
+                            break;
+                            default: assert(false);
+                            return;
+                        }
+                        jDescriptionPanel.setDescription(jDescriptionPanel.getEditedDescription());
+                    }
+                }
+            });
         }
     }
 
