@@ -99,7 +99,7 @@ public class JDescriptionPanel extends JPanel {
         //viewerScrollPane.setPreferredSize(new Dimension(300, 100));
 
         viewerControlPanel = new JPanel();
-        viewerControlPanel.setBackground(Color.WHITE);
+        viewerControlPanel.setBackground(new Color(0xF2F2F5));
         JButton btnEdit = new JButton("Edit");
         btnEdit.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {

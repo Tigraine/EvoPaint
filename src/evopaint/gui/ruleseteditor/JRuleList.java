@@ -13,6 +13,10 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.AdjustmentEvent;
+import java.awt.event.AdjustmentListener;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.awt.event.MouseListener;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -27,7 +31,9 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
+import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
+import javax.swing.UIManager;
 import javax.swing.border.LineBorder;
 
 /**
@@ -75,15 +81,15 @@ public class JRuleList extends JPanel {
         list.setSelectionBackground(new Color(0xe9eff8));
         // DO NOT GIVE THIS LIST A PREFERRED SIZE, IT WILL FUCK UP THE H-SCROLLBAR
         // DON'T: // ruleList.setPreferredSize(new Dimension(100,100));
-        JScrollPane scrollPaneForRuleList = new JScrollPane(list,
+        final JScrollPane scrollPaneForRuleList = new JScrollPane(list,
                 JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
                 JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         scrollPaneForRuleList.setBorder(null);
         scrollPaneForRuleList.setViewportBorder(null);
         add(scrollPaneForRuleList, BorderLayout.CENTER);
 
-        JPanel controlPanel = new JPanel();
-        controlPanel.setBackground(Color.WHITE);
+        final JPanel controlPanel = new JPanel();
+        controlPanel.setBackground(new Color(0xF2F2F5));
         JButton btnSave = new JButton("Save");
         btnSave.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -148,7 +154,7 @@ public class JRuleList extends JPanel {
             }
         });
         controlPanel.add(btnDelete);
-
+        
         add(controlPanel, BorderLayout.SOUTH);
     }
 

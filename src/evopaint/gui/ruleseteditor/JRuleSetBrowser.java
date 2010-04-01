@@ -118,32 +118,32 @@ public class JRuleSetBrowser extends JPanel {
         scrollPaneForTree.setViewportBorder(null);
 
         // create buttons for control panel of browser
-        JPanel browserControlPanel = new JPanel();
-        browserControlPanel.setBackground(Color.WHITE);
+        JPanel controlPanel = new JPanel();
+        controlPanel.setBackground(new Color(0xF2F2F5));
         JButton browserBtnAdd = new JButton("Add");
         browserBtnAdd.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 throw new UnsupportedOperationException("Not supported yet.");
             }
         });
-        browserControlPanel.add(browserBtnAdd);
+        controlPanel.add(browserBtnAdd);
         JButton browserBtnCopy = new JButton("Copy");
         browserBtnCopy.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 throw new UnsupportedOperationException("Not supported yet.");
             }
         });
-        browserControlPanel.add(browserBtnCopy);
+        controlPanel.add(browserBtnCopy);
         JButton browserBtnDelete = new JButton("Delete");
         browserBtnDelete.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 throw new UnsupportedOperationException("Not supported yet.");
             }
         });
-        browserControlPanel.add(browserBtnDelete);
+        controlPanel.add(browserBtnDelete);
 
         add(scrollPaneForTree, BorderLayout.CENTER);
-        add(browserControlPanel, BorderLayout.SOUTH);
+        add(controlPanel, BorderLayout.SOUTH);
         
         updateCollections();
     }
