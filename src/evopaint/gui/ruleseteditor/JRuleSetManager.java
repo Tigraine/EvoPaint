@@ -13,16 +13,15 @@ import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Container;
-import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import javax.swing.BoxLayout;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
-import javax.swing.JTextPane;
 import javax.swing.border.LineBorder;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
@@ -52,8 +51,7 @@ public class JRuleSetManager extends JPanel {
     }
 
     public void openRuleEditor(IRule rule) {
-        jRuleEditor.setRule(rule);
-        ((CardLayout)contentPane.getLayout()).show(contentPane, "editor");
+        
     }
 
     public JRuleSetManager(RuleSet ruleSet, Configuration configuration, ActionListener OKListener, ActionListener CancelListener) {
@@ -116,32 +114,13 @@ public class JRuleSetManager extends JPanel {
         upperSplitPane.setResizeWeight(0);
 
         // create rule list in scroll pane
-        jRuleList = new JRuleList(this);
-        jRuleList.setRules(ruleSet.getRules());
-        jRuleList.setBorder(null);
-        JScrollPane scrollPaneForRuleList = new JScrollPane(jRuleList,
-                JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
-                JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-        scrollPaneForRuleList.setBorder(null);
-        scrollPaneForRuleList.setViewportBorder(null);
-
-        // create control panel for rules list
-        JRuleListControlPanel jRuleListControlPanel = new JRuleListControlPanel(this, jRuleList);
-        jRuleListControlPanel.setBackground(Color.WHITE);
-
-        // and place the rule list and its control panel inside a wrapper panel
-        JPanel ruleListPanel = new JPanel();
-        ruleListPanel.setLayout(new BorderLayout());
-        ruleListPanel.setBorder(new LineBorder(Color.GRAY));
-        ruleListPanel.setBackground(Color.WHITE);
-        ruleListPanel.add(scrollPaneForRuleList, BorderLayout.CENTER);
-        ruleListPanel.add(jRuleListControlPanel, BorderLayout.SOUTH);
-        
+        jRuleList = new JRuleList(new EditRuleBtnListener(), new DoubleClickOnRuleListener());
+       
         // fuse upper split pane with rule list panel to this:
         // split [ browser | description ]
         //       [       rule list       ]
         splitPaneVertical = new JSplitPane(JSplitPane.VERTICAL_SPLIT,
-                           upperSplitPane, ruleListPanel);
+                           upperSplitPane, jRuleList);
         //splitPaneVertical.setDividerLocation(200);
         splitPaneVertical.setContinuousLayout(true);
         splitPaneVertical.setResizeWeight(0.2); // most new space goes to rule list
@@ -176,7 +155,7 @@ public class JRuleSetManager extends JPanel {
 
         public void actionPerformed(ActionEvent e) {
             ((DefaultListModel)jRuleList.getModel()).set(
-                    jRuleList.getSelectedIndex(),
+                    jRuleList.getList().getSelectedIndex(),
                     jRuleEditor.getRule());
             ((CardLayout)contentPane.getLayout()).show(contentPane, "manager");
         }
@@ -213,6 +192,28 @@ public class JRuleSetManager extends JPanel {
                 jDescriptionPanel.setBoth(ruleSetCollection.getName(), ruleSetCollection.getDescription());
             }
             jDescriptionPanel.showEditButton(true);
+        }
+    }
+
+    private class EditRuleBtnListener implements ActionListener {
+        public void actionPerformed(ActionEvent e) {
+            if (jRuleList.getList().isSelectionEmpty()) {
+                return;
+            }
+            int index = jRuleList.getList().getSelectedIndex();
+            jRuleEditor.setRule((IRule)jRuleList.getModel().get(index));
+                ((CardLayout)contentPane.getLayout()).show(contentPane, "editor");
+        }
+    };
+
+    private class DoubleClickOnRuleListener extends MouseAdapter {
+        @Override
+        public void mouseClicked(MouseEvent e) {
+            if (e.getClickCount() == 2) {
+                int index = jRuleList.getList().locationToIndex(e.getPoint());
+                jRuleEditor.setRule((IRule)jRuleList.getModel().get(index));
+                ((CardLayout)contentPane.getLayout()).show(contentPane, "editor");
+             }
         }
     }
 }
