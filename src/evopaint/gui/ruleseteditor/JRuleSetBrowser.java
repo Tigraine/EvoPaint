@@ -8,8 +8,11 @@ package evopaint.gui.ruleseteditor;
 import evopaint.pixel.rulebased.ExampleRuleSetCollectionFactory;
 import evopaint.pixel.rulebased.RuleSet;
 import evopaint.pixel.rulebased.RuleSetCollection;
+import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Component;
-import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -17,8 +20,12 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import javax.swing.JButton;
 import javax.swing.JFileChooser;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTree;
+import javax.swing.border.LineBorder;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeCellRenderer;
@@ -28,8 +35,12 @@ import javax.swing.tree.DefaultTreeModel;
  *
  * @author tam
  */
-public class JRuleSetBrowser extends JTree {
-    DefaultMutableTreeNode root;
+public class JRuleSetBrowser extends JPanel {
+    JTree tree;
+
+    public JTree getTree() {
+        return tree;
+    }
 
     public void updateCollections() {
         File userDir = new JFileChooser().getFileSystemView().getDefaultDirectory();
@@ -44,7 +55,7 @@ public class JRuleSetBrowser extends JTree {
         }
         File [] collectionDir = collectionsDir.listFiles();
 
-        root = new DefaultMutableTreeNode();
+        DefaultMutableTreeNode root = new DefaultMutableTreeNode();
         try {
             for (File collectionFile : collectionDir) {
                 ObjectInputStream in = new ObjectInputStream(new FileInputStream(collectionFile));
@@ -67,7 +78,7 @@ public class JRuleSetBrowser extends JTree {
             System.exit(1);
         }
         DefaultTreeModel model = new DefaultTreeModel(root);
-        setModel(model);
+        tree.setModel(model);
     }
 
     public void createExampleCollections(File dir) {
@@ -88,13 +99,53 @@ public class JRuleSetBrowser extends JTree {
     }
 
     public JRuleSetBrowser(TreeSelectionListener treeSelectionListener) {
-        updateCollections();
-        setRootVisible(false);
-        setCellRenderer(new RuleSetTreeCellRenderer());
+        setLayout(new BorderLayout());
+        setBackground(Color.WHITE);
+        setBorder(new LineBorder(Color.GRAY));
+
+        tree = new JTree();
+        tree.setRootVisible(false);
+        tree.setCellRenderer(new RuleSetTreeCellRenderer());
+        tree.addTreeSelectionListener(treeSelectionListener);
         // don't set the preferred size! set the divider location instead
         // or else the scrollpane will scroll even if the tree is empty
         //setPreferredSize(new Dimension(250, 250));
-        addTreeSelectionListener(treeSelectionListener);
+
+        JScrollPane scrollPaneForTree = new JScrollPane(tree,
+                JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
+                JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        scrollPaneForTree.setBorder(null);
+        scrollPaneForTree.setViewportBorder(null);
+
+        // create buttons for control panel of browser
+        JPanel browserControlPanel = new JPanel();
+        browserControlPanel.setBackground(Color.WHITE);
+        JButton browserBtnAdd = new JButton("Add");
+        browserBtnAdd.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                throw new UnsupportedOperationException("Not supported yet.");
+            }
+        });
+        browserControlPanel.add(browserBtnAdd);
+        JButton browserBtnCopy = new JButton("Copy");
+        browserBtnCopy.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                throw new UnsupportedOperationException("Not supported yet.");
+            }
+        });
+        browserControlPanel.add(browserBtnCopy);
+        JButton browserBtnDelete = new JButton("Delete");
+        browserBtnDelete.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                throw new UnsupportedOperationException("Not supported yet.");
+            }
+        });
+        browserControlPanel.add(browserBtnDelete);
+
+        add(scrollPaneForTree, BorderLayout.CENTER);
+        add(browserControlPanel, BorderLayout.SOUTH);
+        
+        updateCollections();
     }
 
     class RuleSetTreeCellRenderer extends DefaultTreeCellRenderer {
