@@ -33,57 +33,52 @@ public class JRuleEditor extends JPanel {
 
     public IRule getRule() {
         List<ICondition> conditions = jConditionList.getConditions();
-        IAction action = jAction.getAction();
+        IAction action = jAction.getIAction();
         return new Rule(conditions, action);
     }
 
     public void setRule(IRule rule) {
         jConditionList.setConditions(rule.getConditions());
-        jAction.setAction(rule.getAction());
+        jAction.setIAction(rule.getAction(), true);
     }
 
     public JRuleEditor(ActionListener OKListener, ActionListener CancelListener) {
         setLayout(new BorderLayout(20, 20));
         setBorder(new LineBorder(getBackground(), 6));
-        
-        JPanel rulePanel = new JPanel();
-        JScrollPane scrollPaneForRulePanel = new JScrollPane(rulePanel,
-                JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
-                JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-        scrollPaneForRulePanel.setBorder(new LineBorder(Color.GRAY));
-        scrollPaneForRulePanel.setViewportBorder(null);
-        add(scrollPaneForRulePanel, BorderLayout.CENTER);
 
+        // rule panel
+        JPanel rulePanel = new JPanel();
         rulePanel.setLayout(new GridBagLayout());
 
         GridBagConstraints constraints = new GridBagConstraints();
         constraints.insets = new Insets(10, 10, 10, 10);
-
-        JLabel labelIf = new JLabel("<html><span style='color: #0000E6; font-weight: bold;'>&nbsp;IF&nbsp;</span><html>", JLabel.CENTER);
         constraints.gridx = 0;
-        constraints.gridy = 0;
-        constraints.anchor = GridBagConstraints.WEST;
-        rulePanel.add(labelIf, constraints);
-
-        constraints.gridx = 1;
         constraints.gridy = 0;
         constraints.anchor = GridBagConstraints.NORTHWEST;
         jConditionList = new JConditionList();
         rulePanel.add(jConditionList, constraints);
 
+        JPanel thenAlignmentPanel = new JPanel();
+        JLabel thenLabel = new JLabel("<html><span style='color: #0000E6; font-weight: bold;'>THEN</span><html>");
+        thenAlignmentPanel.add(thenLabel);
+        jAction = new JAction();
+        thenAlignmentPanel.add(jAction);
+
         constraints.gridx = 0;
         constraints.gridy = 1;
         constraints.anchor = GridBagConstraints.WEST;
-        rulePanel.add(new JLabel("<html><span style='color: #0000E6; font-weight: bold;'>&nbsp;THEN&nbsp;</span><html>", JLabel.CENTER), constraints);
+        rulePanel.add(thenAlignmentPanel, constraints);
 
-        constraints.gridx = 1;
-        constraints.gridy = 1;
-        constraints.ipadx = 8;
-        constraints.ipady = 8;
-        constraints.anchor = GridBagConstraints.NORTHWEST;
-        jAction = new JAction();
-        rulePanel.add(jAction, constraints);
+        JScrollPane scrollPaneForRulePanel = new JScrollPane(rulePanel,
+                JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
+                JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        scrollPaneForRulePanel.setBorder(new LineBorder(Color.GRAY));
+        scrollPaneForRulePanel.setViewportBorder(null);
 
+        add(scrollPaneForRulePanel, BorderLayout.CENTER);
+
+        
+        // control panel
         JPanel controlPanel = new JPanel();
         JButton btnOK = new JButton("OK");
         btnOK.addActionListener(OKListener);
@@ -93,9 +88,7 @@ public class JRuleEditor extends JPanel {
         btnCancel.addActionListener(CancelListener);
         controlPanel.add(btnCancel);
 
-        //constraints.gridx = 0;
-        //constraints.gridy = 2;
-        //constraints.gridwidth = 2;
         add(controlPanel, BorderLayout.SOUTH);
     }
+
 }

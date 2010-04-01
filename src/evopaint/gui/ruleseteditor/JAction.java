@@ -10,22 +10,27 @@ import evopaint.Configuration;
 import evopaint.gui.util.AutoSelectOnFocusSpinner;
 import evopaint.pixel.rulebased.actions.NoAction;
 import evopaint.pixel.rulebased.interfaces.IAction;
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import java.util.LinkedHashMap;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
+import javax.swing.JDialog;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
-import javax.swing.border.LineBorder;
+import javax.swing.SwingUtilities;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -34,24 +39,28 @@ import javax.swing.event.ChangeListener;
  *
  * @author tam
  */
-public class JAction extends JPanel {
+public class JAction extends JButton {
     
-    private IAction action;
-    //private JButton closeButton;
+    private IAction iAction;
+    private JDialog dialog;
     JComboBox comboBoxActions;
     ComboBoxActionsListener comboBoxActionsListener;
     JTargetPicker targetPicker;
     JPanel panelParameters;
 
-    public IAction getAction() {
-        return action;
+    public IAction getIAction() { // cos getAction is taken GRRR
+        return iAction;
     }
 
-    public void setAction(final IAction action) {
-        this.action = action;
+    public void setIAction(final IAction iAction, boolean updateText) {
+        this.iAction = iAction;
+        if (updateText) {
+            setText("<html>" + iAction.toHTML() + "</html>");
+        }
+
         IAction selection = null;
         for (IAction a : Configuration.availableActions) {
-            if (a.getClass() == action.getClass()) {
+            if (a.getClass() == iAction.getClass()) {
                 selection = a;
             }
         }
@@ -60,22 +69,21 @@ public class JAction extends JPanel {
         comboBoxActions.setSelectedItem(selection);
         comboBoxActions.addActionListener(comboBoxActionsListener);
 
-
-        if (action instanceof NoAction) {
-            comboBoxActions.setPreferredSize(new Dimension(200, 25));
+        if (iAction instanceof NoAction) {
+            comboBoxActions.setPreferredSize(new Dimension(200, 25)); // or else it will get crippled
             targetPicker.setVisible(false);
             panelParameters.setVisible(false);
             return;
         }
 
         panelParameters.removeAll();
-        LinkedHashMap<String,JComponent> parameters = action.getParametersForGUI();
+        LinkedHashMap<String,JComponent> parameters = iAction.getParametersForGUI();
 
-        SpinnerNumberModel spinnerModel = new SpinnerNumberModel(action.getCost(), 0, Integer.MAX_VALUE, 1);
+        SpinnerNumberModel spinnerModel = new SpinnerNumberModel(iAction.getCost(), 0, Integer.MAX_VALUE, 1);
         JSpinner costSpinner = new AutoSelectOnFocusSpinner(spinnerModel);
         costSpinner.addChangeListener(new ChangeListener() {
             public void stateChanged(ChangeEvent e) {
-                action.setCost((Integer) ((JSpinner) e.getSource()).getValue());
+                iAction.setCost((Integer) ((JSpinner) e.getSource()).getValue());
             }
         });
         parameters.put("Cost per target", costSpinner);
@@ -95,25 +103,37 @@ public class JAction extends JPanel {
             constraints.gridy = constraints.gridy + 1;
         }
 
-        targetPicker.setDirections(action.getDirections());
+        targetPicker.setDirections(iAction.getDirections());
+
         targetPicker.setVisible(true);
         panelParameters.setVisible(true);
-        revalidate();
-        repaint();
     }
 
     public JAction() {
+        this.dialog = new JDialog((JFrame)SwingUtilities.getWindowAncestor(this), "Edit Action", true);
+        dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+        dialog.setLayout(new GridBagLayout());
+        dialog.addWindowListener(new WindowListener() {
+            public void windowOpened(WindowEvent e) {}
+            public void windowClosing(WindowEvent e) {}
+            public void windowClosed(WindowEvent e) {
+                setText(iAction.toString());
+            }
+            public void windowIconified(WindowEvent e) {}
+            public void windowDeiconified(WindowEvent e) {}
+            public void windowActivated(WindowEvent e) {}
+            public void windowDeactivated(WindowEvent e) {}
+        });
 
-        setLayout(new GridBagLayout());
         GridBagConstraints constraints = new GridBagConstraints();
         constraints.anchor = GridBagConstraints.NORTHWEST;
 
-        DefaultComboBoxModel model = new DefaultComboBoxModel();
+        DefaultComboBoxModel comboBoxModel = new DefaultComboBoxModel();
         for (IAction a : Configuration.availableActions) {
-            model.addElement(a);
+            comboBoxModel.addElement(a);
         }
 
-        comboBoxActions = new JComboBox(model);
+        comboBoxActions = new JComboBox(comboBoxModel);
         comboBoxActions.setRenderer(new NamedObjectListCellRenderer());
         // we do not set the action listener here, because it will fire on
         // setSelectedIndex()
@@ -122,7 +142,8 @@ public class JAction extends JPanel {
         constraints.gridy = 0;
         constraints.gridwidth = 2;
         constraints.fill = GridBagConstraints.HORIZONTAL;
-        add(comboBoxActions, constraints);
+        constraints.insets = new Insets(10, 10, 5, 10);
+        dialog.add(comboBoxActions, constraints);
 
         panelParameters = new JPanel();
         panelParameters.setBorder(new TitledBorder("Parameters"));
@@ -130,39 +151,56 @@ public class JAction extends JPanel {
         constraints.gridx = 0;
         constraints.gridy = 1;
         constraints.gridwidth = 1;
-        add(panelParameters, constraints);
+        constraints.insets = new Insets(5, 10, 5, 5);
+        dialog.add(panelParameters, constraints);
 
         constraints.fill = GridBagConstraints.NONE;
         constraints.gridwidth = 1;
         constraints.gridx = 1;
         constraints.gridy = 1;
+        constraints.insets = new Insets(5, 5, 5, 10);
         targetPicker = new JTargetPicker();
-        add(targetPicker, constraints);
+        dialog.add(targetPicker, constraints);
+        
+        JPanel controlPanel = new JPanel();
+        final JButton btnOK = new JButton("OK");
+        btnOK.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                dialog.dispose();
+                setText(iAction.toString());
+            }
+         });
+        controlPanel.add(btnOK);
+        constraints.fill = GridBagConstraints.BOTH;
+        constraints.gridwidth = 2;
+        constraints.gridx = 0;
+        constraints.gridy = 2;
+        constraints.insets = new Insets(5, 0, 10, 0);
+        dialog.add(controlPanel, constraints);
+
+        final JButton tis = this;
+        addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                dialog.pack();
+                dialog.setLocationRelativeTo(tis);
+                dialog.setVisible(true);
+            }
+        });
     }
-/*
-    public void actionPerformed(ActionEvent e) {
-        if (e.getSource() == this.closeButton &&
-                ((JPanel)getParent()).getComponentCount() > 1) {
-            JPanel parent = (JPanel)getParent();
-            parent.remove(this);
-            parent.revalidate();
-            return;
-        }
-    }
-*/
+
     private class ComboBoxActionsListener implements ActionListener {
         public void actionPerformed(ActionEvent e) {
             try {
                 IAction prototype = (IAction)((JComboBox)e.getSource()).getSelectedItem();
                 IAction newAction = prototype.getClass().newInstance();
-                setAction(newAction);
+                setIAction(newAction, false);
+                dialog.pack();
             } catch (InstantiationException ex) {
                 ex.printStackTrace();
                 System.exit(1);
             } catch (IllegalAccessException ex) {
                 ex.printStackTrace();
                 System.exit(1);
-                //Logger.getLogger(JCondition.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
     }
