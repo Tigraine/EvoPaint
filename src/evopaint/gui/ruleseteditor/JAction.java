@@ -106,7 +106,6 @@ public class JAction extends JPanel {
 
         setLayout(new GridBagLayout());
         GridBagConstraints constraints = new GridBagConstraints();
-        setBorder(new LineBorder(Color.GRAY));
         constraints.anchor = GridBagConstraints.NORTHWEST;
 
         DefaultComboBoxModel model = new DefaultComboBoxModel();

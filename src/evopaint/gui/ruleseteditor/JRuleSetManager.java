@@ -37,7 +37,7 @@ public class JRuleSetManager extends JPanel {
     private Container contentPane;
     private Configuration configuration;
     private JRuleSetBrowser jRuleSetBrowser;
-    private JRuleSetDescriptionPane descriptionTextPane;
+    private JDescriptionPanel jDescriptionPanel;
     private JRuleList jRuleList;
     private JRuleEditor jRuleEditor;
     JSplitPane splitPaneVertical;
@@ -68,22 +68,49 @@ public class JRuleSetManager extends JPanel {
         JScrollPane scrollPaneForRuleSetBrowser = new JScrollPane(jRuleSetBrowser,
                 JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
                 JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-        scrollPaneForRuleSetBrowser.setBorder(new LineBorder(Color.GRAY));
+        scrollPaneForRuleSetBrowser.setBorder(null);
         scrollPaneForRuleSetBrowser.setViewportBorder(null);
 
-        // create description of rule set and put it on a scroll pane
-        descriptionTextPane = new JRuleSetDescriptionPane();
-        JScrollPane scrollPaneForDescription = new JScrollPane(descriptionTextPane,
-                JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
-                JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-        scrollPaneForDescription.setBorder(new LineBorder(Color.GRAY));
-        scrollPaneForDescription.setViewportBorder(null);
-        scrollPaneForDescription.setPreferredSize(new Dimension(300, 100));
+        // create buttons for control panel of browser
+        JPanel browserControlPanel = new JPanel();
+        browserControlPanel.setBackground(Color.WHITE);
+        JButton browserBtnAdd = new JButton("Add");
+        browserBtnAdd.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                throw new UnsupportedOperationException("Not supported yet.");
+            }
+        });
+        browserControlPanel.add(browserBtnAdd);
+        JButton browserBtnCopy = new JButton("Copy");
+        browserBtnCopy.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                throw new UnsupportedOperationException("Not supported yet.");
+            }
+        });
+        browserControlPanel.add(browserBtnCopy);
+        JButton browserBtnDelete = new JButton("Delete");
+        browserBtnDelete.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                throw new UnsupportedOperationException("Not supported yet.");
+            }
+        });
+        browserControlPanel.add(browserBtnDelete);
+
+        // fuse browser scrollpane and controls onto a shared panel
+        JPanel browserPanel = new JPanel();
+        browserPanel.setLayout(new BorderLayout());
+        browserPanel.setBackground(Color.WHITE);
+        browserPanel.setBorder(new LineBorder(Color.GRAY));
+        browserPanel.add(scrollPaneForRuleSetBrowser, BorderLayout.CENTER);
+        browserPanel.add(browserControlPanel, BorderLayout.SOUTH);
+
+        // create description panel
+        jDescriptionPanel = new JDescriptionPanel();
 
         // split browser and description, so we get this:
         // [ browser | description ]
         JSplitPane upperSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,
-                           scrollPaneForRuleSetBrowser, scrollPaneForDescription);
+                           browserPanel, jDescriptionPanel);
         upperSplitPane.setDividerLocation(250);
         upperSplitPane.setContinuousLayout(true);
         upperSplitPane.setResizeWeight(0);
@@ -100,13 +127,15 @@ public class JRuleSetManager extends JPanel {
 
         // create control panel for rules list
         JRuleListControlPanel jRuleListControlPanel = new JRuleListControlPanel(this, jRuleList);
+        jRuleListControlPanel.setBackground(Color.WHITE);
 
         // and place the rule list and its control panel inside a wrapper panel
         JPanel ruleListPanel = new JPanel();
-        ruleListPanel.setLayout(new BoxLayout(ruleListPanel, BoxLayout.Y_AXIS));
+        ruleListPanel.setLayout(new BorderLayout());
         ruleListPanel.setBorder(new LineBorder(Color.GRAY));
-        ruleListPanel.add(scrollPaneForRuleList);
-        ruleListPanel.add(jRuleListControlPanel);
+        ruleListPanel.setBackground(Color.WHITE);
+        ruleListPanel.add(scrollPaneForRuleList, BorderLayout.CENTER);
+        ruleListPanel.add(jRuleListControlPanel, BorderLayout.SOUTH);
         
         // fuse upper split pane with rule list panel to this:
         // split [ browser | description ]
@@ -115,12 +144,12 @@ public class JRuleSetManager extends JPanel {
                            upperSplitPane, ruleListPanel);
         //splitPaneVertical.setDividerLocation(200);
         splitPaneVertical.setContinuousLayout(true);
-        splitPaneVertical.setResizeWeight(0.1);
+        splitPaneVertical.setResizeWeight(0.2); // most new space goes to rule list
         splitPaneVertical.getBottomComponent().setVisible(false);
 
         // set up a control panel for the whole rule set
         JPanel controlPanel = new JPanel();
-        JButton btnOK = new JButton("OK");
+        JButton btnOK = new JButton("Use");
         btnOK.addActionListener(OKListener);
         controlPanel.add(btnOK);
         JButton btnCancel = new JButton("Cancel");
@@ -175,14 +204,15 @@ public class JRuleSetManager extends JPanel {
             if (node.isLeaf()) {
                 RuleSet ruleSet = (RuleSet)userObject;
                 jRuleList.setRules(ruleSet.getRules());
-                descriptionTextPane.setBoth(ruleSet.getName(), ruleSet.getDescription());
+                jDescriptionPanel.setBoth(ruleSet.getName(), ruleSet.getDescription());
                 splitPaneVertical.getBottomComponent().setVisible(true);
                 splitPaneVertical.setDividerLocation(300);
             } else {
                 RuleSetCollection ruleSetCollection = (RuleSetCollection)userObject;
                 splitPaneVertical.getBottomComponent().setVisible(false);
-                descriptionTextPane.setBoth(ruleSetCollection.getName(), ruleSetCollection.getDescription());
+                jDescriptionPanel.setBoth(ruleSetCollection.getName(), ruleSetCollection.getDescription());
             }
+            jDescriptionPanel.showEditButton(true);
         }
     }
 }

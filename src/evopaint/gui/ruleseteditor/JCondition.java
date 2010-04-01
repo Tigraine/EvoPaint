@@ -121,7 +121,6 @@ public class JCondition extends JPanel {
         expandedPanel = new JPanel();
         //expandedPanel.setLayout(new BoxLayout(expandedPanel, BoxLayout.Y_AXIS));
         expandedPanel.setLayout(new GridBagLayout());
-        expandedPanel.setBorder(new LineBorder(Color.GRAY));
 
         constraints.gridx = 0;
         constraints.gridy = 1;

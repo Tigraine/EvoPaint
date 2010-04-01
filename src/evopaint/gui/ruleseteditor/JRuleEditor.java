@@ -57,27 +57,30 @@ public class JRuleEditor extends JPanel {
         rulePanel.setLayout(new GridBagLayout());
 
         GridBagConstraints constraints = new GridBagConstraints();
-        constraints.anchor = GridBagConstraints.NORTHWEST;
         constraints.insets = new Insets(10, 10, 10, 10);
 
-        JLabel labelIf = new JLabel("<html><b>&nbsp;IF&nbsp;</b><html>", JLabel.CENTER);
+        JLabel labelIf = new JLabel("<html><span style='color: #0000E6; font-weight: bold;'>&nbsp;IF&nbsp;</span><html>", JLabel.CENTER);
         constraints.gridx = 0;
         constraints.gridy = 0;
+        constraints.anchor = GridBagConstraints.WEST;
         rulePanel.add(labelIf, constraints);
 
         constraints.gridx = 1;
         constraints.gridy = 0;
+        constraints.anchor = GridBagConstraints.NORTHWEST;
         jConditionList = new JConditionList();
         rulePanel.add(jConditionList, constraints);
 
         constraints.gridx = 0;
         constraints.gridy = 1;
-        rulePanel.add(new JLabel("<html><b>&nbsp;THEN&nbsp;</b><html>", JLabel.CENTER), constraints);
+        constraints.anchor = GridBagConstraints.WEST;
+        rulePanel.add(new JLabel("<html><span style='color: #0000E6; font-weight: bold;'>&nbsp;THEN&nbsp;</span><html>", JLabel.CENTER), constraints);
 
         constraints.gridx = 1;
         constraints.gridy = 1;
         constraints.ipadx = 8;
         constraints.ipady = 8;
+        constraints.anchor = GridBagConstraints.NORTHWEST;
         jAction = new JAction();
         rulePanel.add(jAction, constraints);
 

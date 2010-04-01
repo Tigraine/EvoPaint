@@ -18,6 +18,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import javax.naming.OperationNotSupportedException;
 import javax.swing.BoxLayout;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
@@ -31,7 +32,14 @@ import javax.swing.JPanel;
 public class JRuleListControlPanel extends JPanel {
 
     public JRuleListControlPanel(final JRuleSetManager jRuleSetManager, final JRuleList jRuleList) {
-        setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
+
+        JButton btnSave = new JButton("Save");
+        btnSave.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                throw new UnsupportedOperationException("Not supported yet.");
+            }
+        });
+        add(btnSave);
 
         JButton btnAdd = new JButton("Add");
         btnAdd.addActionListener(new ActionListener() {
@@ -54,21 +62,6 @@ public class JRuleListControlPanel extends JPanel {
             }
         });
         add(btnEdit);
-
-        JButton btnDelete = new JButton("Delete");
-        btnDelete.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                if (jRuleList.isSelectionEmpty()) {
-                    return;
-                }
-                int index = jRuleList.getSelectedIndex();
-                ((DefaultListModel)jRuleList.getModel()).remove(index);
-                if (index > 0) {
-                    jRuleList.setSelectedIndex(index - 1);
-                }
-            }
-        });
-        add(btnDelete);
 
         JButton btnCopy = new JButton("Copy");
         btnCopy.addActionListener(new ActionListener() {
@@ -97,8 +90,24 @@ public class JRuleListControlPanel extends JPanel {
             }
         });
         add(btnCopy);
-      
-        
+
+        JButton btnDelete = new JButton("Delete");
+        btnDelete.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                if (jRuleList.isSelectionEmpty()) {
+                    return;
+                }
+                int index = jRuleList.getSelectedIndex();
+                DefaultListModel model = ((DefaultListModel)jRuleList.getModel());
+                model.remove(index);
+                if (index > 0) {
+                    jRuleList.setSelectedIndex(index - 1);
+                } else if (model.size() > 0) {
+                    jRuleList.setSelectedIndex(0);
+                }
+            }
+        });
+        add(btnDelete);
     }
 }
 
