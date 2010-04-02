@@ -37,8 +37,6 @@ import javax.swing.tree.DefaultTreeModel;
 public class JRuleSetManager extends JPanel {
 
     private Configuration configuration;
-    private RuleSetCollection currentCollection;
-    private RuleSet currentRuleSet;
     private Container contentPane;
     private JRuleSetBrowser jRuleSetBrowser;
     private JDescriptionPanel jDescriptionPanel;
@@ -137,15 +135,15 @@ public class JRuleSetManager extends JPanel {
 
             Object userObject = node.getUserObject();
             if (false == node.getAllowsChildren()) {
-                currentCollection = (RuleSetCollection)((DefaultMutableTreeNode)node.getParent()).getUserObject();
-                currentRuleSet = (RuleSet)userObject;
+                RuleSetCollection currentCollection = (RuleSetCollection)((DefaultMutableTreeNode)node.getParent()).getUserObject();
+                RuleSet currentRuleSet = (RuleSet)userObject;
                 jRuleList.setRules(currentRuleSet.getRules());
                 jDescriptionPanel.setBoth(currentRuleSet.getName(), currentRuleSet.getDescription());
                 splitPaneVertical.getBottomComponent().setVisible(true);
                 splitPaneVertical.setDividerLocation(260);
             } else {
-                currentCollection = (RuleSetCollection)userObject;
-                currentRuleSet = null;
+                RuleSetCollection currentCollection = (RuleSetCollection)userObject;
+                RuleSet currentRuleSet = null;
                 splitPaneVertical.getBottomComponent().setVisible(false);
                 jDescriptionPanel.setBoth(currentCollection.getName(), currentCollection.getDescription());
             }
@@ -165,10 +163,12 @@ public class JRuleSetManager extends JPanel {
             if (o instanceof RuleSetCollection) {
                 final RuleSetCollection collection = (RuleSetCollection)o;
                 fh.renameCollection(collection, jDescriptionPanel.getEditedTitle());
-                String saveName = collection.getName();
-                collection.setName(jDescriptionPanel.getEditedTitle());
-                if (false == jRuleSetBrowser.validateNonExistence(currentCollection)) {
-                     collection.setName(saveName);
+                if (false == collection.getName().equals(jDescriptionPanel.getEditedTitle())) {
+                    String saveName = collection.getName();
+                    collection.setName(jDescriptionPanel.getEditedTitle());
+                    if (false == jRuleSetBrowser.validateNonExistence(collection)) {
+                         collection.setName(saveName);
+                    }
                 }
                 collection.setDescription(jDescriptionPanel.getEditedDescription());
                 ((DefaultTreeModel)jRuleSetBrowser.getTree().getModel()).reload(node);
@@ -177,6 +177,8 @@ public class JRuleSetManager extends JPanel {
                         fh.writeCollection(collection);
                     }
                 });
+                jDescriptionPanel.setBoth(jDescriptionPanel.getEditedTitle(),
+                    jDescriptionPanel.getEditedDescription());
                 return;
             }
 
@@ -184,16 +186,19 @@ public class JRuleSetManager extends JPanel {
             RuleSet ruleSet = (RuleSet)o;
             final RuleSetCollection collection = (RuleSetCollection)
                     ((DefaultMutableTreeNode)node.getParent()).getUserObject();
-            for (RuleSet ruleSet1 : collection.getRulesets()) {
-                if (ruleSet1.getName().equals(jDescriptionPanel.getTitle())) {
-                    JOptionPane.showMessageDialog((JFrame)SwingUtilities.getWindowAncestor(new JPanel()),
-                        "A rule set with this name already exists, why do you have to do this?\nAnyway, I did NOT create your rule set...",
-                        "I am angry with you!",
-                        JOptionPane.ERROR_MESSAGE);
-                    return;
+
+            if (false == ruleSet.getName().equals(jDescriptionPanel.getEditedTitle())) {
+                for (RuleSet ruleSet1 : collection.getRulesets()) {
+                    if (ruleSet1.getName().equals(jDescriptionPanel.getEditedTitle())) {
+                        JOptionPane.showMessageDialog((JFrame)SwingUtilities.getWindowAncestor(new JPanel()),
+                            "A rule set with this name already exists, why do you have to do this?\nAnyway, I did NOT create your rule set...",
+                            "I am angry with you!",
+                            JOptionPane.ERROR_MESSAGE);
+                        return;
+                    }
                 }
+                ruleSet.setName(jDescriptionPanel.getEditedTitle());
             }
-            ruleSet.setName(jDescriptionPanel.getEditedTitle());
             ruleSet.setDescription(jDescriptionPanel.getEditedDescription());
             ((DefaultTreeModel)jRuleSetBrowser.getTree().getModel()).reload(node);
             SwingUtilities.invokeLater(new Runnable() {
@@ -201,6 +206,8 @@ public class JRuleSetManager extends JPanel {
                         fh.writeCollection(collection);
                     }
             });
+            jDescriptionPanel.setBoth(jDescriptionPanel.getEditedTitle(),
+                    jDescriptionPanel.getEditedDescription());
         }
     }
 
