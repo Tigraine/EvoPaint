@@ -5,11 +5,11 @@
 
 package evopaint.gui.rulesetmanager;
 
-import evopaint.util.FileHandler;
 import evopaint.Configuration;
 import evopaint.pixel.rulebased.RuleSet;
 import evopaint.pixel.rulebased.RuleSetCollection;
 import evopaint.pixel.rulebased.interfaces.IRule;
+import evopaint.util.CollectionNode;
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Container;
@@ -19,11 +19,8 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSplitPane;
-import javax.swing.SwingUtilities;
 import javax.swing.border.LineBorder;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
@@ -34,9 +31,10 @@ import javax.swing.tree.DefaultTreeModel;
  *
  * @author tam
  */
-public class JRuleSetManager extends JPanel {
+public class JRuleSetManager extends JPanel implements TreeSelectionListener {
 
     private Configuration configuration;
+    private DefaultTreeModel treeModel;
     private Container contentPane;
     private JRuleSetBrowser jRuleSetBrowser;
     private JDescriptionPanel jDescriptionPanel;
@@ -53,15 +51,20 @@ public class JRuleSetManager extends JPanel {
         this.configuration = configuration;
     }
 
-    public JRuleSetManager(RuleSet ruleSet, Configuration configuration, ActionListener OKListener, ActionListener CancelListener) {
+    public JRuleSetManager(Configuration configuration, ActionListener OKListener, ActionListener CancelListener) {
         this.configuration = configuration;
         this.contentPane = this;
+        
+        this.treeModel = configuration.fileHandler.readCollections();
 
         setLayout(new CardLayout());
 
+        JRuleSetTree jRuleSetTree = new JRuleSetTree(treeModel);
+        jRuleSetTree.addTreeSelectionListener(this);
+
         // FIRST CARD
-        jRuleSetBrowser = new JRuleSetBrowser(new RuleSetBrowserSelectionListener());
-        jDescriptionPanel = new JDescriptionPanel(new DescriptionEditorBtnSaveListener());
+        jRuleSetBrowser = new JRuleSetBrowser(configuration, jRuleSetTree);
+        jDescriptionPanel = new JDescriptionPanel(configuration, jRuleSetTree);
 
         // [ browser | description ]
         JSplitPane upperSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,
@@ -105,6 +108,22 @@ public class JRuleSetManager extends JPanel {
         add(jRuleEditor, "editor");
     }
 
+    public void valueChanged(TreeSelectionEvent e) {
+        DefaultMutableTreeNode node = (DefaultMutableTreeNode)e.getPath().getLastPathComponent();
+        Object userObject = node.getUserObject();
+
+        if (userObject == null) {
+            return;
+        }
+
+        if (userObject instanceof RuleSetCollection) {
+            splitPaneVertical.getBottomComponent().setVisible(false);
+        } else { // rule set node
+            splitPaneVertical.getBottomComponent().setVisible(true);
+            splitPaneVertical.setDividerLocation(260);
+        }
+    }
+
     private class RuleEditorOKListener implements ActionListener {
 
         public void actionPerformed(ActionEvent e) {
@@ -122,87 +141,7 @@ public class JRuleSetManager extends JPanel {
             ((CardLayout)contentPane.getLayout()).show(contentPane, "manager");
         }
     }
-
-    private class RuleSetBrowserSelectionListener implements TreeSelectionListener {
-
-        public void valueChanged(TreeSelectionEvent e) {
-            DefaultMutableTreeNode node = (DefaultMutableTreeNode)
-                           jRuleSetBrowser.getTree().getLastSelectedPathComponent();
-            
-            if (node == null) { // dunno how that could be the case, but what the hell..
-                return;
-            }
-
-            Object userObject = node.getUserObject();
-            if (false == node.getAllowsChildren()) {
-                RuleSetCollection currentCollection = (RuleSetCollection)((DefaultMutableTreeNode)node.getParent()).getUserObject();
-                RuleSet currentRuleSet = (RuleSet)userObject;
-                jRuleList.setRules(currentRuleSet.getRules());
-                jDescriptionPanel.setBoth(currentRuleSet.getName(), currentRuleSet.getDescription());
-                splitPaneVertical.getBottomComponent().setVisible(true);
-                splitPaneVertical.setDividerLocation(260);
-            } else {
-                RuleSetCollection currentCollection = (RuleSetCollection)userObject;
-                RuleSet currentRuleSet = null;
-                splitPaneVertical.getBottomComponent().setVisible(false);
-                jDescriptionPanel.setBoth(currentCollection.getName(), currentCollection.getDescription());
-            }
-            jDescriptionPanel.showEditButton(true);
-        }
-    }
-
-    private class DescriptionEditorBtnSaveListener implements ActionListener {
-
-        public void actionPerformed(ActionEvent e) {
-            final FileHandler fh = FileHandler.getHandler();
-            DefaultMutableTreeNode node = (DefaultMutableTreeNode)
-                    jRuleSetBrowser.getTree().getLastSelectedPathComponent();
-            Object o = node.getUserObject();
-
-            // collection
-            if (o instanceof RuleSetCollection) {
-                final RuleSetCollection collection = (RuleSetCollection)o;
-                fh.renameCollection(collection, jDescriptionPanel.getEditedTitle());
-                if (false == collection.getName().equals(jDescriptionPanel.getEditedTitle())) {
-                    String saveName = collection.getName();
-                    collection.setName(jDescriptionPanel.getEditedTitle());
-                    if (false == jRuleSetBrowser.validateNonExistence(collection)) {
-                         collection.setName(saveName);
-                    }
-                }
-                collection.setDescription(jDescriptionPanel.getEditedDescription());
-                ((DefaultTreeModel)jRuleSetBrowser.getTree().getModel()).reload(node);
-                fh.writeCollection(collection);
-                jDescriptionPanel.setBoth(jDescriptionPanel.getEditedTitle(),
-                        jDescriptionPanel.getEditedDescription());
-                return;
-            }
-
-            // else rule set
-            RuleSet ruleSet = (RuleSet)o;
-            final RuleSetCollection collection = (RuleSetCollection)
-                    ((DefaultMutableTreeNode)node.getParent()).getUserObject();
-
-            if (false == ruleSet.getName().equals(jDescriptionPanel.getEditedTitle())) {
-                for (RuleSet ruleSet1 : collection.getRulesets()) {
-                    if (ruleSet1.getName().equals(jDescriptionPanel.getEditedTitle())) {
-                        JOptionPane.showMessageDialog((JFrame)SwingUtilities.getWindowAncestor(new JPanel()),
-                            "A rule set with this name already exists, why do you have to do this?\nAnyway, I did NOT create your rule set...",
-                            "I am angry with you!",
-                            JOptionPane.ERROR_MESSAGE);
-                        return;
-                    }
-                }
-                ruleSet.setName(jDescriptionPanel.getEditedTitle());
-            }
-            ruleSet.setDescription(jDescriptionPanel.getEditedDescription());
-            ((DefaultTreeModel)jRuleSetBrowser.getTree().getModel()).reload(node);
-            fh.writeCollection(collection);
-            jDescriptionPanel.setBoth(jDescriptionPanel.getEditedTitle(),
-                    jDescriptionPanel.getEditedDescription());
-        }
-    }
-
+    
     private class EditRuleBtnListener implements ActionListener {
         public void actionPerformed(ActionEvent e) {
             if (jRuleList.getList().isSelectionEmpty()) {

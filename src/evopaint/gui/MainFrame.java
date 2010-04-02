@@ -61,8 +61,8 @@ public class MainFrame extends JFrame {
         this.mainPanel = new JPanel();
         mainPanel.setLayout(new BorderLayout(0, 0));
         add(mainPanel, "main");
-        this.jRuleSetManager = new JRuleSetManager(configuration.brush.getRuleSet(),
-                configuration, new RuleSetManagerOKListener(), new RuleSetManagerCancelListener());
+        this.jRuleSetManager = new JRuleSetManager(configuration,
+                new RuleSetManagerOKListener(), new RuleSetManagerCancelListener());
         jRuleSetManager.setVisible(false);
         add(jRuleSetManager, "rule manager");
 

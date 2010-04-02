@@ -23,6 +23,7 @@ import evopaint.pixel.rulebased.interfaces.IRule;
 import evopaint.pixel.rulebased.util.NumberComparisonOperator;
 import evopaint.pixel.rulebased.conditions.EmptyCondition;
 import evopaint.pixel.rulebased.conditions.NoCondition;
+import evopaint.util.FileHandler;
 import evopaint.util.RandomNumberGeneratorWrapper;
 import evopaint.util.logging.Logger;
 import evopaint.util.mapping.RelativeCoordinate;
@@ -77,6 +78,7 @@ public class Configuration {
 
     // these values are configured through the GUI or by the application
     public boolean running = true;
+    public FileHandler fileHandler;
     public World world;
     public Brush brush;
     public ITool activeTool;
@@ -157,6 +159,7 @@ public class Configuration {
     public Configuration() {
         rng = createRNG();
         brush = new Brush(this);
+        fileHandler = new FileHandler();
     }
 
 

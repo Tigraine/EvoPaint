@@ -22,7 +22,17 @@ import java.util.List;
  * @author tam
  */
 public class ExampleRuleSetCollectionFactory {
-    public static RuleSetCollection createSimple() {
+
+    public static RuleSetCollection createCollectionSimple() {
+        String name = "Simple";
+        String description = "A collection of simple examples. If you have started EvoPaint " +
+                "and are a bit clueless about what it can do, check out these rule sets " +
+                "to get an idea about how they perform. Try modifying and playing with them, " +
+                "it's fun!";
+        return new RuleSetCollection(name, description);
+    }
+
+    public static List<RuleSet> createRuleSetsSimple() {
         String name = null;
         String description = null;
         List<IRule> rules = null;
@@ -52,11 +62,7 @@ public class ExampleRuleSetCollectionFactory {
         rules.add(new Rule(conditions, action));
         ruleSets.add(new RuleSet(name, description , rules));
 
-        name = "Simple";
-        description = "A collection of simple examples. If you have started EvoPaint " +
-                "and are a bit clueless about what it can do, check out these rule sets " +
-                "to get an idea about how they perform. Try modifying and playing with them, " +
-                "it's fun!";
-        return new RuleSetCollection(name, description, ruleSets);
+        return ruleSets;
     }
 }
+

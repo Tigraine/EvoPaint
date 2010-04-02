@@ -6,24 +6,22 @@
 package evopaint.pixel.rulebased;
 
 import evopaint.pixel.rulebased.interfaces.ICopyable;
-import evopaint.pixel.rulebased.interfaces.INamed;
+import evopaint.pixel.rulebased.interfaces.IDescribed;
+import evopaint.pixel.rulebased.interfaces.INameable;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
-import javax.swing.event.TreeModelEvent;
-import javax.swing.event.TreeModelListener;
 
 /**
  *
  * @author tam
  */
-public class RuleSetCollection implements Serializable, INamed, ICopyable {
+public class RuleSetCollection implements Serializable, INameable, IDescribed, ICopyable {
     private String name;
     private String description;
-    private int numRuleSets;
 
     public void setDescription(String description) {
         this.description = description;
@@ -40,15 +38,6 @@ public class RuleSetCollection implements Serializable, INamed, ICopyable {
     public String getName() {
         return name;
     }
-
-    public int getNumRuleSets() {
-        return numRuleSets;
-    }
-
-    public void setNumRuleSets(int numRuleSets) {
-        this.numRuleSets = numRuleSets;
-    }
-
     public RuleSetCollection getCopy() {
         RuleSetCollection newRuleSetCollection = null;
         try {
@@ -67,10 +56,9 @@ public class RuleSetCollection implements Serializable, INamed, ICopyable {
         return newRuleSetCollection;
     }
 
-    public RuleSetCollection(String name, String description, int numRuleSets) {
+    public RuleSetCollection(String name, String description) {
         this.name = name;
         this.description = description;
-        this.numRuleSets = numRuleSets;
     }
 
 }
