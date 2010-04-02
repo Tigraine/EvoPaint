@@ -242,6 +242,11 @@ public class JRuleSetBrowser extends JPanel {
                     }
 
                     RuleSetNode ruleSetNode = new RuleSetNode(ruleSet);
+                    // the following line is a bugfix for the bug where
+                    // deletion of nodes that where inserted when their
+                    // parent was not expanded causes the syntUI to eat null
+                    // pointers. see below (around line 340) "WARNING"...
+                    tree.expandPath(new TreePath(parentNode.getPath()));
                     treeModel.insertNodeInto(ruleSetNode, parentNode, parentNode.getChildCount());
                 }
             }
@@ -332,27 +337,20 @@ public class JRuleSetBrowser extends JPanel {
                 return;
             }
 
-            // TODO bugged. reproduce: create a rule set without expanding
+            // WARNING
+            // bugged. reproduce: create a rule set without expanding
             // its collection node first, then delete it.
             //
             // as of JDK 1.6.0_15 this causes a NullPointerException
             // when using any synth laf
             // in javax.swing.plaf.synth.SynthTreeUI.paint(SynthTreeUI.java:297)
-            //treeModel.removeNodeFromParent(selectedNode);
+            treeModel.removeNodeFromParent(selectedNode);
 
             // this works, but will cause a structure change event to be posted
             // instead of removed
             //DefaultMutableTreeNode parentNode = (DefaultMutableTreeNode)selectedNode.getParent();
             //parentNode.remove(selectedNode);
             //treeModel.reload(parentNode);
-            
-            // here is the removeNodeFromParent function broken down. the event
-            // will cause the exception
-            DefaultMutableTreeNode parentNode = (DefaultMutableTreeNode)selectedNode.getParent();
-            int i = parentNode.getIndex(selectedNode);
-            selectedNode.removeFromParent();
-            // BOOM
-            treeModel.nodesWereRemoved(parentNode,new int[]{i},new Object[]{selectedNode});
         }
     }
 }
