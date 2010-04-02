@@ -473,21 +473,13 @@ public class JRuleSetBrowser extends JPanel {
             final FileHandler fh = FileHandler.getHandler();
             if (o instanceof RuleSetCollection) { // collection
                 final RuleSetCollection collection = (RuleSetCollection)selectedNode.getUserObject();
-                SwingUtilities.invokeLater(new Runnable() {
-                    public void run() {
-                            fh.deleteCollection(collection);
-                    }
-                });
+                fh.deleteCollection(collection);
             } else { // rule set
                 CollectionNode collectionNode = (CollectionNode)selectedNode.getParent();
                 final RuleSetCollection collection = (RuleSetCollection)collectionNode.getUserObject();
                 RuleSet ruleSet = (RuleSet)o;
                 collection.getRulesets().remove(ruleSet);
-                SwingUtilities.invokeLater(new Runnable() {
-                    public void run() {
-                        fh.writeCollection(collection);
-                    }
-                });
+                fh.writeCollection(collection);
             }
 
             // remove node from tree

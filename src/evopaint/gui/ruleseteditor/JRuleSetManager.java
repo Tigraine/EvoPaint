@@ -172,13 +172,9 @@ public class JRuleSetManager extends JPanel {
                 }
                 collection.setDescription(jDescriptionPanel.getEditedDescription());
                 ((DefaultTreeModel)jRuleSetBrowser.getTree().getModel()).reload(node);
-                SwingUtilities.invokeLater(new Runnable() {
-                    public void run() {
-                        fh.writeCollection(collection);
-                    }
-                });
+                fh.writeCollection(collection);
                 jDescriptionPanel.setBoth(jDescriptionPanel.getEditedTitle(),
-                    jDescriptionPanel.getEditedDescription());
+                        jDescriptionPanel.getEditedDescription());
                 return;
             }
 
@@ -201,11 +197,7 @@ public class JRuleSetManager extends JPanel {
             }
             ruleSet.setDescription(jDescriptionPanel.getEditedDescription());
             ((DefaultTreeModel)jRuleSetBrowser.getTree().getModel()).reload(node);
-            SwingUtilities.invokeLater(new Runnable() {
-                    public void run() {
-                        fh.writeCollection(collection);
-                    }
-            });
+            fh.writeCollection(collection);
             jDescriptionPanel.setBoth(jDescriptionPanel.getEditedTitle(),
                     jDescriptionPanel.getEditedDescription());
         }
