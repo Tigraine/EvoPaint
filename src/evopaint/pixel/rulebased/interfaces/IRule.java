@@ -14,7 +14,7 @@ import java.util.List;
  *
  * @author tam
  */
-public interface IRule extends IHTML, Serializable {
+public interface IRule extends IHTML, Serializable, ICopyable {
 
     public IAction getAction();
     public void setAction(IAction action);

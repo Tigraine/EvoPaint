@@ -5,7 +5,13 @@
 
 package evopaint.pixel.rulebased;
 
+import evopaint.pixel.rulebased.interfaces.ICopyable;
 import evopaint.pixel.rulebased.interfaces.IRule;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.List;
 
@@ -13,7 +19,7 @@ import java.util.List;
  *
  * @author tam
  */
-public class RuleSet implements Serializable {
+public class RuleSet implements Serializable, ICopyable {
     private String name;
     private String description;
     private List<IRule> rules;
@@ -49,6 +55,24 @@ public class RuleSet implements Serializable {
 
     public void setRules(List<IRule> rules) {
         this.rules = rules;
+    }
+
+    public RuleSet getCopy() {
+        RuleSet newRuleSet = null;
+        try {
+            ByteArrayOutputStream outByteStream = new ByteArrayOutputStream();
+            ObjectOutputStream out = new ObjectOutputStream(outByteStream);
+            out.writeObject(this);
+            ObjectInputStream in = new ObjectInputStream(new ByteArrayInputStream(outByteStream.toByteArray()));
+            newRuleSet = (RuleSet) in.readObject();
+        } catch (ClassNotFoundException ex) {
+            ex.printStackTrace();
+            System.exit(1);
+        } catch (IOException ex) {
+            ex.printStackTrace();
+            System.exit(1);
+        }
+        return newRuleSet;
     }
 
     public RuleSet(String name, String description, List<IRule> rules) {

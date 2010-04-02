@@ -14,8 +14,14 @@ import evopaint.pixel.rulebased.conditions.NoCondition;
 import evopaint.pixel.rulebased.interfaces.IRule;
 import evopaint.pixel.rulebased.interfaces.IAction;
 import evopaint.pixel.rulebased.interfaces.ICondition;
+import evopaint.pixel.rulebased.interfaces.ICopyable;
 import evopaint.pixel.rulebased.interfaces.IHTML;
 import evopaint.util.mapping.RelativeCoordinate;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -24,7 +30,7 @@ import java.util.List;
  *
  * @author tam
  */
-public class Rule implements IRule, IHTML {
+public class Rule implements IRule, IHTML, ICopyable {
     private List<ICondition> conditions;
     private IAction action;
 
@@ -113,6 +119,24 @@ public class Rule implements IRule, IHTML {
             }
         }
         return "Warning: You might want to add an energy condition matching on greater than the cost of your desired action or you will kill your pixels";
+    }
+
+    public Rule getCopy() {
+        Rule newRule = null;
+        try {
+            ByteArrayOutputStream outByteStream = new ByteArrayOutputStream();
+            ObjectOutputStream out = new ObjectOutputStream(outByteStream);
+            out.writeObject(this);
+            ObjectInputStream in = new ObjectInputStream(new ByteArrayInputStream(outByteStream.toByteArray()));
+            newRule = (Rule) in.readObject();
+        } catch (ClassNotFoundException ex) {
+            ex.printStackTrace();
+            System.exit(1);
+        } catch (IOException ex) {
+            ex.printStackTrace();
+            System.exit(1);
+        }
+        return newRule;
     }
 
     public Rule(List<ICondition> conditions, IAction action) {

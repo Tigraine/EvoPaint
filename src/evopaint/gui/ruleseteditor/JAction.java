@@ -14,11 +14,10 @@ import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
 import java.util.LinkedHashMap;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
@@ -115,16 +114,15 @@ public class JAction extends JButton {
         this.dialog = new JDialog((JFrame)SwingUtilities.getWindowAncestor(this), "Edit Action", true);
         dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
         dialog.setLayout(new GridBagLayout());
-        dialog.addWindowListener(new WindowListener() {
-            public void windowOpened(WindowEvent e) {}
-            public void windowClosing(WindowEvent e) {}
+        dialog.addWindowListener(new WindowAdapter() {
+            @Override
             public void windowClosed(WindowEvent e) {
-                setText("<html>" + iAction.toHTML() + "</html>");
+                // this is creepy. THIS event in THIS listener will fire whenever
+                // you close a dialog... any dialog...
+                if (iAction != null) { // and this is a just as creepy hackaround
+                    setText("<html>" + iAction.toHTML() + "</html>");
+                }
             }
-            public void windowIconified(WindowEvent e) {}
-            public void windowDeiconified(WindowEvent e) {}
-            public void windowActivated(WindowEvent e) {}
-            public void windowDeactivated(WindowEvent e) {}
         });
 
         GridBagConstraints constraints = new GridBagConstraints();

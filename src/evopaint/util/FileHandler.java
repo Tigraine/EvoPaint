@@ -6,6 +6,7 @@
 package evopaint.util;
 
 import evopaint.pixel.rulebased.ExampleRuleSetCollectionFactory;
+import evopaint.pixel.rulebased.RuleSet;
 import evopaint.pixel.rulebased.RuleSetCollection;
 import java.io.File;
 import java.io.FileInputStream;
@@ -80,16 +81,18 @@ public class FileHandler {
         return ret;
     }
 
-    public synchronized void writeCollection(RuleSetCollection collection, String oldName) {
-        File collectionFile;
-        
-        if (false == collection.getName().equals(oldName)) {
-            collectionFile = new File(collectionsDir, makeFileName(oldName));
-            collectionFile.renameTo(new File(collectionsDir, makeFileName(collection.getName())));
+    public synchronized void renameCollection(RuleSetCollection collection, String newName) {
+        if (newName == null || collection.getName().equals(newName)) {
+            return;
         }
 
-        collectionFile = new File(collectionsDir, makeFileName(collection.getName()));
+        File collectionFile = new File(collectionsDir, makeFileName(collection.getName()));
+        collectionFile.renameTo(new File(collectionsDir, makeFileName(newName)));
+    }
 
+    public synchronized void writeCollection(RuleSetCollection collection) {
+        File collectionFile = new File(collectionsDir, makeFileName(collection.getName()));
+ 
         try {
             ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(collectionFile));
             out.writeObject(collection);
@@ -101,6 +104,11 @@ public class FileHandler {
             ex.printStackTrace();
             System.exit(1);
         }
+    }
+
+    public synchronized void deleteCollection(RuleSetCollection collection) {
+        File collectionFile = new File(collectionsDir, makeFileName(collection.getName()));
+        collectionFile.delete();
     }
 
     private synchronized void createExampleCollections(File dir) {

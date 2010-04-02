@@ -119,21 +119,9 @@ public class JRuleList extends JPanel {
                 }
                 int index = list.getSelectedIndex();
                 final IRule protoRule = (IRule)model.get(index);
-                try {
-                    IRule newRule;
-                    ByteArrayOutputStream outByteStream = new ByteArrayOutputStream();
-                    ObjectOutputStream out = new ObjectOutputStream(outByteStream);
-                    out.writeObject(protoRule);
-                    ObjectInputStream in = new ObjectInputStream(new ByteArrayInputStream(outByteStream.toByteArray()));
-                    newRule = (IRule) in.readObject();
-                    model.addElement(newRule);
-                } catch (ClassNotFoundException ex) {
-                    ex.printStackTrace();
-                    System.exit(1);
-                } catch (IOException ex) {
-                    ex.printStackTrace();
-                    System.exit(1);
-                }
+                IRule newRule = (IRule)protoRule.getCopy();
+                model.addElement(newRule);
+                
             }
         });
         controlPanel.add(btnCopy);
