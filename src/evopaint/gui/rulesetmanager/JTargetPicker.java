@@ -3,7 +3,7 @@
  * and open the template in the editor.
  */
 
-package evopaint.gui.ruleseteditor;
+package evopaint.gui.rulesetmanager;
 
 import evopaint.util.mapping.RelativeCoordinate;
 import java.awt.Dimension;

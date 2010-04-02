@@ -10,7 +10,7 @@ import evopaint.pixel.rulebased.util.NumberComparisonOperator;
 import evopaint.pixel.rulebased.AbstractCondition;
 import evopaint.World;
 import evopaint.gui.util.AutoSelectOnFocusSpinner;
-import evopaint.gui.ruleseteditor.util.NamedObjectListCellRenderer;
+import evopaint.gui.rulesetmanager.util.NamedObjectListCellRenderer;
 import evopaint.pixel.Pixel;
 import evopaint.util.mapping.RelativeCoordinate;
 import java.awt.event.ActionEvent;

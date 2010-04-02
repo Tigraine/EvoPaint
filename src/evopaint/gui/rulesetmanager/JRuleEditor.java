@@ -3,7 +3,7 @@
  * and open the template in the editor.
  */
 
-package evopaint.gui.ruleseteditor;
+package evopaint.gui.rulesetmanager;
 
 import evopaint.Configuration;
 import evopaint.pixel.rulebased.Rule;

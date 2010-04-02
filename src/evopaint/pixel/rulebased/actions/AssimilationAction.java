@@ -8,7 +8,7 @@ package evopaint.pixel.rulebased.actions;
 import evopaint.Configuration;
 import evopaint.pixel.rulebased.AbstractAction;
 import evopaint.World;
-import evopaint.gui.ruleseteditor.util.DimensionsListener;
+import evopaint.gui.rulesetmanager.util.DimensionsListener;
 import evopaint.pixel.ColorDimensions;
 import evopaint.pixel.Pixel;
 import evopaint.util.mapping.RelativeCoordinate;

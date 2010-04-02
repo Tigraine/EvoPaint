@@ -2,7 +2,7 @@ package evopaint.gui;
 
 import evopaint.Brush;
 import evopaint.Configuration;
-import evopaint.gui.ruleseteditor.JRuleSetManager;
+import evopaint.gui.rulesetmanager.JRuleSetManager;
 import evopaint.gui.util.AutoSelectOnFocusSpinner;
 import evopaint.pixel.PixelColor;
 import evopaint.pixel.rulebased.RuleSet;

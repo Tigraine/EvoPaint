@@ -5,7 +5,7 @@ import evopaint.Configuration;
 import evopaint.EvoPaint;
 import evopaint.commands.*;
 import evopaint.gui.listeners.SelectionListenerFactory;
-import evopaint.gui.ruleseteditor.JRuleSetManager;
+import evopaint.gui.rulesetmanager.JRuleSetManager;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;

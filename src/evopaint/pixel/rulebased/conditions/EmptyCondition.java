@@ -7,7 +7,7 @@ package evopaint.pixel.rulebased.conditions;
 
 import evopaint.Configuration;
 import evopaint.World;
-import evopaint.gui.ruleseteditor.util.NamedObjectListCellRenderer;
+import evopaint.gui.rulesetmanager.util.NamedObjectListCellRenderer;
 import evopaint.pixel.rulebased.util.ObjectComparisonOperator;
 import evopaint.pixel.rulebased.AbstractCondition;
 import evopaint.pixel.Pixel;

@@ -3,9 +3,9 @@
  * and open the template in the editor.
  */
 
-package evopaint.gui.ruleseteditor;
+package evopaint.gui.rulesetmanager;
 
-import evopaint.gui.ruleseteditor.util.NamedObjectListCellRenderer;
+import evopaint.gui.rulesetmanager.util.NamedObjectListCellRenderer;
 import evopaint.Configuration;
 import evopaint.pixel.rulebased.conditions.NoCondition;
 import evopaint.pixel.rulebased.interfaces.ICondition;
