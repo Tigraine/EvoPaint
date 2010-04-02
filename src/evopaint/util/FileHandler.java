@@ -15,9 +15,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.util.ArrayList;
-import java.util.List;
 import javax.swing.JFileChooser;
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeModel;
 
 /**
  *
@@ -57,15 +57,23 @@ public class FileHandler {
         }
     }
 
-    public synchronized List<RuleSetCollection> getCollections() {
+    public synchronized DefaultTreeModel readCollections() {
         File [] collectionFiles = collectionsDir.listFiles();
-        ArrayList<RuleSetCollection> ret = new ArrayList<RuleSetCollection>(collectionFiles.length);
+        DefaultMutableTreeNode root = new DefaultMutableTreeNode();
+        DefaultTreeModel model = new DefaultTreeModel(root, true);
 
         try {
             for (File collectionFile : collectionFiles) {
                 ObjectInputStream in = new ObjectInputStream(new FileInputStream(collectionFile));
-                ret.add((RuleSetCollection)in.readObject());
+                RuleSetCollection ruleSetCollection = (RuleSetCollection)in.readObject();
+                CollectionNode collectionNode = new CollectionNode(ruleSetCollection);
+                for (int i = 0; i < ruleSetCollection.getNumRuleSets(); i++) {
+                    RuleSet ruleSet = (RuleSet)in.readObject();
+                    RuleSetNode ruleSetNode = new RuleSetNode(ruleSet);
+                    collectionNode.insert(ruleSetNode, i);
+                }
                 in.close();
+                model.insertNodeInto(collectionNode, root, root.getChildCount());
             }
         } catch (FileNotFoundException ex) {
             ex.printStackTrace();
@@ -77,8 +85,8 @@ public class FileHandler {
             ex.printStackTrace();
             System.exit(1);
         }
-        
-        return ret;
+
+        return model;
     }
 
     public synchronized void renameCollection(RuleSetCollection collection, String newName) {

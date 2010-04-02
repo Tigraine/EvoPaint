@@ -13,7 +13,8 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
-import java.util.List;
+import javax.swing.event.TreeModelEvent;
+import javax.swing.event.TreeModelListener;
 
 /**
  *
@@ -22,7 +23,7 @@ import java.util.List;
 public class RuleSetCollection implements Serializable, INamed, ICopyable {
     private String name;
     private String description;
-    private List<RuleSet> rulesets;
+    private int numRuleSets;
 
     public void setDescription(String description) {
         this.description = description;
@@ -30,10 +31,6 @@ public class RuleSetCollection implements Serializable, INamed, ICopyable {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public void setRulesets(List<RuleSet> rulesets) {
-        this.rulesets = rulesets;
     }
 
     public String getDescription() {
@@ -44,8 +41,12 @@ public class RuleSetCollection implements Serializable, INamed, ICopyable {
         return name;
     }
 
-    public List<RuleSet> getRulesets() {
-        return rulesets;
+    public int getNumRuleSets() {
+        return numRuleSets;
+    }
+
+    public void setNumRuleSets(int numRuleSets) {
+        this.numRuleSets = numRuleSets;
     }
 
     public RuleSetCollection getCopy() {
@@ -66,9 +67,11 @@ public class RuleSetCollection implements Serializable, INamed, ICopyable {
         return newRuleSetCollection;
     }
 
-    public RuleSetCollection(String name, String description, List<RuleSet> rulesets) {
+    public RuleSetCollection(String name, String description, int numRuleSets) {
         this.name = name;
         this.description = description;
-        this.rulesets = rulesets;
+        this.numRuleSets = numRuleSets;
     }
+
 }
+
