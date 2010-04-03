@@ -78,6 +78,9 @@ public class RewardAction extends AbstractAction {
     public int execute(Pixel us, World world) {
         for (RelativeCoordinate direction : getDirections()) {
             Pixel them = world.get(us.getLocation(), direction);
+            if (them == null) { // never forget to skip empty spots
+                continue;
+            }
             them.reward(rewardValue);
         }
         return getCost();

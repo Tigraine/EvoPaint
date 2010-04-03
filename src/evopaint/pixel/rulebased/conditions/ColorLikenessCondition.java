@@ -118,6 +118,9 @@ public class ColorLikenessCondition extends AbstractCondition {
     public boolean isMet(Pixel us, World world) {
         for (RelativeCoordinate direction : getDirections()) {
             Pixel them = world.get(us.getLocation(), direction);
+            if (them == null) { // never forget to skip empty spots
+                continue;
+            }
             double distance = them.getPixelColor().distanceTo(comparedColor, dimensions);
             //System.out.println("distance: " + distance);
             int likenessPercentage = (int)((1 - distance) * 100);

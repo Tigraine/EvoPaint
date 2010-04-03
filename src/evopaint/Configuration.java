@@ -68,7 +68,7 @@ public class Configuration {
     //public final int numThreads = 1;
     public final int backgroundColor = 0;
     
-    public final int startingEnergy = 2000000;
+    public final int startingEnergy = 100;
 
     // if set to true a pixel will stop working down his rule set once the first
     // rule matches
@@ -91,45 +91,6 @@ public class Configuration {
         return zoom / 10;
     }
 
-    public RuleSet createDefaultRuleSet() {
-
-        List<IRule> rules = new ArrayList<IRule>();
-
-        List<ICondition> conditions = new ArrayList<ICondition>();
-        List<RelativeCoordinate> directions = new ArrayList<RelativeCoordinate>();
-        directions.add(RelativeCoordinate.SELF);
-        conditions.add(new EnergyCondition(directions, NumberComparisonOperator.GREATER_THAN, 80));
-        directions = new ArrayList<RelativeCoordinate>();
-        directions.add(RelativeCoordinate.WEST);
-        directions.add(RelativeCoordinate.NORTH);
-        directions.add(RelativeCoordinate.SOUTH);
-        directions.add(RelativeCoordinate.EAST);
-        IAction action = new AssimilationAction(20, directions, new ColorDimensions(true, true, true));
-        rules.add(new Rule(conditions, action));
-
-        conditions = new ArrayList<ICondition>();
-        directions = new ArrayList<RelativeCoordinate>();
-        directions.add(RelativeCoordinate.SELF);
-        conditions.add(new ColorLikenessCondition(directions, NumberComparisonOperator.LESS_THAN, 75, new ColorDimensions(true, false, false), new PixelColor(0x00FF00, rng)));
-        directions = new ArrayList<RelativeCoordinate>();
-        directions.add(RelativeCoordinate.SELF);
-        action = new RewardAction(0, directions, 80);
-        rules.add(new Rule(conditions, action));
-
-        conditions = new ArrayList<ICondition>();
-        directions = new ArrayList<RelativeCoordinate>();
-        directions.add(RelativeCoordinate.SELF);
-        conditions.add(new ColorLikenessCondition(directions, NumberComparisonOperator.GREATER_OR_EQUAL, 90, new ColorDimensions(true, false, false), new PixelColor(0x0000ff, rng)));
-        directions = new ArrayList<RelativeCoordinate>();
-        directions.add(RelativeCoordinate.SELF);
-        action = new RewardAction(0, directions, 80);
-        //rules.add(new Rule(conditions, action));
-
-        String loremIpsum = "Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat. Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis dolore te feugait nulla facilisi. Nam liber tempor cum soluta nobis eleifend option congue nihil imperdiet doming id quod mazim placerat facer possim assum. Typi non habent claritatem insitam; est usus legentis in iis qui facit eorum claritatem. Investigationes demonstraverunt lectores legere me lius quod ii legunt saepius. Claritas est etiam processus dynamicus, qui sequitur mutationem consuetudium lectorum. Mirum est notare quam littera gothica, quam nunc putamus parum claram, anteposuerit litterarum formas humanitatis per seacula quarta decima et quinta decima. Eodem modo typi, qui nunc nobis videntur parum clari, fiant sollemnes in futurum.";
-        RuleSet ruleSet = new RuleSet("test ruleset", loremIpsum, rules);
-
-        return ruleSet;
-    }
 
     private IRandomNumberGenerator createRNG() {
         // Random, SecureRandom, AESCounterRNG, CellularAutomatonRNG,

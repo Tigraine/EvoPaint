@@ -5,14 +5,25 @@
 
 package evopaint;
 
-import evopaint.interfaces.IRandomNumberGenerator;
+import evopaint.pixel.ColorDimensions;
 import evopaint.pixel.Pixel;
 import evopaint.pixel.PixelColor;
+import evopaint.pixel.rulebased.Rule;
 import evopaint.pixel.rulebased.RuleBasedPixel;
 import evopaint.pixel.rulebased.RuleSet;
-import evopaint.pixel.State;
+import evopaint.pixel.rulebased.actions.AssimilationAction;
+import evopaint.pixel.rulebased.actions.NoAction;
+import evopaint.pixel.rulebased.actions.RewardAction;
+import evopaint.pixel.rulebased.conditions.ColorLikenessCondition;
+import evopaint.pixel.rulebased.conditions.EnergyCondition;
+import evopaint.pixel.rulebased.conditions.NoCondition;
+import evopaint.pixel.rulebased.interfaces.IAction;
+import evopaint.pixel.rulebased.interfaces.ICondition;
+import evopaint.pixel.rulebased.interfaces.IRule;
+import evopaint.pixel.rulebased.util.NumberComparisonOperator;
 import evopaint.util.mapping.AbsoluteCoordinate;
 import evopaint.util.mapping.RelativeCoordinate;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -75,6 +86,19 @@ public class Brush {
         this.ruleSet = ruleSet;
     }
 
+    private RuleSet noRuleSet() {
+        List<IRule> rules = new ArrayList<IRule>();
+
+        List<ICondition> conditions = new ArrayList<ICondition>();
+        List<RelativeCoordinate> directions = new ArrayList<RelativeCoordinate>();
+        directions.add(RelativeCoordinate.SELF);
+        conditions.add(new NoCondition());
+        IAction action = new NoAction();
+        rules.add(new Rule(conditions, action));
+
+        return new RuleSet("No RuleSet", "You should not be able to read this, well okay by digging the source you should. In that case: Welcome to the EvoPaint source code, enjoy your stay and copy all you like!", rules);
+    }
+
     public void paint(int x, int y) {
         
         for (int i = 0 - brushSize / 2 ; i < (int)Math.ceil((double)brushSize / 2); i++) {
@@ -115,6 +139,6 @@ public class Brush {
         this.brushSize = 10;
         this.mode = COLOR;
         this.color = new PixelColor(0xFF0000, configuration.rng);
-        this.ruleSet = configuration.createDefaultRuleSet();
+        this.ruleSet = noRuleSet();
     }
 }

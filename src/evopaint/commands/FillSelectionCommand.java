@@ -38,7 +38,7 @@ public class FillSelectionCommand extends AbstractCommand {
         this.affineTransform = showcase.getAffineTransform();
 
         this.energy = configuration.startingEnergy;
-        this.ruleSet = configuration.createDefaultRuleSet();
+        this.ruleSet = configuration.brush.getRuleSet();
     }
 
     public void execute() {

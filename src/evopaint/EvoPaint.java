@@ -109,7 +109,5 @@ public class EvoPaint {
         this.perception.createImage(world);
 
         this.frame = new MainFrame(configuration, this);
-
-        world.init();
     }
 }

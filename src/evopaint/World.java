@@ -22,10 +22,6 @@ public class World extends ParallaxMap<Pixel> {
     private Configuration configuration;
     private long time;
 
-    public void init() {
-        this.createPixels();
-    }
-
     public void step() {
 
         if (time == Long.MAX_VALUE) {
@@ -47,32 +43,6 @@ public class World extends ParallaxMap<Pixel> {
         //if (time == 1000)
           //  java.lang.System.exit(0);
 
-    }
-
-    private void createPixels() {
-        RuleSet ruleSet = configuration.createDefaultRuleSet();
-
-        System.out.println("Test with the following rules for every pixel:");
-        System.out.println(ruleSet.toString());
-        
-        for (int y = 0; y < configuration.initialPopulation.height; y++) {
-            for (int x = 0; x < configuration.initialPopulation.width; x++) {
-
-                AbsoluteCoordinate location = new AbsoluteCoordinate(configuration.dimension.width / 2 - configuration.initialPopulation.width / 2 + x,
-                        configuration.dimension.height / 2 - configuration.initialPopulation.height / 2 + y, this);
-
-                PixelColor pixelColor = new PixelColor(configuration.rng.nextPositiveInt(), configuration.rng);
-
-                Pixel newPixel = null;
-                switch (configuration.pixelType) {
-                    case Pixel.RULESET:
-                        newPixel = new RuleBasedPixel(pixelColor, location, configuration.startingEnergy, ruleSet);
-                                break;
-                    default: assert(false);
-                }
-                set(newPixel);
-            }
-        }
     }
 
     public void set(Pixel pixel) {

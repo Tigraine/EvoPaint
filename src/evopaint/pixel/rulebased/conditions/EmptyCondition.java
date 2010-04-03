@@ -66,6 +66,9 @@ public class EmptyCondition extends AbstractCondition {
     public boolean isMet(Pixel us, World world) {
         for (RelativeCoordinate direction : getDirections()) {
             Pixel them = world.get(us.getLocation(), direction);
+            if (them == null) { // never forget to skip empty spots
+                continue;
+            }
             if (comparisonOperator.compare(them, null) == false) {
                 return false; // so this is what lazy evaluation looks like...
             }

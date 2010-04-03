@@ -14,6 +14,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import javax.swing.*;
+import javax.swing.border.LineBorder;
 
 public class MainFrame extends JFrame {
     private Container contentPane;
@@ -21,9 +22,9 @@ public class MainFrame extends JFrame {
     private MenuBar menuBar;
     private Showcase showcase;
     private JPopupMenu toolMenu;
-    private PaintOptionsPanel paintOptionsPanel;
+    private JOptionsPanel jOptionsPanel;
     private ToolBox toolBox;
-    //private JPanel showCaseWrapper = new JPanel();
+    private JPixelPanel jPixelPanel;
     private JPanel leftPanel;
     private JRuleSetManager jRuleSetManager;
     private Configuration configuration;
@@ -40,9 +41,13 @@ public class MainFrame extends JFrame {
 
     public MainFrame(Configuration configuration, EvoPaint evopaint) {
         this.configuration = configuration;
-        initializeCommands(evopaint);
         this.contentPane = getContentPane();
-        
+
+        resumeCommand = new ResumeCommand(evopaint);
+        pauseCommand = new PauseCommand(evopaint);
+        zoomInCommand = new ZoomInCommand(showcase);
+        zoomOutCommand = new ZoomOutCommand(showcase);
+
         activeTool = MoveCommand.class;
         CommandFactory commandFactory = new CommandFactory(configuration);
 
@@ -68,7 +73,7 @@ public class MainFrame extends JFrame {
         add(jRuleSetManager, "rule manager");
 
         this.toolMenu = new ToolMenu(this);
-        this.paintOptionsPanel = new PaintOptionsPanel(configuration, showcase, this, new OpenRuleSetManagerListener()); // FIXME: paintoptionspanel must be initialized before showcase or we get a nullpointer exception. the semantics to not express this!!
+        this.jOptionsPanel = new JOptionsPanel(configuration); // FIXME: paintoptionspanel must be initialized before showcase or we get a nullpointer exception. the semantics to not express this!!
         this.showcase = new Showcase(configuration, this, evopaint.getWorld(), evopaint.getPerception(), commandFactory);
         this.menuBar = new MenuBar(evopaint, new SelectionListenerFactory(showcase), showcase);
         setJMenuBar(menuBar);
@@ -78,37 +83,50 @@ public class MainFrame extends JFrame {
 
         // some hand crafted GUI stuff for the panel on the left
         leftPanel = new JPanel();
-        leftPanel.setBackground(getBackground());
+        leftPanel.setLayout(new GridBagLayout());
         mainPanel.add(leftPanel, BorderLayout.WEST);
 
         JPanel wrapperPanelLeft = new JPanel();
         wrapperPanelLeft.setLayout(new BoxLayout(wrapperPanelLeft, BoxLayout.Y_AXIS));
-        wrapperPanelLeft.setBackground(getBackground());
+        wrapperPanelLeft.setBackground(new Color(0xF2F2F5));
+        wrapperPanelLeft.setBorder(new LineBorder(Color.GRAY));
+        
         leftPanel.add(wrapperPanelLeft);
 
-        JPanel wrapperPanelToolBox = new JPanel();
-        wrapperPanelToolBox.setBackground(getBackground());
-        wrapperPanelLeft.add(wrapperPanelToolBox);
-        
         toolBox = new ToolBox(this);
-        wrapperPanelToolBox.add(toolBox);
-        wrapperPanelLeft.add(Box.createVerticalStrut(10));
-        wrapperPanelLeft.add(paintOptionsPanel);
+        wrapperPanelLeft.add(toolBox);
 
+        JSeparator separator = new JSeparator(JSeparator.HORIZONTAL);
+        wrapperPanelLeft.add(separator);
+
+        jPixelPanel = new JPixelPanel(configuration, new OpenRuleSetManagerListener());
+        wrapperPanelLeft.add(jPixelPanel);
+
+        separator = new JSeparator(JSeparator.HORIZONTAL);
+        wrapperPanelLeft.add(separator);
+
+        wrapperPanelLeft.add(jOptionsPanel);
+
+        JPanel wrapperPanelRight = new JPanel();
+        wrapperPanelRight.setBackground(Color.WHITE);
+        wrapperPanelRight.setLayout(new GridBagLayout());
+        wrapperPanelRight.add(showcase);
         // and the right side
-        JScrollPane showCaseScrollPane = new JScrollPane(showcase,
-                JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
-                JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-        showCaseScrollPane.setBackground(getBackground());
+        JScrollPane showCaseScrollPane = new JScrollPane(wrapperPanelRight,
+                JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
+                JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
 
         // THIS IS NOT OBJECT ORIENTED! IT TOOK HOURS TO FIND THIS SHIT!
         showCaseScrollPane.setViewportBorder(null); 
         // showCaseScrollPane.getViewport().setBackground(new JPanel().getBackground());
         // ^ does not seem to work for viewports workaround v
-        showCaseScrollPane.getViewport().setOpaque(false);
+
+        // not needed, but don't want to forget about: showCaseScrollPane.getViewport().setOpaque(false);
+
         // and if we do not set a null border we get a nice 1px solix black border "for free"
         // the JScrollPane is by far the most unpolished Swing component I have seen so far
-        showCaseScrollPane.setBorder(null);
+        // edit: well that changed. SynthUI and JTree is my new favorite combo
+        showCaseScrollPane.setBorder(new LineBorder(Color.GRAY));
 
         showCaseScrollPane.getViewport().addMouseWheelListener(showcase);
         mainPanel.add(showCaseScrollPane, BorderLayout.CENTER);
@@ -140,75 +158,7 @@ public class MainFrame extends JFrame {
 
     public void setActiveTool(Class activeTool) {
         this.activeTool = activeTool;
-    }
-
-    public void initializeCommands(EvoPaint evopaint) {
-    	
-        CommandFactory commandFactory = new CommandFactory(configuration);
-        this.paintOptionsPanel = new PaintOptionsPanel(configuration, showcase, this, new OpenRuleSetManagerListener()); // FIXME: paintoptionspanel must be initialized before showcase or we get a nullpointer exception. the semantics to not express this!!
-        this.showcase = new Showcase(configuration, this, evopaint.getWorld(), evopaint.getPerception(), commandFactory);
-        this.menuBar = new MenuBar(evopaint, new SelectionListenerFactory(showcase), showcase);
-        
-        resumeCommand = new ResumeCommand(evopaint);
-        pauseCommand = new PauseCommand(evopaint);
-        zoomInCommand = new ZoomInCommand(showcase);
-        zoomOutCommand = new ZoomOutCommand(showcase);
-      
-    }
-    
- 
-    
-    public void initSecond(EvoPaint evopaint){
- 
-        addKeyListener(new KeyListener() {
-
-            public void keyTyped(KeyEvent e) {
-               // System.out.println(""+e.getK)
-                
-                //System.out.println("adsf");
-                //throw new UnsupportedOperationException("Not supported yet.");
-            }
-
-            public void keyPressed(KeyEvent e) {
-                if (e.getKeyCode() == KeyEvent.VK_PLUS) {
-                    zoomInCommand.execute();
-                } else if (e.getKeyCode() == KeyEvent.VK_MINUS) {
-                    zoomOutCommand.execute();
-                } else if (e.getKeyCode() == KeyEvent.VK_SPACE) {
-                    if (configuration.running) {
-                        pauseCommand.execute();
-                    } else {
-                        resumeCommand.execute();
-                    }
-                }
-            }
-
-            public void keyReleased(KeyEvent e) {
-                //throw new UnsupportedOperationException("Not supported yet.");
-            }
-        });
-
-        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-
-        setJMenuBar(menuBar);
-
-        
-        setLayout(new BoxLayout(this.getContentPane(), BoxLayout.X_AXIS));
-
-       
-        leftPanel.setLayout(new GridBagLayout());
-        paintOptionsPanel.setAlignmentY(TOP_ALIGNMENT);
-        leftPanel.add(paintOptionsPanel);
-        toolBox.add(paintOptionsPanel);       
-
-
-        // XXX workaround to update size of toolmenu so it is displayed
-        // at the correct coordinates later
-        this.toolMenu.setVisible(true);
-        this.toolMenu.setVisible(false);
-
-        this.pack();
-        this.setVisible(true);
+        jOptionsPanel.displayOptions(activeTool);
     }
 
     public Showcase getShowcase() {
@@ -228,10 +178,6 @@ public class MainFrame extends JFrame {
 
     public void resize() {
         this.pack();
-    }
-
-    public PaintOptionsPanel getPop() {
-        return paintOptionsPanel;
     }
 
     public void setConfiguration(Configuration conf) {
@@ -272,7 +218,7 @@ public class MainFrame extends JFrame {
             assert (ruleSet != null);
             //System.out.println(ruleSet);
             configuration.brush.setRuleSet(ruleSet);
-            paintOptionsPanel.setRuleSetLabelText(ruleSet.getName());
+            jPixelPanel.setRuleSetName(ruleSet.getName());
             ((CardLayout)contentPane.getLayout()).show(contentPane, "main");
             menuBar.setVisible(true);
         }

@@ -63,6 +63,9 @@ public class AssimilationAction extends AbstractAction {
 
         for (RelativeCoordinate direction : getDirections()) {
             Pixel them = world.get(us.getLocation(), direction);
+            if (them == null) { // never forget to skip empty spots
+                continue;
+            }
             them.getPixelColor().mixWith(us.getPixelColor(), 0.5f, dimensions);
         }
 

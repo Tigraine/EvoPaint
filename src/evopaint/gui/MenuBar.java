@@ -261,9 +261,9 @@ public class MenuBar extends JMenuBar implements Observer {
 		// evopaint= config
 		// evopaint work
         
-		evopaint.getFrame().setConfiguration(newConf);
-		evopaint.getFrame().initializeCommands(evopaint);
-		evopaint.getFrame().initSecond(evopaint);
+		//evopaint.getFrame().setConfiguration(newConf);
+		//evopaint.getFrame().initializeCommands(evopaint);
+		//evopaint.getFrame().initSecond(evopaint);
 		
 
 		evopaint.getConfiguration().running = true;

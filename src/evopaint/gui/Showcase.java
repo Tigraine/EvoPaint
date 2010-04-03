@@ -10,6 +10,7 @@ import evopaint.Selection;
 import evopaint.World;
 import evopaint.Perception;
 import evopaint.util.logging.Logger;
+import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Graphics;
@@ -78,7 +79,7 @@ public class Showcase extends JComponent implements MouseInputListener, MouseWhe
 
         this.zoom = 10;
         rescale();
-        
+
         setBorder(null);
     }
 
