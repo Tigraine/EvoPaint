@@ -48,6 +48,30 @@ public class JRuleList extends JPanel implements TreeSelectionListener, ListData
     private boolean dirty;
     private JRuleSetTree tree;
 
+    public boolean isDirty() {
+        return dirty;
+    }
+
+    public void clean() {
+        if (false == dirty) {
+            return;
+        }
+        assert(lastSelectedRuleSetNode != null);
+
+        // replace rules in rule set node
+        RuleSet ruleSet = (RuleSet)lastSelectedRuleSetNode.getUserObject();
+        ruleSet.setRules(getRules());
+        lastSelectedRuleSetNode.setUserObject(ruleSet);
+
+        // inform the tree listeners about the changes
+        CollectionNode parentNode = (CollectionNode)lastSelectedRuleSetNode.getParent();
+        DefaultTreeModel treeModel = (DefaultTreeModel)tree.getModel();
+        treeModel.nodesChanged(parentNode,
+                new int [] {parentNode.getIndex(lastSelectedRuleSetNode)});
+
+        dirty = false;
+    }
+    
     public List<IRule> getRules() {
         List<IRule> rules = new ArrayList<IRule>(model.capacity());
 
@@ -74,22 +98,7 @@ public class JRuleList extends JPanel implements TreeSelectionListener, ListData
     }
 
     public void valueChanged(TreeSelectionEvent e) {
-        if (dirty) {
-            assert(lastSelectedRuleSetNode != null);
-
-            // replace rules in rule set node
-            RuleSet ruleSet = (RuleSet)lastSelectedRuleSetNode.getUserObject();
-            ruleSet.setRules(getRules());
-            lastSelectedRuleSetNode.setUserObject(ruleSet);
-
-            // inform the tree listeners about the changes
-            CollectionNode parentNode = (CollectionNode)lastSelectedRuleSetNode.getParent();
-            DefaultTreeModel treeModel = (DefaultTreeModel)tree.getModel();
-            treeModel.nodesChanged(parentNode,
-                    new int [] {parentNode.getIndex(lastSelectedRuleSetNode)});
-
-            dirty = false;
-        }
+        clean();
 
         DefaultMutableTreeNode node = (DefaultMutableTreeNode)e.getPath().getLastPathComponent();
         Object userObject = node.getUserObject();

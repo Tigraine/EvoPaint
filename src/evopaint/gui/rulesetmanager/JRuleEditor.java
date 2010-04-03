@@ -17,6 +17,7 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionListener;
 import java.util.List;
+import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -50,7 +51,8 @@ public class JRuleEditor extends JPanel {
 
         // rule panel
         JPanel rulePanel = new JPanel();
-        rulePanel.setBackground(Color.WHITE);
+        rulePanel.setBorder(new LineBorder(Color.GRAY));
+        rulePanel.setBackground(new Color(0xF2F2F5));
 
         JLabel labelIf = new JLabel("<html><span style='color: #0000E6; font-weight: bold;'>IF</span><html>");
         rulePanel.add(labelIf);
@@ -64,9 +66,17 @@ public class JRuleEditor extends JPanel {
         jAction = new JAction(configuration);
         rulePanel.add(jAction);
 
-        JScrollPane scrollPaneForRulePanel = new JScrollPane(rulePanel,
-                JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
-                JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        JPanel alignmentPanel = new JPanel();
+        alignmentPanel.setLayout(new GridBagLayout());
+        alignmentPanel.setBackground(Color.WHITE);
+        GridBagConstraints constraints = new GridBagConstraints();
+        constraints.anchor = GridBagConstraints.CENTER;
+        constraints.insets = new Insets(10, 10, 10, 10);
+        alignmentPanel.add(rulePanel, constraints);
+
+        JScrollPane scrollPaneForRulePanel = new JScrollPane(alignmentPanel,
+                JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
+                JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
         scrollPaneForRulePanel.setBorder(new LineBorder(Color.GRAY));
         scrollPaneForRulePanel.setViewportBorder(null);
 

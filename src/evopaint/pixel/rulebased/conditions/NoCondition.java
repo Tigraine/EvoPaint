@@ -32,7 +32,7 @@ public class NoCondition extends AbstractCondition {
 
     @Override
     public String toHTML() {
-        return "<span style='color: #0000E6;'>true</span>";
+        return "true";
     }
 
     public boolean isMet(Pixel us, World world) {

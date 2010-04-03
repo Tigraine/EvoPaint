@@ -47,13 +47,8 @@ public class ToolBox extends JPanel {
         }
 
         final JToggleButton jButtonMove = buttons.get(0);
-      
         
-        jButtonMove.setIcon(new ImageIcon(this.getClass().getResource("/EvoPaint/graphics/move.png")));
-        
-      
-//        resourceToByteArray("u12.jpg")); 
-        
+        jButtonMove.setIcon(new ImageIcon(getClass().getResource("icons/move.png")));
         jButtonMove.addActionListener(new java.awt.event.ActionListener() {
 
             public void actionPerformed(java.awt.event.ActionEvent e) {
@@ -65,7 +60,7 @@ public class ToolBox extends JPanel {
 
         final JToggleButton jButtonPaint = buttons.get(1);
        
-    	jButtonPaint.setIcon(new ImageIcon(this.getClass().getResource("/EvoPaint/graphics/brush.png")));
+    	jButtonPaint.setIcon(new ImageIcon(getClass().getResource("icons/paint.png")));
         jButtonPaint.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent e) {
                   mf.setActiveTool(PaintCommand.class);
@@ -76,7 +71,7 @@ public class ToolBox extends JPanel {
 
         final JToggleButton jButtonSelect = buttons.get(2);
 
-        jButtonSelect.setIcon(new ImageIcon(this.getClass().getResource("/EvoPaint/graphics/select.png")));
+        jButtonSelect.setIcon(new ImageIcon(getClass().getResource("icons/select.png")));
         jButtonSelect.addActionListener(new java.awt.event.ActionListener() {
 
             public void actionPerformed(java.awt.event.ActionEvent e) {
@@ -87,7 +82,7 @@ public class ToolBox extends JPanel {
         });
 
         final JToggleButton jButtonPick = buttons.get(3);
-        jButtonPick.setIcon(new ImageIcon(this.getClass().getResource("/EvoPaint/graphics/picker.png")));
+        jButtonPick.setIcon(new ImageIcon(getClass().getResource("icons/pick.png")));
         jButtonPick.addActionListener(new java.awt.event.ActionListener() {
 
             public void actionPerformed(java.awt.event.ActionEvent e) {
@@ -98,7 +93,7 @@ public class ToolBox extends JPanel {
         });
 
         final JToggleButton jButtonZoom = buttons.get(4);
-        jButtonZoom.setIcon(new ImageIcon(this.getClass().getResource("/EvoPaint/graphics/zoom.png")));
+        jButtonZoom.setIcon(new ImageIcon(getClass().getResource("icons/zoom.png")));
         jButtonZoom.addActionListener(new java.awt.event.ActionListener() {
 
             public void actionPerformed(java.awt.event.ActionEvent e) {
@@ -109,7 +104,7 @@ public class ToolBox extends JPanel {
         });
 
         final JToggleButton jButtonFill = buttons.get(5);
-        jButtonFill.setIcon(new ImageIcon(this.getClass().getResource("/EvoPaint/graphics/fill.png")));
+        jButtonFill.setIcon(new ImageIcon(getClass().getResource("icons/fill.png")));
         jButtonFill.addActionListener(new java.awt.event.ActionListener() {
 
             public void actionPerformed(java.awt.event.ActionEvent e) {
@@ -120,7 +115,7 @@ public class ToolBox extends JPanel {
         });
 
         final JToggleButton jButtonErase = buttons.get(6);
-        jButtonErase.setIcon(new ImageIcon(this.getClass().getResource("/EvoPaint/graphics/grav.png")));
+        jButtonErase.setIcon(new ImageIcon(getClass().getResource("icons/erase.png")));
         jButtonErase.addActionListener(new java.awt.event.ActionListener() {
 
             public void actionPerformed(java.awt.event.ActionEvent e) {

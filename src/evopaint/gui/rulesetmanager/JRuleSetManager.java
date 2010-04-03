@@ -9,7 +9,6 @@ import evopaint.Configuration;
 import evopaint.pixel.rulebased.RuleSet;
 import evopaint.pixel.rulebased.RuleSetCollection;
 import evopaint.pixel.rulebased.interfaces.IRule;
-import evopaint.util.CollectionNode;
 import evopaint.util.RuleSetNode;
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
@@ -18,17 +17,15 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JSplitPane;
 import javax.swing.border.LineBorder;
-import javax.swing.event.ListDataEvent;
-import javax.swing.event.ListDataListener;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.TreePath;
 
 /**
  *
@@ -37,6 +34,7 @@ import javax.swing.tree.DefaultTreeModel;
 public class JRuleSetManager extends JPanel implements TreeSelectionListener {
 
     private Configuration configuration;
+    private RuleSet selectedRuleSet;
     private JRuleSetTree jRuleSetTree;
     private Container contentPane;
     private JRuleSetBrowser jRuleSetBrowser;
@@ -44,7 +42,11 @@ public class JRuleSetManager extends JPanel implements TreeSelectionListener {
     private JRuleList jRuleList;
     private JRuleEditor jRuleEditor;
     private JSplitPane splitPaneVertical;
+    JButton btnUse;
 
+    public RuleSet getSelectedRuleSet() {
+        return selectedRuleSet;
+    }
 
     public Configuration getConfiguration() {
         return configuration;
@@ -61,7 +63,7 @@ public class JRuleSetManager extends JPanel implements TreeSelectionListener {
         setLayout(new CardLayout());
 
         DefaultTreeModel treeModel = configuration.fileHandler.readCollections();
-        jRuleSetTree = new JRuleSetTree(treeModel);
+        jRuleSetTree = new JRuleSetTree(treeModel, new TreeDoubleClickListener());
         jRuleSetTree.addTreeSelectionListener(this);
 
         // FIRST CARD
@@ -87,10 +89,27 @@ public class JRuleSetManager extends JPanel implements TreeSelectionListener {
 
         // control panel
         JPanel controlPanel = new JPanel();
-        JButton btnOK = new JButton("Use");
-        btnOK.addActionListener(OKListener);
-        controlPanel.add(btnOK);
+        btnUse = new JButton("Use");
+        btnUse.addActionListener(OKListener);
+        btnUse.addActionListener(new ActionListener() {
+
+            public void actionPerformed(ActionEvent e) {
+                if (jRuleList.isDirty()) {
+                    jRuleList.clean();
+                }
+            }
+        });
+        btnUse.setEnabled(false);
+        controlPanel.add(btnUse);
         JButton btnCancel = new JButton("Cancel");
+        btnCancel.addActionListener(new ActionListener() {
+
+            public void actionPerformed(ActionEvent e) {
+                if (jRuleList.isDirty()) {
+                    jRuleList.clean();
+                }
+            }
+        });
         btnCancel.addActionListener(CancelListener);
         controlPanel.add(btnCancel);
 
@@ -115,17 +134,23 @@ public class JRuleSetManager extends JPanel implements TreeSelectionListener {
         Object userObject = node.getUserObject();
 
         if (userObject == null) {
+            selectedRuleSet = null;
+            btnUse.setEnabled(false);
             return;
         }
 
         if (userObject instanceof RuleSetCollection) {
             splitPaneVertical.getBottomComponent().setVisible(false);
+            selectedRuleSet = null;
+            btnUse.setEnabled(false);
             return;
         }
 
         if (userObject instanceof RuleSet) {
             splitPaneVertical.getBottomComponent().setVisible(true);
             splitPaneVertical.setDividerLocation(260);
+            selectedRuleSet = (RuleSet)userObject;
+            btnUse.setEnabled(true);
             return;
         }
 
@@ -178,6 +203,25 @@ public class JRuleSetManager extends JPanel implements TreeSelectionListener {
                 jRuleEditor.setRule(selectedRule);
                 ((CardLayout)contentPane.getLayout()).show(contentPane, "editor");
              }
+        }
+    }
+
+    private class TreeDoubleClickListener extends MouseAdapter {
+
+        @Override
+        public void mousePressed(MouseEvent e) {
+            TreePath path = jRuleSetTree.getPathForLocation(e.getX(), e.getY());
+            if (e.getClickCount() == 2) {
+
+                DefaultMutableTreeNode node =
+                        (DefaultMutableTreeNode)path.getLastPathComponent();
+
+                if (node instanceof RuleSetNode) {
+                    RuleSet ruleSet = (RuleSet)node.getUserObject();
+                    selectedRuleSet = ruleSet;
+                    btnUse.doClick();
+                }
+            }
         }
     }
 }

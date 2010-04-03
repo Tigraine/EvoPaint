@@ -18,9 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.border.LineBorder;
 
 /**
  *
@@ -70,14 +68,14 @@ public class JConditionList extends JPanel {
         this.configuration = configuration;
         jConditions = new ArrayList<JCondition>();
         setLayout(new BorderLayout(10, 5));
-        setBackground(Color.WHITE);
+        setBackground(new Color(0xF2F2F5));
 
         panelForConditionWrappers = new JPanel();
         panelForConditionWrappers.setLayout(new BoxLayout(panelForConditionWrappers, BoxLayout.Y_AXIS));
         add(panelForConditionWrappers, BorderLayout.CENTER);
 
         JPanel controlPanel = new JPanel();
-        controlPanel.setBackground(Color.WHITE);
+        controlPanel.setBackground(new Color(0xF2F2F5));
         JButton buttonAnd = new JButton("AND");
         buttonAnd.addActionListener(new AndButtonListener());
         controlPanel.add(buttonAnd);

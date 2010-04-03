@@ -13,7 +13,10 @@ import javax.swing.JPanel;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.GridLayout;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
@@ -40,7 +43,7 @@ public class PaintOptionsPanel extends JPanel {
     private JRadioButton radioColor;
     private Color selectedColor;
     private boolean radioColorToggle;
-    private RuleSet ruleSet;
+    private JLabel ruleSetLabel;
     private JButton buttonRuleSet;
     private Configuration configuration;
     Showcase showcase;
@@ -114,24 +117,32 @@ public class PaintOptionsPanel extends JPanel {
 
         // aaaand the ruleset
         JPanel panelRuleSet = new JPanel();
+        panelRuleSet.setLayout(new GridBagLayout());
         add(panelRuleSet);
 
+        GridBagConstraints constraints = new GridBagConstraints();
+        constraints.anchor = GridBagConstraints.WEST;
+        
         // labeled
-        JLabel labelForButtonRuleSet = new JLabel("Rule Set");
-        panelRuleSet.add(labelForButtonRuleSet);
+        JLabel labelForButtonRuleSet = new JLabel("Rule Set:");
+        panelRuleSet.add(labelForButtonRuleSet, constraints);
 
+        constraints.anchor = GridBagConstraints.CENTER;
+        constraints.gridy = 1;
+        constraints.insets = new Insets(5, 0, 5, 0);
+        ruleSetLabel = new JLabel("none");
+        panelRuleSet.add(ruleSetLabel, constraints);
+
+        constraints.gridy = 2;
+        constraints.insets = new Insets(0, 0, 0, 0);
         buttonRuleSet = new JButton();
-        buttonRuleSet.setText("click for demo");
+        buttonRuleSet.setText("Select...");
         buttonRuleSet.addActionListener(openRuleSetManagerListener);
-        panelRuleSet.add(buttonRuleSet);
+        panelRuleSet.add(buttonRuleSet, constraints);
     }
 
-    public RuleSet getRuleSet() {
-        return ruleSet;
-    }
-
-    public void setRuleSet(RuleSet ruleSet) {
-        this.ruleSet = ruleSet;
+    public void setRuleSetLabelText(String text) {
+        this.ruleSetLabel.setText(text);
     }
 
     private class RadioColorListener implements ActionListener {

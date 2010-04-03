@@ -206,18 +206,15 @@ public class JDescriptionPanel extends JPanel implements TreeSelectionListener {
                 return;
             }
 
-            // edit name and description in tree and call all listeners
+            // edit name and description in tree
             Object userObject = selectedNode.getUserObject();
             String oldName = ((INamed)userObject).getName();
             ((INameable)userObject).setName(desiredName);
             ((IDescribable)userObject).setDescription(editorDescriptionArea.getText());
-
-            // fire removal and insertion events (so file handler will become active)
+            // fire node change event
             DefaultTreeModel model = (DefaultTreeModel)tree.getModel();
-            int index = parentNode.getIndex(selectedNode);
-            model.nodesWereRemoved(parentNode, new int [] {index}, new Object [] {selectedNode});
-            model.nodesWereInserted(parentNode, new int [] {index});
-            tree.updateVisibleInsert(selectedNode); // to not lose selection
+            model.nodesChanged(parentNode,
+                    new int [] {parentNode.getIndex(selectedNode)});
 
             // update our own display
             title = editorTitleField.getText();

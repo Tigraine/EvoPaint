@@ -6,6 +6,7 @@ import evopaint.EvoPaint;
 import evopaint.commands.*;
 import evopaint.gui.listeners.SelectionListenerFactory;
 import evopaint.gui.rulesetmanager.JRuleSetManager;
+import evopaint.pixel.rulebased.RuleSet;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -267,8 +268,13 @@ public class MainFrame extends JFrame {
     private class RuleSetManagerOKListener implements ActionListener {
 
         public void actionPerformed(ActionEvent e) {
-            // TODO save rule
+            RuleSet ruleSet = jRuleSetManager.getSelectedRuleSet();
+            assert (ruleSet != null);
+            //System.out.println(ruleSet);
+            configuration.brush.setRuleSet(ruleSet);
+            paintOptionsPanel.setRuleSetLabelText(ruleSet.getName());
             ((CardLayout)contentPane.getLayout()).show(contentPane, "main");
+            menuBar.setVisible(true);
         }
 
     }
@@ -277,6 +283,7 @@ public class MainFrame extends JFrame {
 
         public void actionPerformed(ActionEvent e) {
             ((CardLayout)contentPane.getLayout()).show(contentPane, "main");
+            menuBar.setVisible(true);
         }
 
     }
@@ -285,6 +292,7 @@ public class MainFrame extends JFrame {
 
         public void actionPerformed(ActionEvent e) {
             ((CardLayout)contentPane.getLayout()).show(contentPane, "rule manager");
+            menuBar.setVisible(false);
         }
     }
 }

@@ -9,13 +9,14 @@ import evopaint.pixel.rulebased.RuleSet;
 import evopaint.pixel.rulebased.RuleSetCollection;
 import evopaint.pixel.rulebased.interfaces.INamed;
 import java.awt.Component;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.util.Enumeration;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JTree;
 import javax.swing.SwingUtilities;
-import javax.swing.event.TreeModelEvent;
-import javax.swing.event.TreeModelListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.DefaultTreeModel;
@@ -29,7 +30,7 @@ import javax.swing.tree.TreeSelectionModel;
  */
 public class JRuleSetTree extends JTree { // implements TreeModelListener {
 
-    public JRuleSetTree(DefaultTreeModel model) {
+    public JRuleSetTree(DefaultTreeModel model, MouseListener mouseListener) {
         setRootVisible(false);
         // setExpandsSelectedPaths(true); // broken POS (just does not work)
         setShowsRootHandles(true);
@@ -41,6 +42,8 @@ public class JRuleSetTree extends JTree { // implements TreeModelListener {
         // stuff, eg. not expand, not scroll, but when you reload the model
         // before you call the mentioned methods, it will cause empty lines and
         // even nullpointer exceptions in the UI
+
+        addMouseListener(mouseListener);
     }
 
     // workaround for broken POS2

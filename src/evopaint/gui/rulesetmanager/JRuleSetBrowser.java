@@ -64,7 +64,6 @@ public class JRuleSetBrowser extends JPanel implements TreeSelectionListener {
         this.tree = tree;
         this.treeModel = (DefaultTreeModel)tree.getModel();
         this.root = (DefaultMutableTreeNode)treeModel.getRoot();
-
         tree.addTreeSelectionListener(this);
         
         setLayout(new BorderLayout());
