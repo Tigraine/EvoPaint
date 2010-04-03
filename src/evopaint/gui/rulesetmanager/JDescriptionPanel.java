@@ -53,6 +53,9 @@ public class JDescriptionPanel extends JPanel implements TreeSelectionListener {
     private JTextArea editorDescriptionArea;
     private JButton btnEdit;
 
+    private String defaultTitle = "DON'T PANIC";
+    private String defaultDescription = "Things to remember:<ul><li>Only the first rule whose conditions are met is ever executed. If none if the rules matches, your pixel will idle.</li></ul>";
+
     public String getDescription() {
         return description;
     }
@@ -92,14 +95,8 @@ public class JDescriptionPanel extends JPanel implements TreeSelectionListener {
     }
 
     private void render() {
-        if (title != null) {
-            String heading = "<h1 style='text-align: center;'>" + title + "</h1>";
-            String html = "<html><body>" + heading + "<p>" + description + "</p></body></html>";
-            viewerTextPane.setText(html);
-            return;
-        }
-        String heading = "<h1 style='text-align: center;'>DON'T PANIC</h1>";
-        String html = "<html><body>" + heading + "</body></html>";
+        String heading = "<h1 style='text-align: center;'>" + title + "</h1>";
+        String html = "<html><body>" + heading + "<p>" + description + "</p></body></html>";
         viewerTextPane.setText(html);
     }
 
@@ -108,8 +105,8 @@ public class JDescriptionPanel extends JPanel implements TreeSelectionListener {
         DefaultMutableTreeNode node = (DefaultMutableTreeNode)e.getPath().getLastPathComponent();
         Object userObject = node.getUserObject();
         if (userObject == null) {
-            title = "";
-            description = "";
+            title = defaultTitle;
+            description = defaultDescription;
             render();
             viewerControlPanel.setVisible(false);
             return;
@@ -189,7 +186,9 @@ public class JDescriptionPanel extends JPanel implements TreeSelectionListener {
 
         add(viewer, "viewer");
         add(editor, "editor");
-        
+
+        title = defaultTitle;
+        description = defaultDescription;
         render();
     }
 
@@ -209,12 +208,15 @@ public class JDescriptionPanel extends JPanel implements TreeSelectionListener {
 
             // edit name and description in tree and call all listeners
             Object userObject = selectedNode.getUserObject();
+            String oldName = ((INamed)userObject).getName();
             ((INameable)userObject).setName(desiredName);
             ((IDescribable)userObject).setDescription(editorDescriptionArea.getText());
-            DefaultTreeModel model = (DefaultTreeModel)tree.getModel();
-            model.reload(parentNode);
 
-            tree.updateVisibleInsert(selectedNode); // to not lose selection
+            if (false == oldName.equals(desiredName)) { // no structural changes if only description changes
+                DefaultTreeModel model = (DefaultTreeModel)tree.getModel();
+                model.reload(parentNode);
+                tree.updateVisibleInsert(selectedNode); // to not lose selection
+            }
 
             // update our own display
             title = editorTitleField.getText();
