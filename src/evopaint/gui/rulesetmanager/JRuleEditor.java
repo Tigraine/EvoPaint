@@ -50,26 +50,19 @@ public class JRuleEditor extends JPanel {
 
         // rule panel
         JPanel rulePanel = new JPanel();
-        rulePanel.setLayout(new GridBagLayout());
+        rulePanel.setBackground(Color.WHITE);
 
-        GridBagConstraints constraints = new GridBagConstraints();
-        constraints.insets = new Insets(10, 10, 10, 10);
-        constraints.gridx = 0;
-        constraints.gridy = 0;
-        constraints.anchor = GridBagConstraints.NORTHWEST;
+        JLabel labelIf = new JLabel("<html><span style='color: #0000E6; font-weight: bold;'>IF</span><html>");
+        rulePanel.add(labelIf);
+
         jConditionList = new JConditionList(configuration);
-        rulePanel.add(jConditionList, constraints);
+        rulePanel.add(jConditionList);
 
-        JPanel thenAlignmentPanel = new JPanel();
         JLabel thenLabel = new JLabel("<html><span style='color: #0000E6; font-weight: bold;'>THEN</span><html>");
-        thenAlignmentPanel.add(thenLabel);
-        jAction = new JAction(configuration);
-        thenAlignmentPanel.add(jAction);
+        rulePanel.add(thenLabel);
 
-        constraints.gridx = 0;
-        constraints.gridy = 1;
-        constraints.anchor = GridBagConstraints.WEST;
-        rulePanel.add(thenAlignmentPanel, constraints);
+        jAction = new JAction(configuration);
+        rulePanel.add(jAction);
 
         JScrollPane scrollPaneForRulePanel = new JScrollPane(rulePanel,
                 JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
@@ -78,7 +71,6 @@ public class JRuleEditor extends JPanel {
         scrollPaneForRulePanel.setViewportBorder(null);
 
         add(scrollPaneForRulePanel, BorderLayout.CENTER);
-
         
         // control panel
         JPanel controlPanel = new JPanel();

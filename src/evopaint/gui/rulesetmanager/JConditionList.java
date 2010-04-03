@@ -55,6 +55,7 @@ public class JConditionList extends JPanel {
         jConditions.add(jCondition);
 
         JPanel wrapper = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        wrapper.setBackground(new Color(0xF2F2F5));
         wrapper.add(jCondition);
 
         JButton btnDelete = new JButton("X");
@@ -69,16 +70,14 @@ public class JConditionList extends JPanel {
         this.configuration = configuration;
         jConditions = new ArrayList<JCondition>();
         setLayout(new BorderLayout(10, 5));
-
-        JLabel labelIf = new JLabel("<html><span style='color: #0000E6; font-weight: bold;'>IF</span><html>");
-        add(labelIf, BorderLayout.WEST);
+        setBackground(Color.WHITE);
 
         panelForConditionWrappers = new JPanel();
         panelForConditionWrappers.setLayout(new BoxLayout(panelForConditionWrappers, BoxLayout.Y_AXIS));
-        panelForConditionWrappers.setBorder(new LineBorder(Color.GRAY));
         add(panelForConditionWrappers, BorderLayout.CENTER);
 
         JPanel controlPanel = new JPanel();
+        controlPanel.setBackground(Color.WHITE);
         JButton buttonAnd = new JButton("AND");
         buttonAnd.addActionListener(new AndButtonListener());
         controlPanel.add(buttonAnd);
