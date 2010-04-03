@@ -104,6 +104,7 @@ public class FileHandler implements TreeModelListener {
         RuleSetCollection collection = (RuleSetCollection)collectionNode.getUserObject();
         File collectionFile = new File(collectionsDir, makeFileName(collection.getName()));
 
+        //System.out.println("writing " + collectionFile);
         try {
             ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(collectionFile));
             out.writeObject(collection);
@@ -125,8 +126,10 @@ public class FileHandler implements TreeModelListener {
         }
     }
 
-    public synchronized void deleteCollection(RuleSetCollection collection) {
+    public synchronized void deleteCollection(CollectionNode collectionNode) {
+        RuleSetCollection collection = (RuleSetCollection)collectionNode.getUserObject();
         File collectionFile = new File(collectionsDir, makeFileName(collection.getName()));
+        //System.out.println("deleting " + collectionFile);
         collectionFile.delete();
     }
 
@@ -157,45 +160,57 @@ public class FileHandler implements TreeModelListener {
 
     // called whenever we reset the name of a collection or rule set
     public void treeNodesChanged(TreeModelEvent e) {
-        System.out.println("file handler: detected node modification");
+        System.out.println("file handler: detected node change - this was not expected, exiting.");
+        System.exit(1);
     }
 
     public void treeNodesInserted(TreeModelEvent e) {
-        System.out.println("file handler: detected node insertion");
+        DefaultMutableTreeNode parentNode =
+                (DefaultMutableTreeNode)e.getTreePath().getLastPathComponent();
+        DefaultMutableTreeNode addedNode =
+                (DefaultMutableTreeNode)e.getChildren()[0];
+        //System.out.println("file handler: detected node insertion");
+        
+        if (addedNode instanceof CollectionNode) {
+            writeCollection((CollectionNode)addedNode);
+            return;
+        }
+
+        if (addedNode instanceof RuleSetNode) {
+            CollectionNode collectionNode = (CollectionNode)parentNode;
+            assert(collectionNode != null);
+            writeCollection(collectionNode);
+            return;
+        }
+
+        assert(false);
     }
 
     public void treeNodesRemoved(TreeModelEvent e) {
         DefaultMutableTreeNode parentNode =
                 (DefaultMutableTreeNode)e.getTreePath().getLastPathComponent();
-        System.out.println("file handler: detected node deletion");
+        DefaultMutableTreeNode removedNode =
+                (DefaultMutableTreeNode)e.getChildren()[0];
+        //System.out.println("file handler: detected node deletion");
         
-        /*
-        Object o = parentNode.getUserObject();
-        DefaultMutableTreeNode [] children =
-                (DefaultMutableTreeNode [])e.getChildren();
-
-        // if parent of deleted node contains a collection, delete the collection
-        if (o instanceof RuleSetCollection) {
-            RuleSetCollection collection = (RuleSetCollection)o;
-            deleteCollection(collection);
+        if (removedNode instanceof CollectionNode) {
+            deleteCollection((CollectionNode)removedNode);
             return;
         }
 
-        // if deleted node contains a rule set, update the collection
-        if (o instanceof RuleSet) {
-            CollectionNode collectionNode = (CollectionNode)node.getParent();
+        if (removedNode instanceof RuleSetNode) {
+            CollectionNode collectionNode = (CollectionNode)parentNode;
             assert(collectionNode != null);
-            RuleSetCollection collection =
-                    (RuleSetCollection)collectionNode.getUserObject();
-            writeCollection(collection);
+            writeCollection(collectionNode);
             return;
         }
 
-        assert(false);*/
+        assert(false);
     }
 
     public void treeStructureChanged(TreeModelEvent e) {
-        System.out.println("file handler: detected node structure change");
+        System.out.println("file handler: detected node structure change this was not expected, exiting.");
+        System.exit(1);
     }
 
     public FileHandler() {
