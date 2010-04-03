@@ -90,8 +90,11 @@ public class MainFrame extends JFrame {
         wrapperPanelLeft.setLayout(new BoxLayout(wrapperPanelLeft, BoxLayout.Y_AXIS));
         wrapperPanelLeft.setBackground(new Color(0xF2F2F5));
         wrapperPanelLeft.setBorder(new LineBorder(Color.GRAY));
-        
-        leftPanel.add(wrapperPanelLeft);
+
+
+        GridBagConstraints constraints = new GridBagConstraints();
+        constraints.insets = new Insets(10, 10, 10, 10);
+        leftPanel.add(wrapperPanelLeft, constraints);
 
         toolBox = new ToolBox(this);
         wrapperPanelLeft.add(toolBox);
