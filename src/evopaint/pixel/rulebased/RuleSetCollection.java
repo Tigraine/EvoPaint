@@ -6,7 +6,7 @@
 package evopaint.pixel.rulebased;
 
 import evopaint.pixel.rulebased.interfaces.ICopyable;
-import evopaint.pixel.rulebased.interfaces.IDescribed;
+import evopaint.pixel.rulebased.interfaces.IDescribable;
 import evopaint.pixel.rulebased.interfaces.INameable;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -19,7 +19,7 @@ import java.io.Serializable;
  *
  * @author tam
  */
-public class RuleSetCollection implements Serializable, INameable, IDescribed, ICopyable {
+public class RuleSetCollection implements Serializable, INameable, IDescribable, ICopyable {
     private String name;
     private String description;
 

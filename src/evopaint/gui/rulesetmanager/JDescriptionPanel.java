@@ -104,6 +104,7 @@ public class JDescriptionPanel extends JPanel implements TreeSelectionListener {
     }
 
     public void valueChanged(TreeSelectionEvent e) {
+        ((CardLayout)contentPane.getLayout()).show(contentPane, "viewer");
         DefaultMutableTreeNode node = (DefaultMutableTreeNode)e.getPath().getLastPathComponent();
         Object userObject = node.getUserObject();
         if (userObject == null) {
@@ -212,6 +213,8 @@ public class JDescriptionPanel extends JPanel implements TreeSelectionListener {
             ((IDescribable)userObject).setDescription(editorDescriptionArea.getText());
             DefaultTreeModel model = (DefaultTreeModel)tree.getModel();
             model.reload(parentNode);
+
+            tree.updateVisibleInsert(selectedNode); // to not lose selection
 
             // update our own display
             title = editorTitleField.getText();

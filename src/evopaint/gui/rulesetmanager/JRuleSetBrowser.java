@@ -22,6 +22,8 @@ import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import javax.swing.ButtonGroup;
@@ -38,6 +40,8 @@ import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
+import javax.swing.event.TreeSelectionEvent;
+import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
@@ -46,18 +50,22 @@ import javax.swing.tree.TreePath;
  *
  * @author tam
  */
-public class JRuleSetBrowser extends JPanel {
+public class JRuleSetBrowser extends JPanel implements TreeSelectionListener {
     private Configuration configuration;
-    JRuleSetTree tree;
-    DefaultTreeModel treeModel;
-    DefaultMutableTreeNode root;
-    Component newDialogOwner;
+    private JRuleSetTree tree;
+    private DefaultTreeModel treeModel;
+    private DefaultMutableTreeNode root;
+    private Component newDialogOwner;
+    private JButton browserBtnDelete;
+    private JButton browserBtnCopy;
 
     public JRuleSetBrowser(Configuration configuration, JRuleSetTree tree) {
         this.configuration = configuration;
         this.tree = tree;
         this.treeModel = (DefaultTreeModel)tree.getModel();
         this.root = (DefaultMutableTreeNode)treeModel.getRoot();
+
+        tree.addTreeSelectionListener(this);
         
         setLayout(new BorderLayout());
         setBackground(Color.WHITE);
@@ -80,15 +88,31 @@ public class JRuleSetBrowser extends JPanel {
         newDialogOwner = browserBtnNew;
         browserBtnNew.addActionListener(new BrowserBtnNewListener());
         controlPanel.add(browserBtnNew);
-        JButton browserBtnCopy = new JButton("Copy");
+        browserBtnCopy = new JButton("Copy");
         browserBtnCopy.addActionListener(new BtnCopyListener());
+        browserBtnCopy.setEnabled(false);
         controlPanel.add(browserBtnCopy);
-        JButton browserBtnDelete = new JButton("Delete");
+        browserBtnDelete = new JButton("Delete");
         browserBtnDelete.addActionListener(new BtnDeleteListener());
+        browserBtnDelete.setEnabled(false);
         controlPanel.add(browserBtnDelete);
 
         add(scrollPaneForTree, BorderLayout.CENTER);
         add(controlPanel, BorderLayout.SOUTH);
+    }
+
+    public void valueChanged(TreeSelectionEvent e) {
+        DefaultMutableTreeNode node = (DefaultMutableTreeNode)e.getPath().getLastPathComponent();
+        Object userObject = node.getUserObject();
+
+        if (userObject == null) {
+            browserBtnDelete.setEnabled(false);
+            browserBtnCopy.setEnabled(false);
+            return;
+        }
+        
+        browserBtnDelete.setEnabled(true);
+        browserBtnCopy.setEnabled(true);
     }
 
     private class BrowserBtnNewListener implements ActionListener {
@@ -142,7 +166,8 @@ public class JRuleSetBrowser extends JPanel {
             // intelligent preset
             DefaultMutableTreeNode selectedNode =
                     (DefaultMutableTreeNode)tree.getLastSelectedPathComponent();
-            if (selectedNode == null) {
+
+            if (selectedNode == null || selectedNode.getUserObject() == null) {
                 collectionRadio.setSelected(true);
                 comboBoxWrapper.setVisible(false);
             } else if (selectedNode instanceof CollectionNode) {
@@ -201,6 +226,8 @@ public class JRuleSetBrowser extends JPanel {
 
             dialog.pack();
             dialog.setLocationRelativeTo(newDialogOwner);
+            nameField.requestFocusInWindow();
+            dialog.getRootPane().setDefaultButton(btnOK);
             dialog.setVisible(true);
         }
 
@@ -228,6 +255,8 @@ public class JRuleSetBrowser extends JPanel {
                     treeModel.insertNodeInto(collectionNode,
                             root, root.getChildCount());
 
+                    tree.updateVisibleInsert(collectionNode);
+                    
                 } else { // creating a rule set
                 
                     RuleSet ruleSet = new RuleSet(nameField.getText(),
@@ -248,6 +277,8 @@ public class JRuleSetBrowser extends JPanel {
                     // pointers. see below (around line 340) "WARNING"...
                     tree.expandPath(new TreePath(parentNode.getPath()));
                     treeModel.insertNodeInto(ruleSetNode, parentNode, parentNode.getChildCount());
+
+                    tree.updateVisibleInsert(ruleSetNode);
                 }
             }
         }
@@ -286,13 +317,29 @@ public class JRuleSetBrowser extends JPanel {
                     }
                 }
 
-                // add collection with copied rule sets to tree
-                CollectionNode newNode = new CollectionNode(newCollection);
+                // create new collection node
+                CollectionNode newCollectionNode = new CollectionNode(newCollection);
+
+                // copy them rule sets to collection node too
+                Enumeration ruleSetNodes = selectedNode.children();
+                if (ruleSetNodes != null) {
+                    while (ruleSetNodes.hasMoreElements()) {
+                        RuleSetNode node = (RuleSetNode)ruleSetNodes.nextElement();
+                        RuleSet ruleSet = (RuleSet)node.getUserObject();
+                        RuleSet newRuleSet = ruleSet.getCopy();
+                        RuleSetNode newRuleSetNode = new RuleSetNode(newRuleSet);
+                        newCollectionNode.insert(newRuleSetNode, newCollectionNode.getChildCount());
+                    }
+                }
+
+                // add collection with copied rule sets to tree and fire event
                 DefaultTreeModel model = (DefaultTreeModel)tree.getModel();
-                model.insertNodeInto(newNode, root, root.getChildCount());
+                model.insertNodeInto(newCollectionNode, root, root.getChildCount());
 
                 // collapse the old collection
                 tree.collapsePath(new TreePath(selectedNode.getPath()));
+
+                tree.updateVisibleInsert(newCollectionNode);
 
             } else { // rule set copy
 
@@ -323,6 +370,8 @@ public class JRuleSetBrowser extends JPanel {
                 RuleSetNode newNode = new RuleSetNode(newRuleSet);
                 DefaultTreeModel model = (DefaultTreeModel)tree.getModel();
                 model.insertNodeInto(newNode, collectionNode, collectionNode.getChildCount());
+
+                tree.updateVisibleInsert(newNode);
             }
         }
     }
@@ -332,6 +381,10 @@ public class JRuleSetBrowser extends JPanel {
         public void actionPerformed(ActionEvent e) {
             final DefaultMutableTreeNode selectedNode = (DefaultMutableTreeNode)
                        tree.getLastSelectedPathComponent();
+            final DefaultMutableTreeNode parentNode = (DefaultMutableTreeNode)
+                       selectedNode.getParent();
+            assert(parentNode != null);
+            final int childIndex = parentNode.getIndex(selectedNode);
 
             if (selectedNode == null) {
                 return;
@@ -351,6 +404,8 @@ public class JRuleSetBrowser extends JPanel {
             //DefaultMutableTreeNode parentNode = (DefaultMutableTreeNode)selectedNode.getParent();
             //parentNode.remove(selectedNode);
             //treeModel.reload(parentNode);
+
+            tree.updateVisibleRemove(parentNode, childIndex);
         }
     }
 }
