@@ -158,10 +158,20 @@ public class FileHandler implements TreeModelListener {
         return title.replace(" ", "_").toLowerCase() + ".epc";
     }
 
-    // called whenever we reset the name of a collection or rule set
     public void treeNodesChanged(TreeModelEvent e) {
-        System.out.println("file handler: detected node change - this was not expected, exiting.");
-        System.exit(1);
+        DefaultMutableTreeNode parentNode =
+                (DefaultMutableTreeNode)e.getTreePath().getLastPathComponent();
+        DefaultMutableTreeNode changedNode = (DefaultMutableTreeNode)
+                parentNode.getChildAt(e.getChildIndices()[0]);
+
+        if (changedNode instanceof RuleSetNode) {
+            CollectionNode collectionNode = (CollectionNode)parentNode;
+            assert(collectionNode != null);
+            writeCollection(collectionNode);
+            return;
+        }
+
+        assert (false);
     }
 
     public void treeNodesInserted(TreeModelEvent e) {

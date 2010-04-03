@@ -10,6 +10,7 @@ import evopaint.pixel.rulebased.RuleSet;
 import evopaint.pixel.rulebased.RuleSetCollection;
 import evopaint.pixel.rulebased.interfaces.IRule;
 import evopaint.util.CollectionNode;
+import evopaint.util.RuleSetNode;
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Container;
@@ -22,6 +23,8 @@ import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JSplitPane;
 import javax.swing.border.LineBorder;
+import javax.swing.event.ListDataEvent;
+import javax.swing.event.ListDataListener;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -34,13 +37,13 @@ import javax.swing.tree.DefaultTreeModel;
 public class JRuleSetManager extends JPanel implements TreeSelectionListener {
 
     private Configuration configuration;
-    private DefaultTreeModel treeModel;
+    private JRuleSetTree jRuleSetTree;
     private Container contentPane;
     private JRuleSetBrowser jRuleSetBrowser;
     private JDescriptionPanel jDescriptionPanel;
     private JRuleList jRuleList;
     private JRuleEditor jRuleEditor;
-    JSplitPane splitPaneVertical;
+    private JSplitPane splitPaneVertical;
 
 
     public Configuration getConfiguration() {
@@ -54,12 +57,11 @@ public class JRuleSetManager extends JPanel implements TreeSelectionListener {
     public JRuleSetManager(Configuration configuration, ActionListener OKListener, ActionListener CancelListener) {
         this.configuration = configuration;
         this.contentPane = this;
-        
-        this.treeModel = configuration.fileHandler.readCollections();
 
         setLayout(new CardLayout());
 
-        JRuleSetTree jRuleSetTree = new JRuleSetTree(treeModel);
+        DefaultTreeModel treeModel = configuration.fileHandler.readCollections();
+        jRuleSetTree = new JRuleSetTree(treeModel);
         jRuleSetTree.addTreeSelectionListener(this);
 
         // FIRST CARD
@@ -73,8 +75,8 @@ public class JRuleSetManager extends JPanel implements TreeSelectionListener {
         upperSplitPane.setContinuousLayout(true);
         upperSplitPane.setResizeWeight(0.1); // most space goes to description
 
-        jRuleList = new JRuleList(new EditRuleBtnListener(), new DoubleClickOnRuleListener());
-       
+        jRuleList = new JRuleList(configuration, jRuleSetTree, new EditRuleBtnListener(), new DoubleClickOnRuleListener());
+
         // [ browser | description ]
         // [       rule list       ]
         splitPaneVertical = new JSplitPane(JSplitPane.VERTICAL_SPLIT,
@@ -118,18 +120,22 @@ public class JRuleSetManager extends JPanel implements TreeSelectionListener {
 
         if (userObject instanceof RuleSetCollection) {
             splitPaneVertical.getBottomComponent().setVisible(false);
-        } else { // rule set node
+            return;
+        }
+
+        if (userObject instanceof RuleSet) {
             splitPaneVertical.getBottomComponent().setVisible(true);
             splitPaneVertical.setDividerLocation(260);
+            return;
         }
+
+        assert(false);
     }
 
     private class RuleEditorOKListener implements ActionListener {
 
         public void actionPerformed(ActionEvent e) {
-            ((DefaultListModel)jRuleList.getModel()).set(
-                    jRuleList.getList().getSelectedIndex(),
-                    jRuleEditor.getRule());
+            jRuleList.replaceSelectedRule(jRuleEditor.getRule());
             ((CardLayout)contentPane.getLayout()).show(contentPane, "manager");
         }
 
@@ -144,12 +150,14 @@ public class JRuleSetManager extends JPanel implements TreeSelectionListener {
     
     private class EditRuleBtnListener implements ActionListener {
         public void actionPerformed(ActionEvent e) {
-            if (jRuleList.getList().isSelectionEmpty()) {
+            IRule selectedRule = jRuleList.getSelectedRule();
+
+            if (selectedRule == null) {
                 return;
             }
-            int index = jRuleList.getList().getSelectedIndex();
-            jRuleEditor.setRule((IRule)jRuleList.getModel().get(index));
-                ((CardLayout)contentPane.getLayout()).show(contentPane, "editor");
+            
+            jRuleEditor.setRule(selectedRule);
+            ((CardLayout)contentPane.getLayout()).show(contentPane, "editor");
         }
     };
 
@@ -157,8 +165,17 @@ public class JRuleSetManager extends JPanel implements TreeSelectionListener {
         @Override
         public void mouseClicked(MouseEvent e) {
             if (e.getClickCount() == 2) {
-                int index = jRuleList.getList().locationToIndex(e.getPoint());
-                jRuleEditor.setRule((IRule)jRuleList.getModel().get(index));
+                int index = jRuleList.locationToIndex(e.getPoint());
+
+                if (index == -1) {
+                    return;
+                }
+                
+                IRule selectedRule = jRuleList.getSelectedRule();
+
+                assert (selectedRule != null);
+
+                jRuleEditor.setRule(selectedRule);
                 ((CardLayout)contentPane.getLayout()).show(contentPane, "editor");
              }
         }

@@ -5,24 +5,20 @@
 
 package evopaint.gui.rulesetmanager;
 
+import evopaint.Configuration;
 import evopaint.gui.util.DragDropList;
 import evopaint.pixel.rulebased.Rule;
+import evopaint.pixel.rulebased.RuleSet;
 import evopaint.pixel.rulebased.interfaces.IRule;
+import evopaint.util.CollectionNode;
+import evopaint.util.RuleSetNode;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.AdjustmentEvent;
-import java.awt.event.AdjustmentListener;
-import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentEvent;
 import java.awt.event.MouseListener;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.DefaultListCellRenderer;
@@ -31,48 +27,130 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
-import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
-import javax.swing.UIManager;
 import javax.swing.border.LineBorder;
+import javax.swing.event.ListDataEvent;
+import javax.swing.event.ListDataListener;
+import javax.swing.event.TreeSelectionEvent;
+import javax.swing.event.TreeSelectionListener;
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeModel;
 
 /**
  *
  * @author tam
  */
-public class JRuleList extends JPanel {
+public class JRuleList extends JPanel implements TreeSelectionListener, ListDataListener {
+    private Configuration configuration;
     private DragDropList list;
     private DefaultListModel model;
-
-    public DefaultListModel getModel() {
-        return model;
-    }
-
-    public DragDropList getList() {
-        return list;
-    }
+    private RuleSetNode lastSelectedRuleSetNode;
+    private boolean dirty;
+    private JRuleSetTree tree;
 
     public List<IRule> getRules() {
         List<IRule> rules = new ArrayList<IRule>(model.capacity());
+
         for (int i = 0; i < model.size(); i++) {
             rules.add((IRule)model.get(i));
         }
         return rules;
     }
 
-    public void setRules(List<IRule> rules) {
-        model.clear();
-        for (IRule rule : rules) {
-            model.addElement(rule);
-        }
+    public void replaceSelectedRule(IRule rule) {
+        model.set(list.getSelectedIndex(), rule);
+        dirty = true;
     }
 
-    public JRuleList(ActionListener btnEditListener, MouseListener doubleClickListener) {
+    public IRule getSelectedRule() {
+        if (list.isSelectionEmpty()) {
+            return null;
+        }
+        return (IRule)list.getSelectedValue();
+    }
+
+    public int locationToIndex(Point location) {
+        return list.locationToIndex(location);
+    }
+
+    public void valueChanged(TreeSelectionEvent e) {
+        if (dirty) {
+            assert(lastSelectedRuleSetNode != null);
+
+            // replace rules in rule set node
+            RuleSet ruleSet = (RuleSet)lastSelectedRuleSetNode.getUserObject();
+            ruleSet.setRules(getRules());
+            lastSelectedRuleSetNode.setUserObject(ruleSet);
+
+            // inform the tree listeners about the changes
+            CollectionNode parentNode = (CollectionNode)lastSelectedRuleSetNode.getParent();
+            DefaultTreeModel treeModel = (DefaultTreeModel)tree.getModel();
+            treeModel.nodesChanged(parentNode,
+                    new int [] {parentNode.getIndex(lastSelectedRuleSetNode)});
+
+            dirty = false;
+        }
+
+        DefaultMutableTreeNode node = (DefaultMutableTreeNode)e.getPath().getLastPathComponent();
+        Object userObject = node.getUserObject();
+
+        if (userObject == null) {
+            return;
+        }
+
+        if (false == (userObject instanceof RuleSet)) {
+            return;
+        }
+
+        // save collection node for writing it back to disc if changed
+        lastSelectedRuleSetNode = (RuleSetNode)node;
+
+        // save data listeners
+        ListDataListener [] listeners = model.getListDataListeners();
+
+        // create new model for rule set
+        model = new DefaultListModel();
+
+        RuleSet ruleSet = (RuleSet)userObject;
+        for (IRule rule : ruleSet.getRules()) {
+            model.addElement(rule);
+        }
+
+        // re-add data listeners
+        for (ListDataListener l : listeners) {
+            model.addListDataListener(l);
+        }
+
+        list.setModel(model);
+    }
+
+    public void contentsChanged(ListDataEvent e) {
+        //System.out.println("dirty");
+        dirty = true;
+    }
+
+    public void intervalAdded(ListDataEvent e) {
+        //System.out.println("dirty");
+        dirty = true;
+    }
+
+    public void intervalRemoved(ListDataEvent e) {
+        //System.out.println("dirty");
+        dirty = true;
+    }
+
+    public JRuleList(Configuration configuration, JRuleSetTree tree, ActionListener btnEditListener, MouseListener doubleClickListener) {
+        this.configuration = configuration;
+        this.dirty = false;
+        this.tree = tree;
+        tree.addTreeSelectionListener(this);
+
         setLayout(new BorderLayout());
         setBorder(new LineBorder(Color.GRAY));
         setBackground(Color.WHITE);
 
         model = new DefaultListModel();
+        model.addListDataListener(this);
         list = new DragDropList(model);
         list.setBorder(null);
         list.setCellRenderer(new RuleCellRenderer());
@@ -90,13 +168,6 @@ public class JRuleList extends JPanel {
 
         final JPanel controlPanel = new JPanel();
         controlPanel.setBackground(new Color(0xF2F2F5));
-        JButton btnSave = new JButton("Save");
-        btnSave.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                throw new UnsupportedOperationException("Not supported yet.");
-            }
-        });
-        controlPanel.add(btnSave);
 
         JButton btnAdd = new JButton("Add");
         btnAdd.addActionListener(new ActionListener() {
