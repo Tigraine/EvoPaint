@@ -14,11 +14,16 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InvalidClassException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.Enumeration;
 import java.util.List;
 import javax.swing.JFileChooser;
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 import javax.swing.event.TreeModelEvent;
 import javax.swing.event.TreeModelListener;
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -78,6 +83,12 @@ public class FileHandler implements TreeModelListener {
             }
         } catch (FileNotFoundException ex) {
             ex.printStackTrace();
+            System.exit(1);
+        } catch (InvalidClassException ex) {
+            JOptionPane.showMessageDialog((JFrame)SwingUtilities.getWindowAncestor(new JPanel()),
+                "Either your collection files are corrupted, or we introduced new rules which are not compatible\nwith your current version.\n\nPlease delete your '.evopaint/collections' folder (in ~/ on *n?x and 'My Documents' on Windows)",
+                "Aaaaaaaaand they're gone!",
+                JOptionPane.ERROR_MESSAGE);
             System.exit(1);
         } catch (IOException ex) {
             ex.printStackTrace();

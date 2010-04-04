@@ -9,6 +9,7 @@ import evopaint.Configuration;
 import evopaint.pixel.rulebased.AbstractAction;
 import evopaint.World;
 import evopaint.gui.rulesetmanager.util.DimensionsListener;
+import evopaint.gui.util.AutoSelectOnFocusSpinner;
 import evopaint.pixel.ColorDimensions;
 import evopaint.pixel.Pixel;
 import evopaint.util.mapping.RelativeCoordinate;
@@ -17,7 +18,11 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
+import javax.swing.JSpinner;
 import javax.swing.JToggleButton;
+import javax.swing.SpinnerNumberModel;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 /**
  *
@@ -26,6 +31,7 @@ import javax.swing.JToggleButton;
 public class AssimilationAction extends AbstractAction {
 
     private ColorDimensions dimensions;
+    private byte ourSharePercent;
 
     public String getName() {
         return "Assimilate";
@@ -39,11 +45,20 @@ public class AssimilationAction extends AbstractAction {
         this.dimensions = dimensionsToMix;
     }
 
+    public byte getOurSharePercent() {
+        return ourSharePercent;
+    }
+
+    public void setOurSharePercent(byte ourSharePercent) {
+        this.ourSharePercent = ourSharePercent;
+    }
+
     @Override
     public String toString() {
         String ret = "assimilate(";
         ret += "targets: " + getDirectionsString();
         ret += ", dimensions: " + dimensions.toHTML();
+        ret += ", our share in %: " + ourSharePercent;
         ret += ", cost: " + getCost();
         ret += ")";
         return ret;
@@ -54,6 +69,7 @@ public class AssimilationAction extends AbstractAction {
         String ret = "<b>assimilate</b>(";
         ret += "<span style='color: #777777;'>targets:</span> " + getDirectionsString();
         ret += ", <span style='color: #777777;'>dimensions:</span> " + dimensions.toHTML();
+        ret += ", <span style='color: #777777;'>our share in %:</span> " + ourSharePercent;
         ret += ", <span style='color: #777777;'>cost:</span> " + getCost();
         ret += ")";
         return ret;
@@ -66,7 +82,7 @@ public class AssimilationAction extends AbstractAction {
             if (them == null) { // never forget to skip empty spots
                 continue;
             }
-            them.getPixelColor().mixWith(us.getPixelColor(), 0.5f, dimensions);
+            them.getPixelColor().mixWith(us.getPixelColor(), ((float)ourSharePercent) / 100, dimensions);
         }
 
         return getCost();
@@ -97,12 +113,22 @@ public class AssimilationAction extends AbstractAction {
         dimensionsPanel.add(btnB);
         ret.put("Dimensions", dimensionsPanel);
 
+        SpinnerNumberModel spinnerModel = new SpinnerNumberModel(ourSharePercent, 0, 100, 1);
+        JSpinner rewardValueSpinner = new AutoSelectOnFocusSpinner(spinnerModel);
+        rewardValueSpinner.addChangeListener(new ChangeListener() {
+            public void stateChanged(ChangeEvent e) {
+                setOurSharePercent(((Integer) ((JSpinner) e.getSource()).getValue()).byteValue());
+            }
+        });
+        ret.put("Our share in %", rewardValueSpinner);
+
         return ret;
     }
 
-    public AssimilationAction(int reward, List<RelativeCoordinate> directions, ColorDimensions dimensions) {
+    public AssimilationAction(int reward, List<RelativeCoordinate> directions, ColorDimensions dimensions, Byte ourSharePercent) {
         super(reward, directions);
         this.dimensions = dimensions;
+        this.ourSharePercent = ourSharePercent;
     }
 
     public AssimilationAction() {

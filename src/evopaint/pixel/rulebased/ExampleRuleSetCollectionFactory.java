@@ -58,7 +58,7 @@ public class ExampleRuleSetCollectionFactory {
         directions.add(RelativeCoordinate.NORTH);
         directions.add(RelativeCoordinate.SOUTH);
         directions.add(RelativeCoordinate.EAST);
-        action = new AssimilationAction(0, directions, new ColorDimensions(true, true, true));
+        action = new AssimilationAction(0, directions, new ColorDimensions(true, true, true), (byte)50);
         rules.add(new Rule(conditions, action));
         ruleSets.add(new RuleSet(name, description , rules));
 
