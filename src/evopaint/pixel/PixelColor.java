@@ -78,35 +78,69 @@ public class PixelColor implements IHTML, Serializable {
 
     public double distanceTo(PixelColor theirColor, ColorDimensions dimensions) {
         double distance = 1;
-        
+
         if (dimensions.hue && dimensions.saturation && dimensions.brightness) {
                 // this is difficult. we need to come up with a distance that
                 // is at least somewhat comparable
                 // to what we percieve as a "distance" between colors...
-                
-                // let us define black as black
-                
-                
-                // let's start with hue, for that is what makes color colorful
-                distance = distanceCyclic(hue, theirColor.getHue());
 
-                // if one of the colors is very colorful, it does not matter
-                // whether the other is almost white or not, so we take the biggest one
-                // the same holds true for very dark colors
-                // now we need to find some means to weight the color distance
-                // with these. let us try multiplying them for now
-                distance = distance * Math.max(saturation, theirColor.getSaturation())
-                            * Math.max(brightness, theirColor.getBrightness());
+                // hue is everyting. except for when we have very bright
+                // or very dark colors
+                // the 1:4 division between saturation and brightness is because
+                // if you look at the SB colorspace of a given H, you will
+                // find that roughly 1/2 of it is "darker", while the other
+                // half is a gradient from the color to white giving each
+                // "colorful" and "colorless" roughly 1/4 of the total
+                // color space
+                double maxS = Math.max(saturation, theirColor.getSaturation());
+                double maxB = Math.max(brightness, theirColor.getBrightness());
+                double hueWeight = 1d - ((1d - maxS) * 0.25d + (1d - maxB) * 0.75d) / 2d;
+                hueWeight = hueWeight >= 0.15d ? hueWeight : 0.15d; // hue always counts a little
+                hueWeight = hueWeight <= 0.85d ? hueWeight : 0.85d; // but never too much
+                //System.out.println("hue weight is: " + hueWeight);
+
+                distance = distanceCyclic(hue, theirColor.getHue())
+                            * hueWeight;
+
+                //System.out.println("hue distance: " + distanceCyclic(hue, theirColor.getHue()));
+
+                distance = distance
+                            + distanceLinear(saturation, theirColor.getSaturation())
+                            * (1d - hueWeight) / 2d;
+
+                distance = distance
+                            + distanceLinear(brightness, theirColor.getBrightness())
+                            * (1d - hueWeight) / 2d;
+
+                //System.out.println("distance between " + Integer.toHexString(getInteger()).substring(2).toUpperCase() +
+                //        " and " + Integer.toHexString(theirColor.getInteger()).substring(2).toUpperCase() +
+                //        " is " + distance);
 
         } else if (dimensions.hue && dimensions.saturation) {
                 // see HSB
-                distance = distanceCyclic(hue, theirColor.getHue());
-                distance *= Math.max(saturation, theirColor.getSaturation());
+                double maxS = Math.max(saturation, theirColor.getSaturation());
+                double maxB = Math.max(brightness, theirColor.getBrightness());
+                double hueWeight = 1d - ((1d - maxS) * 0.25d + (1d - maxB) * 0.75d) / 2d;
+                hueWeight = hueWeight >= 0.15d ? hueWeight : 0.15d; // hue always counts a little
+                hueWeight = hueWeight <= 0.85d ? hueWeight : 0.85d; // but never too much
+                distance = distanceCyclic(hue, theirColor.getHue())
+                            * hueWeight;
+                distance = distance
+                            + distanceLinear(saturation, theirColor.getSaturation())
+                            * (1d - hueWeight);
 
         } else if (dimensions.hue && dimensions.brightness) {
                 // see HSB
-                distance = distanceCyclic(hue, theirColor.getHue());
-                distance *= Math.max(brightness, theirColor.getBrightness());
+                double maxS = Math.max(saturation, theirColor.getSaturation());
+                double maxB = Math.max(brightness, theirColor.getBrightness());
+                double hueWeight = 1d - ((1d - maxS) * 0.25d + (1d - maxB) * 0.75d) / 2d;
+                hueWeight = hueWeight >= 0.15d ? hueWeight : 0.15d; // hue always counts a little
+                hueWeight = hueWeight <= 0.85d ? hueWeight : 0.85d; // but never too much
+                distance = distanceCyclic(hue, theirColor.getHue())
+                            * hueWeight;
+                distance = distance
+                            + distanceLinear(brightness, theirColor.getBrightness())
+                            * (1d - hueWeight);
 
         } else if (dimensions.saturation && dimensions.brightness) {
                 // finally, something easy (I hope)
@@ -127,7 +161,7 @@ public class PixelColor implements IHTML, Serializable {
             assert(false);
         }
         
-        return distance;
+        return distance > 1d ? 1d : distance; // we have some rounding problems
     }
 
     private static double distanceCyclic(double a, double b) {
