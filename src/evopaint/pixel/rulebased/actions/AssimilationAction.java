@@ -76,6 +76,10 @@ public class AssimilationAction extends AbstractAction {
     }
 
     public int execute(Pixel us, World world) {
+        // if the action costs more energy than this pixel got, it dies trying
+        if (getCost() > us.getEnergy()) {
+            return us.getEnergy();
+        }
 
         for (RelativeCoordinate direction : getDirections()) {
             Pixel them = world.get(us.getLocation(), direction);
