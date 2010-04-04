@@ -64,8 +64,8 @@ public class ObjectComparisonOperator implements INamed, IHTML, Serializable {
     // preserve singleton through serialization
     public Object readResolve() {
         switch (this.type) {
-            case TYPE_EQUAL: return ObjectComparisonOperator.TYPE_EQUAL;
-            case TYPE_NOT_EQUAL: return ObjectComparisonOperator.TYPE_NOT_EQUAL;
+            case TYPE_EQUAL: return ObjectComparisonOperator.EQUAL;
+            case TYPE_NOT_EQUAL: return ObjectComparisonOperator.NOT_EQUAL;
         }
         return null;
     }
