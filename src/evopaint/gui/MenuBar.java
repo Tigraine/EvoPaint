@@ -38,6 +38,7 @@ import java.util.Observer;
  * @author tam
  */
 public class MenuBar extends JMenuBar implements Observer {
+    private Configuration configuration;
     private EvoPaint evopaint;
     private Showcase showcase;
     private JMenu selectionMenu;
@@ -45,7 +46,8 @@ public class MenuBar extends JMenuBar implements Observer {
     private Wizard nw;
     private MenuBar mb;
 
-    public MenuBar(final EvoPaint evopaint, SelectionListenerFactory listenerFactory, Showcase showcase) {
+    public MenuBar(Configuration configuration, final EvoPaint evopaint, SelectionListenerFactory listenerFactory, Showcase showcase) {
+        this.configuration = configuration;
         this.evopaint = evopaint;
         this.showcase = showcase;
         this.mb=this;
@@ -77,7 +79,7 @@ public class MenuBar extends JMenuBar implements Observer {
              
         JMenuItem exportItem = new JMenuItem();
         exportItem.setText("Export");
-        exportItem.addActionListener(new ExportDialog(evopaint));
+        exportItem.addActionListener(new ExportDialog(configuration, evopaint));
         
         worldMenu.add(exportItem);
         
@@ -238,7 +240,7 @@ public class MenuBar extends JMenuBar implements Observer {
     }
 
 	public void newEvolution(int x, int y) {
-		evopaint.getConfiguration().running = false;
+		//evopaint.getConfiguration().running = false;
 		//todo wizard code & implementation of a new evolution
 		
 		Configuration newConf = new Configuration();
@@ -266,7 +268,7 @@ public class MenuBar extends JMenuBar implements Observer {
 		//evopaint.getFrame().initSecond(evopaint);
 		
 
-		evopaint.getConfiguration().running = true;
+		//evopaint.getConfiguration().running = true;
 		
 	}
 }

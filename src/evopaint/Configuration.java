@@ -77,7 +77,12 @@ public class Configuration {
     //public static final double mutationRate = 0.0;
 
     // these values are configured through the GUI or by the application
-    public boolean running = true;
+    public static final int RUNLEVEL_RUNNING = 2;
+    public static final int RUNLEVEL_PAINTING_ONLY = 1;
+    public static final int RUNLEVEL_STOP = 0;
+
+    public int runLevel = Configuration.RUNLEVEL_RUNNING;
+    public boolean evolutionRunning = true; // painting possible
     public FileHandler fileHandler;
     public World world;
     public Brush brush;

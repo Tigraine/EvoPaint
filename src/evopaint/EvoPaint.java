@@ -22,7 +22,6 @@ public class EvoPaint {
     private Configuration configuration;
     private World world;
     private Perception perception;
-    private boolean running = true;
     MainFrame frame;
 
     public MainFrame getFrame() {
@@ -41,14 +40,6 @@ public class EvoPaint {
         this.perception = perception;
     }
 
-    public boolean isRunning() {
-        return running;
-    }
-
-    public void setRunning(boolean running) {
-        this.running = running;
-    }
-
     public World getWorld() {
         return world;
     }
@@ -64,11 +55,25 @@ public class EvoPaint {
     public void work() {
         while (true) {
 
-            if (configuration.running == false) {
+            if (configuration.runLevel < Configuration.RUNLEVEL_RUNNING) {
+
+                // just sleep if everyting is on hold
+                if (configuration.runLevel < Configuration.RUNLEVEL_PAINTING_ONLY) {
+                    try {
+                        Thread.sleep(100);
+                    } catch (InterruptedException e) {
+                    }
+                    continue;
+                }
+
+                // but still repaint everyting if just the
+                // evolution is on hold
+                frame.getShowcase().repaint();
                 try {
-                    Thread.sleep(500);
+                    Thread.sleep(40);
                 } catch (InterruptedException e) {
                 }
+                this.perception.createImage(world);
                 continue;
             }
 

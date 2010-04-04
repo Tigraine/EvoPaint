@@ -43,8 +43,8 @@ public class MainFrame extends JFrame {
         this.configuration = configuration;
         this.contentPane = getContentPane();
 
-        resumeCommand = new ResumeCommand(evopaint);
-        pauseCommand = new PauseCommand(evopaint);
+        resumeCommand = new ResumeCommand(configuration);
+        pauseCommand = new PauseCommand(configuration);
         zoomInCommand = new ZoomInCommand(showcase);
         zoomOutCommand = new ZoomOutCommand(showcase);
 
@@ -75,7 +75,7 @@ public class MainFrame extends JFrame {
         this.toolMenu = new ToolMenu(this);
         this.jOptionsPanel = new JOptionsPanel(configuration); // FIXME: paintoptionspanel must be initialized before showcase or we get a nullpointer exception. the semantics to not express this!!
         this.showcase = new Showcase(configuration, this, evopaint.getWorld(), evopaint.getPerception(), commandFactory);
-        this.menuBar = new MenuBar(evopaint, new SelectionListenerFactory(showcase), showcase);
+        this.menuBar = new MenuBar(configuration, evopaint, new SelectionListenerFactory(showcase), showcase);
         setJMenuBar(menuBar);
 
         addKeyListener(new MainFrameKeyListener());
@@ -201,7 +201,7 @@ public class MainFrame extends JFrame {
             } else if (e.getKeyCode() == KeyEvent.VK_MINUS) {
                 zoomOutCommand.execute();
             } else if (e.getKeyCode() == KeyEvent.VK_SPACE) {
-                if (configuration.running) {
+                if (configuration.runLevel < Configuration.RUNLEVEL_RUNNING) {
                     pauseCommand.execute();
                 } else {
                     resumeCommand.execute();
@@ -224,6 +224,7 @@ public class MainFrame extends JFrame {
             jPixelPanel.setRuleSetName(ruleSet.getName());
             ((CardLayout)contentPane.getLayout()).show(contentPane, "main");
             menuBar.setVisible(true);
+            configuration.runLevel = Configuration.RUNLEVEL_RUNNING;
         }
 
     }
@@ -233,6 +234,7 @@ public class MainFrame extends JFrame {
         public void actionPerformed(ActionEvent e) {
             ((CardLayout)contentPane.getLayout()).show(contentPane, "main");
             menuBar.setVisible(true);
+            configuration.runLevel = Configuration.RUNLEVEL_RUNNING;
         }
 
     }
@@ -242,6 +244,7 @@ public class MainFrame extends JFrame {
         public void actionPerformed(ActionEvent e) {
             ((CardLayout)contentPane.getLayout()).show(contentPane, "rule manager");
             menuBar.setVisible(false);
+            configuration.runLevel = Configuration.RUNLEVEL_STOP;
         }
     }
 }

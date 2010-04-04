@@ -1,6 +1,6 @@
 package evopaint.commands;
 
-import evopaint.EvoPaint;
+import evopaint.Configuration;
 
 /**
  * Created by IntelliJ IDEA.
@@ -10,16 +10,14 @@ import evopaint.EvoPaint;
  * To change this template use File | Settings | File Templates.
  */
 public class PauseCommand extends AbstractCommand {
-    private EvoPaint evopaint;
+    private Configuration configuration;
 
-    public PauseCommand(EvoPaint evopaint) {
-        this.evopaint = evopaint;
+    public PauseCommand(Configuration configuration) {
+        this.configuration = configuration;
     }
 
     public void execute() {
-        evopaint.setRunning(false);
-        //ResumeCommand resumeCommand = new ResumeCommand(null);
-        //resumeCommand.execute();
+        configuration.runLevel = Configuration.RUNLEVEL_PAINTING_ONLY;
     }
 }
 

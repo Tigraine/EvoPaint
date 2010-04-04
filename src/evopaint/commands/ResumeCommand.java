@@ -1,6 +1,6 @@
 package evopaint.commands;
 
-import evopaint.EvoPaint;
+import evopaint.Configuration;
 import evopaint.interfaces.ICommand;
 
 /**
@@ -11,13 +11,13 @@ import evopaint.interfaces.ICommand;
  * To change this template use File | Settings | File Templates.
  */
 public class ResumeCommand implements ICommand {
-    private EvoPaint evopaint;
+    private Configuration configuration;
 
-    public ResumeCommand(EvoPaint evopaint) {
-        this.evopaint = evopaint;
+    public ResumeCommand(Configuration configuration) {
+        this.configuration = configuration;
     }
 
     public void execute() {
-        evopaint.setRunning(true);
+        configuration.runLevel = Configuration.RUNLEVEL_RUNNING;
     }
 }
