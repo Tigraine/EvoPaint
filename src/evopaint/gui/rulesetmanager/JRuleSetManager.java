@@ -45,7 +45,7 @@ public class JRuleSetManager extends JPanel implements TreeSelectionListener {
     JButton btnUse;
 
     public RuleSet getSelectedRuleSet() {
-        return selectedRuleSet;
+        return selectedRuleSet.getCopy(); // a copy, or we will change painted rule sets
     }
 
     public Configuration getConfiguration() {
