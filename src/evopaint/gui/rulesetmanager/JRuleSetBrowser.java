@@ -302,8 +302,9 @@ public class JRuleSetBrowser extends JPanel implements TreeSelectionListener {
 
                 // make sure the name of the copy is unique
                 boolean found = true;
+                String originalName = collection.getName().replaceAll(" *\\(\\d+\\)", "");
                 for (int i = 1; found == true; i++) {
-                    newCollection.setName(collection.getName() + " (" + i + ")");
+                    newCollection.setName(originalName + " (" + i + ")");
                     found = false;
                     Enumeration siblingCollectionNodes = root.children();
                     while (siblingCollectionNodes.hasMoreElements()) {
@@ -349,9 +350,10 @@ public class JRuleSetBrowser extends JPanel implements TreeSelectionListener {
                 RuleSet newRuleSet = ruleSet.getCopy();
 
                 // make sure the name of the copy is unique
+                String originalName = ruleSet.getName().replaceAll(" *\\(\\d+\\)", "");
                 boolean found = true;
                 for (int i = 1; found == true; i++) {
-                    newRuleSet.setName(ruleSet.getName() + " (" + i + ")");
+                    newRuleSet.setName(originalName + " (" + i + ")");
                     found = false;
                     Enumeration siblingRuleSetNodes = collectionNode.children();
                     while (siblingRuleSetNodes.hasMoreElements()) {
