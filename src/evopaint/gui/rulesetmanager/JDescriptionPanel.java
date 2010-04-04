@@ -54,7 +54,7 @@ public class JDescriptionPanel extends JPanel implements TreeSelectionListener {
     private JButton btnEdit;
 
     private String defaultTitle = "DON'T PANIC";
-    private String defaultDescription = "Things to remember:<ul><li>Only the first rule whose conditions are met is ever executed. If none if the rules matches, your pixel will idle.</li></ul>";
+    private String defaultDescription = "Things to remember:<ul><li>Every pixel follows a set of rules. Only the first rule whose conditions are met is ever executed (beginning from the top of the list). If none if the rules matches, your pixel will idle.</li><li>You can reorder the list of rules of any rule set using drag and drop.</li></ul>";
 
     public String getDescription() {
         return description;
