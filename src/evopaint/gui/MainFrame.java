@@ -24,6 +24,7 @@ public class MainFrame extends JFrame {
     private JPopupMenu toolMenu;
     private JOptionsPanel jOptionsPanel;
     private ToolBox toolBox;
+    private SelectionToolBox selectionToolBox;
     private JPixelPanel jPixelPanel;
     private JPanel leftPanel;
     private JRuleSetManager jRuleSetManager;
@@ -98,9 +99,15 @@ public class MainFrame extends JFrame {
 
         toolBox = new ToolBox(this);
         wrapperPanelLeft.add(toolBox);
-
+        
         JSeparator separator = new JSeparator(JSeparator.HORIZONTAL);
         wrapperPanelLeft.add(separator);
+        
+        selectionToolBox = new SelectionToolBox(showcase);
+        wrapperPanelLeft.add(selectionToolBox);
+
+        JSeparator separator2 = new JSeparator(JSeparator.HORIZONTAL);
+        wrapperPanelLeft.add(separator2);
 
         jPixelPanel = new JPixelPanel(configuration, new OpenRuleSetManagerListener());
         wrapperPanelLeft.add(jPixelPanel);
