@@ -69,7 +69,7 @@ public class AssimilationAction extends AbstractAction {
             them.getPixelColor().mixWith(us.getPixelColor(), 0.5f, dimensions);
         }
 
-        return getCost() * getDirections().size();
+        return getCost();
     }
 
     public LinkedHashMap<String,JComponent> getParametersForGUI(Configuration configuration) {

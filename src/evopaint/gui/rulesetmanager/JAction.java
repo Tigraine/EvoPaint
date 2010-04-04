@@ -86,7 +86,7 @@ public class JAction extends JButton {
                 iAction.setCost((Integer) ((JSpinner) e.getSource()).getValue());
             }
         });
-        parameters.put("Cost per target", costSpinner);
+        parameters.put("Cost", costSpinner);
 
         GridBagConstraints constraints = new GridBagConstraints();
         constraints.gridx = 0;

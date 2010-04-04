@@ -43,7 +43,7 @@ public class JTargetPicker extends JPanel {
 
     public JTargetPicker() {
         setLayout(new GridLayout(3, 3));
-        setBorder(new TitledBorder("targets"));
+        setBorder(new TitledBorder("Targets"));
 
         targets = new IdentityHashMap<JToggleButton, RelativeCoordinate>();
 
