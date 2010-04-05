@@ -35,7 +35,7 @@ public class SelectionToolBox extends JPanel implements Observer {
 	
 	@Override
 	public void update(Observable arg0, Object arg1) {
-		SelectionList.SelectionListUpdateArgs updateEvent = (SelectionList.SelectionListUpdateArgs) arg1;
+		SelectionList.SelectionListEventArgs updateEvent = (SelectionList.SelectionListEventArgs) arg1;
         if (updateEvent.getChangeType() == SelectionList.ChangeType.LIST_CLEARED) {
             this.removeAll();
         }
