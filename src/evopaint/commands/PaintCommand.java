@@ -4,6 +4,7 @@ package evopaint.commands;
 import evopaint.Brush;
 import evopaint.Configuration;
 import evopaint.World;
+import evopaint.Abstractions.ScaleCalculation;
 import evopaint.util.logging.Logger;
 
 
@@ -34,9 +35,7 @@ public class PaintCommand extends AbstractCommand {
     }
 
     public void setLocation(Point location) {
-        this.location = new Point(location);
-        this.location.x /= scale;
-        this.location.y /= scale;
+        this.location = ScaleCalculation.FromScreenToWorld(location, scale);
 
         try {
             this.location = (Point) affineTransform.inverseTransform(this.location , this.location);
