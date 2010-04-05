@@ -14,6 +14,7 @@ import evopaint.World;
 import evopaint.commands.DeleteCurrentSelectionCommand;
 import evopaint.commands.FillSelectionCommand;
 import evopaint.commands.FillSelectionCommandScattered;
+import evopaint.commands.SelectAllCommand;
 import evopaint.gui.listeners.SelectionListenerFactory;
 import evopaint.gui.SelectionList;
 import evopaint.pixel.Pixel;
@@ -100,6 +101,11 @@ public class MenuBar extends JMenuBar implements Observer {
         selectionMenu = new JMenu("Selection");
         add(selectionMenu);
 
+
+        JMenuItem selectAll = new JMenuItem("Select All");
+        selectAll.addActionListener(new SelectAllCommand(showcase, evopaint.getConfiguration()));
+        selectionMenu.add(selectAll);
+
         JMenuItem selectionSetName = new JMenuItem("Set Name...");
         selectionMenu.add(selectionSetName);
         selectionSetName.addActionListener(listenerFactory.CreateSelectionSetNameListener());
@@ -179,17 +185,17 @@ public class MenuBar extends JMenuBar implements Observer {
     }*/
 
     public void update(Observable o, Object arg) {
-        SelectionList.SelectionListUpdateArgs updateEvent = (SelectionList.SelectionListUpdateArgs) arg;
-        if (updateEvent.getChangeType() == SelectionList.ChangeType.LIST_CLEARED) {
+        SelectionList.SelectionListEventArgs eventEvent = (SelectionList.SelectionListEventArgs) arg;
+        if (eventEvent.getChangeType() == SelectionList.ChangeType.LIST_CLEARED) {
             activeSelections.removeAll();
         }
-        if (updateEvent.getChangeType() == SelectionList.ChangeType.ITEM_ADDED) {
-            activeSelections.add(new SelectionWrapper(updateEvent.getSelection(), showcase));
+        if (eventEvent.getChangeType() == SelectionList.ChangeType.ITEM_ADDED) {
+            activeSelections.add(new SelectionWrapper(eventEvent.getSelection(), showcase));
         }
-        if (updateEvent.getChangeType() == SelectionList.ChangeType.ITEM_DELETED) {
+        if (eventEvent.getChangeType() == SelectionList.ChangeType.ITEM_DELETED) {
             for(int i = 0; i < activeSelections.getItemCount(); i++) {
                 SelectionWrapper wrapper = (SelectionWrapper)activeSelections.getItem(i);
-                if (wrapper.selection == updateEvent.getSelection()) {
+                if (wrapper.selection == eventEvent.getSelection()) {
                     activeSelections.remove(i);
                     break;
                 }

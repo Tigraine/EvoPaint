@@ -289,9 +289,9 @@ public class Showcase extends JComponent implements MouseInputListener, MouseWhe
     }
 
     public void update(Observable o, Object arg) {
-        SelectionList.SelectionListUpdateArgs selectionUpdate = (SelectionList.SelectionListUpdateArgs) arg;
-        if (selectionUpdate.getChangeType() == SelectionList.ChangeType.ITEM_ADDED) {
-            Selection selection = selectionUpdate.getSelection();
+        SelectionList.SelectionListEventArgs selectionEvent = (SelectionList.SelectionListEventArgs) arg;
+        if (selectionEvent.getChangeType() == SelectionList.ChangeType.ITEM_ADDED) {
+            Selection selection = selectionEvent.getSelection();
             this.activeSelection = selection;
             Logger.log.error("Selection from %s-%s to %s-%s", selection.getStartPoint().getX(), selection.getStartPoint().getY(), selection.getEndPoint().getX(), selection.getEndPoint().getY());
         }
