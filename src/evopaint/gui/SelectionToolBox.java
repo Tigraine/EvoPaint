@@ -1,5 +1,6 @@
 package evopaint.gui;
 
+import java.awt.Button;
 import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
@@ -9,9 +10,13 @@ import java.util.Observable;
 import java.util.Observer;
 
 import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
 
 import evopaint.Selection;
+import evopaint.commands.DeleteCurrentSelectionCommand;
 
 public class SelectionToolBox extends JPanel implements Observer {
 
@@ -104,14 +109,26 @@ public class SelectionToolBox extends JPanel implements Observer {
 
 		@Override
 		public void mousePressed(MouseEvent arg0) {
-			showcase2.setActiveSelection(selection);
+			if (arg0.isPopupTrigger()) {
+				showContextMenu(arg0);
+			} else {
+				showcase2.setActiveSelection(selection);
+			}
 			
+		}
+
+		private void showContextMenu(MouseEvent arg) {
+			JPopupMenu menu = new JPopupMenu("Selection");
+			JMenuItem deleteMenuItem = new JMenuItem("Delete");
+			deleteMenuItem.addActionListener(new DeleteCurrentSelectionCommand(showcase));
+			menu.add(deleteMenuItem);
+			menu.show(arg.getComponent(), arg.getX(), arg.getY());
 		}
 
 		@Override
 		public void mouseReleased(MouseEvent arg0) {
-			// TODO Auto-generated method stub
-			
+			if (arg0.isPopupTrigger())
+				showContextMenu(arg0);
 		}
 		
 	}
