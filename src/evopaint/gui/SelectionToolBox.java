@@ -17,6 +17,7 @@ import javax.swing.JPopupMenu;
 
 import evopaint.Selection;
 import evopaint.commands.DeleteCurrentSelectionCommand;
+import evopaint.gui.listeners.SelectionListenerFactory;
 
 public class SelectionToolBox extends JPanel implements Observer {
 
@@ -58,6 +59,7 @@ public class SelectionToolBox extends JPanel implements Observer {
 
 		private final Color backColor;
 		private final Showcase showcase2;
+		private final SelectionListenerFactory selectionListenerFactory;
 		
 		private JLabel selectionName;
 
@@ -74,6 +76,7 @@ public class SelectionToolBox extends JPanel implements Observer {
 			this.addMouseListener(this);
 			
 			backColor = this.getBackground();
+			selectionListenerFactory = new SelectionListenerFactory(showcase);
 		}
 		
 		@Override
@@ -109,7 +112,9 @@ public class SelectionToolBox extends JPanel implements Observer {
 
 		@Override
 		public void mousePressed(MouseEvent arg0) {
-			if (arg0.isPopupTrigger()) {
+			if (arg0.getClickCount() == 2 && !arg0.isConsumed()) {
+				selectionListenerFactory.CreateSelectionSetNameListener().actionPerformed(null);
+			}else if (arg0.isPopupTrigger()) {
 				showContextMenu(arg0);
 			} else {
 				showcase2.setActiveSelection(selection);
@@ -122,6 +127,11 @@ public class SelectionToolBox extends JPanel implements Observer {
 			JMenuItem deleteMenuItem = new JMenuItem("Delete");
 			deleteMenuItem.addActionListener(new DeleteCurrentSelectionCommand(showcase));
 			menu.add(deleteMenuItem);
+			
+			JMenuItem setName = new JMenuItem("Set name");
+			setName.addActionListener(selectionListenerFactory.CreateSelectionSetNameListener());
+			menu.add(setName);
+			
 			menu.show(arg.getComponent(), arg.getX(), arg.getY());
 		}
 
