@@ -19,6 +19,10 @@ import javax.swing.JComponent;
  * @author tam
  */
 public interface ICondition extends INamed, IHTML, Serializable {
+    public int getMin();
+    public void setMin(int min);
+    public int getMax();
+    public void setMax(int max);
     public List<RelativeCoordinate> getDirections();
     public boolean isMet(Pixel us, World world);
     public LinkedHashMap<String,JComponent> getParametersForGUI(Configuration configuration);

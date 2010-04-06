@@ -27,25 +27,25 @@ import javax.swing.JComponent;
  */
 public class EmptyCondition extends AbstractCondition {
 
-    private ObjectComparisonOperator comparisonOperator;
+    private ObjectComparisonOperator objectComparisonOperator;
 
     public String getName() {
         return "Empty";
     }
 
     public ObjectComparisonOperator getComparisonOperator() {
-        return comparisonOperator;
+        return objectComparisonOperator;
     }
 
     public void setComparisonOperator(ObjectComparisonOperator comparisonOperator) {
-        this.comparisonOperator = comparisonOperator;
+        this.objectComparisonOperator = comparisonOperator;
     }
 
     @Override
     public String toString() {
         String ret = getDirectionsString();
-        ret += super.getDirections().size() > 1 ? " are " : " is ";
-        if (comparisonOperator == ObjectComparisonOperator.NOT_EQUAL) {
+        ret += " are ";
+        if (objectComparisonOperator == ObjectComparisonOperator.NOT_EQUAL) {
             ret += "not ";
         }
         ret += "empty";
@@ -55,25 +55,16 @@ public class EmptyCondition extends AbstractCondition {
     @Override
     public String toHTML() {
         String ret = getDirectionsString();
-        ret += super.getDirections().size() > 1 ? " are " : " is ";
-        if (comparisonOperator == ObjectComparisonOperator.NOT_EQUAL) {
+        ret += " are ";
+        if (objectComparisonOperator == ObjectComparisonOperator.NOT_EQUAL) {
             ret += "not ";
         }
         ret += "empty";
         return ret;
     }
 
-    public boolean isMet(Pixel us, World world) {
-        for (RelativeCoordinate direction : getDirections()) {
-            Pixel them = world.get(us.getLocation(), direction);
-            if (them == null) { // never forget to skip empty spots
-                continue;
-            }
-            if (comparisonOperator.compare(them, null) == false) {
-                return false; // so this is what lazy evaluation looks like...
-            }
-        }
-        return true;
+    protected boolean isMetCallback(Pixel us, Pixel them) {
+        return objectComparisonOperator.compare(them, null);
     }
 
     public LinkedHashMap<String,JComponent> getParametersForGUI(Configuration configuration) {
@@ -81,7 +72,7 @@ public class EmptyCondition extends AbstractCondition {
         
         JComboBox comparisonComboBox = new JComboBox(ObjectComparisonOperator.createComboBoxModel());
         comparisonComboBox.setRenderer(new NamedObjectListCellRenderer());
-        comparisonComboBox.setSelectedItem(comparisonOperator);
+        comparisonComboBox.setSelectedItem(objectComparisonOperator);
         comparisonComboBox.addActionListener(new ComparisonListener());
         comparisonComboBox.setPreferredSize(new Dimension(80, 25));
         ret.put("Comparison", comparisonComboBox);
@@ -89,14 +80,15 @@ public class EmptyCondition extends AbstractCondition {
         return ret;
     }
 
-    public EmptyCondition(List<RelativeCoordinate> directions, ObjectComparisonOperator comparisonOperator) {
-        super(directions);
-        this.comparisonOperator = comparisonOperator;
+    public EmptyCondition(int min, int max, List<RelativeCoordinate> directions, ObjectComparisonOperator objectComparisonOperator) {
+        super(min, max, directions);
+        this.objectComparisonOperator = objectComparisonOperator;
     }
 
+
     public EmptyCondition() {
-        super(new ArrayList<RelativeCoordinate>(9));
-        this.comparisonOperator = ObjectComparisonOperator.EQUAL;
+        super(0, 0, new ArrayList<RelativeCoordinate>(9));
+        this.objectComparisonOperator = ObjectComparisonOperator.EQUAL;
     }
 
     private class ComparisonListener implements ActionListener {

@@ -41,9 +41,16 @@ public class JTargetPicker extends JPanel {
         }
     }
 
+    public JTargetPicker(ActionListener maxRangeListener) {
+        this();
+        for (JToggleButton b : targets.keySet()) {
+            b.addActionListener(maxRangeListener);
+        }
+    }
+
     public JTargetPicker() {
-        setLayout(new GridLayout(3, 3));
-        setBorder(new TitledBorder("Targets"));
+        setLayout(new GridLayout(3, 3, 4, 4));
+        //setBorder(new TitledBorder("Targets"));
 
         targets = new IdentityHashMap<JToggleButton, RelativeCoordinate>();
 

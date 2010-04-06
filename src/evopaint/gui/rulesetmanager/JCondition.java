@@ -7,9 +7,12 @@ package evopaint.gui.rulesetmanager;
 
 import evopaint.gui.rulesetmanager.util.NamedObjectListCellRenderer;
 import evopaint.Configuration;
+import evopaint.gui.rulesetmanager.util.JRangeSlider;
 import evopaint.pixel.rulebased.conditions.NoCondition;
 import evopaint.pixel.rulebased.interfaces.ICondition;
+import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -18,6 +21,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.util.LinkedHashMap;
+import javax.swing.Box;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -26,8 +30,11 @@ import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JToggleButton;
 import javax.swing.SwingUtilities;
 import javax.swing.border.TitledBorder;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 /**
  *
@@ -36,19 +43,25 @@ import javax.swing.border.TitledBorder;
 public class JCondition extends JButton {
 
     private Configuration configuration;
-    private ICondition iCondition;
+    private ICondition condition;
+    private JRangeSlider jRangeSlider;
+    private JLabel lowValueLabel;
+    private JLabel highValueLabel;
+    private JPanel quantifiedTargetsPanel;
     private JDialog dialog;
-    JComboBox comboBoxConditions;
-    ComboBoxConditionsListener comboBoxConditionsListener;
-    JTargetPicker targetPicker;
-    JPanel panelParameters;
+    private JComboBox comboBoxConditions;
+    private ComboBoxConditionsListener comboBoxConditionsListener;
+    private JTargetPicker targetPicker;
+    private JPanel panelParameters;
 
     public ICondition getICondition() {
-        return iCondition;
+        condition.setMin((Integer)jRangeSlider.getLowValue());
+        condition.setMax((Integer)jRangeSlider.getHighValue());
+        return condition;
     }
 
     public void setCondition(ICondition iCondition, boolean updateText) {
-        this.iCondition = iCondition;
+        this.condition = iCondition;
         if (updateText) {
             setText("<html>" + iCondition.toHTML() + "</html>");
         }
@@ -64,9 +77,15 @@ public class JCondition extends JButton {
         comboBoxConditions.setSelectedItem(selection);
         comboBoxConditions.addActionListener(comboBoxConditionsListener);
 
+        jRangeSlider.setMaximum(condition.getDirections().size());
+        jRangeSlider.setLowValue(condition.getMin());
+        jRangeSlider.setHighValue(condition.getMax());
+        lowValueLabel.setText(Integer.toString(condition.getMin()));
+        highValueLabel.setText(Integer.toString(condition.getMax()));
+
         if (iCondition instanceof NoCondition) {
             comboBoxConditions.setPreferredSize(new Dimension(200, 25));
-            targetPicker.setVisible(false);
+            quantifiedTargetsPanel.setVisible(false);
             panelParameters.setVisible(false);
             return;
         }
@@ -91,7 +110,7 @@ public class JCondition extends JButton {
             constraints.gridy = constraints.gridy + 1;
         }
 
-        targetPicker.setVisible(true);
+        quantifiedTargetsPanel.setVisible(true);
         panelParameters.setVisible(true);
     }
 
@@ -104,7 +123,7 @@ public class JCondition extends JButton {
             public void windowOpened(WindowEvent e) {}
             public void windowClosing(WindowEvent e) {}
             public void windowClosed(WindowEvent e) {
-                setText("<html>" + iCondition.toHTML() + "</html>");
+                setText("<html>" + condition.toHTML() + "</html>");
             }
             public void windowIconified(WindowEvent e) {}
             public void windowDeiconified(WindowEvent e) {}
@@ -132,13 +151,54 @@ public class JCondition extends JButton {
         constraints.insets = new Insets(10, 10, 5, 10);
         dialog.add(comboBoxConditions, constraints);
 
+
+        quantifiedTargetsPanel = new JPanel();
+        quantifiedTargetsPanel.setBorder(new TitledBorder("Quantified Targets"));
+        quantifiedTargetsPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
+
+        JPanel rangePanel = new JPanel();
+        rangePanel.setLayout(new BorderLayout());
+
+        JPanel lowAlignmentPanel = new JPanel();
+        lowAlignmentPanel.setLayout(new BorderLayout());
+        JPanel lowPanel = new JPanel();
+        JLabel lowTextLabel = new JLabel("Min:");
+        lowPanel.add(lowTextLabel);
+        lowValueLabel = new JLabel("0");
+        lowPanel.add(lowValueLabel);
+        lowAlignmentPanel.add(lowPanel, BorderLayout.SOUTH);
+        rangePanel.add(lowAlignmentPanel, BorderLayout.WEST);
+
+        jRangeSlider = new JRangeSlider(0, 0, 0, 0, JRangeSlider.VERTICAL, JRangeSlider.RIGHTLEFT_BOTTOMTOP);
+        jRangeSlider.addChangeListener(new ChangeListener() {
+            public void stateChanged(ChangeEvent e) {
+                lowValueLabel.setText(Integer.toString(jRangeSlider.getLowValue()));
+                highValueLabel.setText(Integer.toString(jRangeSlider.getHighValue()));
+            }
+        });
+        rangePanel.add(jRangeSlider, BorderLayout.CENTER);
+
+        JPanel highPanel = new JPanel();
+        JLabel highTextLabel = new JLabel("Max:");
+        highPanel.add(highTextLabel);
+        highValueLabel = new JLabel("0");
+        highPanel.add(highValueLabel);
+        rangePanel.add(highPanel, BorderLayout.EAST);
+
+        quantifiedTargetsPanel.add(rangePanel);
+
+        JLabel ofLabel = new JLabel("of");
+        quantifiedTargetsPanel.add(ofLabel);
+
+        targetPicker = new JTargetPicker(new TargetClickListener());
+        quantifiedTargetsPanel.add(targetPicker);
+
         constraints.fill = GridBagConstraints.NONE;
         constraints.gridwidth = 1;
         constraints.gridx = 0;
         constraints.gridy = 1;
         constraints.insets = new Insets(5, 10, 5, 5);
-        targetPicker = new JTargetPicker();
-        dialog.add(targetPicker, constraints);
+        dialog.add(quantifiedTargetsPanel, constraints);
 
         panelParameters = new JPanel();
         panelParameters.setBorder(new TitledBorder("Parameters"));
@@ -154,7 +214,7 @@ public class JCondition extends JButton {
         btnOK.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 dialog.dispose();
-                setText(iCondition.toString());
+                setText(getICondition().toString());
             }
          });
         controlPanel.add(btnOK);
@@ -189,6 +249,19 @@ public class JCondition extends JButton {
                 ex.printStackTrace();
                 System.exit(1);
             }
+        }
+    }
+
+    private class TargetClickListener implements ActionListener {
+
+        public void actionPerformed(ActionEvent e) {
+            int currentMax = (Integer)(jRangeSlider.getMaximum());
+            int newMax = ((JToggleButton)e.getSource()).isSelected() ? currentMax + 1 : currentMax - 1;
+            jRangeSlider.setMaximum(newMax);
+            if (jRangeSlider.getHighValue() == currentMax) {
+                jRangeSlider.setHighValue(newMax);
+            }
+            jRangeSlider.revalidate();
         }
     }
 }

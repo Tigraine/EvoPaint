@@ -35,7 +35,8 @@ public class NoCondition extends AbstractCondition {
         return "true";
     }
 
-    public boolean isMet(Pixel us, World world) {
+    @Override
+    protected boolean isMetCallback(Pixel us, Pixel them) {
         return true;
     }
 
@@ -44,11 +45,11 @@ public class NoCondition extends AbstractCondition {
         return ret;
     }
 
-    public NoCondition(List<RelativeCoordinate> directions) {
-        super(directions);
+    public NoCondition(int min, int max, List<RelativeCoordinate> directions) {
+        super(min, max, directions);
     }
 
     public NoCondition() {
-        super(new ArrayList<RelativeCoordinate>(9));
+        super(0, 0, new ArrayList<RelativeCoordinate>(9));
     }
 }

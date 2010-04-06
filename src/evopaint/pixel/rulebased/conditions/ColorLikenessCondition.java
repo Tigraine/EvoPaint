@@ -85,7 +85,7 @@ public class ColorLikenessCondition extends AbstractCondition {
     public String toString() {
         String ret = new String();
         ret += getDirectionsString();
-        ret += super.getDirections().size() > 1 ? " are " : " is ";
+        ret += " are ";
         ret += "colored ";
         ret += comparisonOperator.toString();
         ret += " ";
@@ -102,7 +102,7 @@ public class ColorLikenessCondition extends AbstractCondition {
     public String toHTML() {
         String ret = new String();
         ret += getDirectionsString();
-        ret += super.getDirections().size() > 1 ? " are " : " is ";
+        ret += " are ";
         ret += "colored ";
         ret += comparisonOperator.toHTML();
         ret += " ";
@@ -115,20 +115,16 @@ public class ColorLikenessCondition extends AbstractCondition {
         return ret;
     }
 
-    public boolean isMet(Pixel us, World world) {
-        for (RelativeCoordinate direction : getDirections()) {
-            Pixel them = world.get(us.getLocation(), direction);
-            if (them == null) { // never forget to skip empty spots
-                continue;
-            }
-            double distance = them.getPixelColor().distanceTo(comparedColor, dimensions);
-            //System.out.println("distance: " + distance);
-            int likenessPercentage = (int)((1 - distance) * 100);
-            return comparisonOperator.compare(likenessPercentage, compareToLikenessPercentage);
+    protected boolean isMetCallback(Pixel us, Pixel them) {
+        if (them == null) { // never forget to skip empty spots
+            return false;
         }
-        return true;
+        double distance = them.getPixelColor().distanceTo(comparedColor, dimensions);
+        //System.out.println("distance: " + distance);
+        int likenessPercentage = (int)((1 - distance) * 100);
+        return comparisonOperator.compare(likenessPercentage, compareToLikenessPercentage);
     }
-
+    
     public LinkedHashMap<String,JComponent> getParametersForGUI(Configuration configuration) {
         LinkedHashMap<String,JComponent> ret = new LinkedHashMap<String,JComponent>();
 
@@ -173,16 +169,16 @@ public class ColorLikenessCondition extends AbstractCondition {
         return ret;
     }
 
-    public ColorLikenessCondition(List<RelativeCoordinate> directions, NumberComparisonOperator comparisonOperator, int compareToLikenessPercentage, ColorDimensions dimensions, PixelColor comparedColor) {
-        super(directions);
-        this.comparisonOperator = comparisonOperator;
+    public ColorLikenessCondition(int min, int max, List<RelativeCoordinate> directions, PixelColor comparedColor, ColorDimensions dimensions, int compareToLikenessPercentage, NumberComparisonOperator comparisonOperator) {
+        super(min, max, directions);
         this.comparedColor = comparedColor;
-        this.compareToLikenessPercentage = compareToLikenessPercentage;
         this.dimensions = dimensions;
+        this.compareToLikenessPercentage = compareToLikenessPercentage;
+        this.comparisonOperator = comparisonOperator;
     }
 
     public ColorLikenessCondition() {
-        super(new ArrayList<RelativeCoordinate>(9));
+        super(0, 0, new ArrayList<RelativeCoordinate>(9));
         this.comparisonOperator = NumberComparisonOperator.EQUAL;
         this.comparedColor = new PixelColor(0, 0, 0);
         this.compareToLikenessPercentage = 0;

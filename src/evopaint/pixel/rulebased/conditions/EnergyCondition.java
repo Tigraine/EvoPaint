@@ -58,7 +58,7 @@ public class EnergyCondition extends AbstractCondition {
     public String toString() {
          String ret = new String();
         ret += getDirectionsString();
-        ret += super.getDirections().size() > 1 ? " have " : " has ";
+        ret += " have ";
         ret += comparisonOperator.toString();
         ret += " ";
         ret += energyValue;
@@ -70,7 +70,7 @@ public class EnergyCondition extends AbstractCondition {
     public String toHTML() {
         String ret = new String();
         ret += getDirectionsString();
-        ret += super.getDirections().size() > 1 ? " have " : " has ";
+        ret += " have ";
         ret += comparisonOperator.toHTML();
         ret += " ";
         ret += energyValue;
@@ -78,18 +78,11 @@ public class EnergyCondition extends AbstractCondition {
         return ret;
     }
 
-    @Override
-    public boolean isMet(Pixel us, World world) {
-        for (RelativeCoordinate direction : getDirections()) {
-            Pixel them = world.get(us.getLocation(), direction);
-            if (them == null) { // never forget to skip empty spots
-                continue;
-            }
-            if (comparisonOperator.compare(them.getEnergy(), energyValue) == false) {
-                return false; // so this is what lazy evaluation looks like...
-            }
+    protected boolean isMetCallback(Pixel us, Pixel them) {
+        if (them == null) { // never forget to skip empty spots
+            return false;
         }
-        return true;
+        return comparisonOperator.compare(them.getEnergy(), energyValue);
     }
 
     public LinkedHashMap<String,JComponent> getParametersForGUI(Configuration configuration) {
@@ -109,14 +102,14 @@ public class EnergyCondition extends AbstractCondition {
         return ret;
     }
 
-    public EnergyCondition(List<RelativeCoordinate> directions, NumberComparisonOperator comparisonOperator, int energyValue) {
-        super(directions);
+    public EnergyCondition(int min, int max, List<RelativeCoordinate> directions, NumberComparisonOperator comparisonOperator, int energyValue) {
+        super(min, max, directions);
         this.comparisonOperator = comparisonOperator;
         this.energyValue = energyValue;
     }
 
     public EnergyCondition() {
-        super(new ArrayList<RelativeCoordinate>(9));
+        super(0, 0, new ArrayList<RelativeCoordinate>(9));
         this.comparisonOperator = NumberComparisonOperator.EQUAL;
         this.energyValue = 0;
     }
