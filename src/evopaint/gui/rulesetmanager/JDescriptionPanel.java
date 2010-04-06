@@ -99,8 +99,12 @@ public class JDescriptionPanel extends JPanel implements TreeSelectionListener {
 
     private void render() {
         String heading = "<h1 style='text-align: center;'>" + title + "</h1>";
-        String html = "<html><body>" + heading + "<p>" + description + "</p></body></html>";
+        String html = "<html><body>" + heading + "<p>" + newLineToBreak(description) + "</p></body></html>";
         viewerTextPane.setText(html);
+    }
+
+    private String newLineToBreak(String s) {
+        return s.replaceAll("\n", "<br>");
     }
 
     public void valueChanged(TreeSelectionEvent e) {
