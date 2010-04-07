@@ -7,17 +7,14 @@ package evopaint.gui;
 
 import evopaint.Brush;
 import evopaint.Configuration;
-import evopaint.gui.rulesetmanager.util.ColorChooserLabel;
-import java.awt.BorderLayout;
+import evopaint.Paint;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -26,7 +23,6 @@ import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
-import javax.swing.border.LineBorder;
 
 /**
  *
@@ -78,10 +74,10 @@ public class PaintPanel extends JPanel {
 
         // color button
         colorRadio = new JRadioButton();
-        colorRadio.setText("<html>" + configuration.brush.getColor().toHTML() + "</html>");
+        colorRadio.setText("<html>" + configuration.brush.paint.color.toHTML() + "</html>");
         colorRadio.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                configuration.brush.setMode(Brush.COLOR);
+                configuration.brush.paint.mode = Paint.COLOR;
             }
         });
         colorRadio.setSelected(true);
@@ -100,7 +96,7 @@ public class PaintPanel extends JPanel {
         JRadioButton fairDustRadio = new JRadioButton("Fairy Dust");
         fairDustRadio.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                configuration.brush.setMode(Brush.FAIRY_DUST);
+                configuration.brush.paint.mode = Paint.FAIRY_DUST;
             }
         });
         constraints.gridy = 1;
@@ -110,7 +106,7 @@ public class PaintPanel extends JPanel {
         JRadioButton useExistingRadio = new JRadioButton("Use Existing");
         useExistingRadio.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                configuration.brush.setMode(Brush.USE_EXISTING);
+                configuration.brush.paint.mode = Paint.USE_EXISTING;
             }
         });
         constraints.gridy = 2;
@@ -148,7 +144,7 @@ public class PaintPanel extends JPanel {
     private class EditColorListener implements ActionListener {
 
         public void actionPerformed(ActionEvent e) {
-            colorChooser.setColor(configuration.brush.getColor().getInteger());
+            colorChooser.setColor(configuration.brush.paint.color.getInteger());
             colorChooser.setPreviewPanel(new JPanel());
             JDialog dialog = JColorChooser.createDialog(editColorBtn, "Choose Color", true,
                     colorChooser, new ColorChooserOKListener(), new ColorChooserCancelListener());
@@ -162,8 +158,8 @@ public class PaintPanel extends JPanel {
 
          public void actionPerformed(ActionEvent e) {
             Color c = colorChooser.getColor();
-            configuration.brush.getColor().setInteger(c.getRGB());
-            colorRadio.setText("<html>" + configuration.brush.getColor().toHTML() + "</html>");
+            configuration.brush.paint.color.setInteger(c.getRGB());
+            colorRadio.setText("<html>" + configuration.brush.paint.color.toHTML() + "</html>");
         }
     }
 

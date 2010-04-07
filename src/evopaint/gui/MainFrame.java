@@ -243,7 +243,7 @@ public class MainFrame extends JFrame {
             RuleSet ruleSet = jRuleSetManager.getSelectedRuleSet();
             assert (ruleSet != null);
             //System.out.println(ruleSet);
-            configuration.brush.setRuleSet(ruleSet);
+            configuration.brush.paint.ruleSet = ruleSet;
             jPixelPanel.setRuleSetName(ruleSet.getName());
             ((CardLayout)contentPane.getLayout()).show(contentPane, "main");
             menuBar.setVisible(true);
