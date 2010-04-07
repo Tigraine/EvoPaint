@@ -140,6 +140,11 @@ public class ParallaxMap<T> extends AbstractCollection<T> {
         return data[i];
     }
 
+    public synchronized void set(AbsoluteCoordinate ac, T object) {
+        int i = clamp(ac.y, height) * width + clamp(ac.x, width);
+        set(i, object);
+    }
+
     public synchronized void set(int i, T object) {
         if (data[i] == null) {
             if (object != null) {
@@ -154,6 +159,16 @@ public class ParallaxMap<T> extends AbstractCollection<T> {
     protected synchronized void set(int x, int y, T object) {
         int i = clamp(y, height) * width + clamp(x, width);
         set(i, object);
+    }
+
+    public synchronized void remove(AbsoluteCoordinate ac) {
+        int i = clamp(ac.y, height) * width + clamp(ac.x, width);
+        set(i, null);
+    }
+
+    @Override
+    public boolean remove(Object o) {
+        return false;
     }
 
     public static int clamp(int index, int length) {
