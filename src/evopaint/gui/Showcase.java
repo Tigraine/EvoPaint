@@ -228,6 +228,10 @@ public class Showcase extends JComponent implements MouseInputListener, MouseWhe
                     public void actionPerformed(ActionEvent e) {
                         configuration.paint = paint;
                         mainFrame.setPaint(paint);
+                        if (configuration.paintHistory.contains(paint)) {
+                            configuration.paintHistory.remove(paint);
+                            configuration.paintHistory.addFirst(paint);
+                        }
                     }
                 });
                 paintHistoryMenu.add(menuItem);

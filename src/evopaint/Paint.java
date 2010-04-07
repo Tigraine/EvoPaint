@@ -37,7 +37,7 @@ public class Paint implements IHTML {
             break;
             default: assert(false);
         }
-        return ret + " - " + ruleSet.getName();
+        return ret + " - \"" + ruleSet.getName() + "\"";
     }
 
     public PixelColor getColor() {
