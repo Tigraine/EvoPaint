@@ -8,7 +8,7 @@ package evopaint.gui.rulesetmanager;
 import evopaint.gui.rulesetmanager.util.NamedObjectListCellRenderer;
 import evopaint.Configuration;
 import evopaint.gui.util.AutoSelectOnFocusSpinner;
-import evopaint.pixel.rulebased.actions.NoAction;
+import evopaint.pixel.rulebased.actions.IdleAction;
 import evopaint.pixel.rulebased.interfaces.IAction;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
@@ -69,7 +69,7 @@ public class JAction extends JButton {
         comboBoxActions.setSelectedItem(selection);
         comboBoxActions.addActionListener(comboBoxActionsListener);
 
-        if (iAction instanceof NoAction) {
+        if (iAction instanceof IdleAction) {
             comboBoxActions.setPreferredSize(new Dimension(200, 25)); // or else it will get crippled
             targetPicker.setVisible(false);
             panelParameters.setVisible(false);

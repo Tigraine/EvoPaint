@@ -20,13 +20,13 @@ import javax.swing.JComponent;
  *
  * @author tam
  */
-public class NoAction extends AbstractAction {
+public class IdleAction extends AbstractAction {
 
-    public NoAction(int cost, List<RelativeCoordinate> directions) {
+    public IdleAction(int cost, List<RelativeCoordinate> directions) {
         super("idle", cost, directions);
     }
 
-    public NoAction() {
+    public IdleAction() {
         super("idle");
     }
 

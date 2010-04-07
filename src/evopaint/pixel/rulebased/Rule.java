@@ -8,7 +8,7 @@ package evopaint.pixel.rulebased;
 import evopaint.pixel.rulebased.util.NumberComparisonOperator;
 import evopaint.World;
 import evopaint.pixel.Pixel;
-import evopaint.pixel.rulebased.actions.NoAction;
+import evopaint.pixel.rulebased.actions.IdleAction;
 import evopaint.pixel.rulebased.conditions.EnergyCondition;
 import evopaint.pixel.rulebased.conditions.TrueCondition;
 import evopaint.pixel.rulebased.interfaces.IRule;
@@ -147,6 +147,6 @@ public class Rule implements IRule, IHTML, ICopyable {
     public Rule() {
         this.conditions = new ArrayList<ICondition>();
         this.conditions.add(new TrueCondition());
-        this.action = new NoAction();
+        this.action = new IdleAction();
     }
 }

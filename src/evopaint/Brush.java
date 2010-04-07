@@ -12,7 +12,7 @@ import evopaint.pixel.rulebased.Rule;
 import evopaint.pixel.rulebased.RuleBasedPixel;
 import evopaint.pixel.rulebased.RuleSet;
 import evopaint.pixel.rulebased.actions.AssimilationAction;
-import evopaint.pixel.rulebased.actions.NoAction;
+import evopaint.pixel.rulebased.actions.IdleAction;
 import evopaint.pixel.rulebased.actions.RewardAction;
 import evopaint.pixel.rulebased.conditions.ColorLikenessCondition;
 import evopaint.pixel.rulebased.conditions.EnergyCondition;
@@ -93,7 +93,7 @@ public class Brush {
         List<RelativeCoordinate> directions = new ArrayList<RelativeCoordinate>();
         directions.add(RelativeCoordinate.SELF);
         conditions.add(new TrueCondition());
-        IAction action = new NoAction();
+        IAction action = new IdleAction();
         rules.add(new Rule(conditions, action));
 
         return new RuleSet("No RuleSet", "You should not be able to read this, well okay by digging the source you should. In that case: Welcome to the EvoPaint source code, enjoy your stay and copy all you like!", rules);

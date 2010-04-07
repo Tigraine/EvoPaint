@@ -10,7 +10,7 @@ import evopaint.interfaces.ITool;
 import evopaint.pixel.Pixel;
 import evopaint.pixel.rulebased.actions.AssimilationAction;
 import evopaint.pixel.rulebased.actions.CopyAction;
-import evopaint.pixel.rulebased.actions.NoAction;
+import evopaint.pixel.rulebased.actions.IdleAction;
 import evopaint.pixel.rulebased.actions.RewardAction;
 import evopaint.pixel.rulebased.conditions.ColorLikenessCondition;
 import evopaint.pixel.rulebased.conditions.EnergyCondition;
@@ -54,7 +54,7 @@ public class Configuration {
     }};
 
     public static final List<IAction> availableActions = new ArrayList<IAction>() {{
-        add(new NoAction());
+        add(new IdleAction());
         add(new AssimilationAction());
         add(new RewardAction());
         add(new CopyAction());
