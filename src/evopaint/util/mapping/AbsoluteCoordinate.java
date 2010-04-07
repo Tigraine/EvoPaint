@@ -19,8 +19,8 @@ public class AbsoluteCoordinate extends Coordinate implements Serializable {
     }
 
     public void move(RelativeCoordinate rc, ParallaxMap map) {
-        this.x = ParallaxMap.clamp(x, map.width);
-        this.y = ParallaxMap.clamp(y, map.height);
+        this.x = ParallaxMap.clamp(x + rc.x, map.width);
+        this.y = ParallaxMap.clamp(y + rc.y, map.height);
     }
 
     public AbsoluteCoordinate(int x, int y, ParallaxMap map) {
