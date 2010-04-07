@@ -16,7 +16,7 @@ import evopaint.pixel.rulebased.actions.NoAction;
 import evopaint.pixel.rulebased.actions.RewardAction;
 import evopaint.pixel.rulebased.conditions.ColorLikenessCondition;
 import evopaint.pixel.rulebased.conditions.EnergyCondition;
-import evopaint.pixel.rulebased.conditions.NoCondition;
+import evopaint.pixel.rulebased.conditions.TrueCondition;
 import evopaint.pixel.rulebased.interfaces.IAction;
 import evopaint.pixel.rulebased.interfaces.ICondition;
 import evopaint.pixel.rulebased.interfaces.IRule;
@@ -92,7 +92,7 @@ public class Brush {
         List<ICondition> conditions = new ArrayList<ICondition>();
         List<RelativeCoordinate> directions = new ArrayList<RelativeCoordinate>();
         directions.add(RelativeCoordinate.SELF);
-        conditions.add(new NoCondition());
+        conditions.add(new TrueCondition());
         IAction action = new NoAction();
         rules.add(new Rule(conditions, action));
 

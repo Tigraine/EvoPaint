@@ -8,7 +8,7 @@ package evopaint.gui.rulesetmanager;
 import evopaint.gui.rulesetmanager.util.NamedObjectListCellRenderer;
 import evopaint.Configuration;
 import evopaint.gui.rulesetmanager.util.JRangeSlider;
-import evopaint.pixel.rulebased.conditions.NoCondition;
+import evopaint.pixel.rulebased.conditions.TrueCondition;
 import evopaint.pixel.rulebased.interfaces.ICondition;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -83,7 +83,7 @@ public class JCondition extends JButton {
         lowValueLabel.setText(Integer.toString(condition.getMin()));
         highValueLabel.setText(Integer.toString(condition.getMax()));
 
-        if (iCondition instanceof NoCondition) {
+        if (iCondition instanceof TrueCondition) {
             comboBoxConditions.setPreferredSize(new Dimension(200, 25));
             quantifiedTargetsPanel.setVisible(false);
             panelParameters.setVisible(false);

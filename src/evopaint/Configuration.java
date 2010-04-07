@@ -17,7 +17,7 @@ import evopaint.pixel.rulebased.conditions.EnergyCondition;
 import evopaint.pixel.rulebased.interfaces.IAction;
 import evopaint.pixel.rulebased.interfaces.ICondition;
 import evopaint.pixel.rulebased.conditions.EmptyCondition;
-import evopaint.pixel.rulebased.conditions.NoCondition;
+import evopaint.pixel.rulebased.conditions.TrueCondition;
 import evopaint.util.FileHandler;
 import evopaint.util.RandomNumberGeneratorWrapper;
 import evopaint.util.logging.Logger;
@@ -47,7 +47,7 @@ public class Configuration {
 
     // TODO make to list of objects of ICondition
     public static final List<ICondition> availableConditions = new ArrayList<ICondition>() {{
-        add(new NoCondition());
+        add(new TrueCondition());
         add(new EmptyCondition());
         add(new EnergyCondition());
         add(new ColorLikenessCondition());

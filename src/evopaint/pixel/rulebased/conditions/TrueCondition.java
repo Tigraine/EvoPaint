@@ -18,13 +18,13 @@ import javax.swing.JComponent;
  *
  * @author tam
  */
-public class NoCondition extends AbstractCondition {
+public class TrueCondition extends AbstractCondition {
 
-    public NoCondition(int min, int max, List<RelativeCoordinate> directions) {
+    public TrueCondition(int min, int max, List<RelativeCoordinate> directions) {
         super("true", min, max, directions);
     }
 
-    public NoCondition() {
+    public TrueCondition() {
         super("true", 0, 0, new ArrayList<RelativeCoordinate>(9));
     }
 

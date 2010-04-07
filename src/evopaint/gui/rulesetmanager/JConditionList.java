@@ -6,7 +6,7 @@
 package evopaint.gui.rulesetmanager;
 
 import evopaint.Configuration;
-import evopaint.pixel.rulebased.conditions.NoCondition;
+import evopaint.pixel.rulebased.conditions.TrueCondition;
 import evopaint.pixel.rulebased.interfaces.ICondition;
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -85,7 +85,7 @@ public class JConditionList extends JPanel {
     private class AndButtonListener implements ActionListener {
 
         public void actionPerformed(ActionEvent e) {
-            ICondition condition = new NoCondition();
+            ICondition condition = new TrueCondition();
             addCondition(condition);
         }
     }
@@ -114,7 +114,7 @@ public class JConditionList extends JPanel {
             }
 
             if (jConditions.size() == 0) {
-                addCondition(new NoCondition());
+                addCondition(new TrueCondition());
             }
         }
     }
