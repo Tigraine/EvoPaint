@@ -103,19 +103,19 @@ public class Brush {
         
         for (int i = 0 - brushSize / 2 ; i < (int)Math.ceil((double)brushSize / 2); i++) {
             for (int j = 0 - brushSize / 2; j < (int)Math.ceil((double)brushSize / 2); j++) {
-               
+                PixelColor newColor = new PixelColor(color);
                 switch (mode) {
                     case COLOR:
                         break;
                     case FAIRY_DUST:
-                        color.setInteger(configuration.rng.nextPositiveInt(), configuration.rng);
+                        newColor.setInteger(configuration.rng.nextPositiveInt(), configuration.rng);
                         break;
                     case USE_EXISTING:
                         Pixel pixie = configuration.world.get(x + j, y + i);
                         if (pixie == null) {
                             continue;
                         }
-                        color.setHSB(pixie.getPixelColor().getHSB());
+                        newColor.setHSB(pixie.getPixelColor().getHSB());
                         break;
                     default:
                         assert(false);
@@ -124,7 +124,7 @@ public class Brush {
                 Pixel newPixel = null;
                 switch (configuration.pixelType) {
                     case Pixel.RULESET:
-                        newPixel = new RuleBasedPixel(new PixelColor(color), new AbsoluteCoordinate(x + j, y + i, configuration.world), energy, ruleSet);
+                        newPixel = new RuleBasedPixel(newColor, new AbsoluteCoordinate(x + j, y + i, configuration.world), energy, ruleSet);
                         break;
                     default: assert(false);
                 }
