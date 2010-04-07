@@ -8,6 +8,7 @@ package evopaint;
 import evopaint.interfaces.IRandomNumberGenerator;
 import evopaint.interfaces.ITool;
 import evopaint.pixel.Pixel;
+import evopaint.pixel.PixelColor;
 import evopaint.pixel.rulebased.actions.AssimilationAction;
 import evopaint.pixel.rulebased.actions.CopyAction;
 import evopaint.pixel.rulebased.actions.IdleAction;
@@ -26,6 +27,7 @@ import java.awt.Dimension;
 import java.awt.geom.AffineTransform;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.SortedMap;
 import org.uncommons.maths.random.CellularAutomatonRNG;
 import org.uncommons.maths.random.DefaultSeedGenerator;
 import org.uncommons.maths.random.SeedException;
@@ -88,6 +90,8 @@ public class Configuration {
     public int zoom;
 
     public IRandomNumberGenerator rng;
+
+    //public List<Pixel> pixelHistory;
 
     public double getScale() {
         return zoom / 10;

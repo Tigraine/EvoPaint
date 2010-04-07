@@ -25,7 +25,7 @@ public class MainFrame extends JFrame {
     private JOptionsPanel jOptionsPanel;
     private ToolBox toolBox;
     private SelectionToolBox selectionToolBox;
-    private JPixelPanel jPixelPanel;
+    private PaintPanel jPixelPanel;
     private JPanel leftPanel;
     private JRuleSetManager jRuleSetManager;
     private Configuration configuration;
@@ -88,34 +88,50 @@ public class MainFrame extends JFrame {
         mainPanel.add(leftPanel, BorderLayout.WEST);
 
         JPanel wrapperPanelLeft = new JPanel();
-        wrapperPanelLeft.setLayout(new BoxLayout(wrapperPanelLeft, BoxLayout.Y_AXIS));
+        wrapperPanelLeft.setLayout(new GridBagLayout());
         wrapperPanelLeft.setBackground(new Color(0xF2F2F5));
         wrapperPanelLeft.setBorder(new LineBorder(Color.GRAY));
-
+        GridBagConstraints constraintsWrapper = new GridBagConstraints();
+        constraintsWrapper.anchor = GridBagConstraints.NORTHWEST;
+        constraintsWrapper.insets = new Insets(3, 0, 3, 0);
 
         GridBagConstraints constraints = new GridBagConstraints();
         constraints.insets = new Insets(10, 10, 10, 10);
         leftPanel.add(wrapperPanelLeft, constraints);
 
         toolBox = new ToolBox(this);
-        wrapperPanelLeft.add(toolBox);
+        constraintsWrapper.gridy = 0;
+        constraintsWrapper.fill = GridBagConstraints.HORIZONTAL;
+        wrapperPanelLeft.add(toolBox, constraintsWrapper);
         
         JSeparator separator = new JSeparator(JSeparator.HORIZONTAL);
-        wrapperPanelLeft.add(separator);
+        constraintsWrapper.gridy++;
+        constraintsWrapper.fill = GridBagConstraints.HORIZONTAL;
+        wrapperPanelLeft.add(separator, constraintsWrapper);
         
         selectionToolBox = new SelectionToolBox(showcase);
-        wrapperPanelLeft.add(selectionToolBox);
-
-        JSeparator separator2 = new JSeparator(JSeparator.HORIZONTAL);
-        wrapperPanelLeft.add(separator2);
-
-        jPixelPanel = new JPixelPanel(configuration, new OpenRuleSetManagerListener());
-        wrapperPanelLeft.add(jPixelPanel);
+        constraintsWrapper.gridy++;
+        constraintsWrapper.fill = GridBagConstraints.NONE;
+        wrapperPanelLeft.add(selectionToolBox, constraintsWrapper);
 
         separator = new JSeparator(JSeparator.HORIZONTAL);
-        wrapperPanelLeft.add(separator);
+        constraintsWrapper.gridy++;
+        constraintsWrapper.fill = GridBagConstraints.HORIZONTAL;
+        wrapperPanelLeft.add(separator, constraintsWrapper);
 
-        wrapperPanelLeft.add(jOptionsPanel);
+        jPixelPanel = new PaintPanel(configuration, new OpenRuleSetManagerListener());
+        constraintsWrapper.gridy++;
+        constraintsWrapper.fill = GridBagConstraints.NONE;
+        wrapperPanelLeft.add(jPixelPanel, constraintsWrapper);
+
+        separator = new JSeparator(JSeparator.HORIZONTAL);
+        constraintsWrapper.gridy++;
+        constraintsWrapper.fill = GridBagConstraints.HORIZONTAL;
+        wrapperPanelLeft.add(separator, constraintsWrapper);
+
+        constraintsWrapper.gridy++;
+        constraintsWrapper.fill = GridBagConstraints.NONE;
+        wrapperPanelLeft.add(jOptionsPanel, constraintsWrapper);
 
         JPanel wrapperPanelRight = new JPanel();
         wrapperPanelRight.setBackground(Color.WHITE);

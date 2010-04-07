@@ -45,7 +45,7 @@ public class JOptionsPanel extends JPanel {
         emptyPanel.setBackground(new Color(0xF2F2F5));
         add(emptyPanel, "empty");
 
-        PaintOptionsPanel paintOptionsPanel = new PaintOptionsPanel(configuration);
+        BrushOptionsPanel paintOptionsPanel = new BrushOptionsPanel(configuration);
         add(paintOptionsPanel, "paint");
     }
 }
