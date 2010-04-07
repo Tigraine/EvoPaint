@@ -20,16 +20,26 @@ import java.util.List;
  */
 public abstract class AbstractCondition implements ICondition, INamed, IHTML {
 
+    private String name;
     private int min;
     private int max;
     private List<RelativeCoordinate> directions;
 
-    public AbstractCondition(int min, int max, List<RelativeCoordinate> directions) {
+    public AbstractCondition(String name, int min, int max, List<RelativeCoordinate> directions) {
+        this.name = name;
         this.min = min;
         this.max = max;
         this.directions = directions;
         assert (min >= 0 && min <= directions.size());
         assert (max >= 0 && max <= directions.size());
+    }
+
+    public AbstractCondition(String name) {
+        this.name = name;
+    }
+
+    public String getName() {
+        return name;
     }
 
     public int getMax() {
@@ -59,8 +69,25 @@ public abstract class AbstractCondition implements ICondition, INamed, IHTML {
     public void setDirections(List<RelativeCoordinate> directions) {
         this.directions = directions;
     }
-    
-    public String getDirectionsString() {
+
+    @Override
+    public String toString() {
+        String ret = new String();
+        ret += createDirectionsString();
+        ret += " ";
+        ret = toStringCallback(ret);
+        return ret;
+    }
+
+    public String toHTML() {
+        String ret = new String();
+        ret += createDirectionsString();
+        ret += " ";
+        ret = toHTMLCallback(ret);
+        return ret;
+    }
+
+    private String createDirectionsString() {
         String ret = new String();
         if (min == max) {
             if (min == directions.size()) {
@@ -93,37 +120,11 @@ public abstract class AbstractCondition implements ICondition, INamed, IHTML {
         return ret;
     }
 
-    @Override
-    public String toString() {
-        assert(false);
-        return null;
-    }
-
-    /**
-     * Implements the ICondition interface
-     * @param us the pixel for which the condition is checked
-     * @param world the world in which the condition is checked
-     * @return true if the concrete condition inheriting from this class is met, false otherwise.
-     */
-    public boolean isMet(Pixel us, World world) {
-        return isMet(this, us, world); // this 'this' will refer to the concrete class.
-                                        // While I don't like these semantics
-                                        // I sure can make good use of them :P
-    }
-
-    /**
-     * Checks whether the concreteCondition is met for the requested range
-     * between min and max inclusive
-     * @param concreteCondition an object of an child class of this class
-     * @param us the pixel for which the condition is checked
-     * @param world the world in which the condition is checked
-     * @return true if the condition meets for the given range, false otherwise.
-     */
-    private boolean isMet(AbstractCondition concreteCondition, Pixel us, World world) {
+    public boolean isMet(Pixel origin, World world) {
         int metCounter = 0;
         for (RelativeCoordinate direction : directions) {
-            Pixel them = world.get(us.getLocation(), direction);
-            if (concreteCondition.isMetCallback(us, them)) {
+            Pixel target = world.get(origin.getLocation(), direction);
+            if (isMetCallback(origin, target)) {
                 metCounter++;
                 if (metCounter >= min && max == directions.size()) {
                     return true;
@@ -148,7 +149,7 @@ public abstract class AbstractCondition implements ICondition, INamed, IHTML {
      */
     protected abstract boolean isMetCallback(Pixel us, Pixel them);
 
-    public abstract String getName();
+    protected abstract String toStringCallback(String conditionString);
 
-    public abstract String toHTML();
+    protected abstract String toHTMLCallback(String conditionString);
 }

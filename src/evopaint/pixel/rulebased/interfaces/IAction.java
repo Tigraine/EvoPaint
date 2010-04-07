@@ -23,5 +23,5 @@ public interface IAction extends INamed, IHTML, Serializable {
     public void setCost(int cost);
     public List<RelativeCoordinate> getDirections();
     public int execute(Pixel actor, World world);
-    LinkedHashMap<String,JComponent> getParametersForGUI(Configuration configuration);
+    LinkedHashMap<String, JComponent> parametersCallbackGUI(LinkedHashMap<String, JComponent> parametersMap);
 }

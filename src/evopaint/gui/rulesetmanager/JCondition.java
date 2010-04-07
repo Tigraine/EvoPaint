@@ -93,7 +93,8 @@ public class JCondition extends JButton {
         targetPicker.setDirections(iCondition.getDirections());
 
         panelParameters.removeAll();
-        LinkedHashMap<String,JComponent> parameters = iCondition.getParametersForGUI(configuration);
+        LinkedHashMap<String,JComponent> parameters =
+                iCondition.parametersCallbackGUI(new LinkedHashMap<String,JComponent>());
 
         GridBagConstraints constraints = new GridBagConstraints();
         constraints.gridx = 0;

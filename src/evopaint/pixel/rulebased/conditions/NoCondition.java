@@ -6,7 +6,6 @@
 package evopaint.pixel.rulebased.conditions;
 
 import evopaint.Configuration;
-import evopaint.World;
 import evopaint.pixel.rulebased.AbstractCondition;
 import evopaint.pixel.Pixel;
 import evopaint.util.mapping.RelativeCoordinate;
@@ -21,8 +20,16 @@ import javax.swing.JComponent;
  */
 public class NoCondition extends AbstractCondition {
 
-    public String getName() {
-        return "True";
+    public NoCondition(int min, int max, List<RelativeCoordinate> directions) {
+        super("true", min, max, directions);
+    }
+
+    public NoCondition() {
+        super("true", 0, 0, new ArrayList<RelativeCoordinate>(9));
+    }
+
+    protected boolean isMetCallback(Pixel us, Pixel them) {
+        return true;
     }
 
     @Override
@@ -30,26 +37,22 @@ public class NoCondition extends AbstractCondition {
         return "true";
     }
 
+    public String toStringCallback(String conditionString) {
+        // overwriting toString()
+        return null;
+    }
+
     @Override
     public String toHTML() {
         return "true";
     }
 
-    @Override
-    protected boolean isMetCallback(Pixel us, Pixel them) {
-        return true;
+    public String toHTMLCallback(String conditionString) {
+        // overwriting toHTML()
+        return null;
     }
 
-    public LinkedHashMap<String,JComponent> getParametersForGUI(Configuration configuration) {
-        LinkedHashMap<String,JComponent> ret = new LinkedHashMap<String,JComponent>();
-        return ret;
-    }
-
-    public NoCondition(int min, int max, List<RelativeCoordinate> directions) {
-        super(min, max, directions);
-    }
-
-    public NoCondition() {
-        super(0, 0, new ArrayList<RelativeCoordinate>(9));
+    public LinkedHashMap<String,JComponent> parametersCallbackGUI(LinkedHashMap<String,JComponent> parametersMap) {
+        return parametersMap;
     }
 }

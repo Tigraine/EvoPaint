@@ -77,7 +77,8 @@ public class JAction extends JButton {
         }
 
         panelParameters.removeAll();
-        LinkedHashMap<String,JComponent> parameters = iAction.getParametersForGUI(configuration);
+        LinkedHashMap<String,JComponent> parametersMap = new LinkedHashMap<String, JComponent>();
+        parametersMap = iAction.parametersCallbackGUI(parametersMap);
 
         SpinnerNumberModel spinnerModel = new SpinnerNumberModel(iAction.getCost(), 0, Integer.MAX_VALUE, 1);
         JSpinner costSpinner = new AutoSelectOnFocusSpinner(spinnerModel);
@@ -86,20 +87,20 @@ public class JAction extends JButton {
                 iAction.setCost((Integer) ((JSpinner) e.getSource()).getValue());
             }
         });
-        parameters.put("Cost", costSpinner);
+        parametersMap.put("Cost", costSpinner);
 
         GridBagConstraints constraints = new GridBagConstraints();
         constraints.gridx = 0;
         constraints.gridy = 1;
         constraints.anchor = GridBagConstraints.WEST;
         constraints.fill = GridBagConstraints.BOTH;
-        for (String string : parameters.keySet()) {
+        for (String string : parametersMap.keySet()) {
             constraints.gridx = 0;
             constraints.insets = new Insets(0, 0, 5, 10);
             panelParameters.add(new JLabel(string + ":"), constraints);
             constraints.gridx = 1;
             constraints.insets = new Insets(0, 0, 5, 0);
-            panelParameters.add(parameters.get(string), constraints);
+            panelParameters.add(parametersMap.get(string), constraints);
             constraints.gridy = constraints.gridy + 1;
         }
 

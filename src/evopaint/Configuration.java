@@ -7,26 +7,20 @@ package evopaint;
 
 import evopaint.interfaces.IRandomNumberGenerator;
 import evopaint.interfaces.ITool;
-import evopaint.pixel.ColorDimensions;
 import evopaint.pixel.Pixel;
-import evopaint.pixel.PixelColor;
-import evopaint.pixel.rulebased.Rule;
-import evopaint.pixel.rulebased.RuleSet;
 import evopaint.pixel.rulebased.actions.AssimilationAction;
+import evopaint.pixel.rulebased.actions.CopyAction;
 import evopaint.pixel.rulebased.actions.NoAction;
 import evopaint.pixel.rulebased.actions.RewardAction;
 import evopaint.pixel.rulebased.conditions.ColorLikenessCondition;
 import evopaint.pixel.rulebased.conditions.EnergyCondition;
 import evopaint.pixel.rulebased.interfaces.IAction;
 import evopaint.pixel.rulebased.interfaces.ICondition;
-import evopaint.pixel.rulebased.interfaces.IRule;
-import evopaint.pixel.rulebased.util.NumberComparisonOperator;
 import evopaint.pixel.rulebased.conditions.EmptyCondition;
 import evopaint.pixel.rulebased.conditions.NoCondition;
 import evopaint.util.FileHandler;
 import evopaint.util.RandomNumberGeneratorWrapper;
 import evopaint.util.logging.Logger;
-import evopaint.util.mapping.RelativeCoordinate;
 import java.awt.Dimension;
 import java.awt.geom.AffineTransform;
 import java.util.ArrayList;
@@ -63,6 +57,7 @@ public class Configuration {
         add(new NoAction());
         add(new AssimilationAction());
         add(new RewardAction());
+        add(new CopyAction());
     }};
    
     //public final int numThreads = 1;

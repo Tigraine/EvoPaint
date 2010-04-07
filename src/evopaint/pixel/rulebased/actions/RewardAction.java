@@ -11,9 +11,9 @@ import evopaint.World;
 import evopaint.gui.util.AutoSelectOnFocusSpinner;
 import evopaint.pixel.Pixel;
 import evopaint.util.mapping.RelativeCoordinate;
-import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import javax.swing.JComponent;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
@@ -28,8 +28,13 @@ public class RewardAction extends AbstractAction {
     
     private int rewardValue;
 
-    public String getName() {
-        return "Reward";
+    public RewardAction(int cost, List<RelativeCoordinate> directions, int rewardValue) {
+        super("reward", cost, directions);
+        this.rewardValue = rewardValue;
+    }
+
+    public RewardAction() {
+        super("reward");
     }
 
     public int getRewardValue() {
@@ -40,29 +45,25 @@ public class RewardAction extends AbstractAction {
         this.rewardValue = rewardValue;
     }
 
-    @Override
-    public String toString() {
-        String ret = "reward(";
-        ret += "targets: " + getDirectionsString();
-        ret += ", reward: " + rewardValue;
-        ret += ", cost: " + getCost();
-        ret += ")";
-        return ret;
+    public void executeCallback(Pixel origin, RelativeCoordinate direction, World world) {
+        Pixel target = world.get(origin.getLocation(), direction);
+        if (target == null) { // cannot reward nothingness
+            return;
+        }
+        target.reward(rewardValue);
     }
 
-    @Override
-    public String toHTML() {
-        String ret = "<b>reward</b>(";
-        ret += "<span style='color: #777777;'>targets:</span> " + getDirectionsString();
-        ret += ", <span style='color: #777777;'>reward:</span> " + rewardValue;
-        ret += ", <span style='color: #777777;'>cost:</span> " + getCost();
-        ret += ")";
-        return ret;
+    protected Map<String, String>parametersCallbackString(Map<String, String> map) {
+        map.put("reward", Integer.toString(rewardValue));
+        return map;
     }
 
-    public LinkedHashMap<String,JComponent> getParametersForGUI(Configuration configuration) {
-        LinkedHashMap<String,JComponent> ret = new LinkedHashMap<String,JComponent>();
+    protected Map<String, String>parametersCallbackHTML(Map<String, String> map) {
+        map.put("Reward", Integer.toString(rewardValue));
+        return map;
+    }
 
+    public LinkedHashMap<String,JComponent> parametersCallbackGUI(LinkedHashMap<String, JComponent> parametersMap) {
         SpinnerNumberModel spinnerModel = new SpinnerNumberModel(rewardValue, 0, Integer.MAX_VALUE, 1);
         JSpinner rewardValueSpinner = new AutoSelectOnFocusSpinner(spinnerModel);
         rewardValueSpinner.addChangeListener(new ChangeListener() {
@@ -70,33 +71,8 @@ public class RewardAction extends AbstractAction {
                 setRewardValue((Integer) ((JSpinner) e.getSource()).getValue());
             }
         });
-        ret.put("Reward", rewardValueSpinner);
+        parametersMap.put("Reward", rewardValueSpinner);
 
-        return ret;
-    }
-
-    public int execute(Pixel us, World world) {
-        // if the action costs more energy than this pixel got, it dies trying
-        if (getCost() > us.getEnergy()) {
-            return us.getEnergy();
-        }
-        
-        for (RelativeCoordinate direction : getDirections()) {
-            Pixel them = world.get(us.getLocation(), direction);
-            if (them == null) { // never forget to skip empty spots
-                continue;
-            }
-            them.reward(rewardValue);
-        }
-        return getCost();
-    }
-
-    public RewardAction(int cost, List<RelativeCoordinate> directions, int rewardValue) {
-        super(cost, directions);
-        this.rewardValue = rewardValue;
-    }
-
-    public RewardAction() {
-        super(0, new ArrayList<RelativeCoordinate>(9));
+        return parametersMap;
     }
 }

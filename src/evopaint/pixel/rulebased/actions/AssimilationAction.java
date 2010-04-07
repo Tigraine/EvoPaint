@@ -13,9 +13,9 @@ import evopaint.gui.util.AutoSelectOnFocusSpinner;
 import evopaint.pixel.ColorDimensions;
 import evopaint.pixel.Pixel;
 import evopaint.util.mapping.RelativeCoordinate;
-import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
@@ -33,10 +33,16 @@ public class AssimilationAction extends AbstractAction {
     private ColorDimensions dimensions;
     private byte ourSharePercent;
 
-    public String getName() {
-        return "Assimilate";
+    public AssimilationAction(int cost, List<RelativeCoordinate> directions, ColorDimensions dimensions, byte ourSharePercent) {
+        super("assimilate", cost, directions);
+        this.dimensions = dimensions;
+        this.ourSharePercent = ourSharePercent;
     }
 
+    public AssimilationAction() {
+        super("assimilate");
+    }
+    
     public ColorDimensions getDimensionsToMix() {
         return dimensions;
     }
@@ -53,48 +59,28 @@ public class AssimilationAction extends AbstractAction {
         this.ourSharePercent = ourSharePercent;
     }
 
-    @Override
-    public String toString() {
-        String ret = "assimilate(";
-        ret += "targets: " + getDirectionsString();
-        ret += ", dimensions: " + dimensions.toHTML();
-        ret += ", our share in %: " + ourSharePercent;
-        ret += ", cost: " + getCost();
-        ret += ")";
-        return ret;
-    }
-
-    @Override
-    public String toHTML() {
-        String ret = "<b>assimilate</b>(";
-        ret += "<span style='color: #777777;'>targets:</span> " + getDirectionsString();
-        ret += ", <span style='color: #777777;'>dimensions:</span> " + dimensions.toHTML();
-        ret += ", <span style='color: #777777;'>our share in %:</span> " + ourSharePercent;
-        ret += ", <span style='color: #777777;'>cost:</span> " + getCost();
-        ret += ")";
-        return ret;
-    }
-
-    public int execute(Pixel us, World world) {
-        // if the action costs more energy than this pixel got, it dies trying
-        if (getCost() > us.getEnergy()) {
-            return us.getEnergy();
+    public void executeCallback(Pixel origin, RelativeCoordinate direction, World world) {
+        Pixel target = world.get(origin.getLocation(), direction);
+        if (target == null) { // cannot assimilate empty
+            return;
         }
-
-        for (RelativeCoordinate direction : getDirections()) {
-            Pixel them = world.get(us.getLocation(), direction);
-            if (them == null) { // never forget to skip empty spots
-                continue;
-            }
-            them.getPixelColor().mixWith(us.getPixelColor(), ((float)ourSharePercent) / 100, dimensions);
-        }
-
-        return getCost();
+        target.getPixelColor().mixWith(origin.getPixelColor(),
+                ((float)ourSharePercent) / 100, dimensions);
     }
 
-    public LinkedHashMap<String,JComponent> getParametersForGUI(Configuration configuration) {
-        LinkedHashMap<String,JComponent> ret = new LinkedHashMap<String,JComponent>();
+    protected Map<String, String>parametersCallbackString(Map<String, String> map) {
+        map.put("dimensions", dimensions.toString());
+        map.put("our share in %", Integer.toString(ourSharePercent));
+        return map;
+    }
 
+    protected Map<String, String>parametersCallbackHTML(Map<String, String> map) {
+        map.put("dimensions", dimensions.toHTML());
+        map.put("our share in %", Integer.toString(ourSharePercent));
+        return map;
+    }
+
+    public LinkedHashMap<String,JComponent> parametersCallbackGUI(LinkedHashMap<String, JComponent> parametersMap) {
         JPanel dimensionsPanel = new JPanel();
         JToggleButton btnH = new JToggleButton("H");
         JToggleButton btnS = new JToggleButton("S");
@@ -115,7 +101,7 @@ public class AssimilationAction extends AbstractAction {
         dimensionsPanel.add(btnH);
         dimensionsPanel.add(btnS);
         dimensionsPanel.add(btnB);
-        ret.put("Dimensions", dimensionsPanel);
+        parametersMap.put("Dimensions", dimensionsPanel);
 
         SpinnerNumberModel spinnerModel = new SpinnerNumberModel(ourSharePercent, 0, 100, 1);
         JSpinner rewardValueSpinner = new AutoSelectOnFocusSpinner(spinnerModel);
@@ -124,19 +110,8 @@ public class AssimilationAction extends AbstractAction {
                 setOurSharePercent(((Integer) ((JSpinner) e.getSource()).getValue()).byteValue());
             }
         });
-        ret.put("Our share in %", rewardValueSpinner);
+        parametersMap.put("Our share in %", rewardValueSpinner);
 
-        return ret;
-    }
-
-    public AssimilationAction(int reward, List<RelativeCoordinate> directions, ColorDimensions dimensions, Byte ourSharePercent) {
-        super(reward, directions);
-        this.dimensions = dimensions;
-        this.ourSharePercent = ourSharePercent;
-    }
-
-    public AssimilationAction() {
-        super(0, new ArrayList<RelativeCoordinate>(9));
-        this.dimensions = new ColorDimensions(false, false, false);
+        return parametersMap;
     }
 }
