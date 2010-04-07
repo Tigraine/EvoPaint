@@ -47,6 +47,7 @@ public class Showcase extends JComponent implements MouseInputListener, MouseWhe
 
     private AffineTransform affineTransform = new AffineTransform();
     private boolean leftButtonPressed = false;
+    private boolean toggleMouseButton2Drag = false;
     private int zoom = 10;
     private double scale = (double)this.zoom / 10;
 
@@ -237,6 +238,9 @@ public class Showcase extends JComponent implements MouseInputListener, MouseWhe
                 paintHistoryMenu.add(menuItem);
             }
             paintHistoryMenu.show(e.getComponent(), e.getX(), e.getY());
+        } else if (e.getButton() == MouseEvent.BUTTON2) {
+            toggleMouseButton2Drag = true;
+            moveCommand.setSource(e.getPoint());
         }
     }
 
@@ -248,9 +252,9 @@ public class Showcase extends JComponent implements MouseInputListener, MouseWhe
                 selectCommand.setLocation(e.getPoint(), scale);
                 selectCommand.execute();
             }
-       // } else if (e.getButton() == MouseEvent.BUTTON3) {
-       //     mainFrame.hideToolMenu();
-       }
+        } else if (e.getButton() == MouseEvent.BUTTON2) {
+            toggleMouseButton2Drag = false;
+        }
     }
 
     public void mouseDragged(MouseEvent e) {
@@ -267,6 +271,9 @@ public class Showcase extends JComponent implements MouseInputListener, MouseWhe
                 //repaint();
                 //paintImmediately(0, 0, getWidth(), getHeight());
             }
+        } else if (toggleMouseButton2Drag == true) {
+            moveCommand.setDestination(e.getPoint());
+            moveCommand.execute();
         }
     }
 
