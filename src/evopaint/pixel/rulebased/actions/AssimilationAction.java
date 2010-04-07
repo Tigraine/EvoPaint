@@ -68,16 +68,16 @@ public class AssimilationAction extends AbstractAction {
                 ((float)ourSharePercent) / 100, dimensions);
     }
 
-    protected Map<String, String>parametersCallbackString(Map<String, String> map) {
-        map.put("dimensions", dimensions.toString());
-        map.put("our share in %", Integer.toString(ourSharePercent));
-        return map;
+    protected Map<String, String>parametersCallbackString(Map<String, String> parametersMap) {
+        parametersMap.put("dimensions", dimensions.toString());
+        parametersMap.put("our share in %", Integer.toString(ourSharePercent));
+        return parametersMap;
     }
 
-    protected Map<String, String>parametersCallbackHTML(Map<String, String> map) {
-        map.put("dimensions", dimensions.toHTML());
-        map.put("our share in %", Integer.toString(ourSharePercent));
-        return map;
+    protected Map<String, String>parametersCallbackHTML(Map<String, String> parametersMap) {
+        parametersMap.put("dimensions", dimensions.toHTML());
+        parametersMap.put("our share in %", Integer.toString(ourSharePercent));
+        return parametersMap;
     }
 
     public LinkedHashMap<String,JComponent> parametersCallbackGUI(LinkedHashMap<String, JComponent> parametersMap) {

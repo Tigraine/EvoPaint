@@ -34,12 +34,12 @@ public class NoAction extends AbstractAction {
         // MEEP MEEEEEEP!
     }
 
-    protected Map<String, String>parametersCallbackString(Map<String, String> map) {
-        return map;
+    protected Map<String, String>parametersCallbackString(Map<String, String> parametersMap) {
+        return parametersMap;
     }
 
-    protected Map<String, String>parametersCallbackHTML(Map<String, String> map) {
-        return map;
+    protected Map<String, String>parametersCallbackHTML(Map<String, String> parametersMap) {
+        return parametersMap;
     }
 
     public LinkedHashMap<String,JComponent> parametersCallbackGUI(LinkedHashMap<String, JComponent> parametersMap) {

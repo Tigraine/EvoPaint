@@ -53,14 +53,14 @@ public class RewardAction extends AbstractAction {
         target.reward(rewardValue);
     }
 
-    protected Map<String, String>parametersCallbackString(Map<String, String> map) {
-        map.put("reward", Integer.toString(rewardValue));
-        return map;
+    protected Map<String, String>parametersCallbackString(Map<String, String> parametersMap) {
+        parametersMap.put("reward", Integer.toString(rewardValue));
+        return parametersMap;
     }
 
-    protected Map<String, String>parametersCallbackHTML(Map<String, String> map) {
-        map.put("Reward", Integer.toString(rewardValue));
-        return map;
+    protected Map<String, String>parametersCallbackHTML(Map<String, String> parametersMap) {
+        parametersMap.put("Reward", Integer.toString(rewardValue));
+        return parametersMap;
     }
 
     public LinkedHashMap<String,JComponent> parametersCallbackGUI(LinkedHashMap<String, JComponent> parametersMap) {
