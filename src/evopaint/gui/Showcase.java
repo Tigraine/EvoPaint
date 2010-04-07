@@ -195,7 +195,7 @@ public class Showcase extends JComponent implements MouseInputListener, MouseWhe
 
     public void mouseWheelMoved(MouseWheelEvent e) {
         ZoomCommand zoomCommand ;
-        if (e.getWheelRotation() < 0)
+        if (e.getWheelRotation() < 0) 
             zoomCommand = new ZoomInCommand(this);
         else
             zoomCommand = new ZoomOutCommand(this);
@@ -218,6 +218,9 @@ public class Showcase extends JComponent implements MouseInputListener, MouseWhe
                 selectCommand.execute();
             }
         } else if (e.getButton() == MouseEvent.BUTTON3) {
+             if (configuration.paintHistory.size() < 1) {
+                 return;
+             }
             //if (false == e.isPopupTrigger()) {
             //    return;
             //}
