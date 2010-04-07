@@ -262,6 +262,9 @@ public class JCondition extends JButton {
             if (jRangeSlider.getHighValue() == currentMax) {
                 jRangeSlider.setHighValue(newMax);
             }
+            if (jRangeSlider.getLowValue() == currentMax) {
+                jRangeSlider.setLowValue(newMax);
+            }
             jRangeSlider.revalidate();
         }
     }
