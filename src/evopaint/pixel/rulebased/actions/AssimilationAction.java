@@ -41,6 +41,7 @@ public class AssimilationAction extends AbstractAction {
 
     public AssimilationAction() {
         super("assimilate");
+        dimensions = new ColorDimensions(true, true, true);
     }
     
     public ColorDimensions getDimensionsToMix() {
