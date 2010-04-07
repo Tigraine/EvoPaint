@@ -5,18 +5,20 @@
 package evopaint.gui;
 
 import evopaint.Configuration;
+import evopaint.Paint;
 import evopaint.commands.*;
 import evopaint.Selection;
 import evopaint.World;
 import evopaint.Perception;
 import evopaint.util.logging.Logger;
-import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
@@ -25,10 +27,10 @@ import java.awt.image.BufferedImage;
 import java.util.Observable;
 import java.util.Observer;
 import javax.swing.JComponent;
-import javax.swing.JScrollPane;
+import javax.swing.JMenuItem;
+import javax.swing.JPopupMenu;
 import javax.swing.Scrollable;
 import javax.swing.SwingConstants;
-import javax.swing.border.BevelBorder;
 import javax.swing.event.MouseInputListener;
 
 /**
@@ -215,9 +217,22 @@ public class Showcase extends JComponent implements MouseInputListener, MouseWhe
                 selectCommand.execute();
             }
         } else if (e.getButton() == MouseEvent.BUTTON3) {
-            if (leftButtonPressed == false) {
-                mainFrame.showToolMenu(e.getPoint());
+            //if (false == e.isPopupTrigger()) {
+            //    return;
+            //}
+            final JPopupMenu paintHistoryMenu = new JPopupMenu("Paint History");
+            for (final Paint paint : configuration.paintHistory) {
+                JMenuItem menuItem = new JMenuItem("<html>" + paint.toHTML() + "</html>");
+                menuItem.addActionListener(new ActionListener() {
+
+                    public void actionPerformed(ActionEvent e) {
+                        configuration.paint = paint;
+                        mainFrame.setPaint(paint);
+                    }
+                });
+                paintHistoryMenu.add(menuItem);
             }
+            paintHistoryMenu.show(e.getComponent(), e.getX(), e.getY());
         }
     }
 
@@ -229,9 +244,9 @@ public class Showcase extends JComponent implements MouseInputListener, MouseWhe
                 selectCommand.setLocation(e.getPoint(), scale);
                 selectCommand.execute();
             }
-        } else if (e.getButton() == MouseEvent.BUTTON3) {
-            mainFrame.hideToolMenu();
-        }
+       // } else if (e.getButton() == MouseEvent.BUTTON3) {
+       //     mainFrame.hideToolMenu();
+       }
     }
 
     public void mouseDragged(MouseEvent e) {

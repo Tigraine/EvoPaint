@@ -26,8 +26,8 @@ import evopaint.util.logging.Logger;
 import java.awt.Dimension;
 import java.awt.geom.AffineTransform;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
-import java.util.SortedMap;
 import org.uncommons.maths.random.CellularAutomatonRNG;
 import org.uncommons.maths.random.DefaultSeedGenerator;
 import org.uncommons.maths.random.SeedException;
@@ -85,13 +85,15 @@ public class Configuration {
     public FileHandler fileHandler;
     public World world;
     public Brush brush;
+    public Paint paint;
     public ITool activeTool;
     public AffineTransform affineTransform;
     public int zoom;
 
     public IRandomNumberGenerator rng;
 
-    //public List<Pixel> pixelHistory;
+    public int paintHistorySize = 5;
+    public LinkedList<Paint> paintHistory;
 
     public double getScale() {
         return zoom / 10;
@@ -126,7 +128,9 @@ public class Configuration {
     public Configuration() {
         rng = createRNG();
         brush = new Brush(this);
+        paint = new Paint(Paint.COLOR, new PixelColor(0xFF0000), Paint.noRuleSet());
         fileHandler = new FileHandler();
+        paintHistory = new LinkedList<Paint>();
     }
 
 

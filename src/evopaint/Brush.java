@@ -16,15 +16,14 @@ import evopaint.util.mapping.AbsoluteCoordinate;
  */
 public class Brush {
     private Configuration configuration;
-    public Paint paint;
     public int size;
 
     public void paint(int x, int y) {
         
         for (int i = 0 - size / 2 ; i < (int)Math.ceil((double)size / 2); i++) {
             for (int j = 0 - size / 2; j < (int)Math.ceil((double)size / 2); j++) {
-                PixelColor newColor = new PixelColor(paint.color);
-                switch (paint.mode) {
+                PixelColor newColor = new PixelColor(configuration.paint.getColor());
+                switch (configuration.paint.getMode()) {
                     case Paint.COLOR:
                         break;
                     case Paint.FAIRY_DUST:
@@ -44,7 +43,7 @@ public class Brush {
                 Pixel newPixel = null;
                 switch (configuration.pixelType) {
                     case Pixel.RULESET:
-                        newPixel = new RuleBasedPixel(newColor, new AbsoluteCoordinate(x + j, y + i, configuration.world), configuration.startingEnergy, paint.ruleSet);
+                        newPixel = new RuleBasedPixel(newColor, new AbsoluteCoordinate(x + j, y + i, configuration.world), configuration.startingEnergy, configuration.paint.getRuleSet());
                         break;
                     default: assert(false);
                 }
@@ -56,6 +55,5 @@ public class Brush {
     public Brush(Configuration configuration) {
         this.configuration = configuration;
         this.size = 10;
-        this.paint = new Paint(Paint.COLOR, new PixelColor(0xFF0000), Paint.noRuleSet());
     }
 }
