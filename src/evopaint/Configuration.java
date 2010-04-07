@@ -11,6 +11,7 @@ import evopaint.pixel.Pixel;
 import evopaint.pixel.rulebased.actions.AssimilationAction;
 import evopaint.pixel.rulebased.actions.CopyAction;
 import evopaint.pixel.rulebased.actions.IdleAction;
+import evopaint.pixel.rulebased.actions.MoveAction;
 import evopaint.pixel.rulebased.actions.RewardAction;
 import evopaint.pixel.rulebased.conditions.ColorLikenessCondition;
 import evopaint.pixel.rulebased.conditions.EnergyCondition;
@@ -58,6 +59,7 @@ public class Configuration {
         add(new AssimilationAction());
         add(new RewardAction());
         add(new CopyAction());
+        add(new MoveAction());
     }};
    
     //public final int numThreads = 1;
