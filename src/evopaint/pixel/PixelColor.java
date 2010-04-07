@@ -20,7 +20,7 @@ import java.io.Serializable;
  * @author tam
  */
 public class PixelColor implements IHTML, Serializable {
-    
+
     private float hue;
     private float saturation;
     private float brightness;
@@ -47,11 +47,10 @@ public class PixelColor implements IHTML, Serializable {
         this.brightness = brightness;
     }
 
-    public void setInteger(int integer, IRandomNumberGenerator rng) {
+    public void setInteger(int integer) {
         float [] hsb = null;
-        hsb = Color.RGBtoHSB(integer >> 16 & 0xFF, integer >> 8 & 0xFF, integer & 0xFF, hsb);
-        this.hue = (integer & 0xFFFFFF) == 0 || // because red is default and you wonder why your picture becomes all red..
-                (integer & 0xFFFFFF) == 0xFFFFFF ? rng.nextFloat() : hsb[0];
+        hsb = Color.RGBtoHSB((integer >> 16) & 0xFF, (integer >> 8) & 0xFF, integer & 0xFF, hsb);
+        this.hue = hsb[0];
         this.saturation = hsb[1];
         this.brightness = hsb[2];
     }
@@ -84,6 +83,15 @@ public class PixelColor implements IHTML, Serializable {
                 // is at least somewhat comparable
                 // to what we percieve as a "distance" between colors...
 
+                // rule out black and white for hue comparison for the default
+                // hue is red which will lead to a wrong distance (in most cases)
+                if (saturation == 0f || brightness == 0f ||
+                        theirColor.saturation == 0f || theirColor.brightness == 0f) {
+                    return (distanceLinear(saturation, theirColor.saturation) +
+                        distanceLinear(brightness, theirColor.brightness)
+                        ) / 2;
+                }
+
                 // hue is everyting. except for when we have very bright
                 // or very dark colors
                 // the 1:4 division between saturation and brightness is because
@@ -92,24 +100,24 @@ public class PixelColor implements IHTML, Serializable {
                 // half is a gradient from the color to white giving each
                 // "colorful" and "colorless" roughly 1/4 of the total
                 // color space
-                double maxS = Math.max(saturation, theirColor.getSaturation());
-                double maxB = Math.max(brightness, theirColor.getBrightness());
+                double maxS = Math.max(saturation, theirColor.saturation);
+                double maxB = Math.max(brightness, theirColor.brightness);
                 double hueWeight = 1d - ((1d - maxS) * 0.25d + (1d - maxB) * 0.75d) / 2d;
                 hueWeight = hueWeight >= 0.15d ? hueWeight : 0.15d; // hue always counts a little
                 hueWeight = hueWeight <= 0.85d ? hueWeight : 0.85d; // but never too much
                 //System.out.println("hue weight is: " + hueWeight);
 
-                distance = distanceCyclic(hue, theirColor.getHue())
+                distance = distanceCyclic(hue, theirColor.hue)
                             * hueWeight;
 
-                //System.out.println("hue distance: " + distanceCyclic(hue, theirColor.getHue()));
+                //System.out.println("hue distance: " + distanceCyclic(hue, theirColor.hue));
 
                 distance = distance
-                            + distanceLinear(saturation, theirColor.getSaturation())
+                            + distanceLinear(saturation, theirColor.saturation)
                             * (1d - hueWeight) / 2d;
 
                 distance = distance
-                            + distanceLinear(brightness, theirColor.getBrightness())
+                            + distanceLinear(brightness, theirColor.brightness)
                             * (1d - hueWeight) / 2d;
 
                 //System.out.println("distance between " + Integer.toHexString(getInteger()).substring(2).toUpperCase() +
@@ -117,45 +125,61 @@ public class PixelColor implements IHTML, Serializable {
                 //        " is " + distance);
 
         } else if (dimensions.hue && dimensions.saturation) {
+
+                // rule out black and white for hue comparison for the default
+                // hue is red which will lead to a wrong distance (in most cases)
+                if (saturation == 0f || brightness == 0f ||
+                        theirColor.saturation == 0f || theirColor.brightness == 0f) {
+                    return distanceLinear(saturation, theirColor.saturation);
+                }
+
                 // see HSB
-                double maxS = Math.max(saturation, theirColor.getSaturation());
-                double maxB = Math.max(brightness, theirColor.getBrightness());
+                double maxS = Math.max(saturation, theirColor.saturation);
+                double maxB = Math.max(brightness, theirColor.brightness);
                 double hueWeight = 1d - ((1d - maxS) * 0.25d + (1d - maxB) * 0.75d) / 2d;
                 hueWeight = hueWeight >= 0.15d ? hueWeight : 0.15d; // hue always counts a little
                 hueWeight = hueWeight <= 0.85d ? hueWeight : 0.85d; // but never too much
-                distance = distanceCyclic(hue, theirColor.getHue())
+                distance = distanceCyclic(hue, theirColor.hue)
                             * hueWeight;
                 distance = distance
-                            + distanceLinear(saturation, theirColor.getSaturation())
+                            + distanceLinear(saturation, theirColor.saturation)
                             * (1d - hueWeight);
 
         } else if (dimensions.hue && dimensions.brightness) {
+            
+                // rule out black and white for hue comparison for the default
+                // hue is red which will lead to a wrong distance (in most cases)
+                if (saturation == 0f || brightness == 0f ||
+                        theirColor.saturation == 0f || theirColor.brightness == 0f) {
+                    return distanceLinear(brightness, theirColor.brightness);
+                }
+
                 // see HSB
-                double maxS = Math.max(saturation, theirColor.getSaturation());
-                double maxB = Math.max(brightness, theirColor.getBrightness());
+                double maxS = Math.max(saturation, theirColor.saturation);
+                double maxB = Math.max(brightness, theirColor.brightness);
                 double hueWeight = 1d - ((1d - maxS) * 0.25d + (1d - maxB) * 0.75d) / 2d;
                 hueWeight = hueWeight >= 0.15d ? hueWeight : 0.15d; // hue always counts a little
                 hueWeight = hueWeight <= 0.85d ? hueWeight : 0.85d; // but never too much
-                distance = distanceCyclic(hue, theirColor.getHue())
+                distance = distanceCyclic(hue, theirColor.hue)
                             * hueWeight;
                 distance = distance
-                            + distanceLinear(brightness, theirColor.getBrightness())
+                            + distanceLinear(brightness, theirColor.brightness)
                             * (1d - hueWeight);
 
         } else if (dimensions.saturation && dimensions.brightness) {
                 // finally, something easy (I hope)
-                distance = (distanceLinear(saturation, theirColor.getSaturation()) +
-                        distanceLinear(brightness, theirColor.getBrightness())
+                distance = (distanceLinear(saturation, theirColor.saturation) +
+                        distanceLinear(brightness, theirColor.brightness)
                         ) / 2;
 
         } else if (dimensions.hue) {
-            distance = distanceCyclic(hue, theirColor.getHue());
+            distance = distanceCyclic(hue, theirColor.hue);
 
         } else if (dimensions.saturation) {
-            distance = distanceLinear(saturation, theirColor.getSaturation());
+            distance = distanceLinear(saturation, theirColor.saturation);
 
         } else if (dimensions.brightness) {
-            distance = distanceLinear(brightness, theirColor.getBrightness());
+            distance = distanceLinear(brightness, theirColor.brightness);
 
         } else {
             assert(false);
@@ -179,30 +203,57 @@ public class PixelColor implements IHTML, Serializable {
         //System.out.print(toString() + " + " + theirColor.toString() + " = ");
         
         if (dimensions.hue && dimensions.saturation && dimensions.brightness) {
-            hue = (float)mixCyclic(hue, theirColor.getHue(), theirShare);
-            saturation = (float)mixLinear(saturation, theirColor.getSaturation(), theirShare);
-            brightness = (float)mixLinear(brightness, theirColor.getBrightness(), theirShare);
+            // if we are black, white or grey, just take their hue
+            if (saturation == 0f || brightness == 0f) {
+                hue = theirColor.hue;
+            }
+            // else if they also have hue, then we mix
+            else if (theirColor.saturation != 0f && theirColor.brightness != 0f) {
+                hue = (float)mixCyclic(hue, theirColor.hue, theirShare);
+            }
+            // else they are color less and we keep your hue
+            
+            saturation = (float)mixLinear(saturation, theirColor.saturation, theirShare);
+            brightness = (float)mixLinear(brightness, theirColor.brightness, theirShare);
 
         } else if (dimensions.hue && dimensions.saturation) {
-                hue = (float)mixCyclic(hue, theirColor.getHue(), theirShare);
-                saturation = (float)mixLinear(saturation, theirColor.getSaturation(), theirShare);
+            // if we are black, white or grey, just take their hue
+            if (saturation == 0f || brightness == 0f) {
+                hue = theirColor.hue;
+            }
+            // else if they also have hue, then we mix
+            else if (theirColor.saturation != 0f && theirColor.brightness != 0f) {
+                hue = (float)mixCyclic(hue, theirColor.hue, theirShare);
+            }
+            // else they are color less and we keep your hue
+
+            saturation = (float)mixLinear(saturation, theirColor.saturation, theirShare);
 
         } else if (dimensions.hue && dimensions.brightness) {
-                hue = (float)mixCyclic(hue, theirColor.getHue(), theirShare);
-                brightness = (float)mixLinear(brightness, theirColor.getBrightness(), theirShare);
+            // if we are black, white or grey, just take their hue
+            if (saturation == 0f || brightness == 0f) {
+                hue = theirColor.hue;
+            }
+            // else if they also have hue, then we mix
+            else if (theirColor.saturation != 0f && theirColor.brightness != 0f) {
+                hue = (float)mixCyclic(hue, theirColor.hue, theirShare);
+            }
+            // else they are color less and we keep your hue
+
+            brightness = (float)mixLinear(brightness, theirColor.brightness, theirShare);
 
         } else if (dimensions.saturation && dimensions.brightness) {
-                saturation = (float)mixLinear(saturation, theirColor.getSaturation(), theirShare);
-                brightness = (float)mixLinear(brightness, theirColor.getBrightness(), theirShare);
+            saturation = (float)mixLinear(saturation, theirColor.saturation, theirShare);
+            brightness = (float)mixLinear(brightness, theirColor.brightness, theirShare);
 
         } else if (dimensions.hue) {
-            hue = (float)mixCyclic(hue, theirColor.getHue(), theirShare);
+            hue = (float)mixCyclic(hue, theirColor.hue, theirShare);
 
         } else if (dimensions.saturation) {
-            saturation = (float)mixLinear(saturation, theirColor.getSaturation(), theirShare);
+            saturation = (float)mixLinear(saturation, theirColor.saturation, theirShare);
 
         } else if (dimensions.brightness) {
-            brightness = (float)mixLinear(brightness, theirColor.getBrightness(), theirShare);
+            brightness = (float)mixLinear(brightness, theirColor.brightness, theirShare);
 
         } else {
             assert(false);
@@ -248,8 +299,8 @@ public class PixelColor implements IHTML, Serializable {
         this.brightness = brightness;
     }
 
-    public PixelColor(int integer, IRandomNumberGenerator rng) {
-        setInteger(integer, rng);
+    public PixelColor(int integer) {
+        setInteger(integer);
     }
 
     public PixelColor(PixelColor pixelColor) {

@@ -46,7 +46,7 @@ public class JPixelPanel extends JPanel {
         contentPanel.setBackground(new Color(0xF2F2F5));
 
         ColorChooserLabel colorChooserLabel =
-                new ColorChooserLabel(configuration.brush.getColor(), configuration.rng);
+                new ColorChooserLabel(configuration.brush.getColor());
         JPanel colorChooserAlignmentPanel = new JPanel();
         colorChooserAlignmentPanel.setBackground(new Color(0xF2F2F5));
         colorChooserAlignmentPanel.add(colorChooserLabel);

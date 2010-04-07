@@ -5,9 +5,6 @@
 
 package evopaint.gui.rulesetmanager.util;
 
-import evopaint.Configuration;
-import evopaint.gui.MainFrame;
-import evopaint.interfaces.IRandomNumberGenerator;
 import evopaint.pixel.PixelColor;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
@@ -18,7 +15,6 @@ import javax.swing.JColorChooser;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.SwingUtilities;
 import javax.swing.border.BevelBorder;
 
 /**
@@ -28,11 +24,9 @@ import javax.swing.border.BevelBorder;
 public class ColorChooserLabel extends JLabel {
     private PixelColor pixelColor;
     private JColorChooser colorChooser;
-    private IRandomNumberGenerator rng;
 
-    public ColorChooserLabel(PixelColor pixelColor, IRandomNumberGenerator rng) {
+    public ColorChooserLabel(PixelColor pixelColor) {
         this.pixelColor = pixelColor;
-        this.rng = rng;
         this.colorChooser = new JColorChooser(new Color(pixelColor.getInteger()));
         setText("<html>" + pixelColor.toHTML() + "</html>");
         setBorder(new BevelBorder(BevelBorder.LOWERED));
@@ -74,7 +68,7 @@ public class ColorChooserLabel extends JLabel {
 
         public void actionPerformed(ActionEvent e) {
             Color c = colorChooser.getColor();
-            pixelColor.setInteger(c.getRGB(), rng);
+            pixelColor.setInteger(c.getRGB());
             colorChooserLabel.setText("<html>" + pixelColor.toHTML() + "</html>");
         }
     }

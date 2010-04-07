@@ -128,7 +128,7 @@ public class ColorLikenessCondition extends AbstractCondition {
     public LinkedHashMap<String,JComponent> getParametersForGUI(Configuration configuration) {
         LinkedHashMap<String,JComponent> ret = new LinkedHashMap<String,JComponent>();
 
-        ColorChooserLabel colorLabel = new ColorChooserLabel(comparedColor, configuration.rng);
+        ColorChooserLabel colorLabel = new ColorChooserLabel(comparedColor);
         JPanel wrapLabelToAvoidUncoloredStretchedBackground = new JPanel();
         wrapLabelToAvoidUncoloredStretchedBackground.add(colorLabel);
         ret.put("Color", wrapLabelToAvoidUncoloredStretchedBackground);

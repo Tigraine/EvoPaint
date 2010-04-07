@@ -108,7 +108,7 @@ public class Brush {
                     case COLOR:
                         break;
                     case FAIRY_DUST:
-                        newColor.setInteger(configuration.rng.nextPositiveInt(), configuration.rng);
+                        newColor.setInteger(configuration.rng.nextPositiveInt());
                         break;
                     case USE_EXISTING:
                         Pixel pixie = configuration.world.get(x + j, y + i);
@@ -138,7 +138,7 @@ public class Brush {
         this.energy = configuration.startingEnergy;
         this.brushSize = 10;
         this.mode = COLOR;
-        this.color = new PixelColor(0xFF0000, configuration.rng);
+        this.color = new PixelColor(0xFF0000);
         this.ruleSet = noRuleSet();
     }
 }
