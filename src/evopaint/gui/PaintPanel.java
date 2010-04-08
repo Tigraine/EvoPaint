@@ -114,6 +114,7 @@ public class PaintPanel extends JPanel {
                         configuration.paint.getRuleSet());
             }
         });
+        fairyDustRadio.setPreferredSize(radioColorPanel.getPreferredSize());
         fairyDustRadio.setAlignmentX(Component.LEFT_ALIGNMENT);
         panelForColorButtons.add(fairyDustRadio);
 
@@ -126,6 +127,7 @@ public class PaintPanel extends JPanel {
                         configuration.paint.getRuleSet());
             }
         });
+        noColorRadio.setPreferredSize(radioColorPanel.getPreferredSize());
         noColorRadio.setAlignmentX(Component.LEFT_ALIGNMENT);
         panelForColorButtons.add(noColorRadio);
 
@@ -189,6 +191,7 @@ public class PaintPanel extends JPanel {
                         null);
             }
         });
+        noRuleSetRadio.setPreferredSize(radioRuleSetPanel.getPreferredSize());
         noRuleSetRadio.setAlignmentX(Component.LEFT_ALIGNMENT);
         panelForRuleSetButtons.add(noRuleSetRadio);
 

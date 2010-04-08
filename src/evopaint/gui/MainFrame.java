@@ -57,7 +57,6 @@ public class MainFrame extends JFrame {
         zoomInCommand = new ZoomInCommand(showcase);
         zoomOutCommand = new ZoomOutCommand(showcase);
 
-        activeTool = MoveCommand.class;
         CommandFactory commandFactory = new CommandFactory(configuration);
 
         try {
@@ -172,6 +171,8 @@ public class MainFrame extends JFrame {
 
         this.pack();
         this.setVisible(true);
+
+        toolBox.setInitialFocus();
     }
 
     public ToolBox getToolBox() {
