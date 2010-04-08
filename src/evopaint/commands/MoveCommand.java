@@ -2,16 +2,21 @@ package evopaint.commands;
 
 import evopaint.Configuration;
 import java.awt.Point;
-import java.awt.geom.AffineTransform;
 
 public class MoveCommand extends AbstractCommand {
 
-    private double dxtrans, dytrans;
-    private AffineTransform at;
+    private Configuration configuration;
+    private Point translation;
     private Point source;
     private Point destination;
-    private int imageWidth;
-    private int imageHeight;
+
+    public Point getTranslation() {
+        return translation;
+    }
+
+    public void setTranslation(Point translation) {
+        this.translation = translation;
+    }
 
     public Point getSource() {
         return source;
@@ -29,58 +34,36 @@ public class MoveCommand extends AbstractCommand {
         this.destination = destionation;
     }
 
-    public double getScale() {
-        return scale;
-    }
-
-    public void setScale(double scale) {
-        this.scale = scale;
-    }
-
-    private double scale;
-
-    private void translate(Point src, Point dst, double scale)
-    {
-        this.dxtrans = (dst.x - src.x) / scale;
-        this.dytrans = (dst.y - src.y) / scale;
-    }
-
     public MoveCommand(Configuration configuration) {
-        this.at = configuration.affineTransform;
-        this.imageWidth = configuration.dimension.width;
-        this.imageHeight = configuration.dimension.height;
+        this.configuration = configuration;
     }
 
     public void execute() {
-        assert(scale != 0);
+        assert(translation != null);
         assert(source != null);
         assert(destination != null);
-        translate(source, destination, scale);
-        // translate transform
-        at.translate(dxtrans, dytrans);
 
-        // and clamp it a little
-        double dx = at.getTranslateX();
-        double dy = at.getTranslateY();
+        Point delta = new Point(0, 0);
+        delta.x = destination.x - source.x;
+        delta.y = destination.y - source.y;
 
-        while (dx < (-1) * imageWidth) {
-            at.translate(imageWidth, 0);
-            dx = at.getTranslateX();
+        translation.translate(delta.x, delta.y);
+
+        while (translation.x < (-1) * configuration.dimension.width) {
+            translation.x += configuration.dimension.width;
         }
-        while (dx > imageWidth) {
-            at.translate((-1) * imageWidth, 0);
-            dx = at.getTranslateX();
+        while (translation.x > configuration.dimension.width) {
+            translation.x -= configuration.dimension.width;
         }
-        while (dy < (-1) * imageHeight) {
-            at.translate(0, imageHeight);
-            dy = at.getTranslateY();
+        while (translation.y < (-1) * configuration.dimension.height) {
+            translation.y += configuration.dimension.height;
         }
-        while (dy > imageHeight) {
-            at.translate(0, (-1) * imageHeight);
-            dy = at.getTranslateY();
+        while (translation.y > configuration.dimension.height) {
+            translation.y -= configuration.dimension.height;
         }
 
         source = destination;
+        destination = null;
     }
 }
 

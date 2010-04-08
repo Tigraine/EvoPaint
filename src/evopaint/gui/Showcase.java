@@ -4,6 +4,7 @@
  */
 package evopaint.gui;
 
+import evopaint.Abstractions.TransformationCalculation;
 import evopaint.Configuration;
 import evopaint.Paint;
 import evopaint.commands.*;
@@ -11,10 +12,13 @@ import evopaint.Selection;
 import evopaint.World;
 import evopaint.Perception;
 import evopaint.util.logging.Logger;
+import java.awt.AlphaComposite;
+import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.MouseInfo;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
@@ -38,7 +42,7 @@ import javax.swing.event.MouseInputListener;
  * @author tam
  */
 
-public class Showcase extends JComponent implements MouseInputListener, MouseWheelListener, Observer, SelectionManager, Scrollable {
+public class Showcase extends JComponent implements MouseInputListener, MouseWheelListener, Observer, SelectionManager {
 
     private Perception perception;
     private MainFrame mainFrame;
@@ -50,7 +54,7 @@ public class Showcase extends JComponent implements MouseInputListener, MouseWhe
     private boolean toggleMouseButton2Drag = false;
     private int zoom = 10;
     private double scale = (double)this.zoom / 10;
-
+    private Point translation = new Point(0, 0);
 
     private PaintCommand paintCommand;
     private MoveCommand moveCommand;
@@ -62,17 +66,22 @@ public class Showcase extends JComponent implements MouseInputListener, MouseWhe
     private boolean isDrawingSelection = false;
     private Point selectionStartPoint;
     private Point currentMouseDragPosition;
+    private Point currentMouseMovePosition;
+    private boolean mouseInsideShowcase = false;
 
     public Showcase(Configuration configuration, MainFrame mf, World world, Perception perception, CommandFactory commandFactory) {
         this.configuration = configuration;
         this.mainFrame = mf;
         this.perception = perception;
         this.configuration.affineTransform = affineTransform;
-        this.paintCommand = new PaintCommand(configuration, this.scale, affineTransform);
+        this.paintCommand = new PaintCommand(configuration, this.scale, translation);
         this.moveCommand = new MoveCommand(configuration);
+        this.moveCommand.setTranslation(this.translation);
         this.selectCommand = commandFactory.GetSelectCommand(currentSelections);
 
         this.currentSelections.addObserver(this);
+
+        this.currentMouseMovePosition = new Point(0,0);
 
         //addMouseWheelListener(this);
         addMouseListener(this);
@@ -105,43 +114,66 @@ public class Showcase extends JComponent implements MouseInputListener, MouseWhe
     @Override
     public void paintComponent(Graphics g) {
         BufferedImage image = perception.getImage();
+
         Graphics2D g2 = (Graphics2D) g;
         g2.scale(this.scale, this.scale);
-        
+        g2.translate(translation.x, translation.y);
+
         // paint 9 tiles of the origininal image
         // clip it
-        g2.clip(new Rectangle(image.getWidth(), image.getHeight()));
+        //g2.clip(new Rectangle(image.getWidth(), image.getHeight()));
 
-        double w = image.getWidth();
-        double h = image.getHeight();
+        double w = configuration.dimension.width;
+        double h = configuration.dimension.height;
         // paint NW
-        affineTransform.translate((-1) * w, (-1) * h);
-        g2.drawRenderedImage(image, this.affineTransform);
+        g2.translate((-1) * w, (-1) * h);
+        g2.drawImage(image, null, null);
         // paint N
-        affineTransform.translate(w, 0);
-        g2.drawRenderedImage(image, this.affineTransform);
+        g2.translate(w, 0);
+        g2.drawImage(image, null, null);
         // paint NE
-        affineTransform.translate(w, 0);
-        g2.drawRenderedImage(image, this.affineTransform);
+        g2.translate(w, 0);
+        g2.drawImage(image, null, null);
         // paint E
-        affineTransform.translate(0, h);
-        g2.drawRenderedImage(image, this.affineTransform);
+        g2.translate(0, h);
+        g2.drawImage(image, null, null);
         // paint SE
-        affineTransform.translate(0, h);
-        g2.drawRenderedImage(image, this.affineTransform);
+        g2.translate(0, h);
+        g2.drawImage(image, null, null);
         // paint S
-        affineTransform.translate((-1) * w, 0);
-        g2.drawRenderedImage(image, this.affineTransform);
+        g2.translate((-1) * w, 0);
+        g2.drawImage(image, null, null);
         // paint SW
-        affineTransform.translate((-1) * w, 0);
-        g2.drawRenderedImage(image, this.affineTransform);
+        g2.translate((-1) * w, 0);
+        g2.drawImage(image, null, null);
         // paint W
-        affineTransform.translate(0, (-1) * h);
-        g2.drawRenderedImage(image, this.affineTransform);
+        g2.translate(0, (-1) * h);
+        g2.drawImage(image, null, null);
         // back to normal
-        affineTransform.translate(w, 0);
-        g2.drawRenderedImage(image, this.affineTransform);
+        g2.translate(w, 0);
+        g2.drawImage(image, null, null);
 
+        if (mainFrame.getActiveTool() == PaintCommand.class && mouseInsideShowcase) {
+            float alpha = .5f;
+            g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, alpha));
+            g2.setColor(Color.WHITE);
+
+            Point showCaseLocation = getLocationOnScreen();
+            Point pointerLocation = MouseInfo.getPointerInfo().getLocation();
+            Point relativeLocation = new Point(pointerLocation.x - showCaseLocation.x, pointerLocation.y - showCaseLocation.y);
+            Point worldPoint = TransformationCalculation.fromScreenToWorld(configuration, relativeLocation, scale, translation);
+
+            Rectangle paintIndicator = new Rectangle(worldPoint.x - (int)(configuration.brush.size / 2),
+                    worldPoint.y - (int)(configuration.brush.size / 2),
+                    configuration.brush.size, configuration.brush.size);
+
+            g2.fill(paintIndicator);
+
+           // if (relativeLocation.x + paintIndicator.width > g) {
+           //     g2.fillRect(0, paintIndicator.y, (int)(((relativeLocation.x + paintIndicator.width) - getWidth()) / scale), paintIndicator.height);
+           // }
+        }
+        
         if (isDrawingSelection && selectionStartPoint != null && currentMouseDragPosition != null) {
             Point startPoint = selectionStartPoint;
             Point endPoint = currentMouseDragPosition;
@@ -179,7 +211,7 @@ public class Showcase extends JComponent implements MouseInputListener, MouseWhe
     private void rescale() {
         this.scale = (double)this.zoom / 10;
         this.paintCommand.setScale(this.scale);
-        this.moveCommand.setScale(this.scale);
+        //this.moveCommand.setScale(this.scale);
         setPreferredSize(new Dimension(
                 (int) Math.ceil(perception.getImage().getWidth() * this.scale),
                 (int) Math.ceil(perception.getImage().getHeight() * this.scale)));
@@ -200,6 +232,7 @@ public class Showcase extends JComponent implements MouseInputListener, MouseWhe
         else
             zoomCommand = new ZoomOutCommand(this);
         zoomCommand.execute();
+        currentMouseMovePosition = e.getPoint();
     }
 
     public void mousePressed(MouseEvent e) {
@@ -285,12 +318,15 @@ public class Showcase extends JComponent implements MouseInputListener, MouseWhe
     }
 
     public void mouseEntered(MouseEvent e) {
+        mouseInsideShowcase = true;
     }
 
     public void mouseExited(MouseEvent e) {
+        mouseInsideShowcase = false;
     }
 
     public void mouseMoved(MouseEvent e) {
+        currentMouseMovePosition = e.getPoint();
     }
 
     public Selection getActiveSelection() {
@@ -326,86 +362,4 @@ public class Showcase extends JComponent implements MouseInputListener, MouseWhe
             Logger.log.error("Selection from %s-%s to %s-%s", selection.getStartPoint().getX(), selection.getStartPoint().getY(), selection.getEndPoint().getX(), selection.getEndPoint().getY());
         }
     }
-
-    /**
-     * Components that display logical rows or columns shouls compute the scroll increment that
-     * will completely expos one block of rows or columns depending upon the orientation.
-     *
-     * Graphics components should compute how much of the image one wants to scroll each time
-     * the view port is moved by a Unit Increment. In this case, it is a percentage (10%) of
-     * the overall image.
-     *
-     * Scrolling containers like JScrollPane will use this methode each time the user requests
-     * a block scroll.
-     *
-     * This value comes into play when one clicks the scroll bar in the area above or below
-     * the slider. The JScrollPane then moves the view to the next visible area.
-     *
-     * @param &lt;b&gt;visibleRect&lt;/b&gt; - The view area visible within the viewport.
-     * @param &lt;b&gt;orientation&lt;/b&gt; - Either &lt;b&gt;SwingConstants.VERTICAL&lt;/b&gt; or &lt;b&gt;SwingConstants.HORIZONTAL&lt;/b&gt;
-     * @param &lt;b&gt;direction&lt;/b&gt; - If less than zero scroll up/left. If greater than zero scroll down/right.
-     * @return The "Block" increment for scrolling in a specific direction.
-     *
-     */
-    public int getScrollableBlockIncrement(Rectangle visibleRect, int orientation, int direction) {
-        return (orientation == SwingConstants.VERTICAL) ? visibleRect.height / 10 : visibleRect.width / 10;
-    }
-
-    /**
-     * Components that display logical rows or columns should compute the scroll increment that
-     * will completely expos one block of rows or columns depending upon the orientation.
-     *
-     * Graphics components should compute how much of the image one wants to scroll each time
-     * the view port is moved by a Unit Increment. In this case, it is a percentage (10%) of
-     * the overall image.
-     *
-     * Scrolling containers like JScrollPane will use this method each time the user requests
-     * a unit scroll.
-     *
-     * @param &lt;b&gt;visibleRect&lt;/b&gt; - The view area visible within the viewport.
-     * @param &lt;b&gt;orientation&lt;/b&gt; - Either &lt;b&gt;SwingConstants.VERTICAL&lt;/b&gt; or &lt;b&gt;SwingConstants.HORIZONTAL&lt;/b&gt;
-     * @param &lt;b&gt;direction&lt;/b&gt; - If less than zero scroll up/left. If greater than zero scroll down/right.
-     * @return The "Block" increment for scrolling in a specific direction.
-     *
-     */
-    public int getScrollableUnitIncrement(Rectangle visibleRect, int orientation, int direction) {
-
-        return (orientation == SwingConstants.VERTICAL) ? visibleRect.height / 10 : visibleRect.width / 10;
-    }
-
-    /**
-     * Returns the preferred size of the viewport for a view component. This is the size of it requires
-     * to display the entire size of the component. A component without any properties that would
-     * effect the viewport size should return getPreferredSize() here.
-     */
-    public Dimension getPreferredScrollableViewportSize() {
-        return this.getPreferredSize();
-    }
-
-    /**
-     * Returns true if a viewport should always force the width of this Scrollable to
-     * match the width of the viewport. For example a normal text view that supported
-     * line wrapping would return a true here, since it would be undesirable for wrapped
-     * lines to dissappear beyond the right edge of the viewport. Not that returning
-     * a true for a Scrollable whose ancestor is a JScrollPane effectively disables
-     * horizontal scrolling!!!!
-     *
-     */
-    public boolean getScrollableTracksViewportWidth() {
-        return false;
-    }
-
-    /**
-     * Returns true if a viewport should always force the height of this Scrollable to
-     * match the width of the viewport. For example a normal text view that supported
-     * columnar text that flowed text in left to right columns would return a true here,
-     * to effectively disable vertical scrolling.
-     *
-     * Returing a true for a Scrollable whose ancestor is a JScrollPane effectively disables
-     * vertical scrolling!!!!
-     */
-    public boolean getScrollableTracksViewportHeight() {
-        return false;
-    }
-
 }

@@ -163,8 +163,6 @@ public class MainFrame extends JFrame {
         showCaseScrollPane.getViewport().addMouseWheelListener(showcase);
         mainPanel.add(showCaseScrollPane, BorderLayout.CENTER);
 
-        showCaseScrollPane.getViewport().addMouseListener(showcase);
-
         //showCaseScrollPane.repaint();
 
         setPreferredSize(new Dimension(800, 600));

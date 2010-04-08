@@ -2,19 +2,17 @@ package evopaint.commands;
 
 
 import evopaint.Configuration;
-import evopaint.Abstractions.ScaleCalculation;
+import evopaint.Abstractions.TransformationCalculation;
 import evopaint.Paint;
 import evopaint.util.logging.Logger;
 
 
 import java.awt.Point;
-import java.awt.geom.AffineTransform;
-import java.awt.geom.NoninvertibleTransformException;
 
 public class PaintCommand extends AbstractCommand {
     private Configuration configuration;
     private double scale;
-    private final AffineTransform affineTransform;
+    private Point translation;
     private Point location;
 
     public double getScale() {
@@ -30,19 +28,13 @@ public class PaintCommand extends AbstractCommand {
     }
 
     public void setLocation(Point location) {
-        this.location = ScaleCalculation.FromScreenToWorld(location, scale);
-
-        try {
-            this.location = (Point) affineTransform.inverseTransform(this.location , this.location);
-        } catch(NoninvertibleTransformException e) {
-            Logger.log.error("Non convertable transformation created. This should not be possible");
-        }
+        this.location = TransformationCalculation.fromScreenToWorld(configuration, location, scale, translation);
     }
 
-    public PaintCommand(Configuration configuration, double scale, AffineTransform affineTransform) {
+    public PaintCommand(Configuration configuration, double scale, Point translation) {
         this.configuration = configuration;
         this.scale = scale;
-        this.affineTransform = affineTransform;
+        this.translation = translation;
     }
 
     public void execute() {

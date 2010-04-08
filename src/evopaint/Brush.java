@@ -19,23 +19,22 @@ public class Brush {
     public int size;
 
     public void paint(int xLoc, int yLoc) {
-
         int yBegin = yLoc - size / 2;
         if (yBegin < 0) {
-            yBegin = 0;
+        //    yBegin = 0;
         }
         int yEnd = yLoc + (int)Math.ceil((double)size / 2);
         if (yEnd > configuration.dimension.height) {
-            yEnd = configuration.dimension.height;
+       //     yEnd = configuration.dimension.height;
         }
 
         int xBegin = xLoc - size / 2;
         if (xBegin < 0) {
-            xBegin = 0;
+       //     xBegin = 0;
         }
         int xEnd = xLoc + (int)Math.ceil((double)size / 2);
         if (xEnd > configuration.dimension.width) {
-            xEnd = configuration.dimension.width;
+       //     xEnd = configuration.dimension.width;
         }
 
         for (int y = yBegin; y < yEnd; y++) {
