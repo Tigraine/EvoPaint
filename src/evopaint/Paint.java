@@ -1,17 +1,8 @@
 package evopaint;
 
 import evopaint.pixel.PixelColor;
-import evopaint.pixel.rulebased.Rule;
 import evopaint.pixel.rulebased.RuleSet;
-import evopaint.pixel.rulebased.actions.IdleAction;
-import evopaint.pixel.rulebased.conditions.TrueCondition;
-import evopaint.pixel.rulebased.interfaces.IAction;
-import evopaint.pixel.rulebased.interfaces.ICondition;
 import evopaint.pixel.rulebased.interfaces.IHTML;
-import evopaint.pixel.rulebased.interfaces.IRule;
-import evopaint.util.mapping.RelativeCoordinate;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  *
@@ -20,53 +11,46 @@ import java.util.List;
 public class Paint implements IHTML {
     public static final int COLOR = 0;
     public static final int FAIRY_DUST = 1;
-    public static final int USE_EXISTING = 2;
+    public static final int NO_COLOR = 2;
 
-    private int mode;
+    private int colorMode;
     private PixelColor color;
     private RuleSet ruleSet;
 
     public String toHTML() {
         String ret = new String();
-        switch (mode) {
+        switch (colorMode) {
             case COLOR: ret += color.toHTML();
             break;
             case FAIRY_DUST: ret += "Fairy Dust";
             break;
-            case USE_EXISTING: ret += "Use Existing";
+            case NO_COLOR: ret += "No Color";
             break;
             default: assert(false);
         }
-        return ret + " - \"" + ruleSet.getName() + "\"";
+        ret += " - ";
+        if (ruleSet != null) {
+            ret += "\"" + ruleSet.getName() + "\"";
+        } else {
+            ret += "No Rule Set";
+        }
+        return ret;
     }
 
     public PixelColor getColor() {
         return color;
     }
 
-    public int getMode() {
-        return mode;
+    public int getColorMode() {
+        return colorMode;
     }
 
     public RuleSet getRuleSet() {
         return ruleSet;
     }
 
-    public static RuleSet noRuleSet() {
-        List<IRule> rules = new ArrayList<IRule>();
-
-        List<ICondition> conditions = new ArrayList<ICondition>();
-        List<RelativeCoordinate> directions = new ArrayList<RelativeCoordinate>();
-        directions.add(RelativeCoordinate.SELF);
-        conditions.add(new TrueCondition());
-        IAction action = new IdleAction();
-        rules.add(new Rule(conditions, action));
-
-        return new RuleSet("No RuleSet", "You should not be able to read this, well okay by digging the source you should. In that case: Welcome to the EvoPaint source code, enjoy your stay and copy all you like!", rules);
-    }
-
-    public Paint(int mode, PixelColor color, RuleSet ruleSet) {
-        this.mode = mode;
+    public Paint(int colorMode, PixelColor color, RuleSet ruleSet) {
+        this.colorMode = colorMode;
         this.color = color;
         this.ruleSet = ruleSet;
     }

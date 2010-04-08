@@ -23,13 +23,13 @@ public class Brush {
         for (int i = 0 - size / 2 ; i < (int)Math.ceil((double)size / 2); i++) {
             for (int j = 0 - size / 2; j < (int)Math.ceil((double)size / 2); j++) {
                 PixelColor newColor = new PixelColor(configuration.paint.getColor());
-                switch (configuration.paint.getMode()) {
+                switch (configuration.paint.getColorMode()) {
                     case Paint.COLOR:
                         break;
                     case Paint.FAIRY_DUST:
                         newColor.setInteger(configuration.rng.nextPositiveInt());
                         break;
-                    case Paint.USE_EXISTING:
+                    case Paint.NO_COLOR:
                         Pixel pixie = configuration.world.get(x + j, y + i);
                         if (pixie == null) {
                             continue;

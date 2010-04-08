@@ -27,7 +27,10 @@ public class RuleBasedPixel extends Pixel {
     }
 
     public void act(World world) {
-        for (IRule rule : getRuleSet().getRules()) {
+        if (ruleSet == null) {
+            return;
+        }
+        for (IRule rule : ruleSet.getRules()) {
             if (rule.apply(this, world) && world.getConfiguration().oneActionPerPixel) {
                 break;
             }

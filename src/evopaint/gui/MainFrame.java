@@ -235,10 +235,10 @@ public class MainFrame extends JFrame {
             RuleSet ruleSet = jRuleSetManager.getSelectedRuleSet();
             assert (ruleSet != null);
             //System.out.println(ruleSet);
-            configuration.paint = new Paint(configuration.paint.getMode(),
+            configuration.paint = new Paint(configuration.paint.getColorMode(),
                     configuration.paint.getColor(),
                     ruleSet);
-            paintPanel.setRuleSetName(ruleSet.getName());
+            paintPanel.setRuleSet(ruleSet);
             ((CardLayout)contentPane.getLayout()).show(contentPane, "main");
             menuBar.setVisible(true);
             configuration.runLevel = Configuration.RUNLEVEL_RUNNING;
