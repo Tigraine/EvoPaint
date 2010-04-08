@@ -87,7 +87,8 @@ public class PaintPanel extends JPanel {
         colorRadio.setText("<html>" + configuration.paint.getColor().toHTML() + "</html>");
         colorRadio.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                configuration.paint = new Paint(Paint.COLOR,
+                configuration.paint = new Paint(configuration,
+                        Paint.COLOR,
                         configuration.paint.getColor(),
                         configuration.paint.getRuleSet());
             }
@@ -109,7 +110,8 @@ public class PaintPanel extends JPanel {
         fairyDustRadio = new JRadioButton("Fairy Dust");
         fairyDustRadio.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                configuration.paint = new Paint(Paint.FAIRY_DUST,
+                configuration.paint = new Paint(configuration,
+                        Paint.FAIRY_DUST,
                         configuration.paint.getColor(),
                         configuration.paint.getRuleSet());
             }
@@ -122,7 +124,8 @@ public class PaintPanel extends JPanel {
         noColorRadio = new JRadioButton("No Color");
         noColorRadio.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                configuration.paint = new Paint(Paint.NO_COLOR,
+                configuration.paint = new Paint(configuration,
+                        Paint.NO_COLOR,
                         configuration.paint.getColor(),
                         configuration.paint.getRuleSet());
             }
@@ -163,7 +166,8 @@ public class PaintPanel extends JPanel {
         ruleSetRadio.setText("<none>");
         ruleSetRadio.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                configuration.paint = new Paint(configuration.paint.getColorMode(),
+                configuration.paint = new Paint(configuration,
+                        configuration.paint.getColorMode(),
                         configuration.paint.getColor(),
                         cachedRuleSet);
             }
@@ -186,7 +190,8 @@ public class PaintPanel extends JPanel {
         noRuleSetRadio.setSelected(true);
         noRuleSetRadio.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                configuration.paint = new Paint(configuration.paint.getColorMode(),
+                configuration.paint = new Paint(configuration,
+                        configuration.paint.getColorMode(),
                         configuration.paint.getColor(),
                         null);
             }
@@ -247,7 +252,8 @@ public class PaintPanel extends JPanel {
 
          public void actionPerformed(ActionEvent e) {
             Color c = colorChooser.getColor();
-            configuration.paint = new Paint(Paint.COLOR,
+            configuration.paint = new Paint(configuration,
+                    Paint.COLOR,
                     new PixelColor(c.getRGB()),
                     configuration.paint.getRuleSet());
             colorRadio.setText("<html>" + configuration.paint.getColor().toHTML() + "</html>");

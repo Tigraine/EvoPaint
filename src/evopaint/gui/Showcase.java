@@ -226,7 +226,7 @@ public class Showcase extends JComponent implements MouseInputListener, MouseWhe
             //}
             final JPopupMenu paintHistoryMenu = new JPopupMenu("Paint History");
             for (final Paint paint : configuration.paintHistory) {
-                JMenuItem menuItem = new JMenuItem("<html>" + paint.toHTML() + "</html>");
+                JMenuItem menuItem = paint.toMenuItem();
                 menuItem.addActionListener(new ActionListener() {
 
                     public void actionPerformed(ActionEvent e) {

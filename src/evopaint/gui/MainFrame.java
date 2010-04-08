@@ -236,7 +236,7 @@ public class MainFrame extends JFrame {
             RuleSet ruleSet = jRuleSetManager.getSelectedRuleSet();
             assert (ruleSet != null);
             //System.out.println(ruleSet);
-            configuration.paint = new Paint(configuration.paint.getColorMode(),
+            configuration.paint = new Paint(configuration, configuration.paint.getColorMode(),
                     configuration.paint.getColor(),
                     ruleSet);
             paintPanel.setRuleSet(ruleSet);

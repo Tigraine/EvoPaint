@@ -3,6 +3,7 @@ package evopaint.commands;
 
 import evopaint.Configuration;
 import evopaint.Abstractions.ScaleCalculation;
+import evopaint.Paint;
 import evopaint.util.logging.Logger;
 
 
@@ -49,7 +50,9 @@ public class PaintCommand extends AbstractCommand {
         Logger.log.information("Executing Paint command on x: %s y: %s", location.x, location.y);
         configuration.brush.paint(location.x, location.y);
 
-        if (false == configuration.paintHistory.contains(configuration.paint)) {
+        if (false == (configuration.paint.getColorMode() == Paint.NO_COLOR &&
+                configuration.paint.getRuleSet() == null) &&
+                false == configuration.paintHistory.contains(configuration.paint)) {
             configuration.paintHistory.addFirst(configuration.paint);
             if (configuration.paintHistory.size() > configuration.paintHistorySize) {
                 configuration.paintHistory.removeLast();
