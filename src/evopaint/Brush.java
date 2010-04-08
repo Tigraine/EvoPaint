@@ -18,10 +18,29 @@ public class Brush {
     private Configuration configuration;
     public int size;
 
-    public void paint(int x, int y) {
-        
-        for (int i = 0 - size / 2 ; i < (int)Math.ceil((double)size / 2); i++) {
-            for (int j = 0 - size / 2; j < (int)Math.ceil((double)size / 2); j++) {
+    public void paint(int xLoc, int yLoc) {
+
+        int yBegin = yLoc - size / 2;
+        if (yBegin < 0) {
+            yBegin = 0;
+        }
+        int yEnd = yLoc + (int)Math.ceil((double)size / 2);
+        if (yEnd > configuration.dimension.height) {
+            yEnd = configuration.dimension.height;
+        }
+
+        int xBegin = xLoc - size / 2;
+        if (xBegin < 0) {
+            xBegin = 0;
+        }
+        int xEnd = xLoc + (int)Math.ceil((double)size / 2);
+        if (xEnd > configuration.dimension.width) {
+            xEnd = configuration.dimension.width;
+        }
+
+        for (int y = yBegin; y < yEnd; y++) {
+            for (int x = xBegin; x < xEnd; x++) {
+
                 PixelColor newColor = new PixelColor(configuration.paint.getColor());
                 switch (configuration.paint.getColorMode()) {
                     case Paint.COLOR:
@@ -30,7 +49,7 @@ public class Brush {
                         newColor.setInteger(configuration.rng.nextPositiveInt());
                         break;
                     case Paint.NO_COLOR:
-                        Pixel pixie = configuration.world.get(x + j, y + i);
+                        Pixel pixie = configuration.world.get(x, y);
                         if (pixie == null) {
                             continue;
                         }
@@ -43,7 +62,7 @@ public class Brush {
                 Pixel newPixel = null;
                 switch (configuration.pixelType) {
                     case Pixel.RULESET:
-                        newPixel = new RuleBasedPixel(newColor, new AbsoluteCoordinate(x + j, y + i, configuration.world), configuration.startingEnergy, configuration.paint.getRuleSet());
+                        newPixel = new RuleBasedPixel(newColor, new AbsoluteCoordinate(x, y, configuration.world), configuration.startingEnergy, configuration.paint.getRuleSet());
                         break;
                     default: assert(false);
                 }
