@@ -41,7 +41,26 @@ public abstract class Pixel {
     }
 
     public void reward(int energy) {
-        this.energy += energy;
+        // lazy way out for zero reward/cost actions
+        if (energy == 0) {
+            return;
+        }
+
+        // and a boundary check (0,MAX_INT) for the rest
+        if (energy > 0) {
+            if (Integer.MAX_VALUE - this.energy >= energy) {
+                this.energy += energy;
+            } else {
+                this.energy = Integer.MAX_VALUE;
+            }
+        }
+        else {
+            if (this.energy + energy >= 0) {
+                this.energy += energy;
+            } else {
+                this.energy = 0;
+            }
+        }
     }
     
     public abstract void act(World world);
