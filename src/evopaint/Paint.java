@@ -49,6 +49,21 @@ public class Paint implements IHTML {
         return ruleSet;
     }
 
+    @Override
+    @SuppressWarnings("EqualsWhichDoesntCheckParameterClass")
+    public boolean equals(Object object) {
+        return hashCode() == object.hashCode();
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 29 * hash + this.colorMode;
+        hash = 29 * hash + (this.color != null ? this.color.hashCode() : 0);
+        hash = 29 * hash + (this.ruleSet != null ? this.ruleSet.hashCode() : 0);
+        return hash;
+    }
+
     public Paint(int colorMode, PixelColor color, RuleSet ruleSet) {
         this.colorMode = colorMode;
         this.color = color;
