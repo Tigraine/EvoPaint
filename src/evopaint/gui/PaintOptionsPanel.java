@@ -33,7 +33,7 @@ import javax.swing.JRadioButton;
  *
  * @author tam
  */
-public class PaintPanel extends JPanel {
+public class PaintOptionsPanel extends JPanel {
     private Configuration configuration;
     private JRadioButton colorRadio;
     private JRadioButton fairyDustRadio;
@@ -46,12 +46,12 @@ public class PaintPanel extends JPanel {
     private RuleSet cachedRuleSet;
 
     public void setRuleSet(RuleSet ruleSet) {
-        ruleSetRadio.setText("\"" + ruleSet.getName() + "\"");
+        ruleSetRadio.setText(ruleSet.getName());
         ruleSetRadio.setSelected(true);
         cachedRuleSet = ruleSet;
     }
 
-    public PaintPanel(final Configuration configuration, ActionListener openRuleSetManagerListener) {
+    public PaintOptionsPanel(final Configuration configuration, ActionListener openRuleSetManagerListener) {
         this.configuration = configuration;
 
         setLayout(new GridBagLayout());
@@ -236,14 +236,6 @@ public class PaintPanel extends JPanel {
                     colorChooser, new ColorChooserOKListener(), new ColorChooserCancelListener());
             dialog.pack();
             dialog.setVisible(true);
-        }
-
-    }
-
-    private class EditRuleSetListener implements ActionListener {
-
-        public void actionPerformed(ActionEvent e) {
-            //j
         }
 
     }

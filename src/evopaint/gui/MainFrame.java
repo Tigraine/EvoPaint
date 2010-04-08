@@ -33,7 +33,7 @@ public class MainFrame extends JFrame {
     private JOptionsPanel jOptionsPanel;
     private ToolBox toolBox;
     private SelectionToolBox selectionToolBox;
-    private PaintPanel paintPanel;
+    private PaintOptionsPanel paintPanel;
     private JPanel leftPanel;
     private JRuleSetManager jRuleSetManager;
     private Configuration configuration;
@@ -125,7 +125,7 @@ public class MainFrame extends JFrame {
         constraintsWrapper.fill = GridBagConstraints.HORIZONTAL;
         wrapperPanelLeft.add(separator, constraintsWrapper);
 
-        paintPanel = new PaintPanel(configuration, new OpenRuleSetManagerListener());
+        paintPanel = new PaintOptionsPanel(configuration, new OpenRuleSetManagerListener());
         constraintsWrapper.gridy++;
         constraintsWrapper.fill = GridBagConstraints.NONE;
         wrapperPanelLeft.add(paintPanel, constraintsWrapper);
