@@ -23,11 +23,36 @@ import java.awt.Color;
 import java.awt.Shape;
 
 /**
- *
+ * Classes implementing this interface can subscribe/unsubscribe overlays which
+ * are to be painted on a surface. The overlays make use of the paintOverlay
+ * callback to do the actual painting.
+ * 
  * @author Markus Echterhoff <tam@edu.uni-klu.ac.at>
+ * @see IOverlay
  */
 public interface IOverlayable {
+    
+    /**
+     * Subscribes an overlay to be notified about painting events
+     * @param overlay The overlay to subscribe
+     * @see IOverlay
+     */
     public void subscribe(IOverlay overlay);
+
+    /**
+     * Unsubscribes an overlay. It will not receive any more painting calls
+     * @param overlay The overlay to unsubscribed
+     * @see IOverlay
+     */
     public void unsubscribe(IOverlay overlay);
+
+    /**
+     * Called by overlays to paint a <code>Shape</code> onto the overlayable
+     * component
+     * @param shape A <code>Shape</code> which will be painted
+     * @param color The <code>Color</code> used to paint the <code>Shape</code>
+     * @param alpha An alpha value used for painting the <code>Shape</code>
+     * @see IOverlay
+     */
     public void paintOverlay(Shape shape, Color color, float alpha);
 }

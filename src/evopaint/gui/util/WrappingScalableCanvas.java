@@ -36,6 +36,19 @@ import java.util.List;
 import javax.swing.JComponent;
 
 /**
+ * The <code>WrappingScalableCanvas</code> class is used to create a parallax
+ * surface which can be moved into two directions and be scaled indefinetly.
+ * <p>
+ * Keep in mind two spaces which need transformation from one to another. The
+ * user space in which the user performs clicks and the image is scaled into
+ * and the image space in which operations are performed on the image.<br>
+ * As a rule of thumb remember to transform any points from mouse clicks
+ * performed on the canvas to image space before processing them.
+ * </p>
+ * <p>
+ * Implementing <code>IOverlayable</code>, this canvas supports alpha overlays,
+ * which it will also wrap and scale to user space accordingly.
+ * </p>
  *
  * @author Markus Echterhoff <tam@edu.uni-klu.ac.at>
  */
@@ -52,6 +65,10 @@ public class WrappingScalableCanvas extends JComponent implements IOverlayable {
     private AffineTransform transform;
     private List<IOverlay> overlays;
 
+    /**
+     * Creates a new WrappingScalableCanvas using the image supplied.
+     * @param image
+     */
     public WrappingScalableCanvas(BufferedImage image) {
         this.image = image;
         this.imageWidth = image.getWidth();
@@ -65,12 +82,18 @@ public class WrappingScalableCanvas extends JComponent implements IOverlayable {
         updateComponentSize();
     }
     
+    /**
+     * Magnifies the display of the image
+     */
     public void scaleUp() {
         integerScale++;
         scale = integerScale / 10d;
         updateScale();
     }
 
+    /**
+     * Shrinks the display of the image
+     */
     public void scaleDown() {
         if (integerScale <= 1) {
             return;
@@ -93,6 +116,12 @@ public class WrappingScalableCanvas extends JComponent implements IOverlayable {
                 (int)Math.ceil(imageHeight * scale)));
     }
 
+    /**
+     * Translates the display of the underlying image using user space
+     * coordinates.
+     * @param origin the origin eg. of a user space drag operation
+     * @param destination the destination eg. of a user space drag operation
+     */
     public void translateInUserSpace(Point origin, Point destination) {
         translation.x += destination.x - origin.x;
         if (translation.x < (-1) * imageWidth) {
@@ -110,6 +139,14 @@ public class WrappingScalableCanvas extends JComponent implements IOverlayable {
         transform.translate(translation.x, translation.y);
     }
 
+    /**
+     * Transforms a <code>Point</code> from user space to image space. It will
+     * translate the <code>Point</code> back to its origin in user space and
+     * rescale it to the original image space scale.
+     * @param point The <code>Point</code> used to create the
+     * @return A new Point in image space corresponding to the passed
+     * <code>Point</code>
+     */
     public Point transformToImageSpace(Point point) {
         AffineTransform invertedTransform = new AffineTransform(transform);
         try {
@@ -138,10 +175,22 @@ public class WrappingScalableCanvas extends JComponent implements IOverlayable {
         return ret;
     }
 
+    /**
+     * Scales an arbitrary <code>Shape</code> from image space to user space
+     * @param shape The <code>Shape</code> you wish to scale
+     * @return A new <code>Shape</code> scaled to user space
+     * @see Shape
+     */
     public Shape scaleToUserSpace(Shape shape) {
         return scaleTransform.createTransformedShape(shape);
     }
 
+    /**
+     * Scales an arbitrary <code>Shape</code> from user space to image space
+     * @param shape The <code>Shape</code> you wish to scale
+     * @return A new <code>Shape</code> scaled to image space
+     * @see Shape
+     */
     public Shape scaleToImageSpace(Shape shape) {
         try {
             return scaleTransform.createInverse().createTransformedShape(shape);
@@ -153,22 +202,60 @@ public class WrappingScalableCanvas extends JComponent implements IOverlayable {
         return null;
     }
 
+    /**
+     * Transforms a <code>Point</code> from image space to user space the
+     * resulting <code>Point</code> will be translated and scaled to match
+     * user space coordinates.
+     * @param point The <code>Point</code> you wish to transform
+     * @return a new <code>Point</code> in user space corresponding to the
+     * argument point
+     */
     public Point transformToUserSpace(Point point) {
         return (Point)transform.transform(point, null);
     }
 
+    /**
+     * Transforms an arbitrary <code>Shape</code> from image space to user space, translates
+     * and scales.
+     * @param shape The <code>Shape</code> you wish to transform
+     * @return A new <code>Shape</code> corresponding the the argument
+     * @see Shape
+     */
     public Shape transformToUserSpace(Shape shape) {
         return transform.createTransformedShape(shape);
     }
 
+    /**
+     * Adds an overlay to the canvas
+     * @param overlay The Overlay you wish to subscribe
+     * @see IOverlayable
+     * @see IOverlay
+     */
     public void subscribe(IOverlay overlay) {
         overlays.add(overlay);
     }
 
+    /**
+     * Removes an overlay from the subscribed overlays
+     * @param overlay The Overlay you wish to unsubscribe
+     * @see IOverlayable
+     * @see IOverlay
+     */
     public void unsubscribe(IOverlay overlay) {
         overlays.remove(overlay);
     }
 
+    /**
+     * Paints an overlay using the given parameters. This is a callback called
+     * by subscribed overlays which wish to paint onto the canvas.
+     * @param shape The <code>Shape</code> to be painted
+     * @param color The color in which the <code>Shape</code> shall be painted
+     * @param alpha An alpha value to make the <code>Shape</code> transparent
+     * @see IOverlayable
+     * @see IOverlay
+     * @see Shape
+     * @see Color
+     */
     public void paintOverlay(Shape shape, Color color, float alpha) {
         imageG2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, alpha));
         imageG2.setColor(color);
@@ -227,6 +314,10 @@ public class WrappingScalableCanvas extends JComponent implements IOverlayable {
         }
     }
     
+    /**
+     * Paints the canvas
+     * @param g The graphics context to paint on
+     */
     @Override
     public void paintComponent(Graphics g) {
 
