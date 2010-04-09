@@ -1,21 +1,22 @@
 package evopaint.commands;
 
 import evopaint.Configuration;
+import evopaint.gui.util.WrappingScalableCanvas;
 import java.awt.Point;
 
 public class MoveCommand extends AbstractCommand {
 
     private Configuration configuration;
-    private Point translation;
+    private WrappingScalableCanvas canvas;
     private Point source;
     private Point destination;
 
-    public Point getTranslation() {
-        return translation;
+    public WrappingScalableCanvas getCanvas() {
+        return canvas;
     }
 
-    public void setTranslation(Point translation) {
-        this.translation = translation;
+    public void setCanvas(WrappingScalableCanvas canvas) {
+        this.canvas = canvas;
     }
 
     public Point getSource() {
@@ -39,28 +40,11 @@ public class MoveCommand extends AbstractCommand {
     }
 
     public void execute() {
-        assert(translation != null);
+        assert(canvas != null);
         assert(source != null);
         assert(destination != null);
 
-        Point delta = new Point(0, 0);
-        delta.x = destination.x - source.x;
-        delta.y = destination.y - source.y;
-
-        translation.translate(delta.x, delta.y);
-
-        while (translation.x < (-1) * configuration.dimension.width) {
-            translation.x += configuration.dimension.width;
-        }
-        while (translation.x > configuration.dimension.width) {
-            translation.x -= configuration.dimension.width;
-        }
-        while (translation.y < (-1) * configuration.dimension.height) {
-            translation.y += configuration.dimension.height;
-        }
-        while (translation.y > configuration.dimension.height) {
-            translation.y -= configuration.dimension.height;
-        }
+        canvas.translateInUserSpace(source, destination);
 
         source = destination;
         destination = null;

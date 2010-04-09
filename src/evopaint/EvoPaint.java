@@ -50,37 +50,25 @@ public class EvoPaint {
     }
 
     public void work() {
+        this.perception.createImage(world);
+        frame.getShowcase().repaint();
+        long timeStamp = System.currentTimeMillis();
+
         while (true) {
 
-            if (configuration.runLevel < Configuration.RUNLEVEL_RUNNING) {
-
-                // just sleep if everyting is on hold
-                if (configuration.runLevel < Configuration.RUNLEVEL_PAINTING_ONLY) {
-                    try {
-                        Thread.sleep(100);
-                    } catch (InterruptedException e) {
-                    }
-                    continue;
-                }
-
-                // but still repaint everyting if just the
-                // evolution is on hold
-                frame.getShowcase().repaint();
-                try {
-                    Thread.sleep(40);
-                } catch (InterruptedException e) {
-                }
-                this.perception.createImage(world);
+            if (configuration.runLevel > Configuration.RUNLEVEL_PAINTING_ONLY) {
+                this.world.step();
+            }
+            else if (configuration.runLevel < Configuration.RUNLEVEL_PAINTING_ONLY) {
                 continue;
             }
 
-            this.perception.createImage(world);
-
-            this.world.step();
-
-            frame.getShowcase().repaint();
-
-            //this.frame.getShowcase().paintImmediately(0, 0, this.frame.getShowcase().getWidth(), this.frame.getShowcase().getHeight());
+            long currentTime = System.currentTimeMillis();
+            if (currentTime - timeStamp > 1000 / configuration.fps) {
+                timeStamp = currentTime;
+                this.perception.createImage(world);
+                frame.getShowcase().repaint();
+            }
         }
     }
 

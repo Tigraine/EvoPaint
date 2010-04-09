@@ -24,7 +24,6 @@ import evopaint.util.FileHandler;
 import evopaint.util.RandomNumberGeneratorWrapper;
 import evopaint.util.logging.Logger;
 import java.awt.Dimension;
-import java.awt.geom.AffineTransform;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -42,13 +41,12 @@ public class Configuration {
     public static final int COLORMODE_FAIRY_DUST = 1;
     public static final int COLORMODE_USE_EXISTING = 2;
 
-    public Dimension dimension = new Dimension(300, 300);
-    public final Dimension initialPopulation = new Dimension(300, 300);
-    public final int stepsPerRendering = 1;
+    public static final int RUNLEVEL_RUNNING = 2;
+    public static final int RUNLEVEL_PAINTING_ONLY = 1;
+    public static final int RUNLEVEL_STOP = 0;
 
     public final int pixelType = Pixel.RULESET;
 
-    // TODO make to list of objects of ICondition
     public static final List<ICondition> availableConditions = new ArrayList<ICondition>() {{
         add(new TrueCondition());
         add(new EmptyCondition());
@@ -63,42 +61,23 @@ public class Configuration {
         add(new CopyAction());
         add(new MoveAction());
     }};
-   
-    //public final int numThreads = 1;
-    public final int backgroundColor = 0;
-    
-    public final int startingEnergy = 100;
-
-    // if set to true a pixel will stop working down his rule set once the first
-    // rule matches
-    public final boolean oneActionPerPixel = true;
-
-    //public static final double mutationRate = 0.0;
-
-    // these values are configured through the GUI or by the application
-    public static final int RUNLEVEL_RUNNING = 2;
-    public static final int RUNLEVEL_PAINTING_ONLY = 1;
-    public static final int RUNLEVEL_STOP = 0;
-
-    public int runLevel = Configuration.RUNLEVEL_RUNNING;
-    public boolean evolutionRunning = true; // painting possible
-    public FileHandler fileHandler;
-    public World world;
-    public Brush brush;
-    public Paint paint;
-    public ITool activeTool;
-    public AffineTransform affineTransform;
-    public int zoom;
 
     public IRandomNumberGenerator rng;
-
-    public int paintHistorySize = 5;
+    public FileHandler fileHandler;
+    public World world; // TODO make use of me
+    public Brush brush;
+    public Paint paint;
+    public ITool activeTool; // TODO make use of me
     public LinkedList<Paint> paintHistory;
 
-    public double getScale() {
-        return zoom / 10;
-    }
-
+    // BEGIN user configurable
+    public int fps = 60;
+    public Dimension dimension = new Dimension(300, 300);
+    public int backgroundColor = 0;
+    public int startingEnergy = 100;
+    public int runLevel = Configuration.RUNLEVEL_RUNNING;
+    public int paintHistorySize = 5;
+    // END user configurable
 
     private IRandomNumberGenerator createRNG() {
         // Random, SecureRandom, AESCounterRNG, CellularAutomatonRNG,
@@ -132,15 +111,4 @@ public class Configuration {
         fileHandler = new FileHandler();
         paintHistory = new LinkedList<Paint>();
     }
-
-
-	
-    /*
-    TODO: Talk through with TAM
-    public static Log getLogger(Object object) {
-        //Only a sample of what can be done with this.
-        if (object instanceof Entity)
-            return new NullLog();
-        return log;
-    } */
 }

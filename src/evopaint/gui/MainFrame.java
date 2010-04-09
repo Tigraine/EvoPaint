@@ -13,6 +13,7 @@ import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Container;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -80,7 +81,7 @@ public class MainFrame extends JFrame {
         jRuleSetManager.setVisible(false);
         add(jRuleSetManager, "rule manager");
 
-        this.jOptionsPanel = new JOptionsPanel(configuration); // FIXME: paintoptionspanel must be initialized before showcase or we get a nullpointer exception. the semantics to not express this!!
+        this.jOptionsPanel = new JOptionsPanel(configuration);
         this.showcase = new Showcase(configuration, this, evopaint.getWorld(), evopaint.getPerception(), commandFactory);
         this.menuBar = new MenuBar(configuration, evopaint, new SelectionListenerFactory(showcase), showcase);
         setJMenuBar(menuBar);
@@ -162,8 +163,6 @@ public class MainFrame extends JFrame {
 
         showCaseScrollPane.getViewport().addMouseWheelListener(showcase);
         mainPanel.add(showCaseScrollPane, BorderLayout.CENTER);
-
-        //showCaseScrollPane.repaint();
 
         setPreferredSize(new Dimension(800, 600));
 

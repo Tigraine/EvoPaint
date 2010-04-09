@@ -1,22 +1,22 @@
 package evopaint.commands;
 
 
-import evopaint.gui.Showcase;
+import evopaint.gui.util.WrappingScalableCanvas;
 
 public class ZoomCommand extends AbstractCommand {
     private boolean zoomIn;
-    private Showcase showcase;
+    private WrappingScalableCanvas canvas;
 
-    protected ZoomCommand(Showcase showcase, boolean zoomIn) {
+    protected ZoomCommand(WrappingScalableCanvas canvas, boolean zoomIn) {
         this.zoomIn = zoomIn;
-        this.showcase = showcase;
+        this.canvas = canvas;
     }
 
     public void execute() {
          if (this.zoomIn) {
-            this.showcase.zoomIn();
+            this.canvas.scaleUp();
         } else {
-            this.showcase.zoomOut();
+            this.canvas.scaleDown();
         }
     }
 }

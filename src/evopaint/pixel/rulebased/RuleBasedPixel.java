@@ -31,7 +31,7 @@ public class RuleBasedPixel extends Pixel {
             return;
         }
         for (IRule rule : ruleSet.getRules()) {
-            if (rule.apply(this, world) && world.getConfiguration().oneActionPerPixel) {
+            if (rule.apply(this, world)) {
                 break;
             }
         }
