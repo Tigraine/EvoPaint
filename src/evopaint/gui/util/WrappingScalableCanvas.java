@@ -123,6 +123,11 @@ public class WrappingScalableCanvas extends JComponent implements IOverlayable {
      * @param destination the destination eg. of a user space drag operation
      */
     public void translateInUserSpace(Point origin, Point destination) {
+        // transform points to image space before translation so they scale
+        // correctly
+        origin = transformToImageSpace(new Point(origin));
+        destination = transformToImageSpace(new Point(destination));
+
         translation.x += destination.x - origin.x;
         if (translation.x < (-1) * imageWidth) {
             translation.x += imageWidth;

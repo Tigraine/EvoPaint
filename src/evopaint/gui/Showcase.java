@@ -68,7 +68,8 @@ public class Showcase extends WrappingScalableCanvas implements MouseInputListen
 
         this.brushIndicatorOverlay = new BrushIndicatorOverlay(this,
                 new Rectangle(configuration.brush.size, configuration.brush.size));
-        
+
+        addMouseWheelListener(this);
         addMouseListener(this);
         addMouseMotionListener(this);
     }
@@ -108,12 +109,20 @@ public class Showcase extends WrappingScalableCanvas implements MouseInputListen
     }
 
     public void mouseWheelMoved(MouseWheelEvent e) {
+        // needs to be checked _before_ zooming
+        if (e.getSource() == this && mainFrame.getActiveTool() == PaintCommand.class) {
+            brushIndicatorOverlay.setBounds(new Rectangle(
+                    transformToImageSpace(e.getPoint()),
+                    new Dimension(configuration.brush.size, configuration.brush.size)));
+        }
+        
         ZoomCommand zoomCommand ;
         if (e.getWheelRotation() < 0) 
             zoomCommand = new ZoomInCommand(this);
         else
             zoomCommand = new ZoomOutCommand(this);
         zoomCommand.execute();
+        
     }
 
     public void mousePressed(MouseEvent e) {
