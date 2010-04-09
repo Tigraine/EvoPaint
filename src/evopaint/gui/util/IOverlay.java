@@ -27,6 +27,7 @@ package evopaint.gui.util;
  * @see IOverlayable
  */
 public interface IOverlay {
+    
     /**
      * A callback called by any overlayable components this overlay has
      * subscribed to when it is to paint itself onto the overlayable surface
