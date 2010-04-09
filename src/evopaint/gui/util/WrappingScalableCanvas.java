@@ -252,6 +252,20 @@ public class WrappingScalableCanvas extends JComponent implements IOverlayable {
 
     /**
      * Paints an overlay using the given parameters. This is a callback called
+     * by subscribed overlays which wish to paint onto the canvas. The overlay
+     * will be in soft XOR
+     * @param shape The <code>Shape</code> to be painted
+     * @see IOverlayable
+     * @see IOverlay
+     * @see Shape
+     */
+    public void paintOverlay(Shape shape) {
+        imageG2.setXORMode(new Color(0x505050));
+        paintOverlayInternal(shape);
+    }
+
+    /**
+     * Paints an overlay using the given parameters. This is a callback called
      * by subscribed overlays which wish to paint onto the canvas.
      * @param shape The <code>Shape</code> to be painted
      * @param color The color in which the <code>Shape</code> shall be painted
@@ -264,6 +278,10 @@ public class WrappingScalableCanvas extends JComponent implements IOverlayable {
     public void paintOverlay(Shape shape, Color color, float alpha) {
         imageG2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, alpha));
         imageG2.setColor(color);
+        paintOverlayInternal(shape);
+    }
+
+    public void paintOverlayInternal(Shape shape) {
         imageG2.fill(shape);
 
         Rectangle bounds = shape.getBounds();

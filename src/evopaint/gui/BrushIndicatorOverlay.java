@@ -46,6 +46,6 @@ public class BrushIndicatorOverlay extends Rectangle implements IOverlay {
     }
 
     public void paint() {
-        canvas.paintOverlay(this, Color.WHITE, .5f);
+        canvas.paintOverlay(this);
     }
 }
