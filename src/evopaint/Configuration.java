@@ -20,6 +20,11 @@ import evopaint.pixel.rulebased.interfaces.IAction;
 import evopaint.pixel.rulebased.interfaces.ICondition;
 import evopaint.pixel.rulebased.conditions.EmptyCondition;
 import evopaint.pixel.rulebased.conditions.TrueCondition;
+import evopaint.pixel.rulebased.interfaces.ITargetSelection;
+import evopaint.pixel.rulebased.targetselections.ExistentTargetSelection;
+import evopaint.pixel.rulebased.targetselections.LeastEnergyTargetSelection;
+import evopaint.pixel.rulebased.targetselections.MostEnergyTargetSelection;
+import evopaint.pixel.rulebased.targetselections.NonExistentTargetSelection;
 import evopaint.util.FileHandler;
 import evopaint.util.RandomNumberGeneratorWrapper;
 import evopaint.util.logging.Logger;
@@ -47,19 +52,26 @@ public class Configuration {
 
     public final int pixelType = Pixel.RULESET;
 
-    public static final List<ICondition> availableConditions = new ArrayList<ICondition>() {{
+    public static final List<ICondition> AVAILABLE_CONDITIONS = new ArrayList<ICondition>() {{
         add(new TrueCondition());
         add(new EmptyCondition());
         add(new EnergyCondition());
         add(new ColorLikenessCondition());
     }};
 
-    public static final List<IAction> availableActions = new ArrayList<IAction>() {{
+    public static final List<IAction> AVAILABLE_ACTIONS = new ArrayList<IAction>() {{
         add(new IdleAction());
         add(new AssimilationAction());
         add(new RewardAction());
         add(new CopyAction());
         add(new MoveAction());
+    }};
+
+    public static final List<ITargetSelection> AVAILABLE_TARGET_SELECTIONS = new ArrayList<ITargetSelection>() {{
+        add(new ExistentTargetSelection());
+        add(new NonExistentTargetSelection());
+        add(new LeastEnergyTargetSelection());
+        add(new MostEnergyTargetSelection());
     }};
 
     public IRandomNumberGenerator rng;

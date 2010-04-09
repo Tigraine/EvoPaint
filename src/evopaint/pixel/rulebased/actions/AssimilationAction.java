@@ -5,16 +5,16 @@
 
 package evopaint.pixel.rulebased.actions;
 
-import evopaint.Configuration;
 import evopaint.pixel.rulebased.AbstractAction;
 import evopaint.World;
 import evopaint.gui.rulesetmanager.util.DimensionsListener;
 import evopaint.gui.util.AutoSelectOnFocusSpinner;
 import evopaint.pixel.ColorDimensions;
 import evopaint.pixel.Pixel;
+import evopaint.pixel.rulebased.RuleBasedPixel;
+import evopaint.pixel.rulebased.interfaces.ITargetSelection;
 import evopaint.util.mapping.RelativeCoordinate;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
@@ -33,8 +33,8 @@ public class AssimilationAction extends AbstractAction {
     private ColorDimensions dimensions;
     private byte ourSharePercent;
 
-    public AssimilationAction(int cost, List<RelativeCoordinate> directions, ColorDimensions dimensions, byte ourSharePercent) {
-        super("assimilate", cost, directions);
+    public AssimilationAction(int cost, int mode, ITargetSelection targetSelection, ColorDimensions dimensions, byte ourSharePercent) {
+        super("assimilate", cost, mode, targetSelection);
         this.dimensions = dimensions;
         this.ourSharePercent = ourSharePercent;
     }
@@ -62,9 +62,7 @@ public class AssimilationAction extends AbstractAction {
 
     public void executeCallback(Pixel origin, RelativeCoordinate direction, World world) {
         Pixel target = world.get(origin.getLocation(), direction);
-        if (target == null) { // cannot assimilate empty
-            return;
-        }
+        assert (target != null);
         target.getPixelColor().mixWith(origin.getPixelColor(),
                 ((float)ourSharePercent) / 100, dimensions);
     }

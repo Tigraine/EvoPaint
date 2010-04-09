@@ -17,7 +17,6 @@ import java.awt.image.BufferedImage;
 public class EvoPaint {
 
     private Configuration configuration;
-    private World world;
     private Perception perception;
     MainFrame frame;
 
@@ -33,31 +32,19 @@ public class EvoPaint {
         return perception;
     }
 
-    public void setPerception(Perception perception) {
-        this.perception = perception;
-    }
-
-    public World getWorld() {
-        return world;
-    }
-
-    public void setWorld(World world) {
-        this.world = world;
-    }
-
     public void setConfiguration(Configuration configuration) {
         this.configuration = configuration;
     }
 
     public void work() {
-        this.perception.createImage(world);
+        this.perception.createImage(configuration.world);
         frame.getShowcase().repaint();
         long timeStamp = System.currentTimeMillis();
 
         while (true) {
 
             if (configuration.runLevel > Configuration.RUNLEVEL_PAINTING_ONLY) {
-                this.world.step();
+                configuration.world.step();
             }
             else if (configuration.runLevel < Configuration.RUNLEVEL_PAINTING_ONLY) {
                 continue;
@@ -66,7 +53,7 @@ public class EvoPaint {
             long currentTime = System.currentTimeMillis();
             if (currentTime - timeStamp > 1000 / configuration.fps) {
                 timeStamp = currentTime;
-                this.perception.createImage(world);
+                this.perception.createImage(configuration.world);
                 frame.getShowcase().repaint();
             }
         }
@@ -87,16 +74,14 @@ public class EvoPaint {
 
         // create empty world
         long time = 0;
-        this.world = new World(
+        this.configuration.world = new World(
                 new Pixel[configuration.dimension.width * configuration.dimension.height],
                 time, configuration);
-
-        this.configuration.world = world;
 
         this.perception = new Perception(new BufferedImage(configuration.dimension.width, configuration.dimension.height,
                 BufferedImage.TYPE_INT_RGB));
 
-        this.perception.createImage(world);
+        this.perception.createImage(configuration.world);
 
         this.frame = new MainFrame(configuration, this);
     }

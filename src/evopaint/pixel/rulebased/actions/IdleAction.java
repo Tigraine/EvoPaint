@@ -5,14 +5,12 @@
 
 package evopaint.pixel.rulebased.actions;
 
-import evopaint.Configuration;
 import evopaint.pixel.rulebased.AbstractAction;
 import evopaint.World;
 import evopaint.pixel.Pixel;
+import evopaint.pixel.rulebased.interfaces.ITargetSelection;
 import evopaint.util.mapping.RelativeCoordinate;
-import java.util.ArrayList;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 import javax.swing.JComponent;
 
@@ -22,8 +20,8 @@ import javax.swing.JComponent;
  */
 public class IdleAction extends AbstractAction {
 
-    public IdleAction(int cost, List<RelativeCoordinate> directions) {
-        super("idle", cost, directions);
+    public IdleAction(int cost, int mode, ITargetSelection targetSelection) {
+        super("idle", cost, mode, targetSelection);
     }
 
     public IdleAction() {

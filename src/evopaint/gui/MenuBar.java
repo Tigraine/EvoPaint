@@ -249,17 +249,17 @@ public class MenuBar extends JMenuBar implements Observer {
 		//evopaint.getConfiguration().running = false;
 		//todo wizard code & implementation of a new evolution
 		
-		Configuration newConf = new Configuration();
-                newConf.dimension = new Dimension(x,y);
-		evopaint.setConfiguration(newConf);
+		//Configuration newConf = new Configuration();
+            //    newConf.dimension = new Dimension(x,y);
+		//evopaint.setConfiguration(newConf);
 		
 		
-		evopaint.setWorld(new World(new Pixel[newConf.dimension.width * newConf.dimension.height],0, newConf));
-		evopaint.setPerception(new Perception(new BufferedImage
-                (newConf.dimension.width, newConf.dimension.height,
-                BufferedImage.TYPE_INT_RGB)));
+		//evopaint.setWorld(new World(new Pixel[newConf.dimension.width * newConf.dimension.height],0, newConf));
+		//evopaint.setPerception(new Perception(new BufferedImage
+               // (newConf.dimension.width, newConf.dimension.height,
+              //  BufferedImage.TYPE_INT_RGB)));
 
-        evopaint.getPerception().createImage(evopaint.getWorld());
+      //  evopaint.getPerception().createImage(configuration.world);
        
         //check evopaint
 		//check config

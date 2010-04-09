@@ -8,8 +8,11 @@ package evopaint.gui.rulesetmanager;
 import evopaint.gui.rulesetmanager.util.NamedObjectListCellRenderer;
 import evopaint.Configuration;
 import evopaint.gui.util.AutoSelectOnFocusSpinner;
+import evopaint.pixel.rulebased.AbstractAction;
 import evopaint.pixel.rulebased.actions.IdleAction;
 import evopaint.pixel.rulebased.interfaces.IAction;
+import evopaint.pixel.rulebased.interfaces.ITargetSelection;
+import evopaint.util.mapping.RelativeCoordinate;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -18,7 +21,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import javax.swing.BoxLayout;
+import javax.swing.ButtonGroup;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -27,6 +33,7 @@ import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JRadioButton;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingUtilities;
@@ -43,10 +50,15 @@ public class JAction extends JButton {
     private Configuration configuration;
     private IAction iAction;
     private JDialog dialog;
-    JComboBox comboBoxActions;
-    ComboBoxActionsListener comboBoxActionsListener;
-    JTargetPicker targetPicker;
-    JPanel panelParameters;
+    private JComboBox comboBoxActions;
+    private ComboBoxActionsListener comboBoxActionsListener;
+    private JRadioButton oneRadio;
+    private JRadioButton allRadio;
+    private JComboBox targetSelectionComboBox;
+    private TargetSelectionComboBoxListener targetSelectionComboBoxListener;
+    private JTargetPicker jTargetPicker;
+    private JPanel targetSelectionPanel;
+    private JPanel panelParameters;
 
     public IAction getIAction() { // cos getAction is taken GRRR
         return iAction;
@@ -59,7 +71,7 @@ public class JAction extends JButton {
         }
 
         IAction selection = null;
-        for (IAction a : Configuration.availableActions) {
+        for (IAction a : Configuration.AVAILABLE_ACTIONS) {
             if (a.getClass() == iAction.getClass()) {
                 selection = a;
             }
@@ -71,7 +83,7 @@ public class JAction extends JButton {
 
         if (iAction instanceof IdleAction) {
             comboBoxActions.setPreferredSize(new Dimension(200, 25)); // or else it will get crippled
-            targetPicker.setVisible(false);
+            targetSelectionPanel.setVisible(false);
             panelParameters.setVisible(false);
             return;
         }
@@ -104,10 +116,31 @@ public class JAction extends JButton {
             constraints.gridy = constraints.gridy + 1;
         }
 
-        targetPicker.setDirections(iAction.getDirections());
+        if (iAction.getMode() == AbstractAction.ONE) {
+            oneRadio.setSelected(true);
+        } else {
+            allRadio.setSelected(true);
+        }
 
-        targetPicker.setVisible(true);
+        jTargetPicker.setDirections(iAction.getTargetSelection().getDirections());
+
+        ITargetSelection selectedTargetSelection = null;
+        for (ITargetSelection ts : Configuration.AVAILABLE_TARGET_SELECTIONS) {
+            if (ts.getClass() == iAction.getTargetSelection().getClass()) {
+                selectedTargetSelection = ts;
+            }
+        }
+        assert(selectedTargetSelection != null);
+        targetSelectionComboBox.removeActionListener(targetSelectionComboBoxListener);
+        targetSelectionComboBox.setSelectedItem(selection);
+        targetSelectionComboBox.addActionListener(targetSelectionComboBoxListener);
+
+        targetSelectionPanel.setVisible(true);
         panelParameters.setVisible(true);
+    }
+
+    private void setTargetSelection(ITargetSelection targetSelection) {
+        iAction.setTargetSelection(targetSelection);
     }
 
     public JAction(Configuration configuration) {
@@ -130,7 +163,7 @@ public class JAction extends JButton {
         constraints.anchor = GridBagConstraints.NORTHWEST;
 
         DefaultComboBoxModel comboBoxModel = new DefaultComboBoxModel();
-        for (IAction a : Configuration.availableActions) {
+        for (IAction a : Configuration.AVAILABLE_ACTIONS) {
             comboBoxModel.addElement(a);
         }
 
@@ -146,22 +179,70 @@ public class JAction extends JButton {
         constraints.insets = new Insets(10, 10, 5, 10);
         dialog.add(comboBoxActions, constraints);
 
-        panelParameters = new JPanel();
-        panelParameters.setBorder(new TitledBorder("Parameters"));
-        panelParameters.setLayout(new GridBagLayout());
+
+        // BEGIN target selection panel
+
+        targetSelectionPanel = new JPanel();
+        targetSelectionPanel.setBorder(new TitledBorder("Target Selection"));
+
+        JPanel radioPanel = new JPanel();
+        radioPanel.setLayout(new BoxLayout(radioPanel, BoxLayout.Y_AXIS));
+        oneRadio = new JRadioButton("One of");
+        oneRadio.addActionListener(new ActionListener() {
+
+            public void actionPerformed(ActionEvent e) {
+                iAction.setMode(AbstractAction.ONE);
+            }
+        });
+        oneRadio.setSelected(true);
+        radioPanel.add(oneRadio);
+        allRadio = new JRadioButton("All of");
+        allRadio.addActionListener(new ActionListener() {
+
+            public void actionPerformed(ActionEvent e) {
+                iAction.setMode(AbstractAction.ALL);
+            }
+        });
+        radioPanel.add(allRadio);
+        ButtonGroup group = new ButtonGroup();
+        group.add(oneRadio);
+        group.add(allRadio);
+
+        targetSelectionPanel.add(radioPanel);
+
+        jTargetPicker = new JTargetPicker();
+        targetSelectionPanel.add(jTargetPicker);
+
+        targetSelectionComboBox = new JComboBox();
+        DefaultComboBoxModel model = new DefaultComboBoxModel();
+        for (ITargetSelection ts : Configuration.AVAILABLE_TARGET_SELECTIONS) {
+            model.addElement(ts);
+        }
+        targetSelectionComboBox.setModel(model);
+        targetSelectionComboBox.setRenderer(new NamedObjectListCellRenderer());
+        targetSelectionComboBoxListener = new TargetSelectionComboBoxListener(); // added in setAction
+        targetSelectionComboBox.setPreferredSize(new Dimension(200, targetSelectionComboBox.getPreferredSize().height));
+        targetSelectionPanel.add(targetSelectionComboBox);
+
         constraints.gridx = 0;
         constraints.gridy = 1;
         constraints.gridwidth = 1;
         constraints.insets = new Insets(5, 10, 5, 5);
-        dialog.add(panelParameters, constraints);
+        dialog.add(targetSelectionPanel, constraints);
 
+        // END target selection panel
+
+
+
+        panelParameters = new JPanel();
+        panelParameters.setBorder(new TitledBorder("Parameters"));
+        panelParameters.setLayout(new GridBagLayout());
         constraints.fill = GridBagConstraints.NONE;
         constraints.gridwidth = 1;
         constraints.gridx = 1;
         constraints.gridy = 1;
         constraints.insets = new Insets(5, 5, 5, 10);
-        targetPicker = new JTargetPicker();
-        dialog.add(targetPicker, constraints);
+        dialog.add(panelParameters, constraints);
         
         JPanel controlPanel = new JPanel();
         final JButton btnOK = new JButton("OK");
@@ -195,6 +276,24 @@ public class JAction extends JButton {
                 IAction prototype = (IAction)((JComboBox)e.getSource()).getSelectedItem();
                 IAction newAction = prototype.getClass().newInstance();
                 setIAction(newAction, false);
+                dialog.pack();
+            } catch (InstantiationException ex) {
+                ex.printStackTrace();
+                System.exit(1);
+            } catch (IllegalAccessException ex) {
+                ex.printStackTrace();
+                System.exit(1);
+            }
+        }
+    }
+
+    private class TargetSelectionComboBoxListener implements ActionListener {
+        public void actionPerformed(ActionEvent e) {
+            try {
+                ITargetSelection prototype = (ITargetSelection)((JComboBox)e.getSource()).getSelectedItem();
+                ITargetSelection newTargetSelection = prototype.getClass().newInstance();
+                newTargetSelection.setDirections(iAction.getTargetSelection().getDirections());
+                setTargetSelection(newTargetSelection);
                 dialog.pack();
             } catch (InstantiationException ex) {
                 ex.printStackTrace();

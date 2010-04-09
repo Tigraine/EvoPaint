@@ -5,8 +5,10 @@
 
 package evopaint.pixel.rulebased;
 
+import evopaint.Configuration;
 import evopaint.pixel.rulebased.util.NumberComparisonOperator;
 import evopaint.World;
+import evopaint.interfaces.IRandomNumberGenerator;
 import evopaint.pixel.Pixel;
 import evopaint.pixel.rulebased.actions.IdleAction;
 import evopaint.pixel.rulebased.conditions.EnergyCondition;
@@ -79,46 +81,15 @@ public class Rule implements IRule, IHTML, ICopyable {
         return ret;
     }
 
-    public boolean apply(Pixel actor, World world) {
+    public boolean apply(Pixel actor, Configuration configuration) {
         for (ICondition condition : conditions) {
-            if (condition.isMet(actor, world) == false) {
+            if (condition.isMet(actor, configuration.world) == false) {
                 return false;
             }
         }
 
-        actor.reward((-1) * action.execute(actor, world)); // *(-1) because we "reward" costs
+        actor.reward((-1) * action.execute(actor, configuration)); // *(-1) because we "reward" costs
         return true;
-    }
-
-    public String validate(Pixel pixel) {
-        String ret = null;
-        ret = validateEnergyConsumption(pixel);
-        if (ret != null) {
-            return ret;
-        }
-        // insert validation2 here
-        return "OK";
-    }
-
-    private String validateEnergyConsumption(Pixel pixel) {
-        if (action.getCost() < 0) {
-            return null;
-        }
-        for (ICondition condition : conditions) {
-            if (condition.getClass() == EnergyCondition.class) {
-                if (((EnergyCondition)condition).getDirections().contains(RelativeCoordinate.SELF)) {
-                    NumberComparisonOperator comparisonOperator = ((EnergyCondition)condition).getComparisonOperator();
-                    if (comparisonOperator == NumberComparisonOperator.EQUAL ||
-                            comparisonOperator == NumberComparisonOperator.GREATER_THAN ||
-                            comparisonOperator == NumberComparisonOperator.GREATER_OR_EQUAL) {
-                        if (((EnergyCondition)condition).getEnergyValue() > action.getCost() * action.getDirections().size()) {
-                            return null;
-                        }
-                    }
-                }
-            }
-        }
-        return "Warning: You might want to add an energy condition matching on greater than the cost of your desired action or you will kill your pixels";
     }
 
     public Rule getCopy() {

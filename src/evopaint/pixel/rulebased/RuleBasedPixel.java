@@ -5,7 +5,7 @@
 
 package evopaint.pixel.rulebased;
 
-import evopaint.World;
+import evopaint.Configuration;
 import evopaint.pixel.Pixel;
 import evopaint.pixel.PixelColor;
 import evopaint.pixel.rulebased.interfaces.IRule;
@@ -26,12 +26,12 @@ public class RuleBasedPixel extends Pixel {
         this.ruleSet = ruleSet;
     }
 
-    public void act(World world) {
+    public void act(Configuration configuration) {
         if (ruleSet == null) {
             return;
         }
         for (IRule rule : ruleSet.getRules()) {
-            if (rule.apply(this, world)) {
+            if (rule.apply(this, configuration)) {
                 break;
             }
         }

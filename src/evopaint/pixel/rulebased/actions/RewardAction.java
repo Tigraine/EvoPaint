@@ -5,14 +5,13 @@
 
 package evopaint.pixel.rulebased.actions;
 
-import evopaint.Configuration;
 import evopaint.pixel.rulebased.AbstractAction;
 import evopaint.World;
 import evopaint.gui.util.AutoSelectOnFocusSpinner;
 import evopaint.pixel.Pixel;
+import evopaint.pixel.rulebased.interfaces.ITargetSelection;
 import evopaint.util.mapping.RelativeCoordinate;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 import javax.swing.JComponent;
 import javax.swing.JSpinner;
@@ -28,8 +27,8 @@ public class RewardAction extends AbstractAction {
     
     private int rewardValue;
 
-    public RewardAction(int cost, List<RelativeCoordinate> directions, int rewardValue) {
-        super("reward", cost, directions);
+    public RewardAction(int cost, int mode, ITargetSelection targetSelection, int rewardValue) {
+        super("reward", cost, mode, targetSelection);
         this.rewardValue = rewardValue;
     }
 
@@ -47,9 +46,7 @@ public class RewardAction extends AbstractAction {
 
     public void executeCallback(Pixel origin, RelativeCoordinate direction, World world) {
         Pixel target = world.get(origin.getLocation(), direction);
-        if (target == null) { // cannot reward nothingness
-            return;
-        }
+        assert (target != null);
         target.reward(rewardValue);
     }
 

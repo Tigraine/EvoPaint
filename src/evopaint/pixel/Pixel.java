@@ -4,10 +4,8 @@
  */
 package evopaint.pixel;
 
-import evopaint.World;
-import evopaint.pixel.rulebased.interfaces.IRule;
+import evopaint.Configuration;
 import evopaint.util.mapping.AbsoluteCoordinate;
-import evopaint.util.mapping.RelativeCoordinate;
 
 /**
  *
@@ -63,7 +61,7 @@ public abstract class Pixel {
         }
     }
     
-    public abstract void act(World world);
+    public abstract void act(Configuration configuration);
 
     public Pixel(PixelColor pixelColor, AbsoluteCoordinate location, int energy) {
         this.pixelColor = pixelColor;

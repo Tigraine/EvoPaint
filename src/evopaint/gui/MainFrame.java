@@ -82,7 +82,7 @@ public class MainFrame extends JFrame {
         add(jRuleSetManager, "rule manager");
 
         this.jOptionsPanel = new JOptionsPanel(configuration);
-        this.showcase = new Showcase(configuration, this, evopaint.getWorld(), evopaint.getPerception(), commandFactory);
+        this.showcase = new Showcase(configuration, this, configuration.world, evopaint.getPerception(), commandFactory);
         this.menuBar = new MenuBar(configuration, evopaint, new SelectionListenerFactory(showcase), showcase);
         setJMenuBar(menuBar);
 

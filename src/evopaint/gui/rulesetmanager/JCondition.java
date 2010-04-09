@@ -67,7 +67,7 @@ public class JCondition extends JButton {
         }
 
         ICondition selection = null;
-        for (ICondition c : Configuration.availableConditions) {
+        for (ICondition c : Configuration.AVAILABLE_CONDITIONS) {
             if (c.getClass() == iCondition.getClass()) {
                 selection = c;
             }
@@ -137,7 +137,7 @@ public class JCondition extends JButton {
 
         // do the combo box magic
         DefaultComboBoxModel comboBoxModel = new DefaultComboBoxModel();
-        for (ICondition c : Configuration.availableConditions) {
+        for (ICondition c : Configuration.AVAILABLE_CONDITIONS) {
             comboBoxModel.addElement(c);
         }
         comboBoxConditions = new JComboBox(comboBoxModel);

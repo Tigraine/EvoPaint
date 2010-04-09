@@ -6,12 +6,9 @@
 package evopaint.pixel.rulebased.interfaces;
 
 import evopaint.Configuration;
-import evopaint.World;
 import evopaint.pixel.Pixel;
-import evopaint.util.mapping.RelativeCoordinate;
 import java.io.Serializable;
 import java.util.LinkedHashMap;
-import java.util.List;
 import javax.swing.JComponent;
 
 /**
@@ -21,7 +18,10 @@ import javax.swing.JComponent;
 public interface IAction extends INamed, IHTML, Serializable {
     public int getCost();
     public void setCost(int cost);
-    public List<RelativeCoordinate> getDirections();
-    public int execute(Pixel actor, World world);
+    public int getMode();
+    public void setMode(int mode);
+    public ITargetSelection getTargetSelection();
+    public void setTargetSelection(ITargetSelection targetSelection);
+    public int execute(Pixel actor, Configuration configuration);
     LinkedHashMap<String, JComponent> parametersCallbackGUI(LinkedHashMap<String, JComponent> parametersMap);
 }

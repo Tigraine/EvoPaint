@@ -7,12 +7,11 @@ package evopaint.pixel.rulebased;
 
 import evopaint.pixel.ColorDimensions;
 import evopaint.pixel.rulebased.actions.AssimilationAction;
-import evopaint.pixel.rulebased.conditions.EnergyCondition;
 import evopaint.pixel.rulebased.conditions.TrueCondition;
 import evopaint.pixel.rulebased.interfaces.IAction;
 import evopaint.pixel.rulebased.interfaces.ICondition;
 import evopaint.pixel.rulebased.interfaces.IRule;
-import evopaint.pixel.rulebased.util.NumberComparisonOperator;
+import evopaint.pixel.rulebased.targetselections.ExistentTargetSelection;
 import evopaint.util.mapping.RelativeCoordinate;
 import java.util.ArrayList;
 import java.util.List;
@@ -58,7 +57,7 @@ public class ExampleRuleSetCollectionFactory {
         directions.add(RelativeCoordinate.NORTH);
         directions.add(RelativeCoordinate.SOUTH);
         directions.add(RelativeCoordinate.EAST);
-        action = new AssimilationAction(0, directions, new ColorDimensions(true, true, true), (byte)50);
+        action = new AssimilationAction(0, AbstractAction.ALL, new ExistentTargetSelection(new ArrayList<RelativeCoordinate>(9)), new ColorDimensions(true, true, true), (byte)50);
         rules.add(new Rule(conditions, action));
         ruleSets.add(new RuleSet(name, description , rules));
 

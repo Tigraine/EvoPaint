@@ -5,16 +5,17 @@
 
 package evopaint.pixel.rulebased;
 
+import evopaint.Configuration;
 import evopaint.World;
 import evopaint.pixel.Pixel;
 import evopaint.pixel.rulebased.interfaces.IAction;
 import evopaint.pixel.rulebased.interfaces.IHTML;
 import evopaint.pixel.rulebased.interfaces.INamed;
+import evopaint.pixel.rulebased.interfaces.ITargetSelection;
+import evopaint.pixel.rulebased.targetselections.ExistentTargetSelection;
 import evopaint.util.mapping.RelativeCoordinate;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -22,23 +23,25 @@ import java.util.Map;
  * @author tam
  */
 public abstract class AbstractAction implements IAction, INamed, IHTML {
+    public static final int ALL = 0;
+    public static final int ONE = 1;
 
     private String name;
     private int cost;
-    private List<RelativeCoordinate> directions;
+    private int mode;
+    private ITargetSelection targetSelection;
 
-    protected AbstractAction(String name, int cost, List<RelativeCoordinate> directions) {
+    protected AbstractAction(String name, int cost, int mode, ITargetSelection targetSelection) {
         this.name = name;
         this.cost = cost;
-        this.directions = directions;
+        this.mode = mode;
+        this.targetSelection = targetSelection;
     }
 
     protected AbstractAction(String name) {
         this.name = name;
-        this.directions = new ArrayList<RelativeCoordinate>(9);
+        this.targetSelection = new ExistentTargetSelection(new ArrayList<RelativeCoordinate>(9));
     }
-
-    protected AbstractAction() {}
 
     public String getName() {
         return name;
@@ -52,24 +55,20 @@ public abstract class AbstractAction implements IAction, INamed, IHTML {
         this.cost = cost;
     }
 
-    public List<RelativeCoordinate> getDirections() {
-        return directions;
+    public int getMode() {
+        return mode;
     }
 
-    public void setDirections(List<RelativeCoordinate> directions) {
-        this.directions = directions;
+    public void setMode(int mode) {
+        this.mode = mode;
     }
 
-    public String getDirectionsString() {
-        String ret = "[";
-        for (Iterator<RelativeCoordinate> ii = directions.iterator(); ii.hasNext();) {
-            ret += ii.next().toString();
-            if (ii.hasNext()) {
-                ret += ", ";
-            }
-        }
-        ret += "]";
-        return ret;
+    public ITargetSelection getTargetSelection() {
+        return targetSelection;
+    }
+
+    public void setTargetSelection(ITargetSelection targetSelection) {
+        this.targetSelection = targetSelection;
     }
 
     @Override
@@ -79,15 +78,15 @@ public abstract class AbstractAction implements IAction, INamed, IHTML {
 
         ret += " (";
         
-        ret += "targets: [";
-        for (Iterator<RelativeCoordinate> ii = directions.iterator(); ii.hasNext();) {
-            ret += ii.next().toString();
-            if (ii.hasNext()) {
-                ret += ", ";
-            }
+        ret += "targets: { ";
+        if (mode == ONE) {
+            ret += "One";
+        } else {
+            ret += "All";
         }
-        ret += "]";
-        ret += ", cost:" + cost + ", ";
+        ret += " of ";
+        ret += targetSelection.toString();
+        ret += "}, cost:" + cost + ", ";
 
         Map<String, String> parametersMap = this.parametersCallbackString(new HashMap<String, String>());
         for (String parameterName : parametersMap.keySet()) {
@@ -106,15 +105,15 @@ public abstract class AbstractAction implements IAction, INamed, IHTML {
 
         ret += " (";
 
-        ret += "<span style='color: #777777;'>targets:</span> [";
-        for (Iterator<RelativeCoordinate> ii = directions.iterator(); ii.hasNext();) {
-            ret += ii.next().toString();
-            if (ii.hasNext()) {
-                ret += ", ";
-            }
+        ret += "<span style='color: #777777;'>targets:</span> {";
+        if (mode == ONE) {
+            ret += "One";
+        } else {
+            ret += "All";
         }
-        ret += "]";
-        ret += ", <span style='color: #777777;'>cost:</span>" + cost + ", ";
+        ret += " of ";
+        ret += targetSelection.toHTML();
+        ret += "}, <span style='color: #777777;'>cost:</span>" + cost + ", ";
 
         Map<String, String> parametersMap = this.parametersCallbackString(new HashMap<String, String>());
         for (String parameterName : parametersMap.keySet()) {
@@ -128,17 +127,27 @@ public abstract class AbstractAction implements IAction, INamed, IHTML {
         return ret;
     }
 
-    public int execute(Pixel actor, World world) {
+    public int execute(Pixel actor, Configuration configuration) {
 
         // if the action costs more energy than this pixel got, it dies trying
         if (cost > actor.getEnergy()) {
             return actor.getEnergy();
         }
 
-        for (RelativeCoordinate target : directions) {
-            executeCallback(actor, target, world);
+        if (mode == ALL) {
+            synchronized (configuration.world) {
+                for (RelativeCoordinate direction : targetSelection.getAllSelectedDirections(actor, configuration)) {
+                    executeCallback(actor, direction, configuration.world);
+                }
+            }
+        } else {
+            synchronized (configuration.world) {
+                RelativeCoordinate rc = targetSelection.getOneSelectedDirection(actor, configuration);
+                if (rc != null) {
+                    executeCallback(actor, rc, configuration.world);
+                }
+            }
         }
-
         return cost;
     }
 

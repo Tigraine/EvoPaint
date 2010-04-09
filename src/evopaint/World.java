@@ -5,12 +5,8 @@
 package evopaint;
 
 import evopaint.pixel.Pixel;
-import evopaint.pixel.PixelColor;
-import evopaint.pixel.rulebased.RuleBasedPixel;
-import evopaint.pixel.rulebased.RuleSet;
 
 import evopaint.util.logging.Logger;
-import evopaint.util.mapping.AbsoluteCoordinate;
 import evopaint.util.mapping.ParallaxMap;
 
 /**
@@ -55,7 +51,7 @@ public class World extends ParallaxMap<Pixel> {
         for (int i = 0; i < indices.length; i++) {
             Pixel pixie = get(indices[i]);
             if (pixie.isAlive()) {
-                pixie.act(this);
+                pixie.act(this.configuration);
             } else {
                 set(indices[i], null);
             }
