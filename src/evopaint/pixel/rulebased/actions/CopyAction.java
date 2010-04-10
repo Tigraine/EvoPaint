@@ -5,52 +5,46 @@
 
 package evopaint.pixel.rulebased.actions;
 
-import evopaint.pixel.rulebased.AbstractAction;
-import evopaint.World;
+import evopaint.Configuration;
+import evopaint.pixel.rulebased.Action;
 import evopaint.pixel.Pixel;
 import evopaint.pixel.PixelColor;
 import evopaint.pixel.rulebased.RuleBasedPixel;
 import evopaint.pixel.rulebased.RuleSet;
-import evopaint.pixel.rulebased.interfaces.ITargetSelection;
+import evopaint.pixel.rulebased.targeting.IActionTarget;
 import evopaint.util.mapping.AbsoluteCoordinate;
 import evopaint.util.mapping.RelativeCoordinate;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import javax.swing.JComponent;
 
 /**
  *
  * @author tam
  */
-public class CopyAction extends AbstractAction {
+public class CopyAction extends Action {
 
-    public CopyAction(int cost, int mode, ITargetSelection targetSelection) {
-        super("copy", cost, mode, targetSelection);
+    public CopyAction(int cost, IActionTarget target) {
+        super(cost, target);
     }
 
     public CopyAction() {
-        super("copy");
     }
 
-    public void executeCallback(Pixel origin, RelativeCoordinate direction, World world) {
-        assert (world.get(origin.getLocation(), direction) == null);
+    public String getName() {
+        return "copy";
+    }
+
+    public int execute(Pixel actor, RelativeCoordinate direction, Configuration configuration) {
+        Pixel target = configuration.world.get(actor.getLocation(), direction);
+        if (target != null) {
+            return 0;
+        }
         Pixel newPixel = new RuleBasedPixel(
-                new PixelColor(origin.getPixelColor()),
-                new AbsoluteCoordinate(origin.getLocation(), direction, world),
-                origin.getEnergy() - getCost(),
-                new RuleSet(((RuleBasedPixel)origin).getRuleSet()));
-        world.set(newPixel);
-    }
+                new PixelColor(actor.getPixelColor()),
+                new AbsoluteCoordinate(actor.getLocation(), direction, configuration.world),
+                actor.getEnergy() - getCost(),
+                new RuleSet(((RuleBasedPixel)actor).getRuleSet()));
+        configuration.world.set(newPixel);
 
-    protected Map<String, String>parametersCallbackString(Map<String, String> parametersMap) {
-        return parametersMap;
-    }
-
-    protected Map<String, String>parametersCallbackHTML(Map<String, String> parametersMap) {
-        return parametersMap;
+        return cost;
     }
     
-    public LinkedHashMap<String,JComponent> parametersCallbackGUI(LinkedHashMap<String, JComponent> parametersMap) {
-        return parametersMap;
-    }
 }

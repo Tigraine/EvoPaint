@@ -17,11 +17,12 @@
  *  along with EvoPaint.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package evopaint.pixel.rulebased;
+package evopaint.pixel.rulebased.targeting;
 
-import evopaint.pixel.Pixel;
-import evopaint.pixel.rulebased.interfaces.ITargetSelection;
+import evopaint.pixel.rulebased.interfaces.IHTML;
+import evopaint.pixel.rulebased.interfaces.INamed;
 import evopaint.util.mapping.RelativeCoordinate;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -29,22 +30,15 @@ import java.util.List;
  *
  * @author Markus Echterhoff <tam@edu.uni-klu.ac.at>
  */
-public abstract class AbstractTargetSelection implements ITargetSelection {
-
-    private String name;
+public abstract class Target implements ITarget, INamed, IHTML {
     protected List<RelativeCoordinate> directions;
 
-    public AbstractTargetSelection(String name, List<RelativeCoordinate> directions) {
-        this.name = name;
+    public Target(List<RelativeCoordinate> directions) {
         this.directions = directions;
     }
 
-    public AbstractTargetSelection(String name) {
-        this.name = name;
-    }
-
-    public String getName() {
-        return name;
+    public Target() {
+        this.directions = new ArrayList<RelativeCoordinate>();
     }
 
     public List<RelativeCoordinate> getDirections() {
@@ -55,36 +49,17 @@ public abstract class AbstractTargetSelection implements ITargetSelection {
         this.directions = directions;
     }
 
-    @Override
-    public String toString() {
+    public String getDirectionsString() {
         String ret = new String();
-        ret += "of [";
+        ret += "[";
         for (Iterator<RelativeCoordinate> ii = directions.iterator(); ii.hasNext();) {
             ret += ii.next().toString();
             if (ii.hasNext()) {
                 ret += ", ";
             }
         }
-        ret += "] ";
-        ret += toStringCallback();
+        ret += "]";
         return ret;
     }
-
-    public String toHTML() {
-        String ret = new String();
-        ret += "of [";
-        for (Iterator<RelativeCoordinate> ii = directions.iterator(); ii.hasNext();) {
-            ret += ii.next().toString();
-            if (ii.hasNext()) {
-                ret += ", ";
-            }
-        }
-        ret += "] ";
-        ret += toHTMLCallback();
-        return ret;
-    }
-
-    protected abstract String toStringCallback();
-
-    protected abstract String toHTMLCallback();
+    
 }

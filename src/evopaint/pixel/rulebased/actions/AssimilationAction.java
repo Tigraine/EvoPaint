@@ -5,14 +5,13 @@
 
 package evopaint.pixel.rulebased.actions;
 
-import evopaint.pixel.rulebased.AbstractAction;
-import evopaint.World;
+import evopaint.Configuration;
+import evopaint.pixel.rulebased.Action;
 import evopaint.gui.rulesetmanager.util.DimensionsListener;
 import evopaint.gui.util.AutoSelectOnFocusSpinner;
 import evopaint.pixel.ColorDimensions;
 import evopaint.pixel.Pixel;
-import evopaint.pixel.rulebased.RuleBasedPixel;
-import evopaint.pixel.rulebased.interfaces.ITargetSelection;
+import evopaint.pixel.rulebased.targeting.IActionTarget;
 import evopaint.util.mapping.RelativeCoordinate;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -28,27 +27,26 @@ import javax.swing.event.ChangeListener;
  *
  * @author tam
  */
-public class AssimilationAction extends AbstractAction {
+public class AssimilationAction extends Action {
 
     private ColorDimensions dimensions;
     private byte ourSharePercent;
 
-    public AssimilationAction(int cost, int mode, ITargetSelection targetSelection, ColorDimensions dimensions, byte ourSharePercent) {
-        super("assimilate", cost, mode, targetSelection);
+    public AssimilationAction(int cost, IActionTarget target, ColorDimensions dimensions, byte ourSharePercent) {
+        super(cost, target);
         this.dimensions = dimensions;
         this.ourSharePercent = ourSharePercent;
     }
 
     public AssimilationAction() {
-        super("assimilate");
-        dimensions = new ColorDimensions(true, true, true);
+        this.dimensions = new ColorDimensions(true, true, true);
     }
     
-    public ColorDimensions getDimensionsToMix() {
+    public ColorDimensions getDimensions() {
         return dimensions;
     }
 
-    public void setDimensionsToMix(ColorDimensions dimensionsToMix) {
+    public void setDimensions(ColorDimensions dimensionsToMix) {
         this.dimensions = dimensionsToMix;
     }
 
@@ -60,26 +58,40 @@ public class AssimilationAction extends AbstractAction {
         this.ourSharePercent = ourSharePercent;
     }
 
-    public void executeCallback(Pixel origin, RelativeCoordinate direction, World world) {
-        Pixel target = world.get(origin.getLocation(), direction);
-        assert (target != null);
-        target.getPixelColor().mixWith(origin.getPixelColor(),
-                ((float)ourSharePercent) / 100, dimensions);
+    public String getName() {
+        return "assimilate";
     }
 
-    protected Map<String, String>parametersCallbackString(Map<String, String> parametersMap) {
+    public int execute(Pixel actor, RelativeCoordinate direction, Configuration configuration) {
+        Pixel target = configuration.world.get(actor.getLocation(), direction);
+        if (target == null) {
+            return 0;
+        }
+        target.getPixelColor().mixWith(actor.getPixelColor(),
+                ((float)ourSharePercent) / 100, dimensions);
+        return cost;
+    }
+
+    @Override
+    public Map<String, String>addParametersString(Map<String, String> parametersMap) {
+        parametersMap = super.addParametersString(parametersMap);
         parametersMap.put("dimensions", dimensions.toString());
         parametersMap.put("our share in %", Integer.toString(ourSharePercent));
         return parametersMap;
     }
 
-    protected Map<String, String>parametersCallbackHTML(Map<String, String> parametersMap) {
+    @Override
+    public Map<String, String>addParametersHTML(Map<String, String> parametersMap) {
+        parametersMap = super.addParametersHTML(parametersMap);
         parametersMap.put("dimensions", dimensions.toHTML());
         parametersMap.put("our share in %", Integer.toString(ourSharePercent));
         return parametersMap;
     }
 
-    public LinkedHashMap<String,JComponent> parametersCallbackGUI(LinkedHashMap<String, JComponent> parametersMap) {
+    @Override
+    public LinkedHashMap<String,JComponent> addParametersGUI(LinkedHashMap<String, JComponent> parametersMap) {
+        parametersMap = super.addParametersGUI(parametersMap);
+
         JPanel dimensionsPanel = new JPanel();
         JToggleButton btnH = new JToggleButton("H");
         JToggleButton btnS = new JToggleButton("S");

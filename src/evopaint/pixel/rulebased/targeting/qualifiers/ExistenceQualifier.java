@@ -17,11 +17,11 @@
  *  along with EvoPaint.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package evopaint.pixel.rulebased.targetselections;
+package evopaint.pixel.rulebased.targeting.qualifiers;
 
 import evopaint.Configuration;
 import evopaint.pixel.Pixel;
-import evopaint.pixel.rulebased.AbstractTargetSelection;
+import evopaint.pixel.rulebased.targeting.Qualifier;
 import evopaint.util.mapping.RelativeCoordinate;
 import java.util.ArrayList;
 import java.util.List;
@@ -30,42 +30,21 @@ import java.util.List;
  *
  * @author Markus Echterhoff <tam@edu.uni-klu.ac.at>
  */
-public class NonExistentTargetSelection extends AbstractTargetSelection {
+public class ExistenceQualifier extends Qualifier {
 
-    public NonExistentTargetSelection(List<RelativeCoordinate> directions) {
-        super("that do not exist", directions);
+    public String getName() {
+        return "an existing one";
     }
 
-    public NonExistentTargetSelection() {
-        super("that do not exist");
-    }
-
-    public List<RelativeCoordinate> getAllSelectedDirections(Pixel origin, Configuration configuration) {
+    public List<RelativeCoordinate> getCandidates(Pixel origin, List<RelativeCoordinate> directions, Configuration configuration) {
         List<RelativeCoordinate> ret = new ArrayList(1);
         for (RelativeCoordinate direction : directions) {
             Pixel target = configuration.world.get(origin.getLocation(), direction);
-            if (target == null) {
+            if (target != null) {
                 ret.add(direction);
             }
         }
         return ret;
     }
-
-    public RelativeCoordinate getOneSelectedDirection(Pixel origin, Configuration configuration) {
-        List<RelativeCoordinate> selectedDirections = getAllSelectedDirections(origin, configuration);
-        if (selectedDirections.size() == 0) {
-            return null;
-        }
-        return selectedDirections.get(configuration.rng.nextPositiveInt(selectedDirections.size()));
-    }
-
-    @Override
-    protected String toHTMLCallback() {
-        return "that do not exist";
-    }
-
-    @Override
-    protected String toStringCallback() {
-        return "that do not exist";
-    }
+    
 }

@@ -9,6 +9,8 @@ import evopaint.interfaces.IRandomNumberGenerator;
 import evopaint.interfaces.ITool;
 import evopaint.pixel.Pixel;
 import evopaint.pixel.PixelColor;
+import evopaint.pixel.rulebased.Action;
+import evopaint.pixel.rulebased.Condition;
 import evopaint.pixel.rulebased.actions.AssimilationAction;
 import evopaint.pixel.rulebased.actions.CopyAction;
 import evopaint.pixel.rulebased.actions.IdleAction;
@@ -16,15 +18,20 @@ import evopaint.pixel.rulebased.actions.MoveAction;
 import evopaint.pixel.rulebased.actions.RewardAction;
 import evopaint.pixel.rulebased.conditions.ColorLikenessCondition;
 import evopaint.pixel.rulebased.conditions.EnergyCondition;
-import evopaint.pixel.rulebased.interfaces.IAction;
-import evopaint.pixel.rulebased.interfaces.ICondition;
 import evopaint.pixel.rulebased.conditions.EmptyCondition;
 import evopaint.pixel.rulebased.conditions.TrueCondition;
-import evopaint.pixel.rulebased.interfaces.ITargetSelection;
-import evopaint.pixel.rulebased.targetselections.ExistentTargetSelection;
-import evopaint.pixel.rulebased.targetselections.LeastEnergyTargetSelection;
-import evopaint.pixel.rulebased.targetselections.MostEnergyTargetSelection;
-import evopaint.pixel.rulebased.targetselections.NonExistentTargetSelection;
+import evopaint.pixel.rulebased.targeting.IActionTarget;
+import evopaint.pixel.rulebased.targeting.IConditionTarget;
+import evopaint.pixel.rulebased.targeting.QualifiedActionTarget;
+import evopaint.pixel.rulebased.targeting.QualifiedConditionTarget;
+import evopaint.pixel.rulebased.targeting.Qualifier;
+import evopaint.pixel.rulebased.targeting.QuantifiedConditionTarget;
+import evopaint.pixel.rulebased.targeting.SpecifiedActionTarget;
+import evopaint.pixel.rulebased.targeting.SpecifiedConditionTarget;
+import evopaint.pixel.rulebased.targeting.qualifiers.ExistenceQualifier;
+import evopaint.pixel.rulebased.targeting.qualifiers.LeastEnergyQualifier;
+import evopaint.pixel.rulebased.targeting.qualifiers.MostEnergyQualifier;
+import evopaint.pixel.rulebased.targeting.qualifiers.NonExistenceQualifier;
 import evopaint.util.FileHandler;
 import evopaint.util.RandomNumberGeneratorWrapper;
 import evopaint.util.logging.Logger;
@@ -52,14 +59,14 @@ public class Configuration {
 
     public final int pixelType = Pixel.RULESET;
 
-    public static final List<ICondition> AVAILABLE_CONDITIONS = new ArrayList<ICondition>() {{
+    public static final List<Condition> AVAILABLE_CONDITIONS = new ArrayList<Condition>() {{
         add(new TrueCondition());
         add(new EmptyCondition());
         add(new EnergyCondition());
         add(new ColorLikenessCondition());
     }};
 
-    public static final List<IAction> AVAILABLE_ACTIONS = new ArrayList<IAction>() {{
+    public static final List<Action> AVAILABLE_ACTIONS = new ArrayList<Action>() {{
         add(new IdleAction());
         add(new AssimilationAction());
         add(new RewardAction());
@@ -67,11 +74,22 @@ public class Configuration {
         add(new MoveAction());
     }};
 
-    public static final List<ITargetSelection> AVAILABLE_TARGET_SELECTIONS = new ArrayList<ITargetSelection>() {{
-        add(new ExistentTargetSelection());
-        add(new NonExistentTargetSelection());
-        add(new LeastEnergyTargetSelection());
-        add(new MostEnergyTargetSelection());
+    public static final List<Qualifier> AVAILABLE_QUALIFIERS = new ArrayList<Qualifier>() {{
+        add(new ExistenceQualifier());
+        add(new NonExistenceQualifier());
+        add(new LeastEnergyQualifier());
+        add(new MostEnergyQualifier());
+    }};
+    
+    public static final List<IConditionTarget> AVAILABLE_CONDITION_TARGETS = new ArrayList<IConditionTarget>() {{
+        add(new SpecifiedConditionTarget());
+        add(new QualifiedConditionTarget());
+        add(new QuantifiedConditionTarget());
+    }};
+
+    public static final List<IActionTarget> AVAILABLE_ACTION_TARGETS = new ArrayList<IActionTarget>() {{
+        add(new SpecifiedActionTarget());
+        add(new QualifiedActionTarget());
     }};
 
     public IRandomNumberGenerator rng;

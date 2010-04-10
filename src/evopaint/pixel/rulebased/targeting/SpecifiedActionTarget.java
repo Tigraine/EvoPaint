@@ -17,29 +17,34 @@
  *  along with EvoPaint.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package evopaint.gui.util;
+package evopaint.pixel.rulebased.targeting;
+
+import evopaint.Configuration;
+import evopaint.pixel.Pixel;
+import evopaint.pixel.rulebased.Action;
+import evopaint.util.mapping.RelativeCoordinate;
+import java.util.List;
 
 /**
- * Classes implementing this interface can subscribe/unsubscribe overlays which
- * are to be painted on a surface. The overlays make use of the paintOverlay
- * callback to do the actual painting.
- * 
+ *
  * @author Markus Echterhoff <tam@edu.uni-klu.ac.at>
- * @see IOverlay
  */
-public interface IOverlayable {
-    
-    /**
-     * Subscribes an overlay to be notified about painting events
-     * @param overlay The overlay to subscribe
-     * @see IOverlay
-     */
-    public void subscribe(IOverlay overlay);
+public class SpecifiedActionTarget
+        extends SpecifiedTarget implements IActionTarget {
 
-    /**
-     * Unsubscribes an overlay. It will not receive any more painting calls
-     * @param overlay The overlay to unsubscribed
-     * @see IOverlay
-     */
-    public void unsubscribe(IOverlay overlay);
+    public SpecifiedActionTarget(List<RelativeCoordinate> directions) {
+        super(directions);
+    }
+
+    public SpecifiedActionTarget() {
+    }
+
+    public int execute(Action action, Pixel actor, Configuration configuration) {
+        int totalCost = 0;
+        for (RelativeCoordinate direction : directions) {
+            totalCost += action.execute(actor, direction, configuration);
+        }
+        return totalCost;
+    }
+    
 }

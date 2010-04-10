@@ -6,19 +6,13 @@
 package evopaint.pixel.rulebased;
 
 import evopaint.Configuration;
-import evopaint.pixel.rulebased.util.NumberComparisonOperator;
-import evopaint.World;
-import evopaint.interfaces.IRandomNumberGenerator;
 import evopaint.pixel.Pixel;
 import evopaint.pixel.rulebased.actions.IdleAction;
-import evopaint.pixel.rulebased.conditions.EnergyCondition;
 import evopaint.pixel.rulebased.conditions.TrueCondition;
 import evopaint.pixel.rulebased.interfaces.IRule;
-import evopaint.pixel.rulebased.interfaces.IAction;
-import evopaint.pixel.rulebased.interfaces.ICondition;
 import evopaint.pixel.rulebased.interfaces.ICopyable;
 import evopaint.pixel.rulebased.interfaces.IHTML;
-import evopaint.util.mapping.RelativeCoordinate;
+import evopaint.pixel.rulebased.targeting.SpecifiedConditionTarget;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -33,30 +27,34 @@ import java.util.List;
  * @author tam
  */
 public class Rule implements IRule, IHTML, ICopyable {
-    private List<ICondition> conditions;
-    private IAction action;
+    private List<Condition> conditions;
+    private Action action;
 
-    public List<ICondition> getConditions() {
+    public List<Condition> getConditions() {
         return conditions;
     }
 
-    public void setConditions(List<ICondition> conditions) {
+    public void setConditions(List<Condition> conditions) {
         this.conditions = conditions;
     }
 
-    public IAction getAction() {
+    public Action getAction() {
         return action;
     }
 
-    public void setAction(IAction action) {
+    public void setAction(Action action) {
         this.action = action;
     }
 
     @Override
     public String toString() {
         String ret = "IF ";
-        for (Iterator<ICondition> ii = conditions.iterator(); ii.hasNext();) {
-            ICondition condition = ii.next();
+        for (Iterator<Condition> ii = conditions.iterator(); ii.hasNext();) {
+            Condition condition = ii.next();
+            if (false == condition instanceof TrueCondition) {
+                ret += condition.getTarget().toString();
+                ret += " ";
+            }
             ret += condition.toString();
             if (ii.hasNext()) {
                 ret += " AND ";
@@ -64,26 +62,39 @@ public class Rule implements IRule, IHTML, ICopyable {
         }
         ret += " THEN ";
         ret += action.toString();
+        if (false == action instanceof IdleAction) {
+            ret += " ";
+            ret += action.getTarget().toString();
+        }
         return ret;
     }
 
     public String toHTML() {
         String ret = "<span style='color: #0000E6; font-weight: bold;'>IF</span> ";
-        for (Iterator<ICondition> ii = conditions.iterator(); ii.hasNext();) {
-            ICondition condition = ii.next();
+        for (Iterator<Condition> ii = conditions.iterator(); ii.hasNext();) {
+            Condition condition = ii.next();
+            if (false == condition instanceof TrueCondition) {
+                ret += condition.getTarget().toHTML();
+                ret += " ";
+            }
             ret += condition.toHTML();
             if (ii.hasNext()) {
                 ret += " <span style='color: #0000E6; font-weight: bold;'>AND</span> ";
             }
         }
         ret += " <span style='color: #0000E6; font-weight: bold;'>THEN</span> ";
+        
         ret += action.toHTML();
+        if (false == action instanceof IdleAction) {
+            ret += " ";
+            ret += action.getTarget().toHTML();
+        }
         return ret;
     }
 
     public boolean apply(Pixel actor, Configuration configuration) {
-        for (ICondition condition : conditions) {
-            if (condition.isMet(actor, configuration.world) == false) {
+        for (Condition condition : conditions) {
+            if (condition.isMet(actor, configuration) == false) {
                 return false;
             }
         }
@@ -110,14 +121,14 @@ public class Rule implements IRule, IHTML, ICopyable {
         return newRule;
     }
 
-    public Rule(List<ICondition> conditions, IAction action) {
+    public Rule(List<Condition> conditions, Action action) {
         this.conditions = conditions;
         this.action = action;
     }
 
     public Rule() {
-        this.conditions = new ArrayList<ICondition>();
-        this.conditions.add(new TrueCondition());
+        this.conditions = new ArrayList<Condition>();
+        this.conditions.add(new TrueCondition(new SpecifiedConditionTarget(new ArrayList())));
         this.action = new IdleAction();
     }
 }

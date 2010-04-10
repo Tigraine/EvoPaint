@@ -17,29 +17,18 @@
  *  along with EvoPaint.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package evopaint.gui.util;
+package evopaint.pixel.rulebased.interfaces;
+
+import java.util.LinkedHashMap;
+import java.util.Map;
+import javax.swing.JComponent;
 
 /**
- * Classes implementing this interface can subscribe/unsubscribe overlays which
- * are to be painted on a surface. The overlays make use of the paintOverlay
- * callback to do the actual painting.
- * 
+ *
  * @author Markus Echterhoff <tam@edu.uni-klu.ac.at>
- * @see IOverlay
  */
-public interface IOverlayable {
-    
-    /**
-     * Subscribes an overlay to be notified about painting events
-     * @param overlay The overlay to subscribe
-     * @see IOverlay
-     */
-    public void subscribe(IOverlay overlay);
-
-    /**
-     * Unsubscribes an overlay. It will not receive any more painting calls
-     * @param overlay The overlay to unsubscribed
-     * @see IOverlay
-     */
-    public void unsubscribe(IOverlay overlay);
+public interface IParameterized {
+    public Map<String, String>addParametersString(Map<String, String> parametersMap);
+    public Map<String, String>addParametersHTML(Map<String, String> parametersMap);
+    public LinkedHashMap<String, JComponent> addParametersGUI(LinkedHashMap<String, JComponent> parametersMap);
 }

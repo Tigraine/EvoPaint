@@ -5,18 +5,15 @@
 
 package evopaint.pixel.rulebased.conditions;
 
-import evopaint.Configuration;
+import evopaint.pixel.rulebased.targeting.IConditionTarget;
 import evopaint.pixel.rulebased.util.NumberComparisonOperator;
-import evopaint.pixel.rulebased.AbstractCondition;
+import evopaint.pixel.rulebased.Condition;
 import evopaint.gui.util.AutoSelectOnFocusSpinner;
 import evopaint.gui.rulesetmanager.util.NamedObjectListCellRenderer;
 import evopaint.pixel.Pixel;
-import evopaint.util.mapping.RelativeCoordinate;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
 import java.util.LinkedHashMap;
-import java.util.List;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JSpinner;
@@ -28,23 +25,21 @@ import javax.swing.event.ChangeListener;
  *
  * @author tam
  */
-public class EnergyCondition extends AbstractCondition {
+public class EnergyCondition extends Condition {
 
     private NumberComparisonOperator comparisonOperator;
     private int energyValue;
 
-    public EnergyCondition(int min, int max, List<RelativeCoordinate> directions, NumberComparisonOperator comparisonOperator, int energyValue) {
-        super("energy", min, max, directions);
+    public EnergyCondition(IConditionTarget target, NumberComparisonOperator comparisonOperator, int energyValue) {
+        super(target);
         this.comparisonOperator = comparisonOperator;
         this.energyValue = energyValue;
     }
 
     public EnergyCondition() {
-        super("energy", 0, 0, new ArrayList<RelativeCoordinate>(9));
-        this.comparisonOperator = NumberComparisonOperator.EQUAL;
-        this.energyValue = 0;
+        comparisonOperator = NumberComparisonOperator.GREATER_THAN;
     }
-    
+
     public NumberComparisonOperator getComparisonOperator() {
         return comparisonOperator;
     }
@@ -61,15 +56,20 @@ public class EnergyCondition extends AbstractCondition {
         this.energyValue = energyValue;
     }
 
-    protected boolean isMetCallback(Pixel us, Pixel them) {
+    public String getName() {
+        return "energy";
+    }
+
+    public boolean isMet(Pixel us, Pixel them) {
         if (them == null) { // never forget to skip empty spots
             return false;
         }
         return comparisonOperator.compare(them.getEnergy(), energyValue);
     }
 
-    public String toStringCallback(String conditionString) {
-        conditionString += "have ";
+    @Override
+    public String toString() {
+        String conditionString = "have ";
         conditionString += comparisonOperator.toString();
         conditionString += " ";
         conditionString += energyValue;
@@ -77,8 +77,8 @@ public class EnergyCondition extends AbstractCondition {
         return conditionString;
     }
 
-    public String toHTMLCallback(String conditionString) {
-        conditionString += "have ";
+    public String toHTML() {
+        String conditionString = "have ";
         conditionString += comparisonOperator.toHTML();
         conditionString += " ";
         conditionString += energyValue;
@@ -86,7 +86,7 @@ public class EnergyCondition extends AbstractCondition {
         return conditionString;
     }
 
-    public LinkedHashMap<String,JComponent> parametersCallbackGUI(LinkedHashMap<String,JComponent> parametersMap) {
+    public LinkedHashMap<String,JComponent> addParametersGUI(LinkedHashMap<String,JComponent> parametersMap) {
         JComboBox comparisonComboBox = new JComboBox(NumberComparisonOperator.createComboBoxModel());
         comparisonComboBox.setRenderer(new NamedObjectListCellRenderer());
         comparisonComboBox.setSelectedItem(comparisonOperator);

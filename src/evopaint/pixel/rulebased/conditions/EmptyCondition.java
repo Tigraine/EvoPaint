@@ -5,18 +5,15 @@
 
 package evopaint.pixel.rulebased.conditions;
 
-import evopaint.Configuration;
 import evopaint.gui.rulesetmanager.util.NamedObjectListCellRenderer;
+import evopaint.pixel.rulebased.targeting.IConditionTarget;
 import evopaint.pixel.rulebased.util.ObjectComparisonOperator;
-import evopaint.pixel.rulebased.AbstractCondition;
+import evopaint.pixel.rulebased.Condition;
 import evopaint.pixel.Pixel;
-import evopaint.util.mapping.RelativeCoordinate;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
 import java.util.LinkedHashMap;
-import java.util.List;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 
@@ -24,19 +21,17 @@ import javax.swing.JComponent;
  *
  * @author tam
  */
-public class EmptyCondition extends AbstractCondition {
+public class EmptyCondition extends Condition {
 
     private ObjectComparisonOperator objectComparisonOperator;
 
-    public EmptyCondition(int min, int max, List<RelativeCoordinate> directions, ObjectComparisonOperator objectComparisonOperator) {
-        super("empty", min, max, directions);
+    public EmptyCondition(IConditionTarget target, ObjectComparisonOperator objectComparisonOperator) {
+        super(target);
         this.objectComparisonOperator = objectComparisonOperator;
     }
 
-
     public EmptyCondition() {
-        super("empty", 0, 0, new ArrayList<RelativeCoordinate>(9));
-        this.objectComparisonOperator = ObjectComparisonOperator.EQUAL;
+        objectComparisonOperator = ObjectComparisonOperator.EQUAL;
     }
 
     public ObjectComparisonOperator getComparisonOperator() {
@@ -47,12 +42,17 @@ public class EmptyCondition extends AbstractCondition {
         this.objectComparisonOperator = comparisonOperator;
     }
 
-    protected boolean isMetCallback(Pixel us, Pixel them) {
+    public String getName() {
+        return "empty";
+    }
+
+    public boolean isMet(Pixel us, Pixel them) {
         return objectComparisonOperator.compare(them, null);
     }
 
-    public String toStringCallback(String conditionString) {
-        conditionString += "are ";
+    @Override
+    public String toString() {
+        String conditionString = "are ";
         if (objectComparisonOperator == ObjectComparisonOperator.NOT_EQUAL) {
             conditionString += "not ";
         }
@@ -60,8 +60,8 @@ public class EmptyCondition extends AbstractCondition {
         return conditionString;
     }
 
-    public String toHTMLCallback(String conditionString) {
-        conditionString += "are ";
+    public String toHTML() {
+        String conditionString = "are ";
         if (objectComparisonOperator == ObjectComparisonOperator.NOT_EQUAL) {
             conditionString += "not ";
         }
@@ -69,7 +69,7 @@ public class EmptyCondition extends AbstractCondition {
         return conditionString;
     }
 
-    public LinkedHashMap<String,JComponent> parametersCallbackGUI(LinkedHashMap<String,JComponent> parametersMap) {
+    public LinkedHashMap<String,JComponent> addParametersGUI(LinkedHashMap<String,JComponent> parametersMap) {
         JComboBox comparisonComboBox = new JComboBox(ObjectComparisonOperator.createComboBoxModel());
         comparisonComboBox.setRenderer(new NamedObjectListCellRenderer());
         comparisonComboBox.setSelectedItem(objectComparisonOperator);

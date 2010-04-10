@@ -5,22 +5,19 @@
 
 package evopaint.pixel.rulebased.conditions;
 
-import evopaint.Configuration;
-import evopaint.pixel.rulebased.AbstractCondition;
-import evopaint.gui.rulesetmanager.util.DimensionsListener;
-import evopaint.gui.util.AutoSelectOnFocusSpinner;
-import evopaint.gui.rulesetmanager.util.NamedObjectListCellRenderer;
 import evopaint.gui.rulesetmanager.util.ColorChooserLabel;
+import evopaint.gui.rulesetmanager.util.DimensionsListener;
+import evopaint.gui.rulesetmanager.util.NamedObjectListCellRenderer;
+import evopaint.gui.util.AutoSelectOnFocusSpinner;
+import evopaint.pixel.rulebased.Condition;
 import evopaint.pixel.ColorDimensions;
 import evopaint.pixel.Pixel;
 import evopaint.pixel.PixelColor;
+import evopaint.pixel.rulebased.targeting.IConditionTarget;
 import evopaint.pixel.rulebased.util.NumberComparisonOperator;
-import evopaint.util.mapping.RelativeCoordinate;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
 import java.util.LinkedHashMap;
-import java.util.List;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
@@ -34,15 +31,15 @@ import javax.swing.event.ChangeListener;
  *
  * @author tam
  */
-public class ColorLikenessCondition extends AbstractCondition {
+public class ColorLikenessCondition extends Condition {
 
     private PixelColor comparedColor;
     private ColorDimensions dimensions;
     private int compareToLikenessPercentage;
     private NumberComparisonOperator comparisonOperator;
 
-    public ColorLikenessCondition(int min, int max, List<RelativeCoordinate> directions, PixelColor comparedColor, ColorDimensions dimensions, int compareToLikenessPercentage, NumberComparisonOperator comparisonOperator) {
-        super("color likeness", min, max, directions);
+    public ColorLikenessCondition(IConditionTarget target, PixelColor comparedColor, ColorDimensions dimensions, int compareToLikenessPercentage, NumberComparisonOperator comparisonOperator) {
+        super(target);
         this.comparedColor = comparedColor;
         this.dimensions = dimensions;
         this.compareToLikenessPercentage = compareToLikenessPercentage;
@@ -50,11 +47,9 @@ public class ColorLikenessCondition extends AbstractCondition {
     }
 
     public ColorLikenessCondition() {
-        super("color likeness", 0, 0, new ArrayList<RelativeCoordinate>(9));
-        this.comparisonOperator = NumberComparisonOperator.EQUAL;
-        this.comparedColor = new PixelColor(0, 0, 0);
-        this.compareToLikenessPercentage = 0;
-        this.dimensions = new ColorDimensions(true, true, true);
+        comparedColor = new PixelColor(0);
+        dimensions = new ColorDimensions(true, true, true);
+        comparisonOperator = NumberComparisonOperator.GREATER_OR_EQUAL;
     }
 
     public int getCompareToLikenessPercentage() {
@@ -89,7 +84,11 @@ public class ColorLikenessCondition extends AbstractCondition {
         this.dimensions = dimensions;
     }
 
-    protected boolean isMetCallback(Pixel us, Pixel them) {
+    public String getName() {
+        return "color likeness";
+    }
+
+    public boolean isMet(Pixel us, Pixel them) {
         if (them == null) { // never forget to skip empty spots
             return false;
         }
@@ -99,8 +98,9 @@ public class ColorLikenessCondition extends AbstractCondition {
         return comparisonOperator.compare(likenessPercentage, compareToLikenessPercentage);
     }
 
-    public String toStringCallback(String conditionString) {
-        conditionString += "are ";
+    @Override
+    public String toString() {
+        String conditionString = "are ";
         conditionString += "colored ";
         conditionString += comparisonOperator.toString();
         conditionString += " ";
@@ -113,8 +113,8 @@ public class ColorLikenessCondition extends AbstractCondition {
         return conditionString;
     }
 
-    public String toHTMLCallback(String conditionString) {
-        conditionString += "are ";
+    public String toHTML() {
+        String conditionString = "are ";
         conditionString += "colored ";
         conditionString += comparisonOperator.toHTML();
         conditionString += " ";
@@ -126,8 +126,8 @@ public class ColorLikenessCondition extends AbstractCondition {
         conditionString += ")</span>";
         return conditionString;
     }
-    
-    public LinkedHashMap<String,JComponent> parametersCallbackGUI(LinkedHashMap<String,JComponent> parametersMap) {    
+
+    public LinkedHashMap<String,JComponent> addParametersGUI(LinkedHashMap<String,JComponent> parametersMap) {
         ColorChooserLabel colorLabel = new ColorChooserLabel(comparedColor);
         JPanel wrapLabelToAvoidUncoloredStretchedBackground = new JPanel();
         wrapLabelToAvoidUncoloredStretchedBackground.add(colorLabel);

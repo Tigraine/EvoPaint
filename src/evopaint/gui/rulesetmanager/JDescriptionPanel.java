@@ -1,35 +1,40 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+ *  Copyright (C) 2010 Markus Echterhoff <tam@edu.uni-klu.ac.at>
+ *
+ *  This file is part of EvoPaint.
+ *
+ *  EvoPaint is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with EvoPaint.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 package evopaint.gui.rulesetmanager;
 
 import evopaint.Configuration;
-import evopaint.pixel.rulebased.RuleSet;
-import evopaint.pixel.rulebased.RuleSetCollection;
 import evopaint.pixel.rulebased.interfaces.IDescribable;
 import evopaint.pixel.rulebased.interfaces.IDescribed;
 import evopaint.pixel.rulebased.interfaces.INameable;
 import evopaint.pixel.rulebased.interfaces.INamed;
-import evopaint.util.CollectionNode;
-import evopaint.util.FileHandler;
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Enumeration;
 import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
-import javax.swing.JTree;
-import javax.swing.SwingUtilities;
 import javax.swing.border.LineBorder;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
@@ -38,7 +43,7 @@ import javax.swing.tree.DefaultTreeModel;
 
 /**
  *
- * @author tam
+ * @author Markus Echterhoff <tam@edu.uni-klu.ac.at>
  */
 public class JDescriptionPanel extends JPanel implements TreeSelectionListener {
 

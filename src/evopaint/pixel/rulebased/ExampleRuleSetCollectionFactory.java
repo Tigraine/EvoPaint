@@ -8,10 +8,9 @@ package evopaint.pixel.rulebased;
 import evopaint.pixel.ColorDimensions;
 import evopaint.pixel.rulebased.actions.AssimilationAction;
 import evopaint.pixel.rulebased.conditions.TrueCondition;
-import evopaint.pixel.rulebased.interfaces.IAction;
-import evopaint.pixel.rulebased.interfaces.ICondition;
 import evopaint.pixel.rulebased.interfaces.IRule;
-import evopaint.pixel.rulebased.targetselections.ExistentTargetSelection;
+import evopaint.pixel.rulebased.targeting.SpecifiedActionTarget;
+import evopaint.pixel.rulebased.targeting.SpecifiedConditionTarget;
 import evopaint.util.mapping.RelativeCoordinate;
 import java.util.ArrayList;
 import java.util.List;
@@ -35,8 +34,8 @@ public class ExampleRuleSetCollectionFactory {
         String name = null;
         String description = null;
         List<IRule> rules = null;
-        List<ICondition> conditions = null;
-        IAction action = null;
+        List<Condition> conditions = null;
+        Action action = null;
         List<RuleSet> ruleSets = new ArrayList();
 
         name = "Simple Color Assimilation";
@@ -48,16 +47,16 @@ public class ExampleRuleSetCollectionFactory {
                 "<br><br>Don't miss to use a medium density " +
                 "brush or fill action once the development nears an end for some extra fun!";
         rules = new ArrayList<IRule>();
-        conditions = new ArrayList<ICondition>();
+        conditions = new ArrayList<Condition>();
         List<RelativeCoordinate> directions = new ArrayList<RelativeCoordinate>();
         directions.add(RelativeCoordinate.SELF);
-        conditions.add(new TrueCondition());
+        conditions.add(new TrueCondition(new SpecifiedConditionTarget(new ArrayList())));
         directions = new ArrayList<RelativeCoordinate>();
         directions.add(RelativeCoordinate.WEST);
         directions.add(RelativeCoordinate.NORTH);
         directions.add(RelativeCoordinate.SOUTH);
         directions.add(RelativeCoordinate.EAST);
-        action = new AssimilationAction(0, AbstractAction.ALL, new ExistentTargetSelection(new ArrayList<RelativeCoordinate>(9)), new ColorDimensions(true, true, true), (byte)50);
+        action = new AssimilationAction(0, new SpecifiedActionTarget(directions), new ColorDimensions(true, true, true), (byte)50);
         rules.add(new Rule(conditions, action));
         ruleSets.add(new RuleSet(name, description , rules));
 

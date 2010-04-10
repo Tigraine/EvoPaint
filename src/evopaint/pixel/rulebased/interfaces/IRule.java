@@ -7,6 +7,8 @@ package evopaint.pixel.rulebased.interfaces;
 
 import evopaint.Configuration;
 import evopaint.pixel.Pixel;
+import evopaint.pixel.rulebased.Action;
+import evopaint.pixel.rulebased.Condition;
 import java.io.Serializable;
 import java.util.List;
 
@@ -16,9 +18,9 @@ import java.util.List;
  */
 public interface IRule extends IHTML, Serializable, ICopyable {
 
-    public IAction getAction();
-    public void setAction(IAction action);
-    public List<ICondition> getConditions();
-    public void setConditions(List<ICondition> conditions);
+    public Action getAction();
+    public void setAction(Action action);
+    public List<Condition> getConditions();
+    public void setConditions(List<Condition> conditions);
     public boolean apply(Pixel pixel, Configuration configuration);
 }

@@ -1,6 +1,20 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+ *  Copyright (C) 2010 Markus Echterhoff <tam@edu.uni-klu.ac.at>
+ *
+ *  This file is part of EvoPaint.
+ *
+ *  EvoPaint is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with EvoPaint.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 package evopaint.gui.rulesetmanager;
@@ -29,7 +43,7 @@ import javax.swing.tree.TreePath;
 
 /**
  *
- * @author tam
+ * @author Markus Echterhoff <tam@edu.uni-klu.ac.at>
  */
 public class JRuleSetManager extends JPanel implements TreeSelectionListener {
 
@@ -40,7 +54,7 @@ public class JRuleSetManager extends JPanel implements TreeSelectionListener {
     private JRuleSetBrowser jRuleSetBrowser;
     private JDescriptionPanel jDescriptionPanel;
     private JRuleList jRuleList;
-    private JRuleEditor jRuleEditor;
+    private JRuleEditorPanel jRuleEditor;
     private JSplitPane splitPaneVertical;
     JButton btnUse;
 
@@ -58,7 +72,7 @@ public class JRuleSetManager extends JPanel implements TreeSelectionListener {
         this.configuration = configuration;
     }
 
-    public JRuleSetManager(Configuration configuration, ActionListener OKListener, ActionListener CancelListener) {
+    public JRuleSetManager(Configuration configuration, ActionListener okListener, ActionListener cancelListener) {
         this.configuration = configuration;
         this.contentPane = this;
 
@@ -92,7 +106,7 @@ public class JRuleSetManager extends JPanel implements TreeSelectionListener {
         // control panel
         JPanel controlPanel = new JPanel();
         btnUse = new JButton("Use");
-        btnUse.addActionListener(OKListener);
+        btnUse.addActionListener(okListener);
         btnUse.addActionListener(new ActionListener() {
 
             public void actionPerformed(ActionEvent e) {
@@ -112,7 +126,7 @@ public class JRuleSetManager extends JPanel implements TreeSelectionListener {
                 }
             }
         });
-        btnCancel.addActionListener(CancelListener);
+        btnCancel.addActionListener(cancelListener);
         controlPanel.add(btnCancel);
 
         // create a main panel to contain everything, this will be added
@@ -126,9 +140,7 @@ public class JRuleSetManager extends JPanel implements TreeSelectionListener {
 
         // SECOND CARD
         // editor
-        this.jRuleEditor = new JRuleEditor(configuration, new RuleEditorOKListener(), new RuleEditorCancelListener());
-        this.jRuleEditor.setVisible(false);
-        add(jRuleEditor, "editor");
+        // added by edit button listener or double click listener
     }
 
     public void valueChanged(TreeSelectionEvent e) {
@@ -162,7 +174,7 @@ public class JRuleSetManager extends JPanel implements TreeSelectionListener {
     private class RuleEditorOKListener implements ActionListener {
 
         public void actionPerformed(ActionEvent e) {
-            jRuleList.replaceSelectedRule(jRuleEditor.getRule());
+            jRuleList.replaceSelectedRule(jRuleEditor.createRule());
             ((CardLayout)contentPane.getLayout()).show(contentPane, "manager");
         }
 
@@ -182,8 +194,12 @@ public class JRuleSetManager extends JPanel implements TreeSelectionListener {
             if (selectedRule == null) {
                 return;
             }
-            
-            jRuleEditor.setRule(selectedRule);
+
+            if (jRuleEditor != null) {
+                remove(jRuleEditor);
+            }
+            jRuleEditor = new JRuleEditorPanel(configuration, selectedRule, new RuleEditorOKListener(), new RuleEditorCancelListener());
+            add(jRuleEditor, "editor");
             ((CardLayout)contentPane.getLayout()).show(contentPane, "editor");
         }
     };
@@ -202,7 +218,11 @@ public class JRuleSetManager extends JPanel implements TreeSelectionListener {
 
                 assert (selectedRule != null);
 
-                jRuleEditor.setRule(selectedRule);
+                if (jRuleEditor != null) {
+                    remove(jRuleEditor);
+                }
+                jRuleEditor = new JRuleEditorPanel(configuration, selectedRule, new RuleEditorOKListener(), new RuleEditorCancelListener());
+                add(jRuleEditor, "editor");
                 ((CardLayout)contentPane.getLayout()).show(contentPane, "editor");
              }
         }

@@ -5,11 +5,11 @@
 
 package evopaint.pixel.rulebased.actions;
 
-import evopaint.pixel.rulebased.AbstractAction;
-import evopaint.World;
+import evopaint.Configuration;
+import evopaint.pixel.rulebased.Action;
 import evopaint.gui.util.AutoSelectOnFocusSpinner;
 import evopaint.pixel.Pixel;
-import evopaint.pixel.rulebased.interfaces.ITargetSelection;
+import evopaint.pixel.rulebased.targeting.IActionTarget;
 import evopaint.util.mapping.RelativeCoordinate;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -23,17 +23,19 @@ import javax.swing.event.ChangeListener;
  *
  * @author tam
  */
-public class RewardAction extends AbstractAction {
+public class RewardAction extends Action {
     
     private int rewardValue;
 
-    public RewardAction(int cost, int mode, ITargetSelection targetSelection, int rewardValue) {
-        super("reward", cost, mode, targetSelection);
-        this.rewardValue = rewardValue;
+    public RewardAction(int cost, IActionTarget target) {
+        super(cost, target);
     }
 
     public RewardAction() {
-        super("reward");
+    }
+
+    public String getName() {
+        return "reward";
     }
 
     public int getRewardValue() {
@@ -44,23 +46,34 @@ public class RewardAction extends AbstractAction {
         this.rewardValue = rewardValue;
     }
 
-    public void executeCallback(Pixel origin, RelativeCoordinate direction, World world) {
-        Pixel target = world.get(origin.getLocation(), direction);
-        assert (target != null);
+    public int execute(Pixel actor, RelativeCoordinate direction, Configuration configuration) {
+        Pixel target = configuration.world.get(actor.getLocation(), direction);
+        if (target == null) {
+            return 0;
+        }
         target.reward(rewardValue);
+
+        return cost;
     }
 
-    protected Map<String, String>parametersCallbackString(Map<String, String> parametersMap) {
+    @Override
+    public Map<String, String>addParametersString(Map<String, String> parametersMap) {
+        parametersMap = super.addParametersString(parametersMap);
         parametersMap.put("reward", Integer.toString(rewardValue));
         return parametersMap;
     }
 
-    protected Map<String, String>parametersCallbackHTML(Map<String, String> parametersMap) {
+    @Override
+    public Map<String, String>addParametersHTML(Map<String, String> parametersMap) {
+        parametersMap = super.addParametersHTML(parametersMap);
         parametersMap.put("Reward", Integer.toString(rewardValue));
         return parametersMap;
     }
 
-    public LinkedHashMap<String,JComponent> parametersCallbackGUI(LinkedHashMap<String, JComponent> parametersMap) {
+    @Override
+    public LinkedHashMap<String,JComponent> addParametersGUI(LinkedHashMap<String, JComponent> parametersMap) {
+        parametersMap = super.addParametersGUI(parametersMap);
+
         SpinnerNumberModel spinnerModel = new SpinnerNumberModel(rewardValue, 0, Integer.MAX_VALUE, 1);
         JSpinner rewardValueSpinner = new AutoSelectOnFocusSpinner(spinnerModel);
         rewardValueSpinner.addChangeListener(new ChangeListener() {

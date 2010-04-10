@@ -17,11 +17,11 @@
  *  along with EvoPaint.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package evopaint.pixel.rulebased.targetselections;
+package evopaint.pixel.rulebased.targeting.qualifiers;
 
 import evopaint.Configuration;
 import evopaint.pixel.Pixel;
-import evopaint.pixel.rulebased.AbstractTargetSelection;
+import evopaint.pixel.rulebased.targeting.Qualifier;
 import evopaint.util.mapping.RelativeCoordinate;
 import java.util.ArrayList;
 import java.util.List;
@@ -30,26 +30,22 @@ import java.util.List;
  *
  * @author Markus Echterhoff <tam@edu.uni-klu.ac.at>
  */
-public class MostEnergyTargetSelection extends AbstractTargetSelection {
+public class LeastEnergyQualifier extends Qualifier {
 
-    public MostEnergyTargetSelection(List<RelativeCoordinate> directions) {
-        super("with the most energy", directions);
+    public String getName() {
+        return "the one with the least energy";
     }
 
-    public MostEnergyTargetSelection() {
-        super("with the most energy");
-    }
-
-    public List<RelativeCoordinate> getAllSelectedDirections(Pixel origin, Configuration configuration) {
-        int maxEnergy = 0;
+    public List<RelativeCoordinate> getCandidates(Pixel origin, List<RelativeCoordinate> directions, Configuration configuration) {
+        int minEnergy = Integer.MAX_VALUE;
         List<RelativeCoordinate> ret = new ArrayList(1);
         for (RelativeCoordinate direction : directions) {
             Pixel target = configuration.world.get(origin.getLocation(), direction);
             if (target == null) {
                 continue;
             }
-            if (ret.size() > 0 && target.getEnergy() > maxEnergy) {
-                maxEnergy = target.getEnergy();
+            if (ret.size() > 0 && target.getEnergy() < minEnergy) {
+                minEnergy = target.getEnergy();
                 ret.clear();
             }
             ret.add(direction);
@@ -57,21 +53,4 @@ public class MostEnergyTargetSelection extends AbstractTargetSelection {
         return ret;
     }
 
-    public RelativeCoordinate getOneSelectedDirection(Pixel origin, Configuration configuration) {
-        List<RelativeCoordinate> selectedDirections = getAllSelectedDirections(origin, configuration);
-        if (selectedDirections.size() == 0) {
-            return null;
-        }
-        return selectedDirections.get(configuration.rng.nextPositiveInt(selectedDirections.size()));
-    }
-
-    @Override
-    protected String toHTMLCallback() {
-        return "with the most energy";
-    }
-
-    @Override
-    protected String toStringCallback() {
-        return "with the most energy";
-    }
 }

@@ -5,31 +5,31 @@
 
 package evopaint.pixel.rulebased.conditions;
 
-import evopaint.Configuration;
-import evopaint.pixel.rulebased.AbstractCondition;
+import evopaint.pixel.rulebased.Condition;
 import evopaint.pixel.Pixel;
-import evopaint.util.mapping.RelativeCoordinate;
-import java.util.ArrayList;
+import evopaint.pixel.rulebased.targeting.IConditionTarget;
 import java.util.LinkedHashMap;
-import java.util.List;
 import javax.swing.JComponent;
 
 /**
  *
  * @author tam
  */
-public class TrueCondition extends AbstractCondition {
+public class TrueCondition extends Condition {
 
-    public TrueCondition(int min, int max, List<RelativeCoordinate> directions) {
-        super("true", min, max, directions);
+    public TrueCondition(IConditionTarget target) {
+        super(target);
     }
 
     public TrueCondition() {
-        super("true", 0, 0, new ArrayList<RelativeCoordinate>(9));
     }
 
-    protected boolean isMetCallback(Pixel us, Pixel them) {
+    public boolean isMet(Pixel us, Pixel them) {
         return true;
+    }
+
+    public String getName() {
+        return "true";
     }
 
     @Override
@@ -37,22 +37,11 @@ public class TrueCondition extends AbstractCondition {
         return "true";
     }
 
-    public String toStringCallback(String conditionString) {
-        // overwriting toString()
-        return null;
-    }
-
-    @Override
     public String toHTML() {
         return "true";
     }
 
-    public String toHTMLCallback(String conditionString) {
-        // overwriting toHTML()
-        return null;
-    }
-
-    public LinkedHashMap<String,JComponent> parametersCallbackGUI(LinkedHashMap<String,JComponent> parametersMap) {
+    public LinkedHashMap<String,JComponent> addParametersGUI(LinkedHashMap<String,JComponent> parametersMap) {
         return parametersMap;
     }
 }

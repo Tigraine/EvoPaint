@@ -5,45 +5,39 @@
 
 package evopaint.pixel.rulebased.actions;
 
-import evopaint.pixel.rulebased.AbstractAction;
-import evopaint.World;
+import evopaint.Configuration;
+import evopaint.pixel.rulebased.Action;
 import evopaint.pixel.Pixel;
-import evopaint.pixel.rulebased.interfaces.ITargetSelection;
+import evopaint.pixel.rulebased.targeting.IActionTarget;
 import evopaint.util.mapping.RelativeCoordinate;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import javax.swing.JComponent;
 
 /**
  *
  * @author tam
  */
-public class MoveAction extends AbstractAction {
+public class MoveAction extends Action {
 
-    public MoveAction(int cost, int mode, ITargetSelection targetSelection) {
-        super("move", cost, mode, targetSelection);
+    public MoveAction(int cost, IActionTarget target) {
+        super(cost, target);
     }
 
     public MoveAction() {
-        super("move");
     }
 
-    public void executeCallback(Pixel origin, RelativeCoordinate direction, World world) {
-        assert (world.get(origin.getLocation(), direction) == null);
-        world.remove(origin.getLocation());
-        origin.getLocation().move(direction, world);
-        world.set(origin);
+    public String getName() {
+        return "move";
     }
 
-    protected Map<String, String>parametersCallbackString(Map<String, String> parametersMap) {
-        return parametersMap;
-    }
+    public int execute(Pixel actor, RelativeCoordinate direction, Configuration configuration) {
+        Pixel target = configuration.world.get(actor.getLocation(), direction);
+        if (target != null) {
+            return 0;
+        }
+        configuration.world.remove(actor.getLocation());
+        actor.getLocation().move(direction, configuration.world);
+        configuration.world.set(actor);
 
-    protected Map<String, String>parametersCallbackHTML(Map<String, String> parametersMap) {
-        return parametersMap;
+        return cost;
     }
     
-    public LinkedHashMap<String,JComponent> parametersCallbackGUI(LinkedHashMap<String, JComponent> parametersMap) {
-        return parametersMap;
-    }
 }
