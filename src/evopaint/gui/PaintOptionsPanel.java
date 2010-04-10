@@ -46,11 +46,29 @@ public class PaintOptionsPanel extends JPanel {
     private RuleSet cachedRuleSet;
 
     public void setRuleSet(RuleSet ruleSet) {
-        ruleSetRadio.setText(ruleSet.getName());
-        ruleSetRadio.setSelected(true);
-        cachedRuleSet = ruleSet;
+        if (ruleSet == null) {
+            noRuleSetRadio.setSelected(true);
+        } else {
+            ruleSetRadio.setText(ruleSet.getName());
+            ruleSetRadio.setSelected(true);
+            cachedRuleSet = ruleSet;
+        }
     }
 
+    public void setPaint(Paint paint) {
+        switch (paint.getColorMode()) {
+            case Paint.COLOR: colorRadio.setSelected(true);
+                colorRadio.setText("<html>" + configuration.paint.getColor().toHTML() + "</html>");
+            break;
+            case Paint.FAIRY_DUST: fairyDustRadio.setSelected(true);
+            break;
+            case Paint.NO_COLOR: noColorRadio.setSelected(true);
+            break;
+            default: assert(false);
+        }
+        setRuleSet(paint.getRuleSet());
+    }
+    
     public PaintOptionsPanel(final Configuration configuration, ActionListener openRuleSetManagerListener) {
         this.configuration = configuration;
 
@@ -209,22 +227,6 @@ public class PaintOptionsPanel extends JPanel {
         add(panelForRuleSetButtons, constraints);
 
         // ---- end panel for color buttons
-    }
-
-    public void setPaint(Paint paint) {
-        switch (paint.getColorMode()) {
-            case Paint.COLOR: colorRadio.setSelected(true);
-            break;
-            case Paint.FAIRY_DUST: fairyDustRadio.setSelected(true);
-            break;
-            case Paint.NO_COLOR: noColorRadio.setSelected(true);
-            break;
-            default: assert(false);
-        }
-        RuleSet ruleSet = paint.getRuleSet();
-        if (ruleSet != null) {
-            setRuleSet(ruleSet);
-        }
     }
 
     private class EditColorListener implements ActionListener {
