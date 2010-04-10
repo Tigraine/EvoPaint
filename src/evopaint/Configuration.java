@@ -88,7 +88,7 @@ public class Configuration {
     public int backgroundColor = 0;
     public int startingEnergy = 100;
     public int runLevel = Configuration.RUNLEVEL_RUNNING;
-    public int paintHistorySize = 5;
+    public int paintHistorySize = 7;
     // END user configurable
 
     private IRandomNumberGenerator createRNG() {
