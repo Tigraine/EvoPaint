@@ -21,7 +21,6 @@ package evopaint.gui;
 
 import evopaint.gui.util.IOverlay;
 import evopaint.gui.util.WrappingScalableCanvas;
-import java.awt.AlphaComposite;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
@@ -45,7 +44,15 @@ public class BrushIndicatorOverlay extends Rectangle implements IOverlay {
         this.canvas = canvas;
     }
 
-    public void paint() {
-        canvas.paintOverlay(this);
+    public void paint(Graphics2D g2) {
+
+        // prepare soft-xor painting
+        g2.setXORMode(new Color(0x505050));
+
+        // this would make the overlay look transparent white
+        // imageG2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, .5f));
+        // imageG2.setColor(Color.white);
+
+        canvas.fill(this);
     }
 }

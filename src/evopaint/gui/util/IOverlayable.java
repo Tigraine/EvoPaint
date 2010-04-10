@@ -45,14 +45,4 @@ public interface IOverlayable {
      * @see IOverlay
      */
     public void unsubscribe(IOverlay overlay);
-
-    /**
-     * Called by overlays to paint a <code>Shape</code> onto the overlayable
-     * component
-     * @param shape A <code>Shape</code> which will be painted
-     * @param color The <code>Color</code> used to paint the <code>Shape</code>
-     * @param alpha An alpha value used for painting the <code>Shape</code>
-     * @see IOverlay
-     */
-    public void paintOverlay(Shape shape, Color color, float alpha);
 }

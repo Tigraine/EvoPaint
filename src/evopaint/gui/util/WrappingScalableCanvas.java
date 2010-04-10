@@ -251,37 +251,78 @@ public class WrappingScalableCanvas extends JComponent implements IOverlayable {
     }
 
     /**
-     * Paints an overlay using the given parameters. This is a callback called
-     * by subscribed overlays which wish to paint onto the canvas. The overlay
-     * will be in soft XOR
-     * @param shape The <code>Shape</code> to be painted
-     * @see IOverlayable
+     * Paints the outline of a <code>Shape</code> onto this canvas using the
+     * underlying image graphics context. The shape will be wrapped around the
+     * edges of the canvas. This method is designed to be used by overlays.
+     * @param shape The <code>Shape</code> to draw, bounds expected in image
+     * space coordinates
      * @see IOverlay
-     * @see Shape
      */
-    public void paintOverlay(Shape shape) {
-        imageG2.setXORMode(new Color(0x505050));
-        paintOverlayInternal(shape);
+    public void draw(Shape shape) {
+        imageG2.draw(shape);
+
+        Rectangle bounds = shape.getBounds();
+
+        // wrapping horizontal
+        // west
+        if (bounds.x < 0) {
+            Rectangle wrappedRest = new Rectangle(bounds.x + imageWidth, bounds.y, bounds.width + bounds.x, bounds.height);
+            imageG2.draw(wrappedRest);
+
+            // corner NW
+            if (bounds.y < 0) {
+                wrappedRest = new Rectangle(bounds.x + imageWidth, bounds.y + imageHeight, bounds.width + bounds.x, bounds.height + bounds.y);
+                imageG2.draw(wrappedRest);
+            }
+
+            // corner SW
+            else if (bounds.y + bounds.height > imageHeight) {
+                wrappedRest = new Rectangle(bounds.x + imageWidth, 0, bounds.width + bounds.x, bounds.y + bounds.height - imageHeight);
+                imageG2.draw(wrappedRest);
+            }
+        }
+
+        // east
+        else if (bounds.x + bounds.width > imageWidth) {
+            Rectangle wrappedRest = new Rectangle(0, bounds.y, bounds.x + bounds.width - imageWidth, bounds.height);
+            imageG2.draw(wrappedRest);
+
+            // corner NE
+            if (bounds.y < 0) {
+                wrappedRest = new Rectangle(0, bounds.y + imageHeight, bounds.x + bounds.width - imageWidth, bounds.height + bounds.y);
+                imageG2.draw(wrappedRest);
+            }
+
+            // corner SE
+            else if (bounds.y + bounds.height > imageHeight) {
+                wrappedRest = new Rectangle(0, 0, bounds.x + bounds.width - imageWidth, bounds.y + bounds.height - imageHeight);
+                imageG2.draw(wrappedRest);
+            }
+        }
+
+        // wrapping vertical (corners already painted)
+        // north
+        if (bounds.y < 0) {
+            Rectangle wrappedRest = new Rectangle(bounds.x, bounds.y + imageHeight, bounds.width, bounds.height + bounds.y);
+            imageG2.draw(wrappedRest);
+        }
+
+        // south
+        else if (bounds.y + bounds.height > imageHeight) {
+            Rectangle wrappedRest = new Rectangle(bounds.x, 0, bounds.width, bounds.y + bounds.height - imageHeight);
+            imageG2.draw(wrappedRest);
+        }
     }
 
     /**
-     * Paints an overlay using the given parameters. This is a callback called
-     * by subscribed overlays which wish to paint onto the canvas.
-     * @param shape The <code>Shape</code> to be painted
-     * @param color The color in which the <code>Shape</code> shall be painted
-     * @param alpha An alpha value to make the <code>Shape</code> transparent
-     * @see IOverlayable
+     * Paints a filled <code>Shape</code> onto this canvas using the underlying
+     * image graphics context. The shape will be wrapped around the edges of
+     * the canvas. This method is designed to be used by overlays.
+     * @param shape The <code>Shape</code> to draw, bounds expected in image
+     * space coordinates
      * @see IOverlay
-     * @see Shape
-     * @see Color
      */
-    public void paintOverlay(Shape shape, Color color, float alpha) {
-        imageG2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, alpha));
-        imageG2.setColor(color);
-        paintOverlayInternal(shape);
-    }
-
-    public void paintOverlayInternal(Shape shape) {
+    public void fill(Shape shape) {
         imageG2.fill(shape);
 
         Rectangle bounds = shape.getBounds();
@@ -345,7 +386,7 @@ public class WrappingScalableCanvas extends JComponent implements IOverlayable {
     public void paintComponent(Graphics g) {
 
         for (IOverlay overlay : overlays) {
-            overlay.paint();
+            overlay.paint(imageG2);
         }
 
         Graphics2D g2 = (Graphics2D)g;

@@ -19,6 +19,8 @@
 
 package evopaint.gui.util;
 
+import java.awt.Graphics2D;
+
 /**
  * Classes which implement this interface can subscribe to a Overlayable
  * component
@@ -31,7 +33,8 @@ public interface IOverlay {
     /**
      * A callback called by any overlayable components this overlay has
      * subscribed to when it is to paint itself onto the overlayable surface
+     * @param g2 a reference to the graphics context to draw on
      * @see IOverlayable
      */
-    public void paint();
+    public void paint(Graphics2D g2);
 }
