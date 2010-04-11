@@ -27,6 +27,7 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Insets;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -62,61 +63,14 @@ public class JTarget extends JPanel {
         this.directions = target.getDirections();
         setLayout(new GridBagLayout());
 
-        JButton neighborsButton = new JButton("neighbors");
-        neighborsButton.addActionListener(new ActionListener() {
-
-            public void actionPerformed(ActionEvent e) {
-                boolean containedCenter = false;
-                if (directions.contains(RelativeCoordinate.CENTER)) {
-                    containedCenter = true;
-                }
-
-                List<RelativeCoordinate> allNeighbors = new ArrayList<RelativeCoordinate>() {{
-                    add(RelativeCoordinate.NORTH);
-                    add(RelativeCoordinate.NORTH_EAST);
-                    add(RelativeCoordinate.EAST);
-                    add(RelativeCoordinate.SOUTH_EAST);
-                    add(RelativeCoordinate.SOUTH);
-                    add(RelativeCoordinate.SOUTH_WEST);
-                    add(RelativeCoordinate.WEST);
-                    add(RelativeCoordinate.NORTH_WEST);
-                }};
-
-                if (directions.containsAll(allNeighbors)) {
-                    neighborsToggled = true;
-                }
-
-                directions.clear();
-
-                if (containedCenter) {
-                    directions.add(RelativeCoordinate.CENTER);
-                }
-                
-                if (neighborsToggled == false) {
-                    directions.addAll(allNeighbors);
-                }
-
-                for (JToggleButton b : buttonsDirections.keySet()) {
-                    if (buttonsDirections.get(b) == RelativeCoordinate.CENTER) {
-                        continue;
-                    }
-                    if (neighborsToggled == false && b.isSelected() == false) {
-                        b.setSelected(true);
-                    }
-                    else if (neighborsToggled && b.isSelected()) {
-                        b.setSelected(false);
-                    }
-                }
-                neighborsToggled = !neighborsToggled;
-            }
-        });
-
         JPanel directionsPanel = new JPanel();
         directionsPanel.setLayout(new GridLayout(3, 3, 3, 3));
         GridBagConstraints c = new GridBagConstraints();
         c.anchor = GridBagConstraints.NORTH;
         add(directionsPanel, c);
 
+        JButton neighborsButton = new JButton("neighbors");
+        neighborsButton.addActionListener(new AllNeighborsButtonListener());
         c.gridy = 1;
         c.insets = new Insets(5, 0, 0, 0);
         add(neighborsButton, c);
@@ -196,6 +150,63 @@ public class JTarget extends JPanel {
             } else {
                 directions.remove(actionCoordinate);
             }
+        }
+    }
+
+    private class AllNeighborsButtonListener implements ActionListener {
+
+        public void actionPerformed(ActionEvent e) {
+
+            boolean containedCenter = false;
+            if (directions.contains(RelativeCoordinate.CENTER)) {
+                containedCenter = true;
+            }
+
+            List<RelativeCoordinate> allNeighbors = new ArrayList<RelativeCoordinate>() {{
+                add(RelativeCoordinate.NORTH);
+                add(RelativeCoordinate.NORTH_EAST);
+                add(RelativeCoordinate.EAST);
+                add(RelativeCoordinate.SOUTH_EAST);
+                add(RelativeCoordinate.SOUTH);
+                add(RelativeCoordinate.SOUTH_WEST);
+                add(RelativeCoordinate.WEST);
+                add(RelativeCoordinate.NORTH_WEST);
+            }};
+
+            if (directions.containsAll(allNeighbors)) {
+                neighborsToggled = true;
+            }
+
+            directions.clear();
+
+            if (containedCenter) {
+                directions.add(RelativeCoordinate.CENTER);
+            }
+
+            if (neighborsToggled == false) {
+                directions.addAll(allNeighbors);
+            }
+
+            for (JToggleButton b : buttonsDirections.keySet()) {
+                if (buttonsDirections.get(b) == RelativeCoordinate.CENTER) {
+                    continue;
+                }
+                if (neighborsToggled == false && b.isSelected() == false) {
+                    b.setSelected(true);
+                    ActionEvent ae = new ActionEvent((Object)b, ActionEvent.ACTION_PERFORMED, "");
+                    for (ActionListener a : b.getActionListeners()) {
+                        a.actionPerformed(ae);
+                    }
+                }
+                else if (neighborsToggled && b.isSelected()) {
+                    b.setSelected(false);
+                    ActionEvent ae = new ActionEvent((Object)b, ActionEvent.ACTION_PERFORMED, "");
+                    for (ActionListener a : b.getActionListeners()) {
+                        a.actionPerformed(ae);
+                    }
+                }
+            }
+            neighborsToggled = !neighborsToggled;
         }
     }
 }
