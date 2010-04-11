@@ -29,9 +29,9 @@ import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 import java.util.IdentityHashMap;
 import java.util.List;
-import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JPanel;
@@ -70,26 +70,37 @@ public class JTarget extends JPanel {
                 if (directions.contains(RelativeCoordinate.CENTER)) {
                     containedCenter = true;
                 }
+
+                List<RelativeCoordinate> allNeighbors = new ArrayList<RelativeCoordinate>() {{
+                    add(RelativeCoordinate.NORTH);
+                    add(RelativeCoordinate.NORTH_EAST);
+                    add(RelativeCoordinate.EAST);
+                    add(RelativeCoordinate.SOUTH_EAST);
+                    add(RelativeCoordinate.SOUTH);
+                    add(RelativeCoordinate.SOUTH_WEST);
+                    add(RelativeCoordinate.WEST);
+                    add(RelativeCoordinate.NORTH_WEST);
+                }};
+
+                if (directions.containsAll(allNeighbors)) {
+                    neighborsToggled = true;
+                }
+
                 directions.clear();
+
                 if (containedCenter) {
                     directions.add(RelativeCoordinate.CENTER);
                 }
-                if (false == neighborsToggled) {
-                    directions.add(RelativeCoordinate.NORTH);
-                    directions.add(RelativeCoordinate.NORTH_EAST);
-                    directions.add(RelativeCoordinate.EAST);
-                    directions.add(RelativeCoordinate.SOUTH_EAST);
-                    directions.add(RelativeCoordinate.SOUTH);
-                    directions.add(RelativeCoordinate.SOUTH_WEST);
-                    directions.add(RelativeCoordinate.WEST);
-                    directions.add(RelativeCoordinate.NORTH_WEST);
+                
+                if (neighborsToggled == false) {
+                    directions.addAll(allNeighbors);
                 }
 
                 for (JToggleButton b : buttonsDirections.keySet()) {
                     if (buttonsDirections.get(b) == RelativeCoordinate.CENTER) {
                         continue;
                     }
-                    if (false == neighborsToggled && false == b.isSelected()) {
+                    if (neighborsToggled == false && b.isSelected() == false) {
                         b.setSelected(true);
                     }
                     else if (neighborsToggled && b.isSelected()) {
