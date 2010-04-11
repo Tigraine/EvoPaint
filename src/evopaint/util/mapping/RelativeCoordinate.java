@@ -23,7 +23,7 @@ public class RelativeCoordinate extends Coordinate implements Serializable {
     private static final int TYPE_WEST = 7;
     private static final int TYPE_NORTH_WEST = 8;
 
-    public static final RelativeCoordinate SELF = new RelativeCoordinate(TYPE_SELF);
+    public static final RelativeCoordinate CENTER = new RelativeCoordinate(TYPE_SELF);
     public static final RelativeCoordinate NORTH = new RelativeCoordinate(TYPE_NORTH);
     public static final RelativeCoordinate NORTH_EAST = new RelativeCoordinate(TYPE_NORTH_EAST);
     public static final RelativeCoordinate EAST = new RelativeCoordinate(TYPE_EAST);
@@ -61,7 +61,7 @@ public class RelativeCoordinate extends Coordinate implements Serializable {
     // preserve singleton through serialization
     public Object readResolve() {
         switch (type) {
-            case TYPE_SELF: return RelativeCoordinate.SELF;
+            case TYPE_SELF: return RelativeCoordinate.CENTER;
             case TYPE_NORTH: return RelativeCoordinate.NORTH;
             case TYPE_NORTH_EAST: return RelativeCoordinate.NORTH_EAST;
             case TYPE_EAST: return RelativeCoordinate.EAST;

@@ -29,7 +29,7 @@ import javax.swing.DefaultComboBoxModel;
 public class TargetsComboBoxModel extends DefaultComboBoxModel {
 
     public TargetsComboBoxModel() {
-        addElement(RelativeCoordinate.SELF);
+        addElement(RelativeCoordinate.CENTER);
         addElement(RelativeCoordinate.NORTH);
         addElement(RelativeCoordinate.NORTH_EAST);
         addElement(RelativeCoordinate.EAST);

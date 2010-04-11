@@ -49,7 +49,7 @@ public class ExampleRuleSetCollectionFactory {
         rules = new ArrayList<IRule>();
         conditions = new ArrayList<Condition>();
         List<RelativeCoordinate> directions = new ArrayList<RelativeCoordinate>();
-        directions.add(RelativeCoordinate.SELF);
+        directions.add(RelativeCoordinate.CENTER);
         conditions.add(new TrueCondition(new SpecifiedConditionTarget(new ArrayList())));
         directions = new ArrayList<RelativeCoordinate>();
         directions.add(RelativeCoordinate.WEST);
