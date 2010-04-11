@@ -94,6 +94,11 @@ public class MainFrame extends JFrame {
         leftPanel.setLayout(new GridBagLayout());
         mainPanel.add(leftPanel, BorderLayout.WEST);
 
+        JEvolutionPlayerPanel evolutionPlayer = new JEvolutionPlayerPanel();
+        GridBagConstraints constraintsLeftPanel = new GridBagConstraints();
+        constraintsLeftPanel.anchor = GridBagConstraints.CENTER;
+        leftPanel.add(evolutionPlayer, constraintsLeftPanel);
+
         JPanel wrapperPanelLeft = new JPanel();
         wrapperPanelLeft.setLayout(new GridBagLayout());
         wrapperPanelLeft.setBackground(new Color(0xF2F2F5));
@@ -102,9 +107,9 @@ public class MainFrame extends JFrame {
         constraintsWrapper.anchor = GridBagConstraints.NORTHWEST;
         constraintsWrapper.insets = new Insets(3, 0, 3, 0);
 
-        GridBagConstraints constraints = new GridBagConstraints();
-        constraints.insets = new Insets(10, 10, 10, 10);
-        leftPanel.add(wrapperPanelLeft, constraints);
+        constraintsLeftPanel.insets = new Insets(10, 10, 10, 10);
+        constraintsLeftPanel.gridy = 1;
+        leftPanel.add(wrapperPanelLeft, constraintsLeftPanel);
 
         toolBox = new ToolBox(this);
         constraintsWrapper.gridy = 0;

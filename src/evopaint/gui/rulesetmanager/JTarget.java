@@ -77,7 +77,7 @@ public class JTarget extends JPanel {
 
         buttonsDirections = new IdentityHashMap<JToggleButton, RelativeCoordinate>();
 
-        ImageIcon protoIconNorth = new ImageIcon(getClass().getResource("icons/north.png"));
+        ImageIcon protoIconNorth = new ImageIcon(getClass().getResource("icons/target-north.png"));
 
         JToggleButton btn = new JToggleButton();
         btn.setIcon(ImageRotator.createRotatedImage(btn, protoIconNorth, 315));
@@ -100,7 +100,7 @@ public class JTarget extends JPanel {
         buttonsDirections.put(btn, RelativeCoordinate.WEST);
 
         btn = new JToggleButton();
-        btn.setIcon(new ImageIcon(getClass().getResource("icons/self.png")));
+        btn.setIcon(new ImageIcon(getClass().getResource("icons/target-self.png")));
         directionsPanel.add(btn);
         buttonsDirections.put(btn, RelativeCoordinate.CENTER);
 

@@ -116,7 +116,7 @@ public class PaintOptionsPanel extends JPanel {
 
         radioColorPanel.add(Box.createHorizontalStrut(5));
 
-        editColorBtn = new JButton(new ImageIcon(getClass().getResource("icons/editPencil.png")));
+        editColorBtn = new JButton(new ImageIcon(getClass().getResource("icons/button-edit.png")));
         editColorBtn.setPreferredSize(new Dimension(24, 24));
         editColorBtn.addActionListener(new EditColorListener());
         radioColorPanel.add(editColorBtn);
@@ -195,7 +195,7 @@ public class PaintOptionsPanel extends JPanel {
         radioRuleSetPanel.add(Box.createHorizontalStrut(5));
 
         // rule set redit button
-        editRuleSetBtn = new JButton(new ImageIcon(getClass().getResource("icons/editPencil.png")));
+        editRuleSetBtn = new JButton(new ImageIcon(getClass().getResource("icons/button-edit.png")));
         editRuleSetBtn.setPreferredSize(new Dimension(24, 24));
         editRuleSetBtn.addActionListener(openRuleSetManagerListener);
         radioRuleSetPanel.add(editRuleSetBtn);

@@ -44,7 +44,7 @@ public class ToolBox extends JPanel {
         }
 
         final JToggleButton jButtonSelect = buttons.get(0);
-        jButtonSelect.setIcon(new ImageIcon(getClass().getResource("icons/select.png")));
+        jButtonSelect.setIcon(new ImageIcon(getClass().getResource("icons/tool-select.png")));
         jButtonSelect.setEnabled(false); // FIXME reactivate me
         jButtonSelect.addActionListener(new java.awt.event.ActionListener() {
 
@@ -55,7 +55,7 @@ public class ToolBox extends JPanel {
         });
 
         final JToggleButton jButtonMove = buttons.get(1);
-        jButtonMove.setIcon(new ImageIcon(getClass().getResource("icons/move.png")));
+        jButtonMove.setIcon(new ImageIcon(getClass().getResource("icons/tool-move.png")));
         jButtonMove.addActionListener(new java.awt.event.ActionListener() {
 
             public void actionPerformed(java.awt.event.ActionEvent e) {
@@ -65,7 +65,7 @@ public class ToolBox extends JPanel {
         });
 
         final JToggleButton jButtonZoom = buttons.get(2);
-        jButtonZoom.setIcon(new ImageIcon(getClass().getResource("icons/zoom.png")));
+        jButtonZoom.setIcon(new ImageIcon(getClass().getResource("icons/tool-zoom.png")));
         jButtonZoom.setEnabled(false);
         jButtonZoom.addActionListener(new java.awt.event.ActionListener() {
 
@@ -76,7 +76,7 @@ public class ToolBox extends JPanel {
         });
 
         final JToggleButton jButtonPaint = buttons.get(3);
-    	jButtonPaint.setIcon(new ImageIcon(getClass().getResource("icons/paint.png")));
+    	jButtonPaint.setIcon(new ImageIcon(getClass().getResource("icons/tool-paint.png")));
         jButtonPaint.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent e) {
                   mf.setActiveTool(PaintCommand.class);
@@ -86,7 +86,7 @@ public class ToolBox extends JPanel {
         jButtonPaint.doClick();
 
         final JToggleButton jButtonFill = buttons.get(4);
-        jButtonFill.setIcon(new ImageIcon(getClass().getResource("icons/fill.png")));
+        jButtonFill.setIcon(new ImageIcon(getClass().getResource("icons/tool-fill.png")));
         jButtonFill.setEnabled(false);
         jButtonFill.addActionListener(new java.awt.event.ActionListener() {
 
@@ -97,7 +97,7 @@ public class ToolBox extends JPanel {
         });
 
         final JToggleButton jButtonErase = buttons.get(5);
-        jButtonErase.setIcon(new ImageIcon(getClass().getResource("icons/erase.png")));
+        jButtonErase.setIcon(new ImageIcon(getClass().getResource("icons/tool-erase.png")));
         jButtonErase.setEnabled(false);
         jButtonErase.addActionListener(new java.awt.event.ActionListener() {
 
@@ -108,7 +108,7 @@ public class ToolBox extends JPanel {
         });
 
         final JToggleButton jButtonPick = buttons.get(6);
-        jButtonPick.setIcon(new ImageIcon(getClass().getResource("icons/pick.png")));
+        jButtonPick.setIcon(new ImageIcon(getClass().getResource("icons/tool-pick.png")));
         jButtonPick.setEnabled(false);
         jButtonPick.addActionListener(new java.awt.event.ActionListener() {
 

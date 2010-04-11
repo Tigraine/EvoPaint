@@ -27,12 +27,14 @@ import evopaint.pixel.rulebased.targeting.SpecifiedConditionTarget;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.BoxLayout;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 
@@ -99,7 +101,8 @@ public class JConditionList extends JPanel {
 
         wrapper.add(jConditionButton);
 
-        JButton btnDelete = new JButton("X");
+        JButton btnDelete = new JButton(new ImageIcon(getClass().getResource("icons/button-delete_condition.png")));
+        btnDelete.setPreferredSize(new Dimension(btnDelete.getPreferredSize().height, btnDelete.getPreferredSize().height));
         btnDelete.addActionListener(new JConditionDeleteListener(jConditionButton, jConditionTargetButton));
         wrapper.add(btnDelete);
 
