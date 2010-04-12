@@ -135,7 +135,7 @@ public class Configuration {
     public Configuration() {
         rng = createRNG();
         brush = new Brush(this);
-        paint = new Paint(this, Paint.COLOR, new PixelColor(0xFF0000), null);
+        paint = new Paint(this, Paint.COLOR, Paint.NO_RULE_SET, new PixelColor(0xFF0000), null);
         fileHandler = new FileHandler();
         paintHistory = new LinkedList<Paint>();
     }

@@ -16,10 +16,15 @@ import javax.swing.JMenuItem;
 public class Paint {
     public static final int COLOR = 0;
     public static final int FAIRY_DUST = 1;
-    public static final int NO_COLOR = 2;
+    public static final int EXISTING_COLOR = 2;
+
+    public static final int RULE_SET = 0;
+    public static final int NO_RULE_SET = 1;
+    public static final int EXISTING_RULE_SET = 2;
 
     private Configuration configuration;
     private int colorMode;
+    private int ruleSetMode;
     private PixelColor color;
     private RuleSet ruleSet;
 
@@ -30,13 +35,19 @@ public class Paint {
             break;
             case FAIRY_DUST: icon = new FairyDustIcon(configuration, 16, 16);
             break;
-            case NO_COLOR: icon = null;
+            case EXISTING_COLOR: icon = null;
             break;
             default: assert(false);
         }
-        String ruleSetName = new String();
-        if (ruleSet != null) {
-            ruleSetName = ruleSet.getName();
+        String ruleSetName = null;
+        switch (colorMode) {
+            case RULE_SET: ruleSetName = ruleSet.getName();
+            break;
+            case NO_RULE_SET:
+            break;
+            case EXISTING_COLOR:
+            break;
+            default: assert(false);
         }
         JMenuItem ret = new JMenuItem(ruleSetName, icon);
         /*switch (colorMode) {
@@ -66,6 +77,10 @@ public class Paint {
         return colorMode;
     }
 
+    public int getRuleSetMode() {
+        return ruleSetMode;
+    }
+
     public RuleSet getRuleSet() {
         return ruleSet;
     }
@@ -78,16 +93,19 @@ public class Paint {
 
     @Override
     public int hashCode() {
-        int hash = 7;
-        hash = 29 * hash + this.colorMode;
-        hash = 29 * hash + (this.color != null ? this.color.hashCode() : 0);
-        hash = 29 * hash + (this.ruleSet != null ? this.ruleSet.hashCode() : 0);
+        int hash = 3;
+        hash = 59 * hash + (this.configuration != null ? this.configuration.hashCode() : 0);
+        hash = 59 * hash + this.colorMode;
+        hash = 59 * hash + this.ruleSetMode;
+        hash = 59 * hash + (this.color != null ? this.color.hashCode() : 0);
+        hash = 59 * hash + (this.ruleSet != null ? this.ruleSet.hashCode() : 0);
         return hash;
     }
 
-    public Paint(Configuration configuration, int colorMode, PixelColor color, RuleSet ruleSet) {
+    public Paint(Configuration configuration, int colorMode, int ruleSetMode, PixelColor color, RuleSet ruleSet) {
         this.configuration = configuration;
         this.colorMode = colorMode;
+        this.ruleSetMode = ruleSetMode;
         this.color = color;
         this.ruleSet = ruleSet;
     }

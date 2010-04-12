@@ -5,6 +5,7 @@
 
 package evopaint.pixel.rulebased.conditions;
 
+import evopaint.Configuration;
 import evopaint.pixel.rulebased.Condition;
 import evopaint.pixel.Pixel;
 import evopaint.pixel.rulebased.targeting.IConditionTarget;
@@ -22,6 +23,11 @@ public class TrueCondition extends Condition {
     }
 
     public TrueCondition() {
+    }
+
+    @Override // always true condition does not need target checking
+    public boolean isMet(Pixel actor, Configuration configuration) {
+        return true;
     }
 
     public boolean isMet(Pixel us, Pixel them) {

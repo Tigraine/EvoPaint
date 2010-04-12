@@ -13,11 +13,9 @@ import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Container;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-import java.awt.Point;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -243,6 +241,7 @@ public class MainFrame extends JFrame {
             assert (ruleSet != null);
             //System.out.println(ruleSet);
             configuration.paint = new Paint(configuration, configuration.paint.getColorMode(),
+                    Paint.RULE_SET,
                     configuration.paint.getColor(),
                     ruleSet);
             paintPanel.setRuleSet(ruleSet);

@@ -8,6 +8,7 @@ package evopaint;
 import evopaint.pixel.Pixel;
 import evopaint.pixel.PixelColor;
 import evopaint.pixel.rulebased.RuleBasedPixel;
+import evopaint.pixel.rulebased.RuleSet;
 import evopaint.util.mapping.AbsoluteCoordinate;
 
 /**
@@ -47,7 +48,7 @@ public class Brush {
                     case Paint.FAIRY_DUST:
                         newColor.setInteger(configuration.rng.nextPositiveInt());
                         break;
-                    case Paint.NO_COLOR:
+                    case Paint.EXISTING_COLOR:
                         Pixel pixie = configuration.world.get(x, y);
                         if (pixie == null) {
                             continue;
@@ -58,10 +59,29 @@ public class Brush {
                         assert(false);
                 }
 
+                RuleSet ruleSet = configuration.paint.getRuleSet();
+                switch (configuration.paint.getRuleSetMode()) {
+                    case Paint.RULE_SET:
+                        break;
+                    case Paint.NO_RULE_SET:
+                        ruleSet = null;
+                        break;
+                    case Paint.EXISTING_RULE_SET:
+                        Pixel pixie = configuration.world.get(x, y);
+                        if (pixie == null) {
+                            ruleSet = null;
+                        } else {
+                            ruleSet = ((RuleBasedPixel)pixie).getRuleSet();
+                        }
+                        break;
+                    default:
+                        assert(false);
+                }
+
                 Pixel newPixel = null;
                 switch (configuration.pixelType) {
                     case Pixel.RULESET:
-                        newPixel = new RuleBasedPixel(newColor, new AbsoluteCoordinate(x, y, configuration.world), configuration.startingEnergy, configuration.paint.getRuleSet());
+                        newPixel = new RuleBasedPixel(newColor, new AbsoluteCoordinate(x, y, configuration.world), configuration.startingEnergy, ruleSet);
                         break;
                     default: assert(false);
                 }

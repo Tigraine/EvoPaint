@@ -28,8 +28,14 @@ public class IdleAction extends Action {
         return "idle";
     }
 
+    @Override // doing nothing does not need target checking
+    public int execute(Pixel actor, Configuration configuration) {
+        return energyChange;
+    }
+
     public int execute(Pixel actor, RelativeCoordinate direction, Configuration configuration) {
-        // MEEP MEEEEEEP!
+        // MEEP MEEEEEEP, I CAN HAS NEVAR BE CALLED!
+        assert (false);
         return energyChange;
     }
 
