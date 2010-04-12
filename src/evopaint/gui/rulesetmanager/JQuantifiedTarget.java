@@ -57,9 +57,10 @@ public class JQuantifiedTarget extends JPanel {
         lowAlignmentPanel.add(lowPanel, BorderLayout.SOUTH);
         rangePanel.add(lowAlignmentPanel, BorderLayout.WEST);
 
-        jRangeSlider = new JRangeSlider(target.getMin(), target.getMax(),
+        jRangeSlider = new JRangeSlider(0, target.getMax(),
                 target.getMin(), target.getMax(), JRangeSlider.VERTICAL,
                 JRangeSlider.RIGHTLEFT_BOTTOMTOP);
+        
         lowValueLabel.setText(Integer.toString(jRangeSlider.getLowValue()));
         jRangeSlider.addChangeListener(new ChangeListener() {
             public void stateChanged(ChangeEvent e) {
