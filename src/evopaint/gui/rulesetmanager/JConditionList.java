@@ -123,7 +123,7 @@ public class JConditionList extends JPanel {
     private class AndButtonListener implements ActionListener {
 
         public void actionPerformed(ActionEvent e) {
-            Condition condition = new TrueCondition(new SpecifiedConditionTarget(new ArrayList()));
+            Condition condition = new TrueCondition(new SpecifiedConditionTarget());
             addCondition(condition);
         }
     }
@@ -155,7 +155,7 @@ public class JConditionList extends JPanel {
             }
 
             if (jConditions.size() == 0) {
-                addCondition(new TrueCondition(new SpecifiedConditionTarget(new ArrayList())));
+                addCondition(new TrueCondition(new SpecifiedConditionTarget()));
             }
         }
     }

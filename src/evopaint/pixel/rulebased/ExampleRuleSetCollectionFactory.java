@@ -9,8 +9,9 @@ import evopaint.pixel.ColorDimensions;
 import evopaint.pixel.rulebased.actions.AssimilationAction;
 import evopaint.pixel.rulebased.conditions.TrueCondition;
 import evopaint.pixel.rulebased.interfaces.IRule;
-import evopaint.pixel.rulebased.targeting.SpecifiedActionTarget;
+import evopaint.pixel.rulebased.targeting.QualifiedActionTarget;
 import evopaint.pixel.rulebased.targeting.SpecifiedConditionTarget;
+import evopaint.pixel.rulebased.targeting.qualifiers.ExistenceQualifier;
 import evopaint.util.mapping.RelativeCoordinate;
 import java.util.ArrayList;
 import java.util.List;
@@ -50,13 +51,13 @@ public class ExampleRuleSetCollectionFactory {
         conditions = new ArrayList<Condition>();
         List<RelativeCoordinate> directions = new ArrayList<RelativeCoordinate>();
         directions.add(RelativeCoordinate.CENTER);
-        conditions.add(new TrueCondition(new SpecifiedConditionTarget(new ArrayList())));
+        conditions.add(new TrueCondition(new SpecifiedConditionTarget()));
         directions = new ArrayList<RelativeCoordinate>();
         directions.add(RelativeCoordinate.WEST);
         directions.add(RelativeCoordinate.NORTH);
         directions.add(RelativeCoordinate.SOUTH);
         directions.add(RelativeCoordinate.EAST);
-        action = new AssimilationAction(0, new SpecifiedActionTarget(directions), new ColorDimensions(true, true, true), (byte)50);
+        action = new AssimilationAction(0, new QualifiedActionTarget(directions, new ExistenceQualifier()), new ColorDimensions(true, true, true), (byte)50);
         rules.add(new Rule(conditions, action));
         ruleSets.add(new RuleSet(name, description , rules));
 

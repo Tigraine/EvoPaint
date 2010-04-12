@@ -21,9 +21,10 @@ package evopaint.gui.rulesetmanager;
 
 import evopaint.pixel.rulebased.targeting.IActionTarget;
 import evopaint.pixel.rulebased.targeting.IConditionTarget;
+import evopaint.pixel.rulebased.targeting.ITarget;
+import evopaint.pixel.rulebased.targeting.SingleTarget;
 import evopaint.pixel.rulebased.targeting.SpecifiedActionTarget;
 import evopaint.pixel.rulebased.targeting.SpecifiedConditionTarget;
-import evopaint.pixel.rulebased.targeting.SpecifiedTarget;
 import javax.swing.JPanel;
 
 /**
@@ -31,18 +32,18 @@ import javax.swing.JPanel;
  * @author Markus Echterhoff <tam@edu.uni-klu.ac.at>
  */
 public class JSpecifiedTarget extends JPanel {
-    private JTarget jTarget;
+    private JSingleTarget jTarget;
 
-    public JSpecifiedTarget(SpecifiedTarget target) {
-        jTarget = new JTarget(target);
+    public JSpecifiedTarget(ITarget target) {
+        jTarget = new JSingleTarget((SingleTarget)target);
         add(jTarget);
     }
 
     public IConditionTarget createSpecifiedConditionTarget() {
-        return new SpecifiedConditionTarget(jTarget.createDirections());
+        return new SpecifiedConditionTarget(jTarget.getDirection());
     }
 
     public IActionTarget createSpecifiedActionTarget() {
-        return new SpecifiedActionTarget(jTarget.createDirections());
+        return new SpecifiedActionTarget(jTarget.getDirection());
     }
 }

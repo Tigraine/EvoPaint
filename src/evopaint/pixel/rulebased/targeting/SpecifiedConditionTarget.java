@@ -23,30 +23,24 @@ import evopaint.Configuration;
 import evopaint.pixel.Pixel;
 import evopaint.pixel.rulebased.Condition;
 import evopaint.util.mapping.RelativeCoordinate;
-import java.util.List;
 
 /**
  *
  * @author Markus Echterhoff <tam@edu.uni-klu.ac.at>
  */
 public class SpecifiedConditionTarget
-        extends SpecifiedTarget implements IConditionTarget {
+        extends SingleTarget implements IConditionTarget {
 
-    public SpecifiedConditionTarget(List<RelativeCoordinate> directions) {
-        super(directions);
+    public SpecifiedConditionTarget(RelativeCoordinate direction) {
+        super(direction);
     }
 
     public SpecifiedConditionTarget() {
     }
 
     public boolean meets(Condition condition, Pixel actor, Configuration configuration) {
-        for (RelativeCoordinate direction : directions) {
-            Pixel target = configuration.world.get(actor.getLocation(), direction);
-            if (false == condition.isMet(actor, target)) {
-                return false;
-            }
-        }
-        return true;
+        Pixel target = configuration.world.get(actor.getLocation(), direction);
+        return condition.isMet(actor, target);
     }
     
 }

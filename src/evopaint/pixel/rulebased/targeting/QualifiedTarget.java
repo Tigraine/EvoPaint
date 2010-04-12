@@ -28,7 +28,7 @@ import java.util.List;
  * @author Markus Echterhoff <tam@edu.uni-klu.ac.at>
  */
 public abstract class QualifiedTarget
-        extends Target {
+        extends MultiTarget {
 
     protected Qualifier qualifier;
 

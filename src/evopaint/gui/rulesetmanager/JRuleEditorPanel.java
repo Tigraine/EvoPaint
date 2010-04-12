@@ -29,7 +29,6 @@ import evopaint.pixel.rulebased.interfaces.IRule;
 import evopaint.pixel.rulebased.targeting.IActionTarget;
 import evopaint.pixel.rulebased.targeting.SpecifiedActionTarget;
 import evopaint.pixel.rulebased.targeting.SpecifiedConditionTarget;
-import evopaint.util.mapping.RelativeCoordinate;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.GridBagConstraints;
@@ -62,9 +61,9 @@ public class JRuleEditorPanel extends JPanel {
 
         if (rule == null) {
             rule = new Rule(new ArrayList(){{
-                add(new TrueCondition(new SpecifiedConditionTarget(new ArrayList<RelativeCoordinate>())));
+                add(new TrueCondition(new SpecifiedConditionTarget()));
             }},
-            new IdleAction(0, new SpecifiedActionTarget(new ArrayList<RelativeCoordinate>())));
+            new IdleAction(0, new SpecifiedActionTarget()));
         }
 
         // rule panel

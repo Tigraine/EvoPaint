@@ -23,28 +23,23 @@ import evopaint.Configuration;
 import evopaint.pixel.Pixel;
 import evopaint.pixel.rulebased.Action;
 import evopaint.util.mapping.RelativeCoordinate;
-import java.util.List;
 
 /**
  *
  * @author Markus Echterhoff <tam@edu.uni-klu.ac.at>
  */
 public class SpecifiedActionTarget
-        extends SpecifiedTarget implements IActionTarget {
+        extends SingleTarget implements IActionTarget {
 
-    public SpecifiedActionTarget(List<RelativeCoordinate> directions) {
-        super(directions);
+    public SpecifiedActionTarget(RelativeCoordinate direction) {
+        super(direction);
     }
 
     public SpecifiedActionTarget() {
     }
 
     public int execute(Action action, Pixel actor, Configuration configuration) {
-        int totalCost = 0;
-        for (RelativeCoordinate direction : directions) {
-            totalCost += action.execute(actor, direction, configuration);
-        }
-        return totalCost;
+        return action.execute(actor, direction, configuration);
     }
     
 }

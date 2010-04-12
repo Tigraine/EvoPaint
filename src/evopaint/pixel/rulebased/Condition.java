@@ -31,7 +31,7 @@ public abstract class Condition implements IParameterized, INamed, IHTML, Serial
     }
 
     public Condition() {
-        this.target = new SpecifiedConditionTarget(new ArrayList<RelativeCoordinate>());
+        this.target = new SpecifiedConditionTarget();
     }
 
     public IConditionTarget getTarget() {

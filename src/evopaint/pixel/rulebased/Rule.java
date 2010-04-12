@@ -128,7 +128,7 @@ public class Rule implements IRule, IHTML, ICopyable {
 
     public Rule() {
         this.conditions = new ArrayList<Condition>();
-        this.conditions.add(new TrueCondition(new SpecifiedConditionTarget(new ArrayList())));
+        this.conditions.add(new TrueCondition(new SpecifiedConditionTarget()));
         this.action = new IdleAction();
     }
 }

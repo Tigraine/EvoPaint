@@ -30,5 +30,4 @@ import java.util.List;
  * @author Markus Echterhoff <tam@edu.uni-klu.ac.at>
  */
 public interface ITarget extends INamed, IHTML, Serializable {
-    public List<RelativeCoordinate> getDirections();
 }

@@ -35,7 +35,7 @@ import javax.swing.JPanel;
  * @author Markus Echterhoff <tam@edu.uni-klu.ac.at>
  */
 public class JQualifiedTarget extends JPanel {
-    private JTarget jTarget;
+    private JMultiTarget jTarget;
     private JComboBox qualifierComboBox;
 
     public JQualifiedTarget(QualifiedTarget qualifiedTarget) {
@@ -60,17 +60,17 @@ public class JQualifiedTarget extends JPanel {
         JLabel ofLabel = new JLabel("in");
         add(ofLabel);
 
-        jTarget = new JTarget(qualifiedTarget);
+        jTarget = new JMultiTarget(qualifiedTarget);
         add(jTarget);
     }
 
     public QualifiedConditionTarget createQualifiedConditionTarget() {
-        return new QualifiedConditionTarget(jTarget.createDirections(),
+        return new QualifiedConditionTarget(jTarget.getDirections(),
                 createQualifier());
     }
 
     public QualifiedActionTarget createQualifiedActionTarget() {
-        return new QualifiedActionTarget(jTarget.createDirections(),
+        return new QualifiedActionTarget(jTarget.getDirections(),
                 createQualifier());
     }
 

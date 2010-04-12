@@ -26,7 +26,7 @@ import java.util.List;
  *
  * @author Markus Echterhoff <tam@edu.uni-klu.ac.at>
  */
-public abstract class QuantifiedTarget extends Target {
+public abstract class QuantifiedTarget extends MultiTarget {
     
     protected int min;
     protected int max;

@@ -41,7 +41,7 @@ public class JQuantifiedTarget extends JPanel {
     private JRangeSlider jRangeSlider;
     private JLabel lowValueLabel;
     private JLabel highValueLabel;
-    private JTarget jTarget;
+    private JMultiTarget jTarget;
 
     public JQuantifiedTarget(QuantifiedTarget target) {
         JPanel rangePanel = new JPanel();
@@ -83,13 +83,13 @@ public class JQuantifiedTarget extends JPanel {
         JLabel ofLabel = new JLabel("in");
         add(ofLabel);
         
-        jTarget = new JTarget(target, new TargetClickListener());
+        jTarget = new JMultiTarget(target, new TargetClickListener());
         add(jTarget);
     }
 
     public IConditionTarget createQuantifiedConditionTarget() {
         IConditionTarget target = new QuantifiedConditionTarget(
-                jTarget.createDirections(), jRangeSlider.getLowValue(),
+                jTarget.getDirections(), jRangeSlider.getLowValue(),
                 jRangeSlider.getHighValue());
         return target;
     }

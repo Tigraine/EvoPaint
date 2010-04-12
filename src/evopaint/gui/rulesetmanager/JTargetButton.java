@@ -24,6 +24,7 @@ import evopaint.gui.rulesetmanager.util.NamedObjectListCellRenderer;
 import evopaint.pixel.rulebased.targeting.IActionTarget;
 import evopaint.pixel.rulebased.targeting.IConditionTarget;
 import evopaint.pixel.rulebased.targeting.ITarget;
+import evopaint.pixel.rulebased.targeting.MultiTarget;
 import evopaint.pixel.rulebased.targeting.QualifiedActionTarget;
 import evopaint.pixel.rulebased.targeting.QualifiedConditionTarget;
 import evopaint.pixel.rulebased.targeting.QualifiedTarget;
@@ -31,7 +32,7 @@ import evopaint.pixel.rulebased.targeting.QuantifiedConditionTarget;
 import evopaint.pixel.rulebased.targeting.QuantifiedTarget;
 import evopaint.pixel.rulebased.targeting.SpecifiedActionTarget;
 import evopaint.pixel.rulebased.targeting.SpecifiedConditionTarget;
-import evopaint.pixel.rulebased.targeting.SpecifiedTarget;
+import evopaint.pixel.rulebased.targeting.SingleTarget;
 import evopaint.pixel.rulebased.targeting.qualifiers.NonExistenceQualifier;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
@@ -95,54 +96,7 @@ public class JTargetButton extends JButton {
         targetTypeComboBox = new JComboBox(comboBoxModel);
         targetTypeComboBox.setPreferredSize(new Dimension(100, 25));
         targetTypeComboBox.setRenderer(new NamedObjectListCellRenderer());
-        targetTypeComboBox.addActionListener(new ActionListener() {
 
-            public void actionPerformed(ActionEvent e) {
-                if (targetPanel != null) {
-                    dialog.remove(targetPanel);
-                }
-                if (targetTypeComboBox.getSelectedItem() instanceof SpecifiedTarget) {
-                    if (type == ACTION) {
-                        targetPanel = new JSpecifiedTarget((SpecifiedTarget)
-                                new SpecifiedActionTarget(target.getDirections()));
-                    }
-                    else if (type == CONDITION) {
-                        targetPanel = new JSpecifiedTarget((SpecifiedTarget)
-                                new SpecifiedConditionTarget(target.getDirections()));
-                    }
-                }
-                else if (targetTypeComboBox.getSelectedItem() instanceof QualifiedTarget) {
-                    if (type == ACTION) {
-                        targetPanel = new JQualifiedTarget((QualifiedTarget)
-                                new QualifiedActionTarget(target.getDirections(),
-                                new NonExistenceQualifier())); // XXX EmptyQualifier used as hardcoded default
-                    }
-                    else if (type == CONDITION) {
-                        targetPanel = new JQualifiedTarget((QualifiedTarget)
-                                new QualifiedConditionTarget(target.getDirections(),
-                                new NonExistenceQualifier())); // XXX EmptyQualifier used as hardcoded default
-                    }
-                }
-                else if (targetTypeComboBox.getSelectedItem() instanceof QuantifiedTarget) {
-                    if (type == ACTION) {
-                        throw new UnsupportedOperationException("For the time being, action target quantification seems like a stupid idea to the designer of EvoPaint.");
-                    }
-                    else if (type == CONDITION) {
-                        targetPanel = new JQuantifiedTarget((QuantifiedTarget)
-                                new QuantifiedConditionTarget(target.getDirections(),
-                                0, target.getDirections().size()));
-                    }
-                }
-                assert (targetPanel != null);
-                GridBagConstraints c2 = new GridBagConstraints();
-                c2.anchor = GridBagConstraints.CENTER;
-                c2.fill = GridBagConstraints.BOTH;
-                c2.weightx = 1;
-                c2.gridy = 1;
-                dialog.add(targetPanel, c2);
-                dialog.pack();
-            }
-        });
         ITarget selection = null;
         if (type == ACTION) {
             for (IActionTarget t : Configuration.AVAILABLE_ACTION_TARGETS) {
@@ -163,9 +117,79 @@ public class JTargetButton extends JButton {
         }
         assert(selection != null);
         targetTypeComboBox.setSelectedItem(selection);
+        
+        targetTypeComboBox.addActionListener(new ActionListener() {
+
+            public void actionPerformed(ActionEvent e) {
+                if (targetPanel != null) {
+                    dialog.remove(targetPanel);
+                }
+                if (targetTypeComboBox.getSelectedItem() instanceof SingleTarget) {
+                    if (type == ACTION) {
+                        targetPanel = new JSpecifiedTarget(
+                                new SpecifiedActionTarget());
+                    }
+                    else if (type == CONDITION) {
+                        targetPanel = new JSpecifiedTarget(
+                                new SpecifiedConditionTarget());
+                    }
+                }
+                else if (targetTypeComboBox.getSelectedItem() instanceof QualifiedTarget) {
+                    if (type == ACTION) {
+                        targetPanel = new JQualifiedTarget(
+                                new QualifiedActionTarget());
+                    }
+                    else if (type == CONDITION) {
+                        targetPanel = new JQualifiedTarget(
+                                new QualifiedConditionTarget());
+                    }
+                }
+                else if (targetTypeComboBox.getSelectedItem() instanceof QuantifiedTarget) {
+                    if (type == ACTION) {
+                        throw new UnsupportedOperationException("For the time being, action target quantification seems like a stupid idea to the designer of EvoPaint.");
+                    }
+                    else if (type == CONDITION) {
+                        targetPanel = new JQuantifiedTarget(
+                                new QuantifiedConditionTarget());
+                    }
+                }
+                assert (targetPanel != null);
+                GridBagConstraints c2 = new GridBagConstraints();
+                c2.anchor = GridBagConstraints.CENTER;
+                c2.fill = GridBagConstraints.BOTH;
+                c2.weightx = 1;
+                c2.gridy = 1;
+                dialog.add(targetPanel, c2);
+                dialog.pack();
+            }
+        });
+
         dialog.add(targetTypeComboBox, c);
 
-        // targetPanel initialized by the action event setSelectedItem fires
+        if (target instanceof SpecifiedActionTarget) {
+            assert (type == ACTION);
+            targetPanel = new JSpecifiedTarget((SpecifiedActionTarget)target);
+        }
+        else if (target instanceof SpecifiedConditionTarget) {
+            assert (type == CONDITION);
+            targetPanel = new JSpecifiedTarget((SpecifiedConditionTarget)target);
+        }
+        else if (target instanceof QualifiedActionTarget) {
+            assert (type == ACTION);
+            targetPanel = new JQualifiedTarget((QualifiedActionTarget)target);
+        }
+        else if (target instanceof QualifiedConditionTarget) {
+            assert (type == CONDITION);
+            targetPanel = new JQualifiedTarget((QualifiedConditionTarget)target);
+        }
+        else if (target instanceof QuantifiedConditionTarget) {
+            assert (type == CONDITION);
+            targetPanel = new JQuantifiedTarget((QuantifiedConditionTarget)target);
+        }
+        else {
+            assert (false);
+        }
+
         c.gridy = 1;
         dialog.add(targetPanel, c);
 

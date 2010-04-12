@@ -19,33 +19,43 @@
 
 package evopaint.pixel.rulebased.targeting;
 
+import evopaint.pixel.rulebased.interfaces.IHTML;
+import evopaint.pixel.rulebased.interfaces.INamed;
 import evopaint.util.mapping.RelativeCoordinate;
-import java.util.List;
 
 /**
  *
  * @author Markus Echterhoff <tam@edu.uni-klu.ac.at>
  */
-public abstract class SpecifiedTarget extends Target {
+public abstract class SingleTarget implements ITarget, INamed, IHTML {
+    protected RelativeCoordinate direction;
 
-    public SpecifiedTarget(List<RelativeCoordinate> directions) {
-        super(directions);
+    public SingleTarget(RelativeCoordinate direction) {
+        this.direction = direction;
     }
 
-    public SpecifiedTarget() {
+    public SingleTarget() {
     }
 
     public String getName() {
-        return "specified";
+        return "single";
     }
 
     @Override
     public String toString() {
-        return getDirectionsString();
+        return direction.toString();
     }
 
     public String toHTML() {
-        return getDirectionsString();
+        return direction.toString();
+    }
+
+    public RelativeCoordinate getDirection() {
+        return direction;
+    }
+
+    public void setDirection(RelativeCoordinate direction) {
+        this.direction = direction;
     }
     
 }

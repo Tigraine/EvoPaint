@@ -30,14 +30,14 @@ import java.util.List;
  *
  * @author Markus Echterhoff <tam@edu.uni-klu.ac.at>
  */
-public abstract class Target implements ITarget, INamed, IHTML {
+public abstract class MultiTarget implements ITarget, INamed, IHTML {
     protected List<RelativeCoordinate> directions;
 
-    public Target(List<RelativeCoordinate> directions) {
+    public MultiTarget(List<RelativeCoordinate> directions) {
         this.directions = directions;
     }
 
-    public Target() {
+    public MultiTarget() {
         this.directions = new ArrayList<RelativeCoordinate>();
     }
 

@@ -15,8 +15,6 @@ import evopaint.pixel.rulebased.targeting.IActionTarget;
 import evopaint.pixel.rulebased.targeting.SpecifiedActionTarget;
 import evopaint.util.mapping.RelativeCoordinate;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import javax.swing.JComponent;
@@ -40,7 +38,7 @@ public abstract class Action implements IParameterized, INamed, IHTML, Serializa
     }
 
     protected Action() {
-        target = new SpecifiedActionTarget(new ArrayList<RelativeCoordinate>());
+        target = new SpecifiedActionTarget();
     }
 
     public int getCost() {
