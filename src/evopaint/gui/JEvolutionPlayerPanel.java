@@ -22,6 +22,7 @@ package evopaint.gui;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JPanel;
@@ -39,33 +40,62 @@ public class JEvolutionPlayerPanel extends JPanel {
         //setBorder(new LineBorder(Color.GRAY));
         //setBackground(new Color(0xF2F2F5));
 
-        JButton recordButton = new JButton(new ImageIcon(getClass().getResource("icons/evolution-record.png")));
+        JToggleButton recordButton = new JToggleButton();
+        recordButton.setRolloverEnabled(true);
         recordButton.setPreferredSize(new Dimension(24, 24));
         recordButton.setContentAreaFilled(false);
+        recordButton.setIcon(new ImageIcon(getClass().getResource("icons/evolution-record.png")));
+        recordButton.setRolloverIcon(new ImageIcon(getClass().getResource("icons/evolution-record-rollover.png")));
+        recordButton.setPressedIcon(new ImageIcon(getClass().getResource("icons/evolution-record-pressed.png")));
+        recordButton.setSelectedIcon(new ImageIcon(getClass().getResource("icons/evolution-record-selected.png")));
+        recordButton.setRolloverSelectedIcon(new ImageIcon(getClass().getResource("icons/evolution-record-rollover-selected.png")));
         add(recordButton);
 
-        JButton playButton = new JButton(new ImageIcon(getClass().getResource("icons/evolution-play.png")));
+        JToggleButton playButton = new JToggleButton();
+        playButton.setRolloverEnabled(true);
         playButton.setPreferredSize(new Dimension(24, 24));
         playButton.setContentAreaFilled(false);
+        playButton.setIcon(new ImageIcon(getClass().getResource("icons/evolution-play.png")));
+        playButton.setRolloverIcon(new ImageIcon(getClass().getResource("icons/evolution-play-rollover.png")));
+        playButton.setPressedIcon(new ImageIcon(getClass().getResource("icons/evolution-play-pressed.png")));
+        playButton.setSelectedIcon(new ImageIcon(getClass().getResource("icons/evolution-play-selected.png")));
+        playButton.setRolloverSelectedIcon(new ImageIcon(getClass().getResource("icons/evolution-play-rollover-selected.png")));
         add(playButton);
 
         JToggleButton pauseButton = new JToggleButton(new ImageIcon(getClass().getResource("icons/evolution-pause.png")));
-        pauseButton.setPressedIcon(new ImageIcon(getClass().getResource("icons/evolution-pause_pressed_inverted.png")));
-        pauseButton.setRolloverIcon(new ImageIcon(getClass().getResource("icons/evolution-pause_hovered.png")));
-        pauseButton.setRolloverSelectedIcon(new ImageIcon(getClass().getResource("icons/evolution-pause_pressed_inverted.png")));
-        pauseButton.setSelectedIcon(new ImageIcon(getClass().getResource("icons/evolution-pause_pressed_inverted.png")));
+        pauseButton.setRolloverEnabled(true);
         pauseButton.setPreferredSize(new Dimension(24, 24));
         pauseButton.setContentAreaFilled(false);
+        pauseButton.setIcon(new ImageIcon(getClass().getResource("icons/evolution-pause.png")));
+        pauseButton.setRolloverIcon(new ImageIcon(getClass().getResource("icons/evolution-pause-rollover.png")));
+        pauseButton.setPressedIcon(new ImageIcon(getClass().getResource("icons/evolution-pause-pressed.png")));
+        pauseButton.setSelectedIcon(new ImageIcon(getClass().getResource("icons/evolution-pause-selected.png")));
+        pauseButton.setRolloverSelectedIcon(new ImageIcon(getClass().getResource("icons/evolution-pause-rollover-selected.png")));
         add(pauseButton);
 
-        JButton stopButton = new JButton(new ImageIcon(getClass().getResource("icons/evolution-stop.png")));
+        JToggleButton stopButton = new JToggleButton(new ImageIcon(getClass().getResource("icons/evolution-stop.png")));
+        stopButton.setRolloverEnabled(true);
         stopButton.setPreferredSize(new Dimension(24, 24));
         stopButton.setContentAreaFilled(false);
+        stopButton.setIcon(new ImageIcon(getClass().getResource("icons/evolution-stop.png")));
+        stopButton.setRolloverIcon(new ImageIcon(getClass().getResource("icons/evolution-stop-rollover.png")));
+        stopButton.setPressedIcon(new ImageIcon(getClass().getResource("icons/evolution-stop-pressed.png")));
+        stopButton.setSelectedIcon(new ImageIcon(getClass().getResource("icons/evolution-stop-selected.png")));
+        stopButton.setRolloverSelectedIcon(new ImageIcon(getClass().getResource("icons/evolution-stop-rollover-selected.png")));
         add(stopButton);
 
+        ButtonGroup group = new ButtonGroup();
+        group.add(playButton);
+        group.add(pauseButton);
+        group.add(stopButton);
+
         JButton ejectButton = new JButton(new ImageIcon(getClass().getResource("icons/evolution-eject.png")));
+        ejectButton.setRolloverEnabled(true);
         ejectButton.setPreferredSize(new Dimension(24, 24));
         ejectButton.setContentAreaFilled(false);
+        ejectButton.setIcon(new ImageIcon(getClass().getResource("icons/evolution-eject.png")));
+        ejectButton.setRolloverIcon(new ImageIcon(getClass().getResource("icons/evolution-eject-rollover.png")));
+        ejectButton.setPressedIcon(new ImageIcon(getClass().getResource("icons/evolution-eject-pressed.png")));
         add(ejectButton);
     }
 
