@@ -71,7 +71,7 @@ public class MainFrame extends JFrame {
                 // mu!
             }
         }
-        ToolTipManager.sharedInstance().setInitialDelay(1000);
+        ToolTipManager.sharedInstance().setInitialDelay(500);
         ToolTipManager.sharedInstance().setReshowDelay(300);
 
         setDefaultCloseOperation(EXIT_ON_CLOSE);
