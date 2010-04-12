@@ -48,6 +48,7 @@ public class JSingleTarget extends JPanel {
     }
 
     public JSingleTarget(SingleTarget target) {
+        this.direction = target.getDirection();
         setLayout(new GridBagLayout());
 
         JPanel directionsPanel = new JPanel();
@@ -112,7 +113,7 @@ public class JSingleTarget extends JPanel {
             b.addActionListener(new TargetActionListener());
             if (direction == this.buttonsDirections.get(b)) {
                 b.setSelected(true);
-               break;
+                break;
             }
         }
 
