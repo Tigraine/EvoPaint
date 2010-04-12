@@ -43,10 +43,16 @@ public abstract class SingleTarget implements ITarget, INamed, IHTML {
 
     @Override
     public String toString() {
+        if (direction == null) {
+            return "<no target>";
+        }
         return direction.toString();
     }
 
     public String toHTML() {
+        if (direction == null) {
+            return "&lt;no target&gt;";
+        }
         return direction.toString();
     }
 

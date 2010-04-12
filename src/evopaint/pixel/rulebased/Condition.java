@@ -12,10 +12,7 @@ import evopaint.pixel.rulebased.interfaces.INamed;
 import evopaint.pixel.rulebased.interfaces.IParameterized;
 import evopaint.pixel.rulebased.targeting.IConditionTarget;
 import evopaint.pixel.rulebased.targeting.SpecifiedConditionTarget;
-import evopaint.util.mapping.RelativeCoordinate;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**

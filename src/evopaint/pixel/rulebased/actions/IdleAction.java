@@ -17,8 +17,8 @@ import evopaint.util.mapping.RelativeCoordinate;
  */
 public class IdleAction extends Action {
 
-    public IdleAction(int cost, IActionTarget target) {
-        super(cost, target);
+    public IdleAction(int energyChange, IActionTarget target) {
+        super(energyChange, target);
     }
 
     public IdleAction() {
@@ -30,7 +30,7 @@ public class IdleAction extends Action {
 
     public int execute(Pixel actor, RelativeCoordinate direction, Configuration configuration) {
         // MEEP MEEEEEEP!
-        return cost;
+        return energyChange;
     }
 
 }

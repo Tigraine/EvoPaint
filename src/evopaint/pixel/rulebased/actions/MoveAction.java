@@ -17,8 +17,8 @@ import evopaint.util.mapping.RelativeCoordinate;
  */
 public class MoveAction extends Action {
 
-    public MoveAction(int cost, IActionTarget target) {
-        super(cost, target);
+    public MoveAction(int energyChange, IActionTarget target) {
+        super(energyChange, target);
     }
 
     public MoveAction() {
@@ -37,7 +37,7 @@ public class MoveAction extends Action {
         actor.getLocation().move(direction, configuration.world);
         configuration.world.set(actor);
 
-        return cost;
+        return energyChange;
     }
     
 }

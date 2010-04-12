@@ -66,7 +66,7 @@ public abstract class QualifiedTarget
         String ret = new String();
         ret += qualifier.getName();
         ret += " in ";
-        ret += getDirectionsString();
+        ret += getDirectionsHTML();
         return ret;
     }
     

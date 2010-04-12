@@ -23,4 +23,5 @@ public interface IRule extends IHTML, Serializable, ICopyable {
     public List<Condition> getConditions();
     public void setConditions(List<Condition> conditions);
     public boolean apply(Pixel pixel, Configuration configuration);
+    public String validate();
 }

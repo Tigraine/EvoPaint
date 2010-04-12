@@ -100,8 +100,8 @@ public class ColorLikenessCondition extends Condition {
 
     @Override
     public String toString() {
-        String conditionString = "are ";
-        conditionString += "colored ";
+        String conditionString = new String();
+        conditionString += "color ";
         conditionString += comparisonOperator.toString();
         conditionString += " ";
         conditionString += compareToLikenessPercentage;
@@ -114,8 +114,8 @@ public class ColorLikenessCondition extends Condition {
     }
 
     public String toHTML() {
-        String conditionString = "are ";
-        conditionString += "colored ";
+        String conditionString = new String();
+        conditionString += "color ";
         conditionString += comparisonOperator.toHTML();
         conditionString += " ";
         conditionString += compareToLikenessPercentage;

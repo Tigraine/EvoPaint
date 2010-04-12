@@ -21,16 +21,16 @@ import javax.swing.JComponent;
  *
  * @author tam
  */
-public class EmptyCondition extends Condition {
+public class ExistenceCondition extends Condition {
 
     private ObjectComparisonOperator objectComparisonOperator;
 
-    public EmptyCondition(IConditionTarget target, ObjectComparisonOperator objectComparisonOperator) {
+    public ExistenceCondition(IConditionTarget target, ObjectComparisonOperator objectComparisonOperator) {
         super(target);
         this.objectComparisonOperator = objectComparisonOperator;
     }
 
-    public EmptyCondition() {
+    public ExistenceCondition() {
         objectComparisonOperator = ObjectComparisonOperator.EQUAL;
     }
 
@@ -43,7 +43,7 @@ public class EmptyCondition extends Condition {
     }
 
     public String getName() {
-        return "empty";
+        return "existence";
     }
 
     public boolean isMet(Pixel us, Pixel them) {
@@ -52,21 +52,17 @@ public class EmptyCondition extends Condition {
 
     @Override
     public String toString() {
-        String conditionString = "are ";
         if (objectComparisonOperator == ObjectComparisonOperator.NOT_EQUAL) {
-            conditionString += "not ";
+            return "does not exist";
         }
-        conditionString += "empty";
-        return conditionString;
+        return "exists";
     }
 
     public String toHTML() {
-        String conditionString = "are ";
         if (objectComparisonOperator == ObjectComparisonOperator.NOT_EQUAL) {
-            conditionString += "not ";
+            return "does not exist";
         }
-        conditionString += "empty";
-        return conditionString;
+        return "exists";
     }
 
     public LinkedHashMap<String,JComponent> addParametersGUI(LinkedHashMap<String,JComponent> parametersMap) {

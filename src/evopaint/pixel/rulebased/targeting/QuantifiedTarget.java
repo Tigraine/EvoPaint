@@ -95,7 +95,30 @@ public abstract class QuantifiedTarget extends MultiTarget {
     }
 
     public String toHTML() {
-        return toString();
+        String ret = new String();
+        if (min == max) {
+            if (min == directions.size()) {
+                ret += "all";
+            }
+            else if (max == 0) {
+                ret += "none";
+            }
+            else {
+                ret += min;
+            }
+        }
+        else if (min == 0) {
+            ret += "up to " + max;
+        }
+        else if (max == directions.size()) {
+            ret += "at least " + min;
+        }
+        else {
+            ret += min + " to " + max;
+        }
+        ret += " in ";
+        ret += getDirectionsHTML();
+        return ret;
     }
     
 }

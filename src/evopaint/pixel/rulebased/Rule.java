@@ -12,6 +12,8 @@ import evopaint.pixel.rulebased.conditions.TrueCondition;
 import evopaint.pixel.rulebased.interfaces.IRule;
 import evopaint.pixel.rulebased.interfaces.ICopyable;
 import evopaint.pixel.rulebased.interfaces.IHTML;
+import evopaint.pixel.rulebased.targeting.MultiTarget;
+import evopaint.pixel.rulebased.targeting.SingleTarget;
 import evopaint.pixel.rulebased.targeting.SpecifiedConditionTarget;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -99,7 +101,7 @@ public class Rule implements IRule, IHTML, ICopyable {
             }
         }
 
-        actor.reward((-1) * action.execute(actor, configuration)); // *(-1) because we "reward" costs
+        actor.changeEnergy(action.execute(actor, configuration));
         return true;
     }
 
@@ -130,5 +132,36 @@ public class Rule implements IRule, IHTML, ICopyable {
         this.conditions = new ArrayList<Condition>();
         this.conditions.add(new TrueCondition(new SpecifiedConditionTarget()));
         this.action = new IdleAction();
+    }
+
+    public String validate() {
+        String msg = validateTargetsNotEmpty();
+        return msg;
+    }
+
+    private String validateTargetsNotEmpty() {
+        for (Condition c : conditions) {
+            if (c instanceof TrueCondition) {
+                continue;
+            }
+            if (c.getTarget() instanceof SingleTarget) {
+                if (((SingleTarget)c.getTarget()).getDirection() == null) {
+                    return "A condition has no target, please review your rule!";
+                }
+            } else if (((MultiTarget)c.getTarget()).getDirections().size() == 0) {
+                return "A condition has no target, please review your rule!";
+            }
+        }
+        if (action instanceof IdleAction) {
+            return null;
+        }
+        if (action.getTarget() instanceof SingleTarget) {
+            if (((SingleTarget)action.getTarget()).getDirection() == null) {
+                return "An action has no target, please review your rule!";
+            }
+        } else if (((MultiTarget)action.getTarget()).getDirections().size() == 0) {
+            return "An action has no target, please review your rule!";
+        }
+        return null;
     }
 }

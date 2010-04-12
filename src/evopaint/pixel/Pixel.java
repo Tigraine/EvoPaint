@@ -38,8 +38,8 @@ public abstract class Pixel {
         return energy > 0;
     }
 
-    public void reward(int energy) {
-        // lazy way out for zero reward/cost actions
+    public void changeEnergy(int energy) {
+        // lazy way out for non energy changing actions
         if (energy == 0) {
             return;
         }

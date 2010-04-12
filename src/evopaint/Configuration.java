@@ -15,10 +15,9 @@ import evopaint.pixel.rulebased.actions.AssimilationAction;
 import evopaint.pixel.rulebased.actions.CopyAction;
 import evopaint.pixel.rulebased.actions.IdleAction;
 import evopaint.pixel.rulebased.actions.MoveAction;
-import evopaint.pixel.rulebased.actions.RewardAction;
 import evopaint.pixel.rulebased.conditions.ColorLikenessCondition;
 import evopaint.pixel.rulebased.conditions.EnergyCondition;
-import evopaint.pixel.rulebased.conditions.EmptyCondition;
+import evopaint.pixel.rulebased.conditions.ExistenceCondition;
 import evopaint.pixel.rulebased.conditions.TrueCondition;
 import evopaint.pixel.rulebased.targeting.IActionTarget;
 import evopaint.pixel.rulebased.targeting.IConditionTarget;
@@ -61,7 +60,7 @@ public class Configuration {
 
     public static final List<Condition> AVAILABLE_CONDITIONS = new ArrayList<Condition>() {{
         add(new TrueCondition());
-        add(new EmptyCondition());
+        add(new ExistenceCondition());
         add(new EnergyCondition());
         add(new ColorLikenessCondition());
     }};
@@ -69,7 +68,6 @@ public class Configuration {
     public static final List<Action> AVAILABLE_ACTIONS = new ArrayList<Action>() {{
         add(new IdleAction());
         add(new AssimilationAction());
-        add(new RewardAction());
         add(new CopyAction());
         add(new MoveAction());
     }};

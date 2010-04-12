@@ -29,11 +29,11 @@ import javax.swing.event.ChangeListener;
  */
 public abstract class Action implements IParameterized, INamed, IHTML, Serializable {
 
-    protected int cost;
+    protected int energyChange;
     private IActionTarget target;
 
-    protected Action(int cost, IActionTarget target) {
-        this.cost = cost;
+    protected Action(int energyChange, IActionTarget target) {
+        this.energyChange = energyChange;
         this.target = target;
     }
 
@@ -41,12 +41,12 @@ public abstract class Action implements IParameterized, INamed, IHTML, Serializa
         target = new SpecifiedActionTarget();
     }
 
-    public int getCost() {
-        return cost;
+    public int getEnergyChange() {
+        return energyChange;
     }
 
-    public void setCost(int cost) {
-        this.cost = cost;
+    public void setEnergyChange(int energyChange) {
+        this.energyChange = energyChange;
     }
 
     public IActionTarget getTarget() {
@@ -99,26 +99,27 @@ public abstract class Action implements IParameterized, INamed, IHTML, Serializa
     }
     
     public LinkedHashMap<String, JComponent> addParametersGUI(LinkedHashMap<String, JComponent> parametersMap) {
-        SpinnerNumberModel spinnerModel = new SpinnerNumberModel(cost, 0, Integer.MAX_VALUE, 1);
-        JSpinner costSpinner = new AutoSelectOnFocusSpinner(spinnerModel);
-        costSpinner.addChangeListener(new ChangeListener() {
+        SpinnerNumberModel spinnerModel = new SpinnerNumberModel(energyChange, Integer.MIN_VALUE, Integer.MAX_VALUE, 1);
+        JSpinner energyChangeSpinner = new AutoSelectOnFocusSpinner(spinnerModel);
+        energyChangeSpinner.setEditor(new JSpinner.NumberEditor(energyChangeSpinner, "+#;-#"));
+        energyChangeSpinner.addChangeListener(new ChangeListener() {
 
             public void stateChanged(ChangeEvent e) {
-                cost = (Integer)((JSpinner)e.getSource()).getValue();
+                energyChange = (Integer)((JSpinner)e.getSource()).getValue();
             }
         });
-        parametersMap.put("Cost", costSpinner);
+        parametersMap.put("Energy Change", energyChangeSpinner);
 
         return parametersMap;
     }
 
     public Map<String, String> addParametersHTML(Map<String, String> parametersMap) {
-        parametersMap.put("cost", Integer.toString(cost));
+        parametersMap.put("energy change", Integer.toString(energyChange));
         return parametersMap;
     }
 
     public Map<String, String> addParametersString(Map<String, String> parametersMap) {
-        parametersMap.put("cost", Integer.toString(cost));
+        parametersMap.put("energy change", Integer.toString(energyChange));
         return parametersMap;
     }
 

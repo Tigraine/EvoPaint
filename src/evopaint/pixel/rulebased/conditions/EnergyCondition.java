@@ -69,7 +69,7 @@ public class EnergyCondition extends Condition {
 
     @Override
     public String toString() {
-        String conditionString = "have ";
+        String conditionString = new String();
         conditionString += comparisonOperator.toString();
         conditionString += " ";
         conditionString += energyValue;
@@ -78,7 +78,7 @@ public class EnergyCondition extends Condition {
     }
 
     public String toHTML() {
-        String conditionString = "have ";
+        String conditionString = new String();
         conditionString += comparisonOperator.toHTML();
         conditionString += " ";
         conditionString += energyValue;

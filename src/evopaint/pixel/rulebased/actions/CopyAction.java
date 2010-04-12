@@ -21,8 +21,8 @@ import evopaint.util.mapping.RelativeCoordinate;
  */
 public class CopyAction extends Action {
 
-    public CopyAction(int cost, IActionTarget target) {
-        super(cost, target);
+    public CopyAction(int energyChange, IActionTarget target) {
+        super(energyChange, target);
     }
 
     public CopyAction() {
@@ -40,11 +40,11 @@ public class CopyAction extends Action {
         Pixel newPixel = new RuleBasedPixel(
                 new PixelColor(actor.getPixelColor()),
                 new AbsoluteCoordinate(actor.getLocation(), direction, configuration.world),
-                actor.getEnergy() - getCost(),
+                actor.getEnergy() + getEnergyChange(),
                 new RuleSet(((RuleBasedPixel)actor).getRuleSet()));
         configuration.world.set(newPixel);
 
-        return cost;
+        return energyChange;
     }
     
 }

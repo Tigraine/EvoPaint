@@ -50,6 +50,25 @@ public abstract class MultiTarget implements ITarget, INamed, IHTML {
     }
 
     public String getDirectionsString() {
+        if (directions.size() == 0) {
+            return "<no targets>";
+        }
+        String ret = new String();
+        ret += "[";
+        for (Iterator<RelativeCoordinate> ii = directions.iterator(); ii.hasNext();) {
+            ret += ii.next().toString();
+            if (ii.hasNext()) {
+                ret += ", ";
+            }
+        }
+        ret += "]";
+        return ret;
+    }
+
+    public String getDirectionsHTML() {
+        if (directions.size() == 0) {
+            return "&lt;no targets&gt;";
+        }
         String ret = new String();
         ret += "[";
         for (Iterator<RelativeCoordinate> ii = directions.iterator(); ii.hasNext();) {

@@ -32,8 +32,8 @@ public class AssimilationAction extends Action {
     private ColorDimensions dimensions;
     private byte ourSharePercent;
 
-    public AssimilationAction(int cost, IActionTarget target, ColorDimensions dimensions, byte ourSharePercent) {
-        super(cost, target);
+    public AssimilationAction(int energyChange, IActionTarget target, ColorDimensions dimensions, byte ourSharePercent) {
+        super(energyChange, target);
         this.dimensions = dimensions;
         this.ourSharePercent = ourSharePercent;
     }
@@ -69,7 +69,7 @@ public class AssimilationAction extends Action {
         }
         target.getPixelColor().mixWith(actor.getPixelColor(),
                 ((float)ourSharePercent) / 100, dimensions);
-        return cost;
+        return energyChange;
     }
 
     @Override

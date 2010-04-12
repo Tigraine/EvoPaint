@@ -32,6 +32,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import javax.swing.JButton;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSplitPane;
 import javax.swing.border.LineBorder;
@@ -174,8 +175,15 @@ public class JRuleSetManager extends JPanel implements TreeSelectionListener {
     private class RuleEditorOKListener implements ActionListener {
 
         public void actionPerformed(ActionEvent e) {
-            jRuleList.replaceSelectedRule(jRuleEditor.createRule());
-            ((CardLayout)contentPane.getLayout()).show(contentPane, "manager");
+            IRule rule = jRuleEditor.createRule();
+            String errorMsg = rule.validate();
+            if (errorMsg == null) {
+                jRuleList.replaceSelectedRule(jRuleEditor.createRule());
+                ((CardLayout)contentPane.getLayout()).show(contentPane, "manager");
+            }
+            else {
+                JOptionPane.showMessageDialog(contentPane, errorMsg, "Fail!", JOptionPane.ERROR_MESSAGE);
+            }
         }
 
     }
