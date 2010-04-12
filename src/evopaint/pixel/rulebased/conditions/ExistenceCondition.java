@@ -47,7 +47,7 @@ public class ExistenceCondition extends Condition {
     }
 
     public boolean isMet(Pixel us, Pixel them) {
-        return objectComparisonOperator.compare(them, null);
+        return !objectComparisonOperator.compare(them, null);
     }
 
     @Override

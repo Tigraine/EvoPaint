@@ -113,7 +113,6 @@ public class JSingleTarget extends JPanel {
             b.addActionListener(new TargetActionListener());
             if (direction == this.buttonsDirections.get(b)) {
                 b.setSelected(true);
-                break;
             }
         }
 
