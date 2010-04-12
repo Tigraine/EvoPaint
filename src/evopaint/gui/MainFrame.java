@@ -45,6 +45,8 @@ public class MainFrame extends JFrame {
     private ZoomCommand zoomOutCommand;
     private ZoomCommand zoomInCommand;
 
+    private int runLevelBeforeRuleSetManager;
+
     public Configuration getConfiguration() {
         return configuration;
     }
@@ -246,7 +248,7 @@ public class MainFrame extends JFrame {
             paintPanel.setRuleSet(ruleSet);
             ((CardLayout)contentPane.getLayout()).show(contentPane, "main");
             menuBar.setVisible(true);
-            configuration.runLevel = Configuration.RUNLEVEL_RUNNING;
+            configuration.runLevel = runLevelBeforeRuleSetManager;
         }
 
     }
@@ -256,7 +258,7 @@ public class MainFrame extends JFrame {
         public void actionPerformed(ActionEvent e) {
             ((CardLayout)contentPane.getLayout()).show(contentPane, "main");
             menuBar.setVisible(true);
-            configuration.runLevel = Configuration.RUNLEVEL_RUNNING;
+            configuration.runLevel = runLevelBeforeRuleSetManager;
         }
 
     }
@@ -266,6 +268,7 @@ public class MainFrame extends JFrame {
         public void actionPerformed(ActionEvent e) {
             ((CardLayout)contentPane.getLayout()).show(contentPane, "rule manager");
             menuBar.setVisible(false);
+            runLevelBeforeRuleSetManager = configuration.runLevel;
             configuration.runLevel = Configuration.RUNLEVEL_STOP;
         }
     }

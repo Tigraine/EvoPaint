@@ -9,6 +9,8 @@ import evopaint.pixel.Pixel;
 import evopaint.gui.MainFrame;
 
 import java.awt.image.BufferedImage;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -43,10 +45,22 @@ public class EvoPaint {
 
         while (true) {
 
-            if (configuration.runLevel > Configuration.RUNLEVEL_PAINTING_ONLY) {
+            if (configuration.runLevel == Configuration.RUNLEVEL_RUNNING) {
                 configuration.world.step();
             }
-            else if (configuration.runLevel < Configuration.RUNLEVEL_PAINTING_ONLY) {
+            else if (configuration.runLevel == Configuration.RUNLEVEL_PAINTING_ONLY) {
+                long timedifference = System.currentTimeMillis() - timeStamp;
+                if (timedifference < 1000 / configuration.fps) {
+                    try {
+                    Thread.sleep(timedifference);
+                    } catch (InterruptedException ex) {
+                    }
+                }
+            } else {
+                try {
+                    Thread.sleep(500);
+                } catch (InterruptedException ex) {
+                }
                 continue;
             }
 
