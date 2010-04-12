@@ -71,7 +71,11 @@ public class ParallaxMap<T> extends AbstractCollection<T> {
         return height;
     }
 
-    public synchronized T  get(int i) {
+    public T getNotSynchronized(int i) {
+        return data[i];
+    }
+
+    public synchronized T get(int i) {
         return data[i];
     }
 

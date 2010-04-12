@@ -23,15 +23,12 @@ public class Perception {
     }
 
     public void createImage(World world) {
-        int height = world.getHeight();
-        for (int y = 0; y < height; y++) {
-            for (int x = 0; x < world.getWidth(); x++) {
-                Pixel pixie = world.get(x, y);
-                internalImage[y * height + x] =
+        for (int i = 0; i < internalImage.length; i++) {
+            Pixel pixie = world.getNotSynchronized(i);
+            internalImage[i] =
                         pixie == null ?
                         world.getConfiguration().backgroundColor :
                         pixie.getPixelColor().getInteger();
-            }
         }
     }
 
