@@ -22,7 +22,6 @@ import evopaint.pixel.rulebased.conditions.TrueCondition;
 import evopaint.pixel.rulebased.targeting.IActionTarget;
 import evopaint.pixel.rulebased.targeting.IConditionTarget;
 import evopaint.pixel.rulebased.targeting.QualifiedActionTarget;
-import evopaint.pixel.rulebased.targeting.QualifiedConditionTarget;
 import evopaint.pixel.rulebased.targeting.Qualifier;
 import evopaint.pixel.rulebased.targeting.QuantifiedConditionTarget;
 import evopaint.pixel.rulebased.targeting.SpecifiedActionTarget;
@@ -81,7 +80,6 @@ public class Configuration {
     
     public static final List<IConditionTarget> AVAILABLE_CONDITION_TARGETS = new ArrayList<IConditionTarget>() {{
         add(new SpecifiedConditionTarget());
-        add(new QualifiedConditionTarget());
         add(new QuantifiedConditionTarget());
     }};
 

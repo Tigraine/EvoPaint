@@ -33,7 +33,7 @@ import java.util.List;
 public class ExistenceQualifier extends Qualifier {
 
     public String getName() {
-        return "an existing one";
+        return "a pixel";
     }
 
     public List<RelativeCoordinate> getCandidates(Pixel origin, List<RelativeCoordinate> directions, Configuration configuration) {

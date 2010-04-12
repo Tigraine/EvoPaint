@@ -24,16 +24,13 @@ import evopaint.gui.rulesetmanager.util.NamedObjectListCellRenderer;
 import evopaint.pixel.rulebased.targeting.IActionTarget;
 import evopaint.pixel.rulebased.targeting.IConditionTarget;
 import evopaint.pixel.rulebased.targeting.ITarget;
-import evopaint.pixel.rulebased.targeting.MultiTarget;
 import evopaint.pixel.rulebased.targeting.QualifiedActionTarget;
-import evopaint.pixel.rulebased.targeting.QualifiedConditionTarget;
 import evopaint.pixel.rulebased.targeting.QualifiedTarget;
 import evopaint.pixel.rulebased.targeting.QuantifiedConditionTarget;
 import evopaint.pixel.rulebased.targeting.QuantifiedTarget;
 import evopaint.pixel.rulebased.targeting.SpecifiedActionTarget;
 import evopaint.pixel.rulebased.targeting.SpecifiedConditionTarget;
 import evopaint.pixel.rulebased.targeting.SingleTarget;
-import evopaint.pixel.rulebased.targeting.qualifiers.NonExistenceQualifier;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -140,8 +137,7 @@ public class JTargetButton extends JButton {
                                 new QualifiedActionTarget());
                     }
                     else if (type == CONDITION) {
-                        targetPanel = new JQualifiedTarget(
-                                new QualifiedConditionTarget());
+                        throw new UnsupportedOperationException("It turned out qualified condition targets do not add new information but where just confusing.");
                     }
                 }
                 else if (targetTypeComboBox.getSelectedItem() instanceof QuantifiedTarget) {
@@ -177,10 +173,6 @@ public class JTargetButton extends JButton {
         else if (target instanceof QualifiedActionTarget) {
             assert (type == ACTION);
             targetPanel = new JQualifiedTarget((QualifiedActionTarget)target);
-        }
-        else if (target instanceof QualifiedConditionTarget) {
-            assert (type == CONDITION);
-            targetPanel = new JQualifiedTarget((QualifiedConditionTarget)target);
         }
         else if (target instanceof QuantifiedConditionTarget) {
             assert (type == CONDITION);
@@ -247,7 +239,7 @@ public class JTargetButton extends JButton {
                 target = ((JQualifiedTarget)targetPanel).createQualifiedActionTarget();
             }
             else if (type == CONDITION) {
-                target = ((JQualifiedTarget)targetPanel).createQualifiedConditionTarget();
+                throw new UnsupportedOperationException("It turned out qualified condition targets do not add new information but where just confusing.");
             }
             
         }

@@ -22,7 +22,6 @@ package evopaint.gui.rulesetmanager;
 import evopaint.Configuration;
 import evopaint.gui.rulesetmanager.util.NamedObjectListCellRenderer;
 import evopaint.pixel.rulebased.targeting.QualifiedActionTarget;
-import evopaint.pixel.rulebased.targeting.QualifiedConditionTarget;
 import evopaint.pixel.rulebased.targeting.QualifiedTarget;
 import evopaint.pixel.rulebased.targeting.Qualifier;
 import javax.swing.DefaultComboBoxModel;
@@ -62,11 +61,6 @@ public class JQualifiedTarget extends JPanel {
 
         jTarget = new JMultiTarget(qualifiedTarget);
         add(jTarget);
-    }
-
-    public QualifiedConditionTarget createQualifiedConditionTarget() {
-        return new QualifiedConditionTarget(jTarget.getDirections(),
-                createQualifier());
     }
 
     public QualifiedActionTarget createQualifiedActionTarget() {

@@ -44,7 +44,7 @@ public class NonExistenceQualifier extends Qualifier {
     }
 
     public String getName() {
-        return "a non-existent one";
+        return "a free spot";
     }
 
 }

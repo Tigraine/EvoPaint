@@ -53,16 +53,16 @@ public class ExistenceCondition extends Condition {
     @Override
     public String toString() {
         if (objectComparisonOperator == ObjectComparisonOperator.NOT_EQUAL) {
-            return "does not exist";
+            return "is a free spot";
         }
-        return "exists";
+        return "is a pixel";
     }
 
     public String toHTML() {
         if (objectComparisonOperator == ObjectComparisonOperator.NOT_EQUAL) {
-            return "does not exist";
+            return "is a free spot";
         }
-        return "exists";
+        return "is a pixel";
     }
 
     public LinkedHashMap<String,JComponent> addParametersGUI(LinkedHashMap<String,JComponent> parametersMap) {
