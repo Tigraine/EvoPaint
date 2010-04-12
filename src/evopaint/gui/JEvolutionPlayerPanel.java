@@ -19,23 +19,27 @@
 
 package evopaint.gui;
 
-import java.awt.Color;
+import evopaint.Configuration;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JToggleButton;
-import javax.swing.border.LineBorder;
 
 /**
  *
  * @author Markus Echterhoff <tam@edu.uni-klu.ac.at>
  */
 public class JEvolutionPlayerPanel extends JPanel {
+    private Configuration configuration;
 
-    public JEvolutionPlayerPanel() {
+    public JEvolutionPlayerPanel(final Configuration configuration) {
+        this.configuration = configuration;
+        
         setLayout(new FlowLayout(FlowLayout.LEFT, 3, 0));
         //setBorder(new LineBorder(Color.GRAY));
         //setBackground(new Color(0xF2F2F5));
@@ -49,6 +53,7 @@ public class JEvolutionPlayerPanel extends JPanel {
         recordButton.setPressedIcon(new ImageIcon(getClass().getResource("icons/evolution-record-pressed.png")));
         recordButton.setSelectedIcon(new ImageIcon(getClass().getResource("icons/evolution-record-selected.png")));
         recordButton.setRolloverSelectedIcon(new ImageIcon(getClass().getResource("icons/evolution-record-rollover-selected.png")));
+        recordButton.setToolTipText("NOT WORKING YET: Records a video of your evolution");
         add(recordButton);
 
         JToggleButton playButton = new JToggleButton();
@@ -60,6 +65,7 @@ public class JEvolutionPlayerPanel extends JPanel {
         playButton.setPressedIcon(new ImageIcon(getClass().getResource("icons/evolution-play-pressed.png")));
         playButton.setSelectedIcon(new ImageIcon(getClass().getResource("icons/evolution-play-selected.png")));
         playButton.setRolloverSelectedIcon(new ImageIcon(getClass().getResource("icons/evolution-play-rollover-selected.png")));
+        playButton.setToolTipText("Resumes the evolution");
         add(playButton);
 
         JToggleButton pauseButton = new JToggleButton(new ImageIcon(getClass().getResource("icons/evolution-pause.png")));
@@ -71,6 +77,7 @@ public class JEvolutionPlayerPanel extends JPanel {
         pauseButton.setPressedIcon(new ImageIcon(getClass().getResource("icons/evolution-pause-pressed.png")));
         pauseButton.setSelectedIcon(new ImageIcon(getClass().getResource("icons/evolution-pause-selected.png")));
         pauseButton.setRolloverSelectedIcon(new ImageIcon(getClass().getResource("icons/evolution-pause-rollover-selected.png")));
+        pauseButton.setToolTipText("Pauses evolution, but keeps painting");
         add(pauseButton);
 
         JToggleButton stopButton = new JToggleButton(new ImageIcon(getClass().getResource("icons/evolution-stop.png")));
@@ -82,6 +89,7 @@ public class JEvolutionPlayerPanel extends JPanel {
         stopButton.setPressedIcon(new ImageIcon(getClass().getResource("icons/evolution-stop-pressed.png")));
         stopButton.setSelectedIcon(new ImageIcon(getClass().getResource("icons/evolution-stop-selected.png")));
         stopButton.setRolloverSelectedIcon(new ImageIcon(getClass().getResource("icons/evolution-stop-rollover-selected.png")));
+        stopButton.setToolTipText("Pauses evolution and painting alltogether in case you need your CPU");
         add(stopButton);
 
         ButtonGroup group = new ButtonGroup();
@@ -96,7 +104,31 @@ public class JEvolutionPlayerPanel extends JPanel {
         ejectButton.setIcon(new ImageIcon(getClass().getResource("icons/evolution-eject.png")));
         ejectButton.setRolloverIcon(new ImageIcon(getClass().getResource("icons/evolution-eject-rollover.png")));
         ejectButton.setPressedIcon(new ImageIcon(getClass().getResource("icons/evolution-eject-pressed.png")));
+        ejectButton.setToolTipText("NOT WORKING YET: Lets you choose to open/create an evolution or reset your current one");
         add(ejectButton);
+
+        playButton.setSelected(true);
+
+        playButton.addActionListener(new ActionListener() {
+
+            public void actionPerformed(ActionEvent e) {
+                configuration.runLevel = Configuration.RUNLEVEL_RUNNING;
+            }
+        });
+
+        pauseButton.addActionListener(new ActionListener() {
+
+            public void actionPerformed(ActionEvent e) {
+                configuration.runLevel = Configuration.RUNLEVEL_PAINTING_ONLY;
+            }
+        });
+
+        stopButton.addActionListener(new ActionListener() {
+
+            public void actionPerformed(ActionEvent e) {
+                configuration.runLevel = Configuration.RUNLEVEL_STOP;
+            }
+        });
     }
 
 }

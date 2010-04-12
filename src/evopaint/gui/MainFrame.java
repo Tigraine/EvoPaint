@@ -69,6 +69,8 @@ public class MainFrame extends JFrame {
                 // mu!
             }
         }
+        ToolTipManager.sharedInstance().setInitialDelay(1000);
+        ToolTipManager.sharedInstance().setReshowDelay(300);
 
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         getContentPane().setLayout(new CardLayout());
@@ -94,7 +96,7 @@ public class MainFrame extends JFrame {
         leftPanel.setLayout(new GridBagLayout());
         mainPanel.add(leftPanel, BorderLayout.WEST);
 
-        JEvolutionPlayerPanel evolutionPlayer = new JEvolutionPlayerPanel();
+        JEvolutionPlayerPanel evolutionPlayer = new JEvolutionPlayerPanel(configuration);
         GridBagConstraints constraintsLeftPanel = new GridBagConstraints();
         constraintsLeftPanel.anchor = GridBagConstraints.CENTER;
         leftPanel.add(evolutionPlayer, constraintsLeftPanel);
