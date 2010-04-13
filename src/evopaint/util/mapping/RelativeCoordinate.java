@@ -45,7 +45,7 @@ public class RelativeCoordinate extends Coordinate implements Serializable {
             } break;
             case 0: switch(y) {
                 case -1: return "N";
-                case 0: return "C";
+                case 0: return "me";
                 case 1: return "S";
             } break;
             case 1: switch(y) {

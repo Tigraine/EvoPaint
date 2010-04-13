@@ -53,6 +53,9 @@ public class MetaTarget implements ITarget, IHTML {
         if (directions.size() == 0) {
             return "<no targets>";
         }
+        if (directions.size() == 8 && false == directions.contains(RelativeCoordinate.CENTER)) {
+            return "my neighbors";
+        }
         String ret = new String();
         ret += "[";
         for (Iterator<RelativeCoordinate> ii = directions.iterator(); ii.hasNext();) {
@@ -68,6 +71,9 @@ public class MetaTarget implements ITarget, IHTML {
     public String toHTML() {
         if (directions.size() == 0) {
             return "&lt;no targets&gt;";
+        }
+        if (directions.size() == 8 && false == directions.contains(RelativeCoordinate.CENTER)) {
+            return "my neighbors";
         }
         String ret = new String();
         ret += "[";

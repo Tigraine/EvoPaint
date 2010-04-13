@@ -58,7 +58,7 @@ public abstract class QualifiedMetaTarget
     public String toString() {
         String ret = new String();
         ret += qualifier.getName();
-        ret += " in ";
+        ret += " of ";
         ret += super.toString();
         return ret;
     }
@@ -67,7 +67,7 @@ public abstract class QualifiedMetaTarget
     public String toHTML() {
         String ret = new String();
         ret += qualifier.getName();
-        ret += " in ";
+        ret += " of ";
         ret += super.toHTML();
         return ret;
     }

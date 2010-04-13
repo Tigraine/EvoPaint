@@ -89,7 +89,7 @@ public abstract class QuantifiedMetaTarget extends MetaTarget {
         else {
             ret += min + " to " + max;
         }
-        ret += " in ";
+        ret += " of ";
         ret += super.toString();
         return ret;
     }
@@ -116,7 +116,7 @@ public abstract class QuantifiedMetaTarget extends MetaTarget {
         else {
             ret += min + " to " + max;
         }
-        ret += " in ";
+        ret += " of ";
         ret += super.toHTML();
         return ret;
     }
