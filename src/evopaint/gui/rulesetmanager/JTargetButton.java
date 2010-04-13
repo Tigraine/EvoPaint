@@ -23,6 +23,7 @@ import evopaint.pixel.rulebased.Action;
 import evopaint.pixel.rulebased.Condition;
 import evopaint.pixel.rulebased.targeting.ITargeted;
 import evopaint.pixel.rulebased.targeting.ITarget;
+import java.awt.Container;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -30,9 +31,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.JButton;
 import javax.swing.JDialog;
-import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
+import javax.swing.border.BevelBorder;
 
 /**
  *
@@ -40,15 +41,19 @@ import javax.swing.SwingUtilities;
  */
 public class JTargetButton extends JButton {
 
-    private JDialog dialog;
     private JPanel targetPanel;
+    private JDialog dialog;
+    private Container contentPaneBackup;
+
+    public JPanel getTargetPanel() {
+        return targetPanel;
+    }
 
     public JTargetButton(final ITargeted targeted) {
 
-        this.dialog = new JDialog((JFrame)SwingUtilities.getWindowAncestor(this), "Choose Target", true);
-        dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-        dialog.setLayout(new GridBagLayout());
-        dialog.setUndecorated(true);
+        final JPanel mainPanel = new JPanel();
+        mainPanel.setLayout(new GridBagLayout());
+        mainPanel.setBorder(new BevelBorder(BevelBorder.RAISED));
 
         final GridBagConstraints c = new GridBagConstraints();
         c.anchor = GridBagConstraints.CENTER;
@@ -68,29 +73,33 @@ public class JTargetButton extends JButton {
         }
 
         c.gridy = 1;
-        dialog.add(targetPanel, c);
+        mainPanel.add(targetPanel, c);
 
         final JButton tis = this;
         JPanel controlPanel = new JPanel();
         final JButton okButton = new JButton("OK");
         okButton.addActionListener(new ActionListener() {
+            
             public void actionPerformed(ActionEvent e) {
-                dialog.dispose();
                 targeted.setTarget(createTarget());
                 setText("<html>" + targeted.getTarget().toHTML() + "</html>");
-                SwingUtilities.getWindowAncestor(tis).pack();
+                dialog.setContentPane(contentPaneBackup);
+                dialog.pack();
             }
          });
         controlPanel.add(okButton);
+
         c.fill = GridBagConstraints.BOTH;
         c.gridx = 0;
         c.gridy = 2;
-        dialog.add(controlPanel, c);
+        mainPanel.add(controlPanel, c);
+
         addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
+            public void actionPerformed(ActionEvent e) { // just replace the content pane of the condition/action dialog
+                dialog = ((JDialog)SwingUtilities.getWindowAncestor(tis));
+                contentPaneBackup = dialog.getContentPane();
+                dialog.setContentPane(mainPanel);
                 dialog.pack();
-                dialog.setLocationRelativeTo(tis);
-                dialog.setVisible(true);
             }
         });
 

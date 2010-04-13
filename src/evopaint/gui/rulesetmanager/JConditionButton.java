@@ -35,6 +35,7 @@ import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
+import javax.swing.border.BevelBorder;
 
 /**
  *
@@ -47,15 +48,20 @@ public class JConditionButton extends JButton {
     private JComboBox comboBoxConditions;
     private JPanel parametersPanel;
     private Condition condition;
+    private JPanel container;
     
     public JConditionButton(Configuration configuration, final JConditionList jConditionList, Condition passedCondition) {
         this.configuration = configuration;
         this.condition = passedCondition;
-        
+
         this.dialog = new JDialog((JFrame)SwingUtilities.getWindowAncestor(this), "Edit Condition", true);
         dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-        dialog.setLayout(new GridBagLayout());
         dialog.setUndecorated(true);
+
+        this.container = new JPanel();
+        container.setBorder(new BevelBorder(BevelBorder.RAISED));
+        container.setLayout(new GridBagLayout());
+        dialog.add(container);
 
         GridBagConstraints constraints = new GridBagConstraints();
         constraints.anchor = GridBagConstraints.NORTHWEST;
@@ -80,7 +86,7 @@ public class JConditionButton extends JButton {
         constraints.gridx = 0;
         constraints.gridy = 0;
         constraints.fill = GridBagConstraints.HORIZONTAL;
-        dialog.add(comboBoxConditions, constraints);
+        container.add(comboBoxConditions, constraints);
         if (condition instanceof TrueCondition) {
             parametersPanel = new JPanel();
         } else {
@@ -88,7 +94,7 @@ public class JConditionButton extends JButton {
         }
         constraints.gridx = 0;
         constraints.gridy = 1;
-        dialog.add(parametersPanel, constraints);
+        container.add(parametersPanel, constraints);
 
         JPanel controlPanel = new JPanel();
         final JButton okButton = new JButton("OK");
@@ -104,7 +110,7 @@ public class JConditionButton extends JButton {
         constraints.gridx = 0;
         constraints.gridy = 2;
         constraints.insets = new Insets(5, 0, 10, 0);
-        dialog.add(controlPanel, constraints);
+        container.add(controlPanel, constraints);
 
         addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -142,7 +148,7 @@ public class JConditionButton extends JButton {
         public void actionPerformed(ActionEvent e) {
             condition = null;
             condition = createCondition();
-            dialog.remove(parametersPanel);
+            container.remove(parametersPanel);
             GridBagConstraints c = new GridBagConstraints();
             c.gridx = 0;
             c.gridy = 1;
@@ -152,7 +158,7 @@ public class JConditionButton extends JButton {
             } else {
                 parametersPanel = new JParametersPanel(condition);
             }
-            dialog.add(parametersPanel, c);
+            container.add(parametersPanel, c);
             dialog.pack();
         }
     }

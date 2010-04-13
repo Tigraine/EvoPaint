@@ -34,6 +34,7 @@ import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
+import javax.swing.border.BevelBorder;
 
 /**
  *
@@ -45,6 +46,7 @@ public class JActionButton extends JButton {
     private Action action;
     private JDialog dialog;
     private JComboBox comboBoxActions;
+    private JPanel container;
     private JPanel parametersPanel;
 
     public JActionButton(Configuration configuration, Action passedAction) {
@@ -53,8 +55,12 @@ public class JActionButton extends JButton {
 
         this.dialog = new JDialog((JFrame)SwingUtilities.getWindowAncestor(this), "Edit Action", true);
         dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-        dialog.setLayout(new GridBagLayout());
         dialog.setUndecorated(true);
+
+        this.container = new JPanel();
+        container.setBorder(new BevelBorder(BevelBorder.RAISED));
+        container.setLayout(new GridBagLayout());
+        dialog.add(container);
 
         GridBagConstraints c = new GridBagConstraints();
         c.anchor = GridBagConstraints.NORTHWEST;
@@ -79,14 +85,14 @@ public class JActionButton extends JButton {
         c.gridy = 0;
         c.fill = GridBagConstraints.HORIZONTAL;
         c.insets = new Insets(10, 10, 5, 10);
-        dialog.add(comboBoxActions, c);
+        container.add(comboBoxActions, c);
 
         parametersPanel = new JParametersPanel(action);
         c.fill = GridBagConstraints.NONE;
         c.gridx = 0;
         c.gridy = 1;
         c.insets = new Insets(5, 5, 5, 10);
-        dialog.add(parametersPanel, c);
+        container.add(parametersPanel, c);
         
         JPanel controlPanel = new JPanel();
         final JButton okButton = new JButton("OK");
@@ -101,7 +107,7 @@ public class JActionButton extends JButton {
         c.gridx = 0;
         c.gridy = 2;
         c.insets = new Insets(5, 0, 10, 0);
-        dialog.add(controlPanel, c);
+        container.add(controlPanel, c);
 
         final JButton tis = this;
         addActionListener(new ActionListener() {
@@ -143,13 +149,13 @@ public class JActionButton extends JButton {
         public void actionPerformed(ActionEvent e) {
             action = null;
             action = createAction();
-            dialog.remove(parametersPanel);
+            container.remove(parametersPanel);
             parametersPanel = new JParametersPanel(action);
             GridBagConstraints c = new GridBagConstraints();
             c.gridx = 0;
             c.gridy = 1;
             c.insets = new Insets(5, 5, 5, 10);
-            dialog.add(parametersPanel, c);
+            container.add(parametersPanel, c);
             dialog.pack();
         }
     }
