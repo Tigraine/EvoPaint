@@ -23,27 +23,21 @@ import evopaint.Configuration;
 import evopaint.pixel.Pixel;
 import evopaint.pixel.rulebased.Action;
 import evopaint.util.mapping.RelativeCoordinate;
-import java.util.List;
 
 /**
  *
  * @author Markus Echterhoff <tam@edu.uni-klu.ac.at>
  */
-public class QualifiedActionTarget extends QualifiedTarget implements IActionTarget {
+public class ActionTarget extends SingleTarget implements IActionTarget {
 
-    public QualifiedActionTarget(List<RelativeCoordinate> directions, Qualifier qualifier) {
-        super(directions, qualifier);
+    public ActionTarget(RelativeCoordinate direction) {
+        super(direction);
     }
 
-    public QualifiedActionTarget() {
+    public ActionTarget() {
     }
 
     public int execute(Action action, Pixel actor, Configuration configuration) {
-        RelativeCoordinate direction =
-                qualifier.qualify(actor, directions, configuration);
-        if (direction == null) {
-            return 0;
-        }
         return action.execute(actor, direction, configuration);
     }
 

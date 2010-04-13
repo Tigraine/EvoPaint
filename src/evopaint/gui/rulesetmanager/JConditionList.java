@@ -22,8 +22,6 @@ package evopaint.gui.rulesetmanager;
 import evopaint.Configuration;
 import evopaint.pixel.rulebased.Condition;
 import evopaint.pixel.rulebased.conditions.TrueCondition;
-import evopaint.pixel.rulebased.targeting.IConditionTarget;
-import evopaint.pixel.rulebased.targeting.SpecifiedConditionTarget;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
@@ -44,15 +42,13 @@ import javax.swing.JPanel;
  */
 public class JConditionList extends JPanel {
     private Configuration configuration;
-    private List<JTargetButton> jConditionTargets;
     private List<JConditionButton> jConditions;
     private JPanel panelForConditionWrappers;
 
     public List<Condition> createConditions() {
         List<Condition> conditions = new ArrayList<Condition>();
         for (int i = 0; i < jConditions.size(); i++) {
-            Condition c = jConditions.get(i).createTargetLessCondition();
-            c.setTarget((IConditionTarget)jConditionTargets.get(i).createTarget());
+            Condition c = jConditions.get(i).createCondition();
             conditions.add(c);
         }
         return conditions;
@@ -60,7 +56,6 @@ public class JConditionList extends JPanel {
 
     public JConditionList(Configuration configuration, List<Condition> conditions) {
         this.configuration = configuration;
-        jConditionTargets = new ArrayList<JTargetButton>();
         jConditions = new ArrayList<JConditionButton>();
   
         setLayout(new BorderLayout(10, 5));
@@ -90,63 +85,45 @@ public class JConditionList extends JPanel {
         JPanel wrapper = new JPanel(new FlowLayout(FlowLayout.LEFT));
         wrapper.setBackground(new Color(0xF2F2F5));
 
-        JTargetButton jConditionTargetButton =
-                new JTargetButton(configuration, condition.getTarget(), JTargetButton.CONDITION);
-        wrapper.add(jConditionTargetButton);
-        jConditionTargets.add(jConditionTargetButton);
+
 
         JConditionButton jConditionButton = new JConditionButton(configuration, this, condition);
         jConditions.add(jConditionButton);
-        updateConditionTargetButton(jConditionButton, condition);
 
         wrapper.add(jConditionButton);
 
         JButton btnDelete = new JButton(new ImageIcon(getClass().getResource("icons/button-delete_condition.png")));
         btnDelete.setPreferredSize(new Dimension(btnDelete.getPreferredSize().height, btnDelete.getPreferredSize().height));
-        btnDelete.addActionListener(new JConditionDeleteListener(jConditionButton, jConditionTargetButton));
+        btnDelete.addActionListener(new JConditionDeleteListener(jConditionButton));
         wrapper.add(btnDelete);
 
         panelForConditionWrappers.add(wrapper);
         panelForConditionWrappers.revalidate(); // will not display anything without this revalidate here
     }
 
-    public void updateConditionTargetButton(JConditionButton jCondition, Condition condition) {
-        if (condition instanceof TrueCondition) {
-            int index = jConditions.indexOf(jCondition);
-            jConditionTargets.get(index).setVisible(false);
-        } else {
-            int index = jConditions.indexOf(jCondition);
-            jConditionTargets.get(index).setVisible(true);
-        }
-    }
-
     private class AndButtonListener implements ActionListener {
 
         public void actionPerformed(ActionEvent e) {
-            Condition condition = new TrueCondition(new SpecifiedConditionTarget());
+            Condition condition = new TrueCondition();
             addCondition(condition);
         }
     }
     
     private class JConditionDeleteListener implements ActionListener {
         private JConditionButton jCondition;
-        private JTargetButton jConditionTarget;
 
-        public JConditionDeleteListener(JConditionButton jCondition, JTargetButton jConditionTarget) {
+        public JConditionDeleteListener(JConditionButton jCondition) {
             this.jCondition = jCondition;
-            this.jConditionTarget = jConditionTarget;
         }
 
         public void actionPerformed(ActionEvent e) {
 
             jConditions.remove(jCondition);
-            jConditionTargets.remove(jConditionTarget);
 
             Component [] components = panelForConditionWrappers.getComponents();
             for (int i = 0; i < components.length; i++) {
                 JPanel wrapper = (JPanel)components[i];
-                if (wrapper.getComponent(1) == jCondition) {
-                    //wrapper.remove(0);
+                if (wrapper.getComponent(0) == jCondition) {
                     panelForConditionWrappers.remove(wrapper);
                     panelForConditionWrappers.revalidate();
                     panelForConditionWrappers.repaint();
@@ -155,7 +132,7 @@ public class JConditionList extends JPanel {
             }
 
             if (jConditions.size() == 0) {
-                addCondition(new TrueCondition(new SpecifiedConditionTarget()));
+                addCondition(new TrueCondition());
             }
         }
     }

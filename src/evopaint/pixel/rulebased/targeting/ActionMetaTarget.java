@@ -21,26 +21,30 @@ package evopaint.pixel.rulebased.targeting;
 
 import evopaint.Configuration;
 import evopaint.pixel.Pixel;
-import evopaint.pixel.rulebased.Condition;
+import evopaint.pixel.rulebased.Action;
 import evopaint.util.mapping.RelativeCoordinate;
+import java.util.List;
 
 /**
  *
  * @author Markus Echterhoff <tam@edu.uni-klu.ac.at>
  */
-public class SpecifiedConditionTarget
-        extends SingleTarget implements IConditionTarget {
+public class ActionMetaTarget extends QualifiedMetaTarget implements IActionTarget {
 
-    public SpecifiedConditionTarget(RelativeCoordinate direction) {
-        super(direction);
+    public ActionMetaTarget(List<RelativeCoordinate> directions, Qualifier qualifier) {
+        super(directions, qualifier);
     }
 
-    public SpecifiedConditionTarget() {
+    public ActionMetaTarget() {
     }
 
-    public boolean meets(Condition condition, Pixel actor, Configuration configuration) {
-        Pixel target = configuration.world.get(actor.getLocation(), direction);
-        return condition.isMet(actor, target);
+    public int execute(Action action, Pixel actor, Configuration configuration) {
+        RelativeCoordinate direction =
+                qualifier.getCandidate(actor, directions, configuration);
+        if (direction == null) {
+            return 0;
+        }
+        return action.execute(actor, direction, configuration);
     }
-    
+
 }

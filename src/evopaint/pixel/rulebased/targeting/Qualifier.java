@@ -32,7 +32,8 @@ import java.util.List;
  */
 public abstract class Qualifier implements INamed, Serializable {
 
-    public RelativeCoordinate qualify(Pixel actor, List<RelativeCoordinate> directions, Configuration configuration) {
+
+    public RelativeCoordinate getCandidate(Pixel actor, List<RelativeCoordinate> directions, Configuration configuration) {
         List<RelativeCoordinate> qualifyingDirections = getCandidates(actor, directions, configuration);
         if (qualifyingDirections.size() == 1) {
             return qualifyingDirections.get(0);
@@ -44,4 +45,5 @@ public abstract class Qualifier implements INamed, Serializable {
     }
     
     public abstract List<RelativeCoordinate> getCandidates(Pixel actor, List<RelativeCoordinate> directions, Configuration configuration);
+
 }

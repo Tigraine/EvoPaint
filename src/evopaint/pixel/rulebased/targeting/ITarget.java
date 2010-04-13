@@ -20,14 +20,11 @@
 package evopaint.pixel.rulebased.targeting;
 
 import evopaint.pixel.rulebased.interfaces.IHTML;
-import evopaint.pixel.rulebased.interfaces.INamed;
-import evopaint.util.mapping.RelativeCoordinate;
 import java.io.Serializable;
-import java.util.List;
 
 /**
  *
  * @author Markus Echterhoff <tam@edu.uni-klu.ac.at>
  */
-public interface ITarget extends INamed, IHTML, Serializable {
+public interface ITarget extends IHTML, Serializable {
 }

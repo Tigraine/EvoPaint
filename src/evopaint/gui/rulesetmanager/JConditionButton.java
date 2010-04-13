@@ -97,7 +97,6 @@ public class JConditionButton extends JButton {
             public void actionPerformed(ActionEvent e) {
                 dialog.dispose();
                 updateText();
-                jConditionList.updateConditionTargetButton(tis, condition);
             }
          });
         controlPanel.add(okButton);
@@ -118,7 +117,7 @@ public class JConditionButton extends JButton {
         updateText();
     }
 
-    public Condition createTargetLessCondition() {
+    public Condition createCondition() {
         if (condition != null) {
             return condition;
         }
@@ -142,7 +141,7 @@ public class JConditionButton extends JButton {
 
         public void actionPerformed(ActionEvent e) {
             condition = null;
-            condition = createTargetLessCondition();
+            condition = createCondition();
             dialog.remove(parametersPanel);
             GridBagConstraints c = new GridBagConstraints();
             c.gridx = 0;

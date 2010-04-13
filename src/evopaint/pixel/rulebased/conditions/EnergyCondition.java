@@ -5,6 +5,7 @@
 
 package evopaint.pixel.rulebased.conditions;
 
+import evopaint.gui.rulesetmanager.JTargetButton;
 import evopaint.pixel.rulebased.targeting.IConditionTarget;
 import evopaint.pixel.rulebased.util.NumberComparisonOperator;
 import evopaint.pixel.rulebased.Condition;
@@ -70,23 +71,30 @@ public class EnergyCondition extends Condition {
     @Override
     public String toString() {
         String conditionString = new String();
+        conditionString += "energy of ";
+        conditionString += getTarget().toString();
+        conditionString += " is ";
         conditionString += comparisonOperator.toString();
         conditionString += " ";
         conditionString += energyValue;
-        conditionString += " energy";
         return conditionString;
     }
 
     public String toHTML() {
         String conditionString = new String();
+        conditionString += "energy of ";
+        conditionString += getTarget().toHTML();
+        conditionString += " is ";
         conditionString += comparisonOperator.toHTML();
         conditionString += " ";
         conditionString += energyValue;
-        conditionString += " energy";
         return conditionString;
     }
 
     public LinkedHashMap<String,JComponent> addParametersGUI(LinkedHashMap<String,JComponent> parametersMap) {
+        JTargetButton jTargetButton = new JTargetButton(this);
+        parametersMap.put("Target", jTargetButton);
+
         JComboBox comparisonComboBox = new JComboBox(NumberComparisonOperator.createComboBoxModel());
         comparisonComboBox.setRenderer(new NamedObjectListCellRenderer());
         comparisonComboBox.setSelectedItem(comparisonOperator);

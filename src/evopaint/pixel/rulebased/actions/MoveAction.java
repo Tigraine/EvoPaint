@@ -6,10 +6,13 @@
 package evopaint.pixel.rulebased.actions;
 
 import evopaint.Configuration;
+import evopaint.gui.rulesetmanager.JTargetButton;
 import evopaint.pixel.rulebased.Action;
 import evopaint.pixel.Pixel;
-import evopaint.pixel.rulebased.targeting.IActionTarget;
+import evopaint.pixel.rulebased.targeting.ActionMetaTarget;
 import evopaint.util.mapping.RelativeCoordinate;
+import java.util.LinkedHashMap;
+import javax.swing.JComponent;
 
 /**
  *
@@ -17,7 +20,7 @@ import evopaint.util.mapping.RelativeCoordinate;
  */
 public class MoveAction extends Action {
 
-    public MoveAction(int energyChange, IActionTarget target) {
+    public MoveAction(int energyChange, ActionMetaTarget target) {
         super(energyChange, target);
     }
 
@@ -38,6 +41,16 @@ public class MoveAction extends Action {
         configuration.world.set(actor);
 
         return energyChange;
+    }
+
+    @Override
+    public LinkedHashMap<String,JComponent> addParametersGUI(LinkedHashMap<String, JComponent> parametersMap) {
+        parametersMap = super.addParametersGUI(parametersMap);
+
+        JTargetButton jTargetButton = new JTargetButton(this);
+        parametersMap.put("Target", jTargetButton);
+
+        return parametersMap;
     }
     
 }

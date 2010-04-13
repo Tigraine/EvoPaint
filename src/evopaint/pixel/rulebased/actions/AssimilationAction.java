@@ -6,12 +6,13 @@
 package evopaint.pixel.rulebased.actions;
 
 import evopaint.Configuration;
+import evopaint.gui.rulesetmanager.JTargetButton;
 import evopaint.pixel.rulebased.Action;
 import evopaint.gui.rulesetmanager.util.DimensionsListener;
 import evopaint.gui.util.AutoSelectOnFocusSpinner;
 import evopaint.pixel.ColorDimensions;
 import evopaint.pixel.Pixel;
-import evopaint.pixel.rulebased.targeting.IActionTarget;
+import evopaint.pixel.rulebased.targeting.ActionMetaTarget;
 import evopaint.util.mapping.RelativeCoordinate;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -32,7 +33,7 @@ public class AssimilationAction extends Action {
     private ColorDimensions dimensions;
     private byte ourSharePercent;
 
-    public AssimilationAction(int energyChange, IActionTarget target, ColorDimensions dimensions, byte ourSharePercent) {
+    public AssimilationAction(int energyChange, ActionMetaTarget target, ColorDimensions dimensions, byte ourSharePercent) {
         super(energyChange, target);
         this.dimensions = dimensions;
         this.ourSharePercent = ourSharePercent;
@@ -122,6 +123,9 @@ public class AssimilationAction extends Action {
             }
         });
         parametersMap.put("Our share in %", rewardValueSpinner);
+
+        JTargetButton jTargetButton = new JTargetButton(this);
+        parametersMap.put("Target", jTargetButton);
 
         return parametersMap;
     }

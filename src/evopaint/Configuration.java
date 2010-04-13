@@ -19,13 +19,7 @@ import evopaint.pixel.rulebased.conditions.ColorLikenessCondition;
 import evopaint.pixel.rulebased.conditions.EnergyCondition;
 import evopaint.pixel.rulebased.conditions.ExistenceCondition;
 import evopaint.pixel.rulebased.conditions.TrueCondition;
-import evopaint.pixel.rulebased.targeting.IActionTarget;
-import evopaint.pixel.rulebased.targeting.IConditionTarget;
-import evopaint.pixel.rulebased.targeting.QualifiedActionTarget;
 import evopaint.pixel.rulebased.targeting.Qualifier;
-import evopaint.pixel.rulebased.targeting.QuantifiedConditionTarget;
-import evopaint.pixel.rulebased.targeting.SpecifiedActionTarget;
-import evopaint.pixel.rulebased.targeting.SpecifiedConditionTarget;
 import evopaint.pixel.rulebased.targeting.qualifiers.ExistenceQualifier;
 import evopaint.pixel.rulebased.targeting.qualifiers.LeastEnergyQualifier;
 import evopaint.pixel.rulebased.targeting.qualifiers.MostEnergyQualifier;
@@ -76,16 +70,6 @@ public class Configuration {
         add(new NonExistenceQualifier());
         add(new LeastEnergyQualifier());
         add(new MostEnergyQualifier());
-    }};
-    
-    public static final List<IConditionTarget> AVAILABLE_CONDITION_TARGETS = new ArrayList<IConditionTarget>() {{
-        add(new SpecifiedConditionTarget());
-        add(new QuantifiedConditionTarget());
-    }};
-
-    public static final List<IActionTarget> AVAILABLE_ACTION_TARGETS = new ArrayList<IActionTarget>() {{
-        add(new SpecifiedActionTarget());
-        add(new QualifiedActionTarget());
     }};
 
     public IRandomNumberGenerator rng;

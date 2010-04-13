@@ -23,38 +23,24 @@ import evopaint.Configuration;
 import evopaint.pixel.Pixel;
 import evopaint.pixel.rulebased.Condition;
 import evopaint.util.mapping.RelativeCoordinate;
-import java.util.List;
 
 /**
  *
  * @author Markus Echterhoff <tam@edu.uni-klu.ac.at>
  */
-public class QuantifiedConditionTarget
-        extends QuantifiedTarget implements IConditionTarget {
+public class ConditionTarget
+        extends SingleTarget implements IConditionTarget {
 
-    public QuantifiedConditionTarget(List<RelativeCoordinate> directions, int min, int max) {
-        super(directions, min, max);
+    public ConditionTarget(RelativeCoordinate direction) {
+        super(direction);
     }
 
-    public QuantifiedConditionTarget() {
+    public ConditionTarget() {
     }
 
     public boolean meets(Condition condition, Pixel actor, Configuration configuration) {
-        int metCounter = 0;
-        for (RelativeCoordinate direction : directions) {
-            Pixel target = configuration.world.get(actor.getLocation(), direction);
-            if (condition.isMet(actor, target)) {
-                metCounter++;
-                if (metCounter >= min && max == directions.size()) {
-                    return true;
-                } else if (metCounter > max) {
-                    return false;
-                }
-            }
-        }
-        if (metCounter < min) {
-            return false;
-        }
-        return true;
+        Pixel target = configuration.world.get(actor.getLocation(), direction);
+        return condition.isMet(actor, target);
     }
+    
 }

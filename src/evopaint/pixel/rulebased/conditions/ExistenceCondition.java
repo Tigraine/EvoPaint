@@ -5,6 +5,7 @@
 
 package evopaint.pixel.rulebased.conditions;
 
+import evopaint.gui.rulesetmanager.JTargetButton;
 import evopaint.gui.rulesetmanager.util.NamedObjectListCellRenderer;
 import evopaint.pixel.rulebased.targeting.IConditionTarget;
 import evopaint.pixel.rulebased.util.ObjectComparisonOperator;
@@ -52,20 +53,31 @@ public class ExistenceCondition extends Condition {
 
     @Override
     public String toString() {
+        String conditionString = new String();
+        conditionString += getTarget().toString();
         if (objectComparisonOperator == ObjectComparisonOperator.NOT_EQUAL) {
-            return "is a free spot";
+            conditionString += " is a free spot";
+        } else {
+            conditionString += " is a pixel";
         }
-        return "is a pixel";
+        return conditionString;
     }
 
     public String toHTML() {
+        String conditionString = new String();
+        conditionString += getTarget().toHTML();
         if (objectComparisonOperator == ObjectComparisonOperator.NOT_EQUAL) {
-            return "is a free spot";
+            conditionString += " is a free spot";
+        } else {
+            conditionString += " is a pixel";
         }
-        return "is a pixel";
+        return conditionString;
     }
 
     public LinkedHashMap<String,JComponent> addParametersGUI(LinkedHashMap<String,JComponent> parametersMap) {
+        JTargetButton jTargetButton = new JTargetButton(this);
+        parametersMap.put("Target", jTargetButton);
+
         JComboBox comparisonComboBox = new JComboBox(ObjectComparisonOperator.createComboBoxModel());
         comparisonComboBox.setRenderer(new NamedObjectListCellRenderer());
         comparisonComboBox.setSelectedItem(objectComparisonOperator);

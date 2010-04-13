@@ -5,21 +5,19 @@
 
 package evopaint.pixel.rulebased;
 
+import evopaint.pixel.rulebased.targeting.ITargeted;
 import evopaint.Configuration;
 import evopaint.pixel.Pixel;
-import evopaint.pixel.rulebased.interfaces.IHTML;
-import evopaint.pixel.rulebased.interfaces.INamed;
-import evopaint.pixel.rulebased.interfaces.IParameterized;
+import evopaint.pixel.rulebased.targeting.ConditionTarget;
 import evopaint.pixel.rulebased.targeting.IConditionTarget;
-import evopaint.pixel.rulebased.targeting.SpecifiedConditionTarget;
-import java.io.Serializable;
+import evopaint.pixel.rulebased.targeting.ITarget;
 import java.util.Map;
 
 /**
  *
  * @author tam
  */
-public abstract class Condition implements IParameterized, INamed, IHTML, Serializable {
+public abstract class Condition implements ITargeted {
 
     private IConditionTarget target;
 
@@ -28,15 +26,15 @@ public abstract class Condition implements IParameterized, INamed, IHTML, Serial
     }
 
     public Condition() {
-        this.target = new SpecifiedConditionTarget();
+        this.target = new ConditionTarget();
     }
 
     public IConditionTarget getTarget() {
         return target;
     }
 
-    public void setTarget(IConditionTarget target) {
-        this.target = target;
+    public void setTarget(ITarget target) {
+        this.target = (IConditionTarget)target;
     }
 
     public Map<String, String>addParametersString(Map<String, String> parametersMap) {

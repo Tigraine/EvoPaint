@@ -19,27 +19,16 @@
 
 package evopaint.pixel.rulebased.targeting;
 
-import evopaint.Configuration;
-import evopaint.pixel.Pixel;
-import evopaint.pixel.rulebased.Action;
-import evopaint.util.mapping.RelativeCoordinate;
+import evopaint.pixel.rulebased.interfaces.IHTML;
+import evopaint.pixel.rulebased.interfaces.INamed;
+import evopaint.pixel.rulebased.interfaces.IParameterized;
+import java.io.Serializable;
 
 /**
  *
  * @author Markus Echterhoff <tam@edu.uni-klu.ac.at>
  */
-public class SpecifiedActionTarget
-        extends SingleTarget implements IActionTarget {
-
-    public SpecifiedActionTarget(RelativeCoordinate direction) {
-        super(direction);
-    }
-
-    public SpecifiedActionTarget() {
-    }
-
-    public int execute(Action action, Pixel actor, Configuration configuration) {
-        return action.execute(actor, direction, configuration);
-    }
-    
+public interface ITargeted extends IParameterized, INamed, IHTML, Serializable {
+    public ITarget getTarget();
+    public void setTarget(ITarget target);
 }

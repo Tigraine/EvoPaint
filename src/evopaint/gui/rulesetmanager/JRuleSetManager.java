@@ -243,6 +243,10 @@ public class JRuleSetManager extends JPanel implements TreeSelectionListener {
             TreePath path = jRuleSetTree.getPathForLocation(e.getX(), e.getY());
             if (e.getClickCount() == 2) {
 
+                if (path == null) { // this is a very rare event, but it does occur for whatever reason
+                    return;
+                }
+                
                 DefaultMutableTreeNode node =
                         (DefaultMutableTreeNode)path.getLastPathComponent();
 

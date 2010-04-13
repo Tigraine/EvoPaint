@@ -20,7 +20,6 @@
 package evopaint.pixel.rulebased.targeting;
 
 import evopaint.pixel.rulebased.interfaces.IHTML;
-import evopaint.pixel.rulebased.interfaces.INamed;
 import evopaint.util.mapping.RelativeCoordinate;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -30,14 +29,14 @@ import java.util.List;
  *
  * @author Markus Echterhoff <tam@edu.uni-klu.ac.at>
  */
-public abstract class MultiTarget implements ITarget, INamed, IHTML {
+public class MetaTarget implements ITarget, IHTML {
     protected List<RelativeCoordinate> directions;
 
-    public MultiTarget(List<RelativeCoordinate> directions) {
+    public MetaTarget(List<RelativeCoordinate> directions) {
         this.directions = directions;
     }
 
-    public MultiTarget() {
+    public MetaTarget() {
         this.directions = new ArrayList<RelativeCoordinate>();
     }
 
@@ -49,7 +48,8 @@ public abstract class MultiTarget implements ITarget, INamed, IHTML {
         this.directions = directions;
     }
 
-    public String getDirectionsString() {
+    @Override
+    public String toString() {
         if (directions.size() == 0) {
             return "<no targets>";
         }
@@ -65,7 +65,7 @@ public abstract class MultiTarget implements ITarget, INamed, IHTML {
         return ret;
     }
 
-    public String getDirectionsHTML() {
+    public String toHTML() {
         if (directions.size() == 0) {
             return "&lt;no targets&gt;";
         }

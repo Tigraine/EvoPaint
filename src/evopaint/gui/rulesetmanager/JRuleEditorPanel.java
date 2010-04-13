@@ -26,9 +26,7 @@ import evopaint.pixel.rulebased.Rule;
 import evopaint.pixel.rulebased.actions.IdleAction;
 import evopaint.pixel.rulebased.conditions.TrueCondition;
 import evopaint.pixel.rulebased.interfaces.IRule;
-import evopaint.pixel.rulebased.targeting.IActionTarget;
-import evopaint.pixel.rulebased.targeting.SpecifiedActionTarget;
-import evopaint.pixel.rulebased.targeting.SpecifiedConditionTarget;
+import evopaint.pixel.rulebased.targeting.ActionMetaTarget;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.GridBagConstraints;
@@ -61,9 +59,9 @@ public class JRuleEditorPanel extends JPanel {
 
         if (rule == null) {
             rule = new Rule(new ArrayList(){{
-                add(new TrueCondition(new SpecifiedConditionTarget()));
+                add(new TrueCondition());
             }},
-            new IdleAction(0, new SpecifiedActionTarget()));
+            new IdleAction(0));
         }
 
         // rule panel
@@ -80,11 +78,8 @@ public class JRuleEditorPanel extends JPanel {
         JLabel thenLabel = new JLabel("<html><span style='color: #0000E6; font-weight: bold;'>THEN</span><html>");
         rulePanel.add(thenLabel);
 
-        jAction = new JActionButton(configuration, this, rule.getAction());
+        jAction = new JActionButton(configuration, rule.getAction());
         rulePanel.add(jAction);
-
-        jActionTarget = new JTargetButton(configuration, rule.getAction().getTarget(), JTargetButton.ACTION);
-        rulePanel.add(jActionTarget);
 
         JPanel alignmentPanel = new JPanel();
         alignmentPanel.setLayout(new GridBagLayout());
@@ -113,23 +108,12 @@ public class JRuleEditorPanel extends JPanel {
         controlPanel.add(btnCancel);
 
         add(controlPanel, BorderLayout.SOUTH);
-
-        updateActionTargetButton(rule.getAction());
     }
 
     public IRule createRule() {
         List<Condition> conditions = jConditionList.createConditions();
-        Action action = jAction.createTargetLessAction();
-        action.setTarget((IActionTarget)jActionTarget.createTarget());
+        Action action = jAction.createAction();
         return new Rule(conditions, action);
-    }
-
-    public void updateActionTargetButton(Action action) {
-        if (action instanceof IdleAction) {
-            jActionTarget.setVisible(false);
-        } else {
-            jActionTarget.setVisible(true);
-        }
     }
     
 }

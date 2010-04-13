@@ -52,8 +52,14 @@ public class NamedObjectListCellRenderer extends DefaultListCellRenderer impleme
                                        boolean isSelected,
                                        boolean cellHasFocus) {
 
-        JLabel ret = (JLabel)super.getListCellRendererComponent(list, " " + ((INamed)value).getName(), index, isSelected, cellHasFocus);
+        JLabel ret = null;
 
+        if (value != null) {
+            ret = (JLabel)super.getListCellRendererComponent(list, " " + ((INamed)value).getName(), index, isSelected, cellHasFocus);
+        } else {
+            ret = new JLabel();
+        }
+        
         // #89393: GTK needs name to render cell renderer "natively"
         ret.setName("ComboBox.listRenderer"); // NOI18N
 

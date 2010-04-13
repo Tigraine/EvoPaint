@@ -47,7 +47,7 @@ public class JActionButton extends JButton {
     private JComboBox comboBoxActions;
     private JPanel parametersPanel;
 
-    public JActionButton(Configuration configuration, final JRuleEditorPanel ruleEditor, Action passedAction) {
+    public JActionButton(Configuration configuration, Action passedAction) {
         this.configuration = configuration;
         this.action = passedAction;
 
@@ -94,7 +94,6 @@ public class JActionButton extends JButton {
             public void actionPerformed(ActionEvent e) {
                 dialog.dispose();
                 updateText();
-                ruleEditor.updateActionTargetButton(action);
             }
          });
         controlPanel.add(okButton);
@@ -119,7 +118,7 @@ public class JActionButton extends JButton {
     public JActionButton() {
     }
 
-    public Action createTargetLessAction() {
+    public Action createAction() {
         if (action != null) {
             return action;
         }
@@ -143,7 +142,7 @@ public class JActionButton extends JButton {
 
         public void actionPerformed(ActionEvent e) {
             action = null;
-            action = createTargetLessAction();
+            action = createAction();
             dialog.remove(parametersPanel);
             parametersPanel = new JParametersPanel(action);
             GridBagConstraints c = new GridBagConstraints();

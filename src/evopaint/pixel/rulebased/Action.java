@@ -5,16 +5,17 @@
 
 package evopaint.pixel.rulebased;
 
+import evopaint.pixel.rulebased.targeting.ITargeted;
 import evopaint.Configuration;
 import evopaint.gui.util.AutoSelectOnFocusSpinner;
 import evopaint.pixel.Pixel;
-import evopaint.pixel.rulebased.interfaces.IHTML;
-import evopaint.pixel.rulebased.interfaces.INamed;
-import evopaint.pixel.rulebased.interfaces.IParameterized;
+import evopaint.pixel.rulebased.actions.IdleAction;
+import evopaint.pixel.rulebased.targeting.ActionMetaTarget;
+import evopaint.pixel.rulebased.targeting.ActionTarget;
 import evopaint.pixel.rulebased.targeting.IActionTarget;
-import evopaint.pixel.rulebased.targeting.SpecifiedActionTarget;
+import evopaint.pixel.rulebased.targeting.ITarget;
+import evopaint.pixel.rulebased.targeting.MetaTarget;
 import evopaint.util.mapping.RelativeCoordinate;
-import java.io.Serializable;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import javax.swing.JComponent;
@@ -27,18 +28,18 @@ import javax.swing.event.ChangeListener;
  *
  * @author tam
  */
-public abstract class Action implements IParameterized, INamed, IHTML, Serializable {
+public abstract class Action implements ITargeted {
 
     protected int energyChange;
     private IActionTarget target;
 
-    protected Action(int energyChange, IActionTarget target) {
+    protected Action(int energyChange, ActionMetaTarget target) {
         this.energyChange = energyChange;
         this.target = target;
     }
 
     protected Action() {
-        target = new SpecifiedActionTarget();
+        this.target = new ActionTarget();
     }
 
     public int getEnergyChange() {
@@ -53,8 +54,8 @@ public abstract class Action implements IParameterized, INamed, IHTML, Serializa
         return target;
     }
 
-    public void setTarget(IActionTarget target) {
-        this.target = target;
+    public void setTarget(ITarget target) {
+        this.target = (IActionTarget)target;
     }
 
     @Override
@@ -63,6 +64,15 @@ public abstract class Action implements IParameterized, INamed, IHTML, Serializa
         ret += getName();
 
         ret += " (";
+        if (false == this instanceof IdleAction) {
+            if (target instanceof MetaTarget) {
+                ret += "Targets: ";
+            } else {
+                ret += "Target: ";
+            }
+            ret += target.toString();
+            ret += ", ";
+        }
        
         Map<String, String> parametersMap = addParametersString(new LinkedHashMap<String, String>());
         for (String parameterName : parametersMap.keySet()) {
@@ -78,8 +88,18 @@ public abstract class Action implements IParameterized, INamed, IHTML, Serializa
     public String toHTML() {
         String ret = new String();
         ret += "<b>" + getName() + "</b>";
-
         ret += " (";
+        if (false == this instanceof IdleAction) {
+            ret += "<span style='color: #777777;'>";
+            if (target instanceof MetaTarget) {
+                ret += "Targets";
+            } else {
+                ret += "Target";
+            }
+            ret += ":</span> ";
+            ret += target.toHTML();
+            ret += ", ";
+        }
 
         Map<String, String> parametersMap = addParametersString(new LinkedHashMap<String, String>());
         for (String parameterName : parametersMap.keySet()) {

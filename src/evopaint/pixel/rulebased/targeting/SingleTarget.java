@@ -20,14 +20,13 @@
 package evopaint.pixel.rulebased.targeting;
 
 import evopaint.pixel.rulebased.interfaces.IHTML;
-import evopaint.pixel.rulebased.interfaces.INamed;
 import evopaint.util.mapping.RelativeCoordinate;
 
 /**
  *
  * @author Markus Echterhoff <tam@edu.uni-klu.ac.at>
  */
-public abstract class SingleTarget implements ITarget, INamed, IHTML {
+public class SingleTarget implements ITarget, IHTML {
     protected RelativeCoordinate direction;
 
     public SingleTarget(RelativeCoordinate direction) {
@@ -35,10 +34,6 @@ public abstract class SingleTarget implements ITarget, INamed, IHTML {
     }
 
     public SingleTarget() {
-    }
-
-    public String getName() {
-        return "single";
     }
 
     @Override

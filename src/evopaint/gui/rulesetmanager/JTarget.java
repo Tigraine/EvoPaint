@@ -19,6 +19,8 @@
 
 package evopaint.gui.rulesetmanager;
 
+import evopaint.pixel.rulebased.targeting.ITarget;
+import evopaint.pixel.rulebased.targeting.MetaTarget;
 import evopaint.pixel.rulebased.targeting.SingleTarget;
 import evopaint.util.ImageRotator;
 import evopaint.util.mapping.RelativeCoordinate;
@@ -26,11 +28,14 @@ import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 import java.util.IdentityHashMap;
-import javax.swing.ButtonGroup;
+import java.util.List;
 import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JToggleButton;
 
@@ -38,17 +43,43 @@ import javax.swing.JToggleButton;
  *
  * @author Markus Echterhoff <tam@edu.uni-klu.ac.at>
  */
-public class JSingleTarget extends JPanel {
+public class JTarget extends JPanel {
 
-    private RelativeCoordinate direction;
+    private List<RelativeCoordinate> directions;
     private IdentityHashMap<JToggleButton,RelativeCoordinate> buttonsDirections;
+    private boolean neighborsToggled;
 
-    public RelativeCoordinate getDirection() {
-        return direction;
+    public int numSelected() {
+        int ret = 0;
+        for (JToggleButton b : buttonsDirections.keySet()) {
+            ret += b.isSelected() ? 1 : 0;
+        }
+        return ret;
     }
 
-    public JSingleTarget(SingleTarget target) {
-        this.direction = target.getDirection();
+    public ITarget getTarget() {
+        if (directions.size() > 1) {
+            return new MetaTarget(directions);
+        }
+        if (directions.size() == 0) {
+            return null;
+        }
+        return new SingleTarget(directions.get(0));
+    }
+
+    public JTarget(ITarget target, ActionListener buttonListener) {
+        this(target);
+        for (JToggleButton b : buttonsDirections.keySet()) {
+            b.addActionListener(buttonListener);
+        }
+    }
+
+    public JTarget(ITarget target) {
+        if (target instanceof MetaTarget) {
+            this.directions = ((MetaTarget)target).getDirections();
+        } else {
+            this.directions = new ArrayList<RelativeCoordinate>();
+        }
         setLayout(new GridBagLayout());
 
         JPanel directionsPanel = new JPanel();
@@ -56,6 +87,12 @@ public class JSingleTarget extends JPanel {
         GridBagConstraints c = new GridBagConstraints();
         c.anchor = GridBagConstraints.NORTH;
         add(directionsPanel, c);
+
+        JButton neighborsButton = new JButton("neighbors");
+        neighborsButton.addActionListener(new AllNeighborsButtonListener());
+        c.gridy = 1;
+        c.insets = new Insets(5, 0, 0, 0);
+        add(neighborsButton, c);
 
         buttonsDirections = new IdentityHashMap<JToggleButton, RelativeCoordinate>();
 
@@ -111,14 +148,12 @@ public class JSingleTarget extends JPanel {
             b.setMaximumSize(b.getPreferredSize());
             b.setMinimumSize(b.getPreferredSize());
             b.addActionListener(new TargetActionListener());
-            if (direction == this.buttonsDirections.get(b)) {
-                b.setSelected(true);
+            for (RelativeCoordinate rc : directions) {
+                if (rc == this.buttonsDirections.get(b)) {
+                   b.setSelected(true);
+                   break;
+                }
             }
-        }
-
-        ButtonGroup group = new ButtonGroup();
-        for (JToggleButton b : buttonsDirections.keySet()) {
-            group.add(b);
         }
     }
 
@@ -127,8 +162,70 @@ public class JSingleTarget extends JPanel {
         public void actionPerformed(ActionEvent e) {
             JToggleButton actionButton = (JToggleButton)e.getSource();
             RelativeCoordinate actionCoordinate = buttonsDirections.get(actionButton);
-            direction = actionCoordinate;
+            if (actionButton.isSelected()) {
+                if (directions.contains(actionCoordinate) == false) {
+                    directions.add(actionCoordinate);
+                }
+            } else {
+                directions.remove(actionCoordinate);
+            }
         }
     }
-    
+
+    private class AllNeighborsButtonListener implements ActionListener {
+
+        public void actionPerformed(ActionEvent e) {
+
+            boolean containedCenter = false;
+            if (directions.contains(RelativeCoordinate.CENTER)) {
+                containedCenter = true;
+            }
+
+            List<RelativeCoordinate> allNeighbors = new ArrayList<RelativeCoordinate>() {{
+                add(RelativeCoordinate.NORTH);
+                add(RelativeCoordinate.NORTH_EAST);
+                add(RelativeCoordinate.EAST);
+                add(RelativeCoordinate.SOUTH_EAST);
+                add(RelativeCoordinate.SOUTH);
+                add(RelativeCoordinate.SOUTH_WEST);
+                add(RelativeCoordinate.WEST);
+                add(RelativeCoordinate.NORTH_WEST);
+            }};
+
+            if (directions.containsAll(allNeighbors)) {
+                neighborsToggled = true;
+            }
+
+            directions.clear();
+
+            if (containedCenter) {
+                directions.add(RelativeCoordinate.CENTER);
+            }
+
+            if (neighborsToggled == false) {
+                directions.addAll(allNeighbors);
+            }
+
+            for (JToggleButton b : buttonsDirections.keySet()) {
+                if (buttonsDirections.get(b) == RelativeCoordinate.CENTER) {
+                    continue;
+                }
+                if (neighborsToggled == false && b.isSelected() == false) {
+                    b.setSelected(true);
+                    ActionEvent ae = new ActionEvent((Object)b, ActionEvent.ACTION_PERFORMED, "");
+                    for (ActionListener a : b.getActionListeners()) {
+                        a.actionPerformed(ae);
+                    }
+                }
+                else if (neighborsToggled && b.isSelected()) {
+                    b.setSelected(false);
+                    ActionEvent ae = new ActionEvent((Object)b, ActionEvent.ACTION_PERFORMED, "");
+                    for (ActionListener a : b.getActionListeners()) {
+                        a.actionPerformed(ae);
+                    }
+                }
+            }
+            neighborsToggled = !neighborsToggled;
+        }
+    }
 }

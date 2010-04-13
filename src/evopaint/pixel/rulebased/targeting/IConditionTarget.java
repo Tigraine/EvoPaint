@@ -22,13 +22,11 @@ package evopaint.pixel.rulebased.targeting;
 import evopaint.Configuration;
 import evopaint.pixel.Pixel;
 import evopaint.pixel.rulebased.Condition;
-import evopaint.pixel.rulebased.interfaces.IHTML;
-import evopaint.pixel.rulebased.interfaces.INamed;
 
 /**
  *
  * @author Markus Echterhoff <tam@edu.uni-klu.ac.at>
  */
-public interface IConditionTarget extends ITarget, INamed, IHTML {
+public interface IConditionTarget extends ITarget {
     public boolean meets(Condition condition, Pixel actor, Configuration configuration);
 }

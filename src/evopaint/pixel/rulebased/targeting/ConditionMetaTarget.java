@@ -17,34 +17,44 @@
  *  along with EvoPaint.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package evopaint.pixel.rulebased.targeting.qualifiers;
+package evopaint.pixel.rulebased.targeting;
 
 import evopaint.Configuration;
 import evopaint.pixel.Pixel;
-import evopaint.pixel.rulebased.targeting.Qualifier;
+import evopaint.pixel.rulebased.Condition;
 import evopaint.util.mapping.RelativeCoordinate;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
  *
  * @author Markus Echterhoff <tam@edu.uni-klu.ac.at>
  */
-public class ExistenceQualifier extends Qualifier {
+public class ConditionMetaTarget
+        extends QuantifiedMetaTarget implements IConditionTarget {
 
-    public String getName() {
-        return "a pixel";
+    public ConditionMetaTarget(List<RelativeCoordinate> directions, int min, int max) {
+        super(directions, min, max);
     }
 
-    public List<RelativeCoordinate> getCandidates(Pixel actor, List<RelativeCoordinate> directions, Configuration configuration) {
-        List<RelativeCoordinate> ret = new ArrayList(1);
+    public ConditionMetaTarget() {
+    }
+
+    public boolean meets(Condition condition, Pixel actor, Configuration configuration) {
+        int metCounter = 0;
         for (RelativeCoordinate direction : directions) {
             Pixel target = configuration.world.get(actor.getLocation(), direction);
-            if (target != null) {
-                ret.add(direction);
+            if (condition.isMet(actor, target)) {
+                metCounter++;
+                if (metCounter >= min && max == directions.size()) {
+                    return true;
+                } else if (metCounter > max) {
+                    return false;
+                }
             }
         }
-        return ret;
+        if (metCounter < min) {
+            return false;
+        }
+        return true;
     }
-    
 }

@@ -8,7 +8,6 @@ package evopaint.pixel.rulebased.conditions;
 import evopaint.Configuration;
 import evopaint.pixel.rulebased.Condition;
 import evopaint.pixel.Pixel;
-import evopaint.pixel.rulebased.targeting.IConditionTarget;
 import java.util.LinkedHashMap;
 import javax.swing.JComponent;
 
@@ -17,10 +16,6 @@ import javax.swing.JComponent;
  * @author tam
  */
 public class TrueCondition extends Condition {
-
-    public TrueCondition(IConditionTarget target) {
-        super(target);
-    }
 
     public TrueCondition() {
     }

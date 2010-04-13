@@ -8,7 +8,6 @@ package evopaint.pixel.rulebased.actions;
 import evopaint.Configuration;
 import evopaint.pixel.rulebased.Action;
 import evopaint.pixel.Pixel;
-import evopaint.pixel.rulebased.targeting.IActionTarget;
 import evopaint.util.mapping.RelativeCoordinate;
 
 /**
@@ -17,8 +16,8 @@ import evopaint.util.mapping.RelativeCoordinate;
  */
 public class IdleAction extends Action {
 
-    public IdleAction(int energyChange, IActionTarget target) {
-        super(energyChange, target);
+    public IdleAction(int energyChange) {
+        super(energyChange, null);
     }
 
     public IdleAction() {

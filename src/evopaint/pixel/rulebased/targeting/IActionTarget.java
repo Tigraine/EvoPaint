@@ -22,13 +22,11 @@ package evopaint.pixel.rulebased.targeting;
 import evopaint.Configuration;
 import evopaint.pixel.Pixel;
 import evopaint.pixel.rulebased.Action;
-import evopaint.pixel.rulebased.interfaces.IHTML;
-import evopaint.pixel.rulebased.interfaces.INamed;
 
 /**
  *
  * @author Markus Echterhoff <tam@edu.uni-klu.ac.at>
  */
-public interface IActionTarget extends ITarget, INamed, IHTML {
+public interface IActionTarget extends ITarget {
     public int execute(Action action, Pixel actor, Configuration configuration);
 }

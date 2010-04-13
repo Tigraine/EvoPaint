@@ -19,6 +19,7 @@
 
 package evopaint.pixel.rulebased.targeting;
 
+import evopaint.pixel.rulebased.interfaces.INamed;
 import evopaint.pixel.rulebased.targeting.qualifiers.NonExistenceQualifier;
 import evopaint.util.mapping.RelativeCoordinate;
 import java.util.List;
@@ -27,17 +28,17 @@ import java.util.List;
  *
  * @author Markus Echterhoff <tam@edu.uni-klu.ac.at>
  */
-public abstract class QualifiedTarget
-        extends MultiTarget {
+public abstract class QualifiedMetaTarget
+        extends MetaTarget implements INamed {
 
     protected Qualifier qualifier;
 
-    public QualifiedTarget(List<RelativeCoordinate> directions, Qualifier qualifier) {
+    public QualifiedMetaTarget(List<RelativeCoordinate> directions, Qualifier qualifier) {
         super(directions);
         this.qualifier = qualifier;
     }
 
-    public QualifiedTarget() {
+    public QualifiedMetaTarget() {
         this.qualifier = new NonExistenceQualifier();
     }
 
@@ -58,15 +59,16 @@ public abstract class QualifiedTarget
         String ret = new String();
         ret += qualifier.getName();
         ret += " in ";
-        ret += getDirectionsString();
+        ret += super.toString();
         return ret;
     }
 
+    @Override
     public String toHTML() {
         String ret = new String();
         ret += qualifier.getName();
         ret += " in ";
-        ret += getDirectionsHTML();
+        ret += super.toHTML();
         return ret;
     }
     

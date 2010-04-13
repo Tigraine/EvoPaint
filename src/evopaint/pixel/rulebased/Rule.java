@@ -12,9 +12,8 @@ import evopaint.pixel.rulebased.conditions.TrueCondition;
 import evopaint.pixel.rulebased.interfaces.IRule;
 import evopaint.pixel.rulebased.interfaces.ICopyable;
 import evopaint.pixel.rulebased.interfaces.IHTML;
-import evopaint.pixel.rulebased.targeting.MultiTarget;
+import evopaint.pixel.rulebased.targeting.MetaTarget;
 import evopaint.pixel.rulebased.targeting.SingleTarget;
-import evopaint.pixel.rulebased.targeting.SpecifiedConditionTarget;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -53,10 +52,6 @@ public class Rule implements IRule, IHTML, ICopyable {
         String ret = "IF ";
         for (Iterator<Condition> ii = conditions.iterator(); ii.hasNext();) {
             Condition condition = ii.next();
-            if (false == condition instanceof TrueCondition) {
-                ret += condition.getTarget().toString();
-                ret += " ";
-            }
             ret += condition.toString();
             if (ii.hasNext()) {
                 ret += " AND ";
@@ -64,10 +59,6 @@ public class Rule implements IRule, IHTML, ICopyable {
         }
         ret += " THEN ";
         ret += action.toString();
-        if (false == action instanceof IdleAction) {
-            ret += " ";
-            ret += action.getTarget().toString();
-        }
         return ret;
     }
 
@@ -75,10 +66,6 @@ public class Rule implements IRule, IHTML, ICopyable {
         String ret = "<span style='color: #0000E6; font-weight: bold;'>IF</span> ";
         for (Iterator<Condition> ii = conditions.iterator(); ii.hasNext();) {
             Condition condition = ii.next();
-            if (false == condition instanceof TrueCondition) {
-                ret += condition.getTarget().toHTML();
-                ret += " ";
-            }
             ret += condition.toHTML();
             if (ii.hasNext()) {
                 ret += " <span style='color: #0000E6; font-weight: bold;'>AND</span> ";
@@ -87,10 +74,6 @@ public class Rule implements IRule, IHTML, ICopyable {
         ret += " <span style='color: #0000E6; font-weight: bold;'>THEN</span> ";
         
         ret += action.toHTML();
-        if (false == action instanceof IdleAction) {
-            ret += " ";
-            ret += action.getTarget().toHTML();
-        }
         return ret;
     }
 
@@ -130,7 +113,7 @@ public class Rule implements IRule, IHTML, ICopyable {
 
     public Rule() {
         this.conditions = new ArrayList<Condition>();
-        this.conditions.add(new TrueCondition(new SpecifiedConditionTarget()));
+        this.conditions.add(new TrueCondition());
         this.action = new IdleAction();
     }
 
@@ -148,7 +131,7 @@ public class Rule implements IRule, IHTML, ICopyable {
                 if (((SingleTarget)c.getTarget()).getDirection() == null) {
                     return "A condition has no target, please review your rule!";
                 }
-            } else if (((MultiTarget)c.getTarget()).getDirections().size() == 0) {
+            } else if (((MetaTarget)c.getTarget()).getDirections().size() == 0) {
                 return "A condition has no target, please review your rule!";
             }
         }
@@ -157,10 +140,10 @@ public class Rule implements IRule, IHTML, ICopyable {
         }
         if (action.getTarget() instanceof SingleTarget) {
             if (((SingleTarget)action.getTarget()).getDirection() == null) {
-                return "An action has no target, please review your rule!";
+                return "The action has no target, please review your rule!";
             }
-        } else if (((MultiTarget)action.getTarget()).getDirections().size() == 0) {
-            return "An action has no target, please review your rule!";
+        } else if (((MetaTarget)action.getTarget()).getDirections().size() == 0) {
+            return "The action has no target, please review your rule!";
         }
         return null;
     }

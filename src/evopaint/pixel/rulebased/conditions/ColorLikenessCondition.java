@@ -5,6 +5,7 @@
 
 package evopaint.pixel.rulebased.conditions;
 
+import evopaint.gui.rulesetmanager.JTargetButton;
 import evopaint.gui.rulesetmanager.util.ColorChooserLabel;
 import evopaint.gui.rulesetmanager.util.DimensionsListener;
 import evopaint.gui.rulesetmanager.util.NamedObjectListCellRenderer;
@@ -101,7 +102,9 @@ public class ColorLikenessCondition extends Condition {
     @Override
     public String toString() {
         String conditionString = new String();
-        conditionString += "color ";
+        conditionString += "color of ";
+        conditionString += getTarget().toString();
+        conditionString += " ";
         conditionString += comparisonOperator.toString();
         conditionString += " ";
         conditionString += compareToLikenessPercentage;
@@ -115,7 +118,9 @@ public class ColorLikenessCondition extends Condition {
 
     public String toHTML() {
         String conditionString = new String();
-        conditionString += "color ";
+        conditionString += "color of ";
+        conditionString += getTarget().toHTML();
+        conditionString += " ";
         conditionString += comparisonOperator.toHTML();
         conditionString += " ";
         conditionString += compareToLikenessPercentage;
@@ -128,6 +133,9 @@ public class ColorLikenessCondition extends Condition {
     }
 
     public LinkedHashMap<String,JComponent> addParametersGUI(LinkedHashMap<String,JComponent> parametersMap) {
+        JTargetButton jTargetButton = new JTargetButton(this);
+        parametersMap.put("Target", jTargetButton);
+
         ColorChooserLabel colorLabel = new ColorChooserLabel(comparedColor);
         JPanel wrapLabelToAvoidUncoloredStretchedBackground = new JPanel();
         wrapLabelToAvoidUncoloredStretchedBackground.add(colorLabel);

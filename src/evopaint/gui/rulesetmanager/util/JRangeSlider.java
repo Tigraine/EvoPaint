@@ -2,6 +2,10 @@
  * This file is part of the prefuse visualization
  * toolkit which you can find at: http://prefuse.org/
  *
+ * Modified by Markus Echterhoff <tam@edu.uni-klu.ac.at>
+ * Modified lines marked with "// MODIFIED"
+ * Any modifications are licensed as the rest of EvoPaint under GPLv3+
+ *
  * all of prefuse was released under the following license:
  */
 
@@ -39,6 +43,7 @@
 
 package evopaint.gui.rulesetmanager.util;
 
+import java.awt.AlphaComposite;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Cursor;
@@ -397,6 +402,7 @@ public class JRangeSlider extends JComponent
                 min = (orientation == VERTICAL) ? height-ARROW_SZ : width-ARROW_SZ;
                 max = ARROW_SZ;
             }
+            ((Graphics2D)g).setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, .3f)); // MODIFIED
         }
 
         Graphics2D g2 = (Graphics2D)g;

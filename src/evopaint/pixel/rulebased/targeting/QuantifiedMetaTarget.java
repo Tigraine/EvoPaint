@@ -26,12 +26,12 @@ import java.util.List;
  *
  * @author Markus Echterhoff <tam@edu.uni-klu.ac.at>
  */
-public abstract class QuantifiedTarget extends MultiTarget {
+public abstract class QuantifiedMetaTarget extends MetaTarget {
     
     protected int min;
     protected int max;
 
-    public QuantifiedTarget(List<RelativeCoordinate> directions, int min, int max) {
+    public QuantifiedMetaTarget(List<RelativeCoordinate> directions, int min, int max) {
         super(directions);
         this.min = min;
         this.max = max;
@@ -39,7 +39,7 @@ public abstract class QuantifiedTarget extends MultiTarget {
         assert (min >= 0 && min <= directions.size());
     }
 
-    public QuantifiedTarget() {
+    public QuantifiedMetaTarget() {
     }
 
     public String getName() {
@@ -90,7 +90,7 @@ public abstract class QuantifiedTarget extends MultiTarget {
             ret += min + " to " + max;
         }
         ret += " in ";
-        ret += getDirectionsString();
+        ret += super.toString();
         return ret;
     }
 
@@ -117,7 +117,7 @@ public abstract class QuantifiedTarget extends MultiTarget {
             ret += min + " to " + max;
         }
         ret += " in ";
-        ret += getDirectionsHTML();
+        ret += super.toHTML();
         return ret;
     }
     
