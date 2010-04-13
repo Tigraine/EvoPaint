@@ -73,7 +73,7 @@ public class JConditionTargetPanel extends JPanel {
 
         if (target instanceof ConditionMetaTarget) {
             jRangeSlider.setMinimum(0);
-            jRangeSlider.setMaximum(((ConditionMetaTarget)target).getMax());
+            jRangeSlider.setMaximum(((ConditionMetaTarget)target).getDirections().size());
             jRangeSlider.setLowValue(((ConditionMetaTarget)target).getMin());
             jRangeSlider.setHighValue(((ConditionMetaTarget)target).getMax());
         } else {
