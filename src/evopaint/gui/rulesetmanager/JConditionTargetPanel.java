@@ -30,6 +30,7 @@ import evopaint.pixel.rulebased.targeting.SingleTarget;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import javax.swing.BoxLayout;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JToggleButton;
@@ -47,6 +48,8 @@ public class JConditionTargetPanel extends JPanel {
     private JTarget jTarget;
 
     public JConditionTargetPanel(ITarget target) {
+        setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
+
         final JPanel rangePanel = new JPanel();
         rangePanel.setLayout(new BorderLayout());
 
@@ -63,18 +66,22 @@ public class JConditionTargetPanel extends JPanel {
         jRangeSlider = new JRangeSlider(0, 0, 0, 0, JRangeSlider.VERTICAL,
                 JRangeSlider.RIGHTLEFT_BOTTOMTOP);
 
+        System.out.print(target.getClass());
         if (target instanceof ConditionMetaTarget) {
+            System.out.println(" is condition meta target");
             jRangeSlider.setMinimum(0);
             jRangeSlider.setMaximum(((ConditionMetaTarget)target).getMax());
             jRangeSlider.setLowValue(((ConditionMetaTarget)target).getMin());
             jRangeSlider.setHighValue(((ConditionMetaTarget)target).getMax());
         } else {
             if (((SingleTarget)target).getDirection() == null) {
+                System.out.println(" is no condition meta target and has no direction");
                 jRangeSlider.setMinimum(0);
                 jRangeSlider.setMaximum(0);
                 jRangeSlider.setLowValue(0);
                 jRangeSlider.setHighValue(0);
             } else {
+                System.out.println(" is no condition meta target and has a direction");
                 jRangeSlider.setMinimum(0);
                 jRangeSlider.setMaximum(1);
                 jRangeSlider.setLowValue(1);

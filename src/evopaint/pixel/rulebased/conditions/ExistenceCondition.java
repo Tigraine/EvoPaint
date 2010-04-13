@@ -25,6 +25,7 @@ import evopaint.pixel.rulebased.targeting.IConditionTarget;
 import evopaint.pixel.rulebased.util.ObjectComparisonOperator;
 import evopaint.pixel.rulebased.Condition;
 import evopaint.pixel.Pixel;
+import evopaint.pixel.rulebased.targeting.MetaTarget;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -69,10 +70,18 @@ public class ExistenceCondition extends Condition {
     public String toString() {
         String conditionString = new String();
         conditionString += getTarget().toString();
-        if (objectComparisonOperator == ObjectComparisonOperator.NOT_EQUAL) {
-            conditionString += " is a free spot";
+        if (getTarget() instanceof MetaTarget && ((MetaTarget)getTarget()).getDirections().size() > 1) {
+            if (objectComparisonOperator == ObjectComparisonOperator.NOT_EQUAL) {
+                conditionString += " are free spots";
+            } else {
+                conditionString += " are pixels";
+            }
         } else {
-            conditionString += " is a pixel";
+            if (objectComparisonOperator == ObjectComparisonOperator.NOT_EQUAL) {
+                conditionString += " is a free spot";
+            } else {
+                conditionString += " is a pixel";
+            }
         }
         return conditionString;
     }
@@ -80,10 +89,18 @@ public class ExistenceCondition extends Condition {
     public String toHTML() {
         String conditionString = new String();
         conditionString += getTarget().toHTML();
-        if (objectComparisonOperator == ObjectComparisonOperator.NOT_EQUAL) {
-            conditionString += " is a free spot";
+        if (getTarget() instanceof MetaTarget && ((MetaTarget)getTarget()).getDirections().size() > 1) {
+            if (objectComparisonOperator == ObjectComparisonOperator.NOT_EQUAL) {
+                conditionString += " are free spots";
+            } else {
+                conditionString += " are pixels";
+            }
         } else {
-            conditionString += " is a pixel";
+            if (objectComparisonOperator == ObjectComparisonOperator.NOT_EQUAL) {
+                conditionString += " is a free spot";
+            } else {
+                conditionString += " is a pixel";
+            }
         }
         return conditionString;
     }

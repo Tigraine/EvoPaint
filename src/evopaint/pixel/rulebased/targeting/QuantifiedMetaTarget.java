@@ -35,8 +35,6 @@ public abstract class QuantifiedMetaTarget extends MetaTarget {
         super(directions);
         this.min = min;
         this.max = max;
-        assert (max >= 0 && max <= directions.size());
-        assert (min >= 0 && min <= directions.size());
     }
 
     public QuantifiedMetaTarget() {
@@ -47,23 +45,19 @@ public abstract class QuantifiedMetaTarget extends MetaTarget {
     }
 
     public int getMin() {
-        assert (min >= 0 && min <= directions.size());
         return min;
     }
 
     public void setMin(int min) {
         this.min = min;
-        assert (min >= 0 && min <= directions.size());
     }
 
     public int getMax() {
-        assert (max >= 0 && max <= directions.size());
         return max;
     }
 
     public void setMax(int max) {
         this.max = max;
-        assert (max >= 0 && max <= directions.size());
     }
 
      @Override
@@ -94,6 +88,7 @@ public abstract class QuantifiedMetaTarget extends MetaTarget {
         return ret;
     }
 
+    @Override
     public String toHTML() {
         String ret = new String();
         if (min == max) {

@@ -31,6 +31,7 @@ import evopaint.pixel.rulebased.targeting.Qualifier;
 import evopaint.pixel.rulebased.targeting.SingleTarget;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import javax.swing.BoxLayout;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
@@ -47,6 +48,7 @@ public class JActionTargetPanel extends JPanel {
     private int selectedQualifierIndex;
 
     public JActionTargetPanel(ITarget target) {
+        setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
 
         qualifierComboBox = new JComboBox();
         DefaultComboBoxModel model = new DefaultComboBoxModel();
