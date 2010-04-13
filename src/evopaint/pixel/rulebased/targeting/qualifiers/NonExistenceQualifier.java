@@ -21,7 +21,7 @@ package evopaint.pixel.rulebased.targeting.qualifiers;
 
 import evopaint.Configuration;
 import evopaint.pixel.Pixel;
-import evopaint.pixel.rulebased.targeting.Qualifier;
+import evopaint.pixel.rulebased.targeting.IQualifier;
 import evopaint.util.mapping.RelativeCoordinate;
 import java.util.ArrayList;
 import java.util.List;
@@ -30,7 +30,13 @@ import java.util.List;
  *
  * @author Markus Echterhoff <tam@edu.uni-klu.ac.at>
  */
-public class NonExistenceQualifier extends Qualifier {
+public class NonExistenceQualifier implements IQualifier {
+
+    private static NonExistenceQualifier instance;
+
+    public String getName() {
+        return "is a free spot";
+    }
 
     public List<RelativeCoordinate> getCandidates(Pixel origin, List<RelativeCoordinate> directions, Configuration configuration) {
         List<RelativeCoordinate> ret = new ArrayList(1);
@@ -43,8 +49,14 @@ public class NonExistenceQualifier extends Qualifier {
         return ret;
     }
 
-    public String getName() {
-        return "a free spot";
+    private NonExistenceQualifier() {
+    }
+
+    public static NonExistenceQualifier getInstance() {
+        if (instance == null) {
+            instance = new NonExistenceQualifier();
+        }
+        return instance;
     }
 
 }

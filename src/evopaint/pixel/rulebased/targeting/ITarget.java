@@ -19,6 +19,7 @@
 
 package evopaint.pixel.rulebased.targeting;
 
+import evopaint.pixel.rulebased.interfaces.ICopyable;
 import evopaint.pixel.rulebased.interfaces.IHTML;
 import java.io.Serializable;
 
@@ -26,5 +27,5 @@ import java.io.Serializable;
  *
  * @author Markus Echterhoff <tam@edu.uni-klu.ac.at>
  */
-public interface ITarget extends IHTML, Serializable {
+public interface ITarget extends ICopyable, IHTML, Serializable {
 }

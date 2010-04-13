@@ -5,19 +5,25 @@
 
 package evopaint.pixel.rulebased;
 
-import evopaint.pixel.rulebased.targeting.IDirected;
+import evopaint.pixel.rulebased.targeting.IHaveTarget;
 import evopaint.Configuration;
 import evopaint.pixel.Pixel;
+import evopaint.pixel.rulebased.interfaces.ICopyable;
 import evopaint.pixel.rulebased.targeting.ConditionTarget;
 import evopaint.pixel.rulebased.targeting.IConditionTarget;
 import evopaint.pixel.rulebased.targeting.ITarget;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.Map;
 
 /**
  *
  * @author tam
  */
-public abstract class Condition implements IDirected {
+public abstract class Condition implements IHaveTarget, ICopyable {
 
     private IConditionTarget target;
 
@@ -35,6 +41,24 @@ public abstract class Condition implements IDirected {
 
     public void setTarget(ITarget target) {
         this.target = (IConditionTarget)target;
+    }
+
+    public Condition getCopy() {
+        Condition newCondition = null;
+        try {
+            ByteArrayOutputStream outByteStream = new ByteArrayOutputStream();
+            ObjectOutputStream out = new ObjectOutputStream(outByteStream);
+            out.writeObject(this);
+            ObjectInputStream in = new ObjectInputStream(new ByteArrayInputStream(outByteStream.toByteArray()));
+            newCondition = (Condition) in.readObject();
+        } catch (ClassNotFoundException ex) {
+            ex.printStackTrace();
+            System.exit(1);
+        } catch (IOException ex) {
+            ex.printStackTrace();
+            System.exit(1);
+        }
+        return newCondition;
     }
 
     public Map<String, String>addParametersString(Map<String, String> parametersMap) {

@@ -20,7 +20,6 @@
 package evopaint.pixel.rulebased.actions;
 
 import evopaint.Configuration;
-import evopaint.gui.rulesetmanager.JTargetButton;
 import evopaint.pixel.rulebased.Action;
 import evopaint.gui.rulesetmanager.util.DimensionsListener;
 import evopaint.gui.util.AutoSelectOnFocusSpinner;
@@ -137,9 +136,6 @@ public class AssimilationAction extends Action {
             }
         });
         parametersMap.put("Our share in %", rewardValueSpinner);
-
-        JTargetButton jTargetButton = new JTargetButton(this);
-        parametersMap.put("Target", jTargetButton);
 
         return parametersMap;
     }

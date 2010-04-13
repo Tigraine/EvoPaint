@@ -51,8 +51,10 @@ public class PaintOptionsPanel extends JPanel {
             noRuleSetRadio.setSelected(true);
         } else {
             ruleSetRadio.setText(ruleSet.getName());
-            ruleSetRadio.setSelected(true);
             cachedRuleSet = ruleSet;
+            if (false == ruleSetRadio.isSelected()) {
+                ruleSetRadio.doClick();
+            }
         }
     }
 

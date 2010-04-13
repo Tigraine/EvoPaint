@@ -19,7 +19,7 @@
 
 package evopaint.pixel.rulebased.conditions;
 
-import evopaint.gui.rulesetmanager.JTargetButton;
+import evopaint.gui.rulesetmanager.JConditionTargetButton;
 import evopaint.gui.rulesetmanager.util.NamedObjectListCellRenderer;
 import evopaint.pixel.rulebased.targeting.IConditionTarget;
 import evopaint.pixel.rulebased.util.ObjectComparisonOperator;
@@ -106,8 +106,8 @@ public class ExistenceCondition extends Condition {
     }
 
     public LinkedHashMap<String,JComponent> addParametersGUI(LinkedHashMap<String,JComponent> parametersMap) {
-        JTargetButton jTargetButton = new JTargetButton(this);
-        parametersMap.put("Target", jTargetButton);
+        JConditionTargetButton JConditionTargetButton = new JConditionTargetButton(this);
+        parametersMap.put("Target", JConditionTargetButton);
 
         JComboBox comparisonComboBox = new JComboBox(ObjectComparisonOperator.createComboBoxModel());
         comparisonComboBox.setRenderer(new NamedObjectListCellRenderer());

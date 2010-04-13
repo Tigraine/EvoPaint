@@ -21,7 +21,7 @@ package evopaint.pixel.rulebased.targeting.qualifiers;
 
 import evopaint.Configuration;
 import evopaint.pixel.Pixel;
-import evopaint.pixel.rulebased.targeting.Qualifier;
+import evopaint.pixel.rulebased.targeting.IQualifier;
 import evopaint.util.mapping.RelativeCoordinate;
 import java.util.ArrayList;
 import java.util.List;
@@ -30,10 +30,12 @@ import java.util.List;
  *
  * @author Markus Echterhoff <tam@edu.uni-klu.ac.at>
  */
-public class MostEnergyQualifier extends Qualifier {
+public class MostEnergyQualifier implements IQualifier {
+
+    private static MostEnergyQualifier instance;
 
     public String getName() {
-        return "the one with the most energy";
+        return "has the most energy";
     }
 
     public List<RelativeCoordinate> getCandidates(Pixel origin, List<RelativeCoordinate> directions, Configuration configuration) {
@@ -51,6 +53,16 @@ public class MostEnergyQualifier extends Qualifier {
             ret.add(direction);
         }
         return ret;
+    }
+
+    private MostEnergyQualifier() {
+    }
+
+    public static MostEnergyQualifier getInstance() {
+        if (instance == null) {
+            instance = new MostEnergyQualifier();
+        }
+        return instance;
     }
 
 }

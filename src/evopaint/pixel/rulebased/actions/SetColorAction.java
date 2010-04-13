@@ -20,7 +20,6 @@
 package evopaint.pixel.rulebased.actions;
 
 import evopaint.Configuration;
-import evopaint.gui.rulesetmanager.JTargetButton;
 import evopaint.gui.rulesetmanager.util.ColorChooserLabel;
 import evopaint.pixel.rulebased.Action;
 import evopaint.pixel.Pixel;
@@ -92,9 +91,6 @@ public class SetColorAction extends Action {
         JPanel wrapLabelToAvoidUncoloredStretchedBackground = new JPanel();
         wrapLabelToAvoidUncoloredStretchedBackground.add(colorLabel);
         parametersMap.put("Color", wrapLabelToAvoidUncoloredStretchedBackground);
-
-        JTargetButton jTargetButton = new JTargetButton(this);
-        parametersMap.put("Target", jTargetButton);
 
         return parametersMap;
     }

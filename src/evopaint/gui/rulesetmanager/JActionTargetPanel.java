@@ -19,26 +19,11 @@
 
 package evopaint.gui.rulesetmanager;
 
-import evopaint.Configuration;
-import evopaint.gui.rulesetmanager.util.NamedObjectListCellRenderer;
 import evopaint.pixel.rulebased.targeting.ActionMetaTarget;
 import evopaint.pixel.rulebased.targeting.ActionTarget;
-import evopaint.pixel.rulebased.targeting.IActionTarget;
 import evopaint.pixel.rulebased.targeting.ITarget;
 import evopaint.pixel.rulebased.targeting.MetaTarget;
-import evopaint.pixel.rulebased.targeting.QualifiedMetaTarget;
-import evopaint.pixel.rulebased.targeting.Qualifier;
 import evopaint.pixel.rulebased.targeting.SingleTarget;
-import java.awt.Component;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import javax.swing.BoxLayout;
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.JComboBox;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 /**
@@ -47,102 +32,25 @@ import javax.swing.JPanel;
  */
 public class JActionTargetPanel extends JPanel {
     private JTarget jTarget;
-    private JComboBox qualifierComboBox;
-    private boolean qualifierEnabled;
-    private int selectedQualifierIndex;
 
     public JActionTargetPanel(ITarget target) {
-        setLayout(new GridBagLayout());
-
-        GridBagConstraints c = new GridBagConstraints();
-        c.insets = new Insets(5, 5, 5, 5);
-
-        qualifierComboBox = new JComboBox();
-        DefaultComboBoxModel model = new DefaultComboBoxModel();
-        for (Qualifier qualifier : Configuration.AVAILABLE_QUALIFIERS) {
-            model.addElement(qualifier);
-        }
-        qualifierComboBox.setModel(model);
-        qualifierComboBox.setRenderer(new NamedObjectListCellRenderer());
-        if (target instanceof QualifiedMetaTarget) {
-            Qualifier selection = null;
-            for (Qualifier q : Configuration.AVAILABLE_QUALIFIERS) {
-                if (q.getClass() == ((QualifiedMetaTarget)target).getQualifier().getClass()) {
-                    selection = q;
-                }
-            }
-            assert(selection != null);
-            qualifierComboBox.setSelectedItem(selection);
-        }
-        add(qualifierComboBox, c);
-
-        final JLabel inLabel = new JLabel("in");
-        c.gridx = 1;
-        add(inLabel, c);
-
-        jTarget = new JTarget(target, new ActionListener() {
-
-            public void actionPerformed(ActionEvent e) {
-                if (qualifierEnabled == false && jTarget.numSelected() > 1) {
-                    qualifierComboBox.setSelectedIndex(selectedQualifierIndex);
-                    qualifierComboBox.setEnabled(true);
-                    inLabel.setEnabled(true);
-                    qualifierEnabled = true;
-                }
-                else if (qualifierEnabled == true && jTarget.numSelected() <= 1) {
-                    selectedQualifierIndex = qualifierComboBox.getSelectedIndex();
-                    qualifierComboBox.setSelectedItem(null); // intentional. the named list renderer can deal with this and will display an empty label this is the cheapest way i could find to produce the desired effect of not displaying anything in the combo box
-                    qualifierComboBox.setEnabled(false);
-                    inLabel.setEnabled(false);
-                    qualifierEnabled = false;
-                }
-            }
-        });
-        c.gridx = 2;
-        add(jTarget, c);
-
-        if (jTarget.numSelected() > 1) {
-            qualifierComboBox.setEnabled(true);
-            inLabel.setEnabled(true);
-            qualifierEnabled = true;
-        } else {
-            qualifierComboBox.setSelectedItem(null);
-            qualifierComboBox.setEnabled(false);
-            inLabel.setEnabled(false);
-            qualifierEnabled = false;
-        }
+        jTarget = new JTarget(target);
+        add(jTarget);
     }
 
-    public IActionTarget createActionTarget() {
+    public ITarget createTarget() {
         
-        ITarget target = jTarget.getTarget();
+        ITarget target = jTarget.createTarget();
 
         if (target == null) {
             return new ActionTarget();
         }
 
         if (target instanceof MetaTarget) {
-            return new ActionMetaTarget(((MetaTarget)target).getDirections(),
-                    createQualifier());
+            return new ActionMetaTarget(((MetaTarget)target).getDirections());
         }
 
         return new ActionTarget(((SingleTarget)target).getDirection());
     }
 
-    private Qualifier createQualifier() {
-        Qualifier qualifier = null;
-        Qualifier prototype = (Qualifier)qualifierComboBox.getSelectedItem();
-        try {
-            qualifier = prototype.getClass().newInstance();
-        } catch (InstantiationException ex) {
-            ex.printStackTrace();
-            System.exit(1);
-        } catch (IllegalAccessException ex) {
-            ex.printStackTrace();
-            System.exit(1);
-        }
-        assert(qualifier != null);
-        return qualifier;
-    }
-    
 }

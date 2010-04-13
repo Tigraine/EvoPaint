@@ -21,7 +21,7 @@ package evopaint.pixel.rulebased.targeting.qualifiers;
 
 import evopaint.Configuration;
 import evopaint.pixel.Pixel;
-import evopaint.pixel.rulebased.targeting.Qualifier;
+import evopaint.pixel.rulebased.targeting.IQualifier;
 import evopaint.util.mapping.RelativeCoordinate;
 import java.util.ArrayList;
 import java.util.List;
@@ -30,10 +30,12 @@ import java.util.List;
  *
  * @author Markus Echterhoff <tam@edu.uni-klu.ac.at>
  */
-public class ExistenceQualifier extends Qualifier {
+public class ExistenceQualifier implements IQualifier {
+
+    private static ExistenceQualifier instance;
 
     public String getName() {
-        return "a pixel";
+        return "is a pixel";
     }
 
     public List<RelativeCoordinate> getCandidates(Pixel actor, List<RelativeCoordinate> directions, Configuration configuration) {
@@ -45,6 +47,16 @@ public class ExistenceQualifier extends Qualifier {
             }
         }
         return ret;
+    }
+
+    private ExistenceQualifier() {
+    }
+
+    public static ExistenceQualifier getInstance() {
+        if (instance == null) {
+            instance = new ExistenceQualifier();
+        }
+        return instance;
     }
     
 }

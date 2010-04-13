@@ -47,12 +47,12 @@ public class JConditionButton extends JButton {
     private JDialog dialog;
     private JComboBox comboBoxConditions;
     private JPanel parametersPanel;
-    private Condition condition;
+    private Condition createdCondition;
     private JPanel container;
     
-    public JConditionButton(Configuration configuration, final JConditionList jConditionList, Condition passedCondition) {
+    public JConditionButton(Configuration configuration, final JConditionList jConditionList, Condition conditionArg) {
         this.configuration = configuration;
-        this.condition = passedCondition;
+        this.createdCondition = conditionArg.getCopy();
 
         this.dialog = new JDialog((JFrame)SwingUtilities.getWindowAncestor(this), "Edit Condition", true);
         dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
@@ -76,7 +76,7 @@ public class JConditionButton extends JButton {
         comboBoxConditions.setRenderer(new NamedObjectListCellRenderer());
         Condition selection = null;
         for (Condition c : Configuration.AVAILABLE_CONDITIONS) {
-            if (c.getClass() == condition.getClass()) {
+            if (c.getClass() == createdCondition.getClass()) {
                 selection = c;
             }
         }
@@ -87,11 +87,8 @@ public class JConditionButton extends JButton {
         constraints.gridy = 0;
         constraints.fill = GridBagConstraints.HORIZONTAL;
         container.add(comboBoxConditions, constraints);
-        if (condition instanceof TrueCondition) {
-            parametersPanel = new JPanel();
-        } else {
-            parametersPanel = new JParametersPanel(condition);
-        }
+        
+        parametersPanel = new JParametersPanel(createdCondition);
         constraints.gridx = 0;
         constraints.gridy = 1;
         container.add(parametersPanel, constraints);
@@ -102,7 +99,7 @@ public class JConditionButton extends JButton {
         okButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 dialog.dispose();
-                updateText();
+                setText("<html>" + createdCondition.toHTML() + "</html>");
             }
          });
         controlPanel.add(okButton);
@@ -120,15 +117,15 @@ public class JConditionButton extends JButton {
             }
         });
 
-        updateText();
+        setText("<html>" + conditionArg.toHTML() + "</html>");
     }
 
     public Condition createCondition() {
-        if (condition != null) {
-            return condition;
+        if (createdCondition != null) {
+            return createdCondition;
         }
         try {
-            condition = ((Condition)comboBoxConditions.getSelectedItem()).getClass().newInstance();
+            createdCondition = ((Condition)comboBoxConditions.getSelectedItem()).getClass().newInstance();
         } catch (InstantiationException ex) {
                 ex.printStackTrace();
                 System.exit(1);
@@ -136,29 +133,24 @@ public class JConditionButton extends JButton {
             ex.printStackTrace();
             System.exit(1);
         }
-        return condition;
-    }
 
-    public void updateText() {
-        setText("<html>" + condition.toHTML() + "</html>");
+        return createdCondition;
     }
 
     private class ComboBoxConditionsListener implements ActionListener {
 
         public void actionPerformed(ActionEvent e) {
-            condition = null;
-            condition = createCondition();
+            createdCondition = null;
+            createdCondition = createCondition();
             container.remove(parametersPanel);
+
+            parametersPanel = new JParametersPanel(createdCondition);
             GridBagConstraints c = new GridBagConstraints();
             c.gridx = 0;
             c.gridy = 1;
             c.insets = new Insets(5, 5, 5, 5);
-            if (condition instanceof TrueCondition) {
-                parametersPanel = new JPanel();
-            } else {
-                parametersPanel = new JParametersPanel(condition);
-            }
             container.add(parametersPanel, c);
+            
             dialog.pack();
         }
     }

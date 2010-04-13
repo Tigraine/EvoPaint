@@ -20,7 +20,6 @@
 package evopaint.pixel.rulebased.actions;
 
 import evopaint.Configuration;
-import evopaint.gui.rulesetmanager.JTargetButton;
 import evopaint.gui.util.AutoSelectOnFocusSpinner;
 import evopaint.pixel.rulebased.Action;
 import evopaint.pixel.Pixel;
@@ -66,7 +65,7 @@ public class DrainEnergyAction extends Action {
             return 0;
         }
         
-        target.changeEnergy((-1) * (target.getEnergy() >= amount ? amount : target.getEnergy()));
+        target.changeEnergy((-1) * amount);
 
         return energyChange;
     }
@@ -82,10 +81,7 @@ public class DrainEnergyAction extends Action {
                 setAmount(((Integer) ((JSpinner) e.getSource()).getValue()).byteValue());
             }
         });
-        parametersMap.put("Amount", rewardValueSpinner);
-
-        JTargetButton jTargetButton = new JTargetButton(this);
-        parametersMap.put("Target", jTargetButton);
+        parametersMap.put("Amount drained", rewardValueSpinner);
 
         return parametersMap;
     }

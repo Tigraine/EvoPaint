@@ -19,10 +19,7 @@
 
 package evopaint.gui.rulesetmanager;
 
-import evopaint.pixel.rulebased.Action;
 import evopaint.pixel.rulebased.Condition;
-import evopaint.pixel.rulebased.targeting.IDirected;
-import evopaint.pixel.rulebased.targeting.ITarget;
 import java.awt.Container;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -39,18 +36,13 @@ import javax.swing.border.BevelBorder;
  *
  * @author Markus Echterhoff <tam@edu.uni-klu.ac.at>
  */
-public class JTargetButton extends JButton {
+public class JConditionTargetButton extends JButton {
 
-    private JPanel targetPanel;
-    private JDialog dialog;
+    private JConditionTargetPanel targetPanel;
     private Container contentPaneBackup;
+    private JDialog dialog;
 
-    public JPanel getTargetPanel() {
-        return targetPanel;
-    }
-
-    public JTargetButton(final IDirected targeted) {
-
+    public JConditionTargetButton(final Condition condition) {
         final JPanel mainPanel = new JPanel();
         mainPanel.setLayout(new GridBagLayout());
         mainPanel.setBorder(new BevelBorder(BevelBorder.RAISED));
@@ -61,30 +53,22 @@ public class JTargetButton extends JButton {
         c.weightx = 1;
         c.insets = new Insets(5, 5, 5, 5);
 
-
-        if (targeted instanceof Action) {
-            targetPanel = new JActionTargetPanel(targeted.getTarget());
-        }
-        else if (targeted instanceof Condition) {
-            targetPanel = new JConditionTargetPanel(targeted.getTarget());
-        }
-        else {
-            assert(false);
-        }
-
+        targetPanel = new JConditionTargetPanel(condition.getTarget());
         c.gridy = 1;
-        mainPanel.add(targetPanel, c);
+        mainPanel.add((JPanel)targetPanel, c);
 
         final JButton tis = this;
         JPanel controlPanel = new JPanel();
-        final JButton okButton = new JButton("OK");
+        JButton okButton = new JButton("OK");
         okButton.addActionListener(new ActionListener() {
             
             public void actionPerformed(ActionEvent e) {
-                targeted.setTarget(createTarget());
-                setText("<html>" + targeted.getTarget().toHTML() + "</html>");
-                dialog.setContentPane(contentPaneBackup);
-                dialog.pack();
+                condition.setTarget(targetPanel.createConditionTarget());
+                setText("<html>" + condition.getTarget().toHTML() + "</html>");
+                if (contentPaneBackup != null) {
+                    dialog.setContentPane(contentPaneBackup);
+                    dialog.pack();
+                }
             }
          });
         controlPanel.add(okButton);
@@ -103,24 +87,7 @@ public class JTargetButton extends JButton {
             }
         });
 
-        setText("<html>" + targeted.getTarget().toHTML() + "</html>");
-    }
-
-    public JTargetButton() {
-    }
-
-    private ITarget createTarget() {
-        ITarget target = null;
-        if (targetPanel instanceof JActionTargetPanel) {
-            target = ((JActionTargetPanel)targetPanel).createActionTarget();
-        }
-        else if (targetPanel instanceof JConditionTargetPanel) {
-            target = ((JConditionTargetPanel)targetPanel).createConditionTarget();
-        }
-        else {
-            assert (false);
-        }
-        return target;
+        setText("<html>" + condition.getTarget().toHTML() + "</html>");
     }
 
 }

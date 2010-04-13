@@ -31,16 +31,19 @@ import java.util.List;
  */
 public class ActionMetaTarget extends QualifiedMetaTarget implements IActionTarget {
 
-    public ActionMetaTarget(List<RelativeCoordinate> directions, Qualifier qualifier) {
-        super(directions, qualifier);
+    public ActionMetaTarget(List<RelativeCoordinate> directions, List<IQualifier> qualifiers) {
+        super(directions, qualifiers);
+    }
+
+    public ActionMetaTarget(List<RelativeCoordinate> directions) {
+        super(directions);
     }
 
     public ActionMetaTarget() {
     }
 
     public int execute(Action action, Pixel actor, Configuration configuration) {
-        RelativeCoordinate direction =
-                qualifier.getCandidate(actor, directions, configuration);
+        RelativeCoordinate direction = getCandidate(actor, configuration);
         if (direction == null) {
             return 0;
         }

@@ -14,8 +14,7 @@ import evopaint.pixel.rulebased.Condition;
 import evopaint.pixel.rulebased.actions.AssimilationAction;
 import evopaint.pixel.rulebased.actions.CopyAction;
 import evopaint.pixel.rulebased.actions.DrainEnergyAction;
-import evopaint.pixel.rulebased.actions.IdleAction;
-import evopaint.pixel.rulebased.actions.LeechEnergyAction;
+import evopaint.pixel.rulebased.actions.ChangeEnergyAction;
 import evopaint.pixel.rulebased.actions.MoveAction;
 import evopaint.pixel.rulebased.actions.SetColorAction;
 import evopaint.pixel.rulebased.conditions.ColorLikenessConditionColor;
@@ -23,7 +22,7 @@ import evopaint.pixel.rulebased.conditions.ColorLikenessConditionMyColor;
 import evopaint.pixel.rulebased.conditions.EnergyCondition;
 import evopaint.pixel.rulebased.conditions.ExistenceCondition;
 import evopaint.pixel.rulebased.conditions.TrueCondition;
-import evopaint.pixel.rulebased.targeting.Qualifier;
+import evopaint.pixel.rulebased.targeting.IQualifier;
 import evopaint.pixel.rulebased.targeting.qualifiers.ExistenceQualifier;
 import evopaint.pixel.rulebased.targeting.qualifiers.LeastEnergyQualifier;
 import evopaint.pixel.rulebased.targeting.qualifiers.MostEnergyQualifier;
@@ -64,20 +63,19 @@ public class Configuration {
     }};
 
     public static final List<Action> AVAILABLE_ACTIONS = new ArrayList<Action>() {{
-        add(new IdleAction());
+        add(new ChangeEnergyAction());
         add(new CopyAction());
         add(new MoveAction());
         add(new DrainEnergyAction());
-        add(new LeechEnergyAction());
         add(new AssimilationAction());
         add(new SetColorAction());
     }};
 
-    public static final List<Qualifier> AVAILABLE_QUALIFIERS = new ArrayList<Qualifier>() {{
-        add(new ExistenceQualifier());
-        add(new NonExistenceQualifier());
-        add(new LeastEnergyQualifier());
-        add(new MostEnergyQualifier());
+    public static final List<IQualifier> AVAILABLE_QUALIFIERS = new ArrayList<IQualifier>() {{
+        add(ExistenceQualifier.getInstance());
+        add(NonExistenceQualifier.getInstance());
+        add(LeastEnergyQualifier.getInstance());
+        add(MostEnergyQualifier.getInstance());
     }};
 
     public IRandomNumberGenerator rng;

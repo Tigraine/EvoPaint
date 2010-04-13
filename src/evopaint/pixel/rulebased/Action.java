@@ -5,17 +5,21 @@
 
 package evopaint.pixel.rulebased;
 
-import evopaint.pixel.rulebased.targeting.IDirected;
+import evopaint.pixel.rulebased.targeting.IHaveTarget;
 import evopaint.Configuration;
 import evopaint.gui.util.AutoSelectOnFocusSpinner;
 import evopaint.pixel.Pixel;
-import evopaint.pixel.rulebased.actions.IdleAction;
+import evopaint.pixel.rulebased.interfaces.ICopyable;
 import evopaint.pixel.rulebased.targeting.ActionMetaTarget;
 import evopaint.pixel.rulebased.targeting.ActionTarget;
 import evopaint.pixel.rulebased.targeting.IActionTarget;
 import evopaint.pixel.rulebased.targeting.ITarget;
-import evopaint.pixel.rulebased.targeting.MetaTarget;
 import evopaint.util.mapping.RelativeCoordinate;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import javax.swing.JComponent;
@@ -28,7 +32,7 @@ import javax.swing.event.ChangeListener;
  *
  * @author tam
  */
-public abstract class Action implements IDirected {
+public abstract class Action implements IHaveTarget, ICopyable {
 
     protected int energyChange;
     private IActionTarget target;
@@ -58,12 +62,30 @@ public abstract class Action implements IDirected {
         this.target = (IActionTarget)target;
     }
 
+    public Action getCopy() {
+        Action newAction = null;
+        try {
+            ByteArrayOutputStream outByteStream = new ByteArrayOutputStream();
+            ObjectOutputStream out = new ObjectOutputStream(outByteStream);
+            out.writeObject(this);
+            ObjectInputStream in = new ObjectInputStream(new ByteArrayInputStream(outByteStream.toByteArray()));
+            newAction = (Action) in.readObject();
+        } catch (ClassNotFoundException ex) {
+            ex.printStackTrace();
+            System.exit(1);
+        } catch (IOException ex) {
+            ex.printStackTrace();
+            System.exit(1);
+        }
+        return newAction;
+    }
+
     @Override
     public String toString() {
         String ret = new String();
         ret += getName();
 
-        ret += " (";
+        ret += " (";/*
         if (false == this instanceof IdleAction) {
             if (target instanceof MetaTarget) {
                 ret += "Targets: ";
@@ -73,7 +95,7 @@ public abstract class Action implements IDirected {
             ret += target.toString();
             ret += ", ";
         }
-       
+       */
         Map<String, String> parametersMap = addParametersString(new LinkedHashMap<String, String>());
         for (String parameterName : parametersMap.keySet()) {
             ret += parameterName + ": " + parametersMap.get(parameterName) + ", ";
@@ -89,6 +111,7 @@ public abstract class Action implements IDirected {
         String ret = new String();
         ret += "<b>" + getName() + "</b>";
         ret += " (";
+        /*
         if (false == this instanceof IdleAction) {
             ret += "<span style='color: #777777;'>";
             if (target instanceof MetaTarget) {
@@ -100,7 +123,7 @@ public abstract class Action implements IDirected {
             ret += target.toHTML();
             ret += ", ";
         }
-
+*/
         Map<String, String> parametersMap = addParametersHTML(new LinkedHashMap<String, String>());
         for (String parameterName : parametersMap.keySet()) {
             ret += "<span style='color: #777777;'>" + parameterName + ":</span> " +
@@ -121,14 +144,14 @@ public abstract class Action implements IDirected {
     public LinkedHashMap<String, JComponent> addParametersGUI(LinkedHashMap<String, JComponent> parametersMap) {
         SpinnerNumberModel spinnerModel = new SpinnerNumberModel(energyChange, Integer.MIN_VALUE, Integer.MAX_VALUE, 1);
         JSpinner energyChangeSpinner = new AutoSelectOnFocusSpinner(spinnerModel);
-        energyChangeSpinner.setEditor(new JSpinner.NumberEditor(energyChangeSpinner, "+#;-#"));
+        //energyChangeSpinner.setEditor(new JSpinner.NumberEditor(energyChangeSpinner, "+#;-#"));
         energyChangeSpinner.addChangeListener(new ChangeListener() {
 
             public void stateChanged(ChangeEvent e) {
                 energyChange = (Integer)((JSpinner)e.getSource()).getValue();
             }
         });
-        parametersMap.put("Energy Change", energyChangeSpinner);
+        parametersMap.put("My Energy Change", energyChangeSpinner);
 
         return parametersMap;
     }
@@ -142,8 +165,6 @@ public abstract class Action implements IDirected {
         parametersMap.put("energy change", Integer.toString(energyChange));
         return parametersMap;
     }
-
-
 
     public abstract int execute(Pixel actor, RelativeCoordinate direction, Configuration configuration);
 

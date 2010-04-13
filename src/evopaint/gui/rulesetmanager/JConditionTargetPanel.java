@@ -73,21 +73,9 @@ public class JConditionTargetPanel extends JPanel {
 
         if (target instanceof ConditionMetaTarget) {
             jRangeSlider.setMinimum(0);
-            jRangeSlider.setMaximum(((ConditionMetaTarget)target).getMax());
+            jRangeSlider.setMaximum(((ConditionMetaTarget)target).getDirections().size());
             jRangeSlider.setLowValue(((ConditionMetaTarget)target).getMin());
             jRangeSlider.setHighValue(((ConditionMetaTarget)target).getMax());
-        } else {
-            if (((SingleTarget)target).getDirection() == null) {
-                jRangeSlider.setMinimum(0);
-                jRangeSlider.setMaximum(0);
-                jRangeSlider.setLowValue(0);
-                jRangeSlider.setHighValue(0);
-            } else {
-                jRangeSlider.setMinimum(0);
-                jRangeSlider.setMaximum(1);
-                jRangeSlider.setLowValue(1);
-                jRangeSlider.setHighValue(1);
-            }
         }
 
         lowValueLabel.setText(Integer.toString(jRangeSlider.getLowValue()));
@@ -125,7 +113,7 @@ public class JConditionTargetPanel extends JPanel {
                 if (jRangeSlider.getLowValue() == currentMax) {
                     jRangeSlider.setLowValue(newMax);
                 }
-                if (newMax > 0) {
+                if (newMax > 1) {
                     jRangeSlider.setEmpty(false);
                     lowValueLabel.setEnabled(true);
                     highValueLabel.setEnabled(true);
@@ -148,7 +136,7 @@ public class JConditionTargetPanel extends JPanel {
         lowValueLabel.setText(Integer.toString(jRangeSlider.getLowValue()));
         highValueLabel.setText(Integer.toString(jRangeSlider.getHighValue()));
 
-        if (jRangeSlider.getMaximum() > 0) {
+        if (jRangeSlider.getMaximum() > 1) {
             jRangeSlider.setEmpty(false);
             lowValueLabel.setEnabled(true);
             highValueLabel.setEnabled(true);
@@ -167,7 +155,7 @@ public class JConditionTargetPanel extends JPanel {
 
     public IConditionTarget createConditionTarget() {
         
-        ITarget target = jTarget.getTarget();
+        ITarget target = jTarget.createTarget();
 
         if (target == null) {
             return new ConditionTarget();
@@ -180,11 +168,6 @@ public class JConditionTargetPanel extends JPanel {
         }
 
         return new ConditionTarget(((SingleTarget)target).getDirection());
-    }
-
-    public ActionMetaTarget createQuantifiedActionTarget() {
-        assert (false);
-        return null;
     }
 
 }

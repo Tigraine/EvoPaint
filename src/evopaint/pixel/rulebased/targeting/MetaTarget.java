@@ -21,6 +21,11 @@ package evopaint.pixel.rulebased.targeting;
 
 import evopaint.pixel.rulebased.interfaces.IHTML;
 import evopaint.util.mapping.RelativeCoordinate;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -48,6 +53,24 @@ public class MetaTarget implements ITarget, IHTML {
         this.directions = directions;
     }
 
+    public MetaTarget getCopy() {
+        MetaTarget newTarget = null;
+        try {
+            ByteArrayOutputStream outByteStream = new ByteArrayOutputStream();
+            ObjectOutputStream out = new ObjectOutputStream(outByteStream);
+            out.writeObject(this);
+            ObjectInputStream in = new ObjectInputStream(new ByteArrayInputStream(outByteStream.toByteArray()));
+            newTarget = (MetaTarget) in.readObject();
+        } catch (ClassNotFoundException ex) {
+            ex.printStackTrace();
+            System.exit(1);
+        } catch (IOException ex) {
+            ex.printStackTrace();
+            System.exit(1);
+        }
+        return newTarget;
+    }
+
     @Override
     public String toString() {
         if (directions.size() == 0) {
@@ -55,6 +78,9 @@ public class MetaTarget implements ITarget, IHTML {
         }
         if (directions.size() == 8 && false == directions.contains(RelativeCoordinate.CENTER)) {
             return "my neighbors";
+        }
+        if (directions.size() == 9) {
+            return "us";
         }
         String ret = new String();
         ret += "[";
@@ -74,6 +100,9 @@ public class MetaTarget implements ITarget, IHTML {
         }
         if (directions.size() == 8 && false == directions.contains(RelativeCoordinate.CENTER)) {
             return "my neighbors";
+        }
+        if (directions.size() == 9) {
+            return "us";
         }
         String ret = new String();
         ret += "[";

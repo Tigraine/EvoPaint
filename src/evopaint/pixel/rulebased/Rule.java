@@ -7,13 +7,21 @@ package evopaint.pixel.rulebased;
 
 import evopaint.Configuration;
 import evopaint.pixel.Pixel;
-import evopaint.pixel.rulebased.actions.IdleAction;
+import evopaint.pixel.rulebased.actions.ChangeEnergyAction;
 import evopaint.pixel.rulebased.conditions.TrueCondition;
 import evopaint.pixel.rulebased.interfaces.IRule;
 import evopaint.pixel.rulebased.interfaces.ICopyable;
 import evopaint.pixel.rulebased.interfaces.IHTML;
+import evopaint.pixel.rulebased.targeting.ActionMetaTarget;
+import evopaint.pixel.rulebased.targeting.IQualifier;
+import evopaint.pixel.rulebased.targeting.ITarget;
 import evopaint.pixel.rulebased.targeting.MetaTarget;
+import evopaint.pixel.rulebased.targeting.QualifiedMetaTarget;
 import evopaint.pixel.rulebased.targeting.SingleTarget;
+import evopaint.pixel.rulebased.targeting.qualifiers.ExistenceQualifier;
+import evopaint.pixel.rulebased.targeting.qualifiers.LeastEnergyQualifier;
+import evopaint.pixel.rulebased.targeting.qualifiers.MostEnergyQualifier;
+import evopaint.pixel.rulebased.targeting.qualifiers.NonExistenceQualifier;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -63,17 +71,30 @@ public class Rule implements IRule, IHTML, ICopyable {
     }
 
     public String toHTML() {
-        String ret = "<span style='color: #0000E6; font-weight: bold;'>IF</span> ";
+        String ret = "<span style='color: #0000E6; font-weight: bold;'>if</span> ";
         for (Iterator<Condition> ii = conditions.iterator(); ii.hasNext();) {
             Condition condition = ii.next();
             ret += condition.toHTML();
             if (ii.hasNext()) {
-                ret += " <span style='color: #0000E6; font-weight: bold;'>AND</span> ";
+                ret += " <span style='color: #0000E6; font-weight: bold;'>and</span> ";
             }
         }
-        ret += " <span style='color: #0000E6; font-weight: bold;'>THEN</span> ";
+        ret += " <span style='color: #0000E6; font-weight: bold;'>then</span> ";
         
         ret += action.toHTML();
+        ret += " ";
+        ITarget target = action.getTarget();
+        ret += action.getTarget().toHTML();
+        if (target instanceof ActionMetaTarget) {
+            ret += " <span style='color: #0000E6; font-weight: bold;'>which</span> ";
+            List<IQualifier> qualifiers = ((ActionMetaTarget)target).getQualifiers();
+            for (Iterator<IQualifier> ii = qualifiers.iterator(); ii.hasNext();) {
+                ret += ii.next().getName();
+                if (ii.hasNext()) {
+                    ret += " <span style='color: #0000E6; font-weight: bold;'>and</span> ";
+                }
+            }
+        }
         return ret;
     }
 
@@ -114,12 +135,24 @@ public class Rule implements IRule, IHTML, ICopyable {
     public Rule() {
         this.conditions = new ArrayList<Condition>();
         this.conditions.add(new TrueCondition());
-        this.action = new IdleAction();
+        this.action = new ChangeEnergyAction();
     }
 
     public String validate() {
-        String msg = validateTargetsNotEmpty();
-        return msg;
+        String msg = null;
+        if ((msg = validateTargetsNotEmpty()) != null) {
+            return msg;
+        }
+        if ((msg = validateQualifiersNotDouble()) != null) {
+            return msg;
+        }
+        if ((msg = validateQualifiersNotRedundant()) != null) {
+            return msg;
+        }
+        if ((msg = validateQualifiersNotConflicting()) != null) {
+            return msg;
+        }
+        return null;
     }
 
     private String validateTargetsNotEmpty() {
@@ -135,15 +168,62 @@ public class Rule implements IRule, IHTML, ICopyable {
                 return "A condition has no target, please review your rule!";
             }
         }
-        if (action instanceof IdleAction) {
-            return null;
-        }
         if (action.getTarget() instanceof SingleTarget) {
             if (((SingleTarget)action.getTarget()).getDirection() == null) {
                 return "The action has no target, please review your rule!";
             }
         } else if (((MetaTarget)action.getTarget()).getDirections().size() == 0) {
             return "The action has no target, please review your rule!";
+        }
+        return null;
+    }
+
+    private String validateQualifiersNotDouble() {
+        if (false == action.getTarget() instanceof QualifiedMetaTarget) {
+            return null;
+        }
+        ArrayList<IQualifier> seen = new ArrayList<IQualifier>();
+        for (IQualifier q : ((QualifiedMetaTarget)action.getTarget()).getQualifiers()) {
+            if (seen.contains(q)) { // qualifiers are never created anew
+                return "You have doublicate action target qualifiers.\nThis makes no sense, but will influence performance, so please review your rule!";
+            }
+            seen.add(q);
+        }
+        return null;
+    }
+
+    private String validateQualifiersNotRedundant() {
+        if (false == action.getTarget() instanceof QualifiedMetaTarget) {
+            return null;
+        }
+        List<IQualifier> qualifiers = ((QualifiedMetaTarget)action.getTarget()).getQualifiers();
+        for (IQualifier q : qualifiers) {
+            if (false == (q instanceof ExistenceQualifier) &&
+                    false == (q instanceof NonExistenceQualifier)) {
+                if (qualifiers.contains(ExistenceQualifier.getInstance())) {
+                    return "You have redundant action target qualifiers.\nAll qualifiers except for the Non-Existence qualifier will check if their target is existent,\nso you can safely remove the Existence qualifier, which will improve performance.";
+                }
+            }
+        }
+        return null;
+    }
+
+    private String validateQualifiersNotConflicting() {
+        if (false == action.getTarget() instanceof QualifiedMetaTarget) {
+            return null;
+        }
+        List<IQualifier> qualifiers = ((QualifiedMetaTarget)action.getTarget()).getQualifiers();
+        for (IQualifier q : qualifiers) {
+            if (q instanceof NonExistenceQualifier) {
+                if (qualifiers.size() > 1) {
+                    return "How can a non-existing pixel have any other attributes to check for? Sense much?\nGo fix that before I download gay porn onto your hard disc and screw up your OS\nso the guys at the computer store can have a good laugh at your expense!";
+                }
+            }
+            if (q instanceof LeastEnergyQualifier) {
+                if (qualifiers.contains(MostEnergyQualifier.getInstance())) {
+                    return "The one with the least energy which has the most energy, hu?\nFix that before I get really mad at you for even trying!";
+                }
+            }
         }
         return null;
     }

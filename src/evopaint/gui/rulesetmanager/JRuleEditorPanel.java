@@ -23,10 +23,12 @@ import evopaint.Configuration;
 import evopaint.pixel.rulebased.Action;
 import evopaint.pixel.rulebased.Condition;
 import evopaint.pixel.rulebased.Rule;
-import evopaint.pixel.rulebased.actions.IdleAction;
+import evopaint.pixel.rulebased.actions.ChangeEnergyAction;
 import evopaint.pixel.rulebased.conditions.TrueCondition;
 import evopaint.pixel.rulebased.interfaces.IRule;
 import evopaint.pixel.rulebased.targeting.ActionMetaTarget;
+import evopaint.pixel.rulebased.targeting.ITarget;
+import evopaint.pixel.rulebased.targeting.QualifiedMetaTarget;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.GridBagConstraints;
@@ -35,6 +37,8 @@ import java.awt.Insets;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -47,13 +51,14 @@ import javax.swing.border.LineBorder;
  */
 public class JRuleEditorPanel extends JPanel {
     private Configuration configuration;
-    JConditionList jConditionList;
-    JActionButton jAction;
-    JTargetButton jActionTarget;
-
+    private JConditionList jConditionList;
+    private JActionButton jActionButton;
+    private JActionTargetButton jActionTargetButton;
+    private JQualifierList jQualifierList;
 
     public JRuleEditorPanel(Configuration configuration, IRule rule, ActionListener OKListener, ActionListener CancelListener) {
         this.configuration = configuration;
+        
         setLayout(new BorderLayout(20, 20));
         setBorder(new LineBorder(getBackground(), 6));
 
@@ -61,25 +66,68 @@ public class JRuleEditorPanel extends JPanel {
             rule = new Rule(new ArrayList(){{
                 add(new TrueCondition());
             }},
-            new IdleAction(0));
+            new ChangeEnergyAction(0));
         }
 
         // rule panel
         JPanel rulePanel = new JPanel();
-        rulePanel.setBorder(new LineBorder(Color.GRAY));
-        rulePanel.setBackground(new Color(0xF2F2F5));
+        rulePanel.setBackground(Color.WHITE);
+        rulePanel.setLayout(new BoxLayout(rulePanel, BoxLayout.Y_AXIS));
 
-        JLabel labelIf = new JLabel("<html><span style='color: #0000E6; font-weight: bold;'>IF</span><html>");
-        rulePanel.add(labelIf);
+        GridBagConstraints c = new GridBagConstraints();
+        c.anchor = GridBagConstraints.WEST;
+        c.weightx = 1;
+        c.insets = new Insets(10, 10, 10, 10);
+
+        // if condition
+        JPanel ifPanel = new JPanel();
+        ifPanel.setLayout(new GridBagLayout());
+        ifPanel.setBorder(new LineBorder(Color.GRAY));
+        ifPanel.setBackground(new Color(0xF2F2F5));
+        rulePanel.add(ifPanel);
+
+        JLabel ifLabel = new JLabel("<html><span style='color: #0000E6; font-weight: bold;'>if</span><html>");
+        ifPanel.add(ifLabel, c);
 
         jConditionList = new JConditionList(configuration, rule.getConditions());
-        rulePanel.add(jConditionList);
+        c.gridy = 1;
+        ifPanel.add(jConditionList, c);
 
-        JLabel thenLabel = new JLabel("<html><span style='color: #0000E6; font-weight: bold;'>THEN</span><html>");
-        rulePanel.add(thenLabel);
+        // then action
+        JPanel thenPanel = new JPanel();
+        thenPanel.setLayout(new GridBagLayout());
+        thenPanel.setBorder(new LineBorder(Color.GRAY));
+        thenPanel.setBackground(new Color(0xF2F2F5));
+        rulePanel.add(Box.createVerticalStrut(20));
+        rulePanel.add(thenPanel);
 
-        jAction = new JActionButton(configuration, rule.getAction());
-        rulePanel.add(jAction);
+        JLabel thenLabel = new JLabel("<html><span style='color: #0000E6; font-weight: bold;'>then</span><html>");
+        c.gridy = 0;
+        thenPanel.add(thenLabel, c);
+
+        jActionButton = new JActionButton(configuration, rule.getAction());
+        c.gridy = 1;
+        thenPanel.add(jActionButton, c);
+
+
+        // action target and qualifiers
+        JPanel jActionTargetEditorPanel = new JPanel();
+        jActionTargetEditorPanel.setBackground(new Color(0xF2F2F5));
+        if (rule.getAction().getTarget() instanceof ActionMetaTarget) {
+            jQualifierList = new JQualifierList(
+                    ((ActionMetaTarget)rule.getAction().getTarget()).getQualifiers());
+        } else {
+            jQualifierList = new JQualifierList();
+        }
+        jActionTargetButton = new JActionTargetButton(rule.getAction().getTarget(), jQualifierList);
+
+        jActionTargetEditorPanel.add(jActionTargetButton, c);
+
+        c.fill = GridBagConstraints.REMAINDER;
+        jActionTargetEditorPanel.add(jQualifierList, c);
+
+        c.gridy = 2;
+        thenPanel.add(jActionTargetEditorPanel, c);
 
         JPanel alignmentPanel = new JPanel();
         alignmentPanel.setLayout(new GridBagLayout());
@@ -94,6 +142,7 @@ public class JRuleEditorPanel extends JPanel {
                 JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
         scrollPaneForRulePanel.setBorder(new LineBorder(Color.GRAY));
         scrollPaneForRulePanel.setViewportBorder(null);
+        scrollPaneForRulePanel.getVerticalScrollBar().setUnitIncrement(10);
 
         add(scrollPaneForRulePanel, BorderLayout.CENTER);
         
@@ -112,7 +161,14 @@ public class JRuleEditorPanel extends JPanel {
 
     public IRule createRule() {
         List<Condition> conditions = jConditionList.createConditions();
-        Action action = jAction.createAction();
+
+        Action action = jActionButton.createAction();
+        ITarget actionTarget = jActionTargetButton.createTarget();
+        if (actionTarget instanceof QualifiedMetaTarget) {
+            ((QualifiedMetaTarget)actionTarget).setQualifiers(jQualifierList.createQualifiers());
+        }
+        action.setTarget(actionTarget);
+
         return new Rule(conditions, action);
     }
     

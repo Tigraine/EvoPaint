@@ -40,7 +40,7 @@ public class Paint {
             default: assert(false);
         }
         String ruleSetName = null;
-        switch (colorMode) {
+        switch (ruleSetMode) {
             case RULE_SET: ruleSetName = ruleSet.getName();
             break;
             case NO_RULE_SET:

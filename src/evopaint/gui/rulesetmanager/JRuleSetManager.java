@@ -178,7 +178,7 @@ public class JRuleSetManager extends JPanel implements TreeSelectionListener {
             IRule rule = jRuleEditor.createRule();
             String errorMsg = rule.validate();
             if (errorMsg == null) {
-                jRuleList.replaceSelectedRule(jRuleEditor.createRule());
+                jRuleList.replaceSelectedRule(rule);
                 ((CardLayout)contentPane.getLayout()).show(contentPane, "manager");
             }
             else {

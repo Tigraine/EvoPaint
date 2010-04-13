@@ -19,7 +19,7 @@
 
 package evopaint.pixel.rulebased.conditions;
 
-import evopaint.gui.rulesetmanager.JTargetButton;
+import evopaint.gui.rulesetmanager.JConditionTargetButton;
 import evopaint.gui.rulesetmanager.util.ColorChooserLabel;
 import evopaint.gui.rulesetmanager.util.DimensionsListener;
 import evopaint.gui.rulesetmanager.util.NamedObjectListCellRenderer;
@@ -147,8 +147,8 @@ public class ColorLikenessConditionColor extends Condition {
     }
 
     public LinkedHashMap<String,JComponent> addParametersGUI(LinkedHashMap<String,JComponent> parametersMap) {
-        JTargetButton jTargetButton = new JTargetButton(this);
-        parametersMap.put("Target", jTargetButton);
+        JConditionTargetButton JConditionTargetButton = new JConditionTargetButton(this);
+        parametersMap.put("Target", JConditionTargetButton);
 
         ColorChooserLabel colorLabel = new ColorChooserLabel(comparedColor);
         JPanel wrapLabelToAvoidUncoloredStretchedBackground = new JPanel();

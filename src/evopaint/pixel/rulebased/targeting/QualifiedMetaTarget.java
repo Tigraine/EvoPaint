@@ -19,9 +19,11 @@
 
 package evopaint.pixel.rulebased.targeting;
 
+import evopaint.Configuration;
+import evopaint.pixel.Pixel;
 import evopaint.pixel.rulebased.interfaces.INamed;
-import evopaint.pixel.rulebased.targeting.qualifiers.NonExistenceQualifier;
 import evopaint.util.mapping.RelativeCoordinate;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -31,34 +33,36 @@ import java.util.List;
 public abstract class QualifiedMetaTarget
         extends MetaTarget implements INamed {
 
-    protected Qualifier qualifier;
+    protected List<IQualifier> qualifiers;
 
-    public QualifiedMetaTarget(List<RelativeCoordinate> directions, Qualifier qualifier) {
+    public QualifiedMetaTarget(List<RelativeCoordinate> directions, List<IQualifier> qualifiers) {
         super(directions);
-        this.qualifier = qualifier;
+        this.qualifiers = qualifiers;
+    }
+
+    public QualifiedMetaTarget(List<RelativeCoordinate> directions) {
+        super(directions);
     }
 
     public QualifiedMetaTarget() {
-        this.qualifier = new NonExistenceQualifier();
     }
 
     public String getName() {
         return "qualified";
     }
 
-    public Qualifier getQualifier() {
-        return qualifier;
+    public List<IQualifier> getQualifiers() {
+        return qualifiers;
     }
 
-    public void setQualifier(Qualifier qualifier) {
-        this.qualifier = qualifier;
+    public void setQualifiers(List<IQualifier> qualifiers) {
+        this.qualifiers = qualifiers;
     }
 
     @Override
     public String toString() {
         String ret = new String();
-        ret += qualifier.getName();
-        ret += " in ";
+        ret += "one of ";
         ret += super.toString();
         return ret;
     }
@@ -66,10 +70,23 @@ public abstract class QualifiedMetaTarget
     @Override
     public String toHTML() {
         String ret = new String();
-        ret += qualifier.getName();
-        ret += " in ";
+        ret += "one of ";
         ret += super.toHTML();
         return ret;
+    }
+
+    public RelativeCoordinate getCandidate(Pixel actor, Configuration configuration) {
+        List<RelativeCoordinate> qualifyingDirections = new ArrayList(directions);
+        for (IQualifier q : qualifiers) {
+            qualifyingDirections = q.getCandidates(actor, qualifyingDirections, configuration);
+        }
+        if (qualifyingDirections.size() == 1) {
+            return qualifyingDirections.get(0);
+        }
+        if (qualifyingDirections.size() == 0) {
+            return null;
+        }
+        return qualifyingDirections.get(configuration.rng.nextPositiveInt(qualifyingDirections.size()));
     }
     
 }

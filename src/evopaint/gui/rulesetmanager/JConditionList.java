@@ -71,7 +71,7 @@ public class JConditionList extends JPanel {
 
         JPanel controlPanel = new JPanel();
         controlPanel.setBackground(new Color(0xF2F2F5));
-        JButton buttonAnd = new JButton("AND");
+        JButton buttonAnd = new JButton("<html><span style='color: #0000E6; font-weight: bold;'>and</span></html>");
         buttonAnd.addActionListener(new AndButtonListener());
         controlPanel.add(buttonAnd);
         add(controlPanel, BorderLayout.SOUTH);
@@ -84,8 +84,6 @@ public class JConditionList extends JPanel {
 
         JPanel wrapper = new JPanel(new FlowLayout(FlowLayout.LEFT));
         wrapper.setBackground(new Color(0xF2F2F5));
-
-
 
         JConditionButton jConditionButton = new JConditionButton(configuration, this, condition);
         jConditions.add(jConditionButton);

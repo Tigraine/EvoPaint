@@ -43,15 +43,15 @@ import javax.swing.border.BevelBorder;
 public class JActionButton extends JButton {
 
     private Configuration configuration;
-    private Action action;
+    private Action createdAction;
     private JDialog dialog;
     private JComboBox comboBoxActions;
     private JPanel container;
     private JPanel parametersPanel;
 
-    public JActionButton(Configuration configuration, Action passedAction) {
+    public JActionButton(Configuration configuration, Action actionArg) {
         this.configuration = configuration;
-        this.action = passedAction;
+        this.createdAction = actionArg.getCopy();
 
         this.dialog = new JDialog((JFrame)SwingUtilities.getWindowAncestor(this), "Edit Action", true);
         dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
@@ -74,7 +74,7 @@ public class JActionButton extends JButton {
         comboBoxActions.setRenderer(new NamedObjectListCellRenderer());
         Action selection = null;
         for (Action a : Configuration.AVAILABLE_ACTIONS) {
-            if (a.getClass() == action.getClass()) {
+            if (a.getClass() == createdAction.getClass()) {
                 selection = a;
             }
         }
@@ -87,7 +87,7 @@ public class JActionButton extends JButton {
         c.insets = new Insets(10, 10, 5, 10);
         container.add(comboBoxActions, c);
 
-        parametersPanel = new JParametersPanel(action);
+        parametersPanel = new JParametersPanel(createdAction);
         c.fill = GridBagConstraints.NONE;
         c.gridx = 0;
         c.gridy = 1;
@@ -99,7 +99,7 @@ public class JActionButton extends JButton {
         okButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 dialog.dispose();
-                updateText();
+                setText("<html>" + createdAction.toHTML() + "</html>");
             }
          });
         controlPanel.add(okButton);
@@ -118,18 +118,18 @@ public class JActionButton extends JButton {
             }
         });
 
-        updateText();
+        setText("<html>" + createdAction.toHTML() + "</html>");
     }
 
     public JActionButton() {
     }
 
     public Action createAction() {
-        if (action != null) {
-            return action;
+        if (createdAction != null) {
+            return createdAction;
         }
         try {
-            action = ((Action)comboBoxActions.getSelectedItem()).getClass().newInstance();
+            createdAction = ((Action)comboBoxActions.getSelectedItem()).getClass().newInstance();
         } catch (InstantiationException ex) {
                 ex.printStackTrace();
                 System.exit(1);
@@ -137,20 +137,16 @@ public class JActionButton extends JButton {
             ex.printStackTrace();
             System.exit(1);
         }
-        return action;
-    }
-
-    public void updateText() {
-        setText("<html>" + action.toHTML() + "</html>");
+        return createdAction;
     }
 
     private class ComboBoxActionsListener implements ActionListener {
 
         public void actionPerformed(ActionEvent e) {
-            action = null;
-            action = createAction();
+            createdAction = null;
+            createdAction = createAction();
             container.remove(parametersPanel);
-            parametersPanel = new JParametersPanel(action);
+            parametersPanel = new JParametersPanel(createdAction);
             GridBagConstraints c = new GridBagConstraints();
             c.gridx = 0;
             c.gridy = 1;

@@ -57,7 +57,7 @@ public class JTarget extends JPanel {
         return ret;
     }
 
-    public ITarget getTarget() {
+    public ITarget createTarget() {
         if (directions.size() > 1) {
             return new MetaTarget(directions);
         }

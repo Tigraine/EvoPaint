@@ -28,7 +28,7 @@ import java.io.Serializable;
  *
  * @author Markus Echterhoff <tam@edu.uni-klu.ac.at>
  */
-public interface IDirected extends IParameterized, INamed, IHTML, Serializable {
+public interface IHaveTarget extends IParameterized, INamed, IHTML, Serializable {
     public ITarget getTarget();
     public void setTarget(ITarget target);
 }
