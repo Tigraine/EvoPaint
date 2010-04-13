@@ -70,6 +70,7 @@ public class JTargetButton extends JButton {
         c.gridy = 1;
         dialog.add(targetPanel, c);
 
+        final JButton tis = this;
         JPanel controlPanel = new JPanel();
         final JButton okButton = new JButton("OK");
         okButton.addActionListener(new ActionListener() {
@@ -77,21 +78,14 @@ public class JTargetButton extends JButton {
                 dialog.dispose();
                 targeted.setTarget(createTarget());
                 setText("<html>" + targeted.getTarget().toHTML() + "</html>");
+                SwingUtilities.getWindowAncestor(tis).pack();
             }
          });
         controlPanel.add(okButton);
-        final JButton cancelButton = new JButton("Cancel");
-        cancelButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                dialog.dispose();
-            }
-         });
-        controlPanel.add(cancelButton);
         c.fill = GridBagConstraints.BOTH;
         c.gridx = 0;
         c.gridy = 2;
         dialog.add(controlPanel, c);
-        final JButton tis = this;
         addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 dialog.pack();

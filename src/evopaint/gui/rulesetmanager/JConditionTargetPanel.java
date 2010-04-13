@@ -177,20 +177,4 @@ public class JConditionTargetPanel extends JPanel {
         return null;
     }
 
-    private class TargetClickListener implements ActionListener {
-
-        public void actionPerformed(ActionEvent e) {
-            int currentMax = (Integer)(jRangeSlider.getMaximum());
-            int newMax = ((JToggleButton)e.getSource()).isSelected() ? currentMax + 1 : currentMax - 1;
-            jRangeSlider.setMaximum(newMax);
-            if (jRangeSlider.getHighValue() == currentMax) {
-                jRangeSlider.setHighValue(newMax);
-            }
-            if (jRangeSlider.getLowValue() == currentMax) {
-                jRangeSlider.setLowValue(newMax);
-            }
-            jRangeSlider.revalidate();
-        }
-    }
-
 }

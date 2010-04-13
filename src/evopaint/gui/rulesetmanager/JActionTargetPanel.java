@@ -81,7 +81,7 @@ public class JActionTargetPanel extends JPanel {
                 }
                 else if (qualifierEnabled == true && jTarget.numSelected() <= 1) {
                     selectedQualifierIndex = qualifierComboBox.getSelectedIndex();
-                    qualifierComboBox.setSelectedItem(null);
+                    qualifierComboBox.setSelectedItem(null); // intentional. the named list renderer can deal with this and will display an empty label this is the cheapest way i could find to produce the desired effect of not displaying anything in the combo box
                     qualifierComboBox.setEnabled(false);
                     inLabel.setEnabled(false);
                     qualifierEnabled = false;
