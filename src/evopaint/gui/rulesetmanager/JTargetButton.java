@@ -21,7 +21,7 @@ package evopaint.gui.rulesetmanager;
 
 import evopaint.pixel.rulebased.Action;
 import evopaint.pixel.rulebased.Condition;
-import evopaint.pixel.rulebased.targeting.ITargeted;
+import evopaint.pixel.rulebased.targeting.IDirected;
 import evopaint.pixel.rulebased.targeting.ITarget;
 import java.awt.Container;
 import java.awt.GridBagConstraints;
@@ -49,7 +49,7 @@ public class JTargetButton extends JButton {
         return targetPanel;
     }
 
-    public JTargetButton(final ITargeted targeted) {
+    public JTargetButton(final IDirected targeted) {
 
         final JPanel mainPanel = new JPanel();
         mainPanel.setLayout(new GridBagLayout());

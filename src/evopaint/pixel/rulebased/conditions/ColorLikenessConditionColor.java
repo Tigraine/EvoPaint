@@ -1,6 +1,20 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+ *  Copyright (C) 2010 Markus Echterhoff <tam@edu.uni-klu.ac.at>
+ *
+ *  This file is part of EvoPaint.
+ *
+ *  EvoPaint is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with EvoPaint.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 package evopaint.pixel.rulebased.conditions;
@@ -30,16 +44,16 @@ import javax.swing.event.ChangeListener;
 
 /**
  *
- * @author tam
+ * @author Markus Echterhoff <tam@edu.uni-klu.ac.at>
  */
-public class ColorLikenessCondition extends Condition {
+public class ColorLikenessConditionColor extends Condition {
 
     private PixelColor comparedColor;
     private ColorDimensions dimensions;
     private int compareToLikenessPercentage;
     private NumberComparisonOperator comparisonOperator;
 
-    public ColorLikenessCondition(IConditionTarget target, PixelColor comparedColor, ColorDimensions dimensions, int compareToLikenessPercentage, NumberComparisonOperator comparisonOperator) {
+    public ColorLikenessConditionColor(IConditionTarget target, PixelColor comparedColor, ColorDimensions dimensions, int compareToLikenessPercentage, NumberComparisonOperator comparisonOperator) {
         super(target);
         this.comparedColor = comparedColor;
         this.dimensions = dimensions;
@@ -47,7 +61,7 @@ public class ColorLikenessCondition extends Condition {
         this.comparisonOperator = comparisonOperator;
     }
 
-    public ColorLikenessCondition() {
+    public ColorLikenessConditionColor() {
         comparedColor = new PixelColor(0);
         dimensions = new ColorDimensions(true, true, true);
         comparisonOperator = NumberComparisonOperator.GREATER_OR_EQUAL;
@@ -86,14 +100,14 @@ public class ColorLikenessCondition extends Condition {
     }
 
     public String getName() {
-        return "color likeness";
+        return "color likeness (compared to color)";
     }
 
-    public boolean isMet(Pixel us, Pixel them) {
-        if (them == null) { // never forget to skip empty spots
+    public boolean isMet(Pixel actor, Pixel target) {
+        if (target == null) { // never forget to skip empty spots
             return false;
         }
-        double distance = them.getPixelColor().distanceTo(comparedColor, dimensions);
+        double distance = target.getPixelColor().distanceTo(comparedColor, dimensions);
         //System.out.println("distance: " + distance);
         int likenessPercentage = (int)((1 - distance) * 100);
         return comparisonOperator.compare(likenessPercentage, compareToLikenessPercentage);

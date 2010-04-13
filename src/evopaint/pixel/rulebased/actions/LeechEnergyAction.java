@@ -21,38 +21,53 @@ package evopaint.pixel.rulebased.actions;
 
 import evopaint.Configuration;
 import evopaint.gui.rulesetmanager.JTargetButton;
+import evopaint.gui.util.AutoSelectOnFocusSpinner;
 import evopaint.pixel.rulebased.Action;
 import evopaint.pixel.Pixel;
 import evopaint.pixel.rulebased.targeting.ActionMetaTarget;
 import evopaint.util.mapping.RelativeCoordinate;
 import java.util.LinkedHashMap;
 import javax.swing.JComponent;
+import javax.swing.JSpinner;
+import javax.swing.SpinnerNumberModel;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 /**
  *
  * @author Markus Echterhoff <tam@edu.uni-klu.ac.at>
  */
-public class MoveAction extends Action {
+public class LeechEnergyAction extends Action {
+    private int amount;
 
-    public MoveAction(int energyChange, ActionMetaTarget target) {
+    public LeechEnergyAction(int energyChange, ActionMetaTarget target, int amount) {
         super(energyChange, target);
+        this.amount = amount;
     }
 
-    public MoveAction() {
+    public LeechEnergyAction() {
+    }
+
+    public int getAmount() {
+        return amount;
+    }
+
+    public void setAmount(int amount) {
+        this.amount = amount;
     }
 
     public String getName() {
-        return "move";
+        return "leech energy";
     }
 
     public int execute(Pixel actor, RelativeCoordinate direction, Configuration configuration) {
         Pixel target = configuration.world.get(actor.getLocation(), direction);
-        if (target != null) {
+        if (target == null) {
             return 0;
         }
-        configuration.world.remove(actor.getLocation());
-        actor.getLocation().move(direction, configuration.world);
-        configuration.world.set(actor);
+        int transferable = target.getEnergy() >= amount ? amount : target.getEnergy();
+        actor.changeEnergy(transferable); // as long as you don't look, the energy exists in two places
+        target.changeEnergy((-1) * transferable); // you just had to look, didn't you?
 
         return energyChange;
     }
@@ -61,8 +76,17 @@ public class MoveAction extends Action {
     public LinkedHashMap<String,JComponent> addParametersGUI(LinkedHashMap<String, JComponent> parametersMap) {
         parametersMap = super.addParametersGUI(parametersMap);
 
+        SpinnerNumberModel spinnerModel = new SpinnerNumberModel(amount, 0, Integer.MAX_VALUE, 1);
+        JSpinner rewardValueSpinner = new AutoSelectOnFocusSpinner(spinnerModel);
+        rewardValueSpinner.addChangeListener(new ChangeListener() {
+            public void stateChanged(ChangeEvent e) {
+                setAmount(((Integer) ((JSpinner) e.getSource()).getValue()).byteValue());
+            }
+        });
+        parametersMap.put("Amount of energy", rewardValueSpinner);
+
         JTargetButton jTargetButton = new JTargetButton(this);
-        parametersMap.put("Target", jTargetButton);
+        parametersMap.put("From", jTargetButton);
 
         return parametersMap;
     }

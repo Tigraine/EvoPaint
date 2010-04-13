@@ -5,7 +5,7 @@
 
 package evopaint.pixel.rulebased;
 
-import evopaint.pixel.rulebased.targeting.ITargeted;
+import evopaint.pixel.rulebased.targeting.IDirected;
 import evopaint.Configuration;
 import evopaint.pixel.Pixel;
 import evopaint.pixel.rulebased.targeting.ConditionTarget;
@@ -17,7 +17,7 @@ import java.util.Map;
  *
  * @author tam
  */
-public abstract class Condition implements ITargeted {
+public abstract class Condition implements IDirected {
 
     private IConditionTarget target;
 

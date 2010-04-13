@@ -5,7 +5,7 @@
 
 package evopaint.pixel.rulebased;
 
-import evopaint.pixel.rulebased.targeting.ITargeted;
+import evopaint.pixel.rulebased.targeting.IDirected;
 import evopaint.Configuration;
 import evopaint.gui.util.AutoSelectOnFocusSpinner;
 import evopaint.pixel.Pixel;
@@ -28,7 +28,7 @@ import javax.swing.event.ChangeListener;
  *
  * @author tam
  */
-public abstract class Action implements ITargeted {
+public abstract class Action implements IDirected {
 
     protected int energyChange;
     private IActionTarget target;
@@ -101,7 +101,7 @@ public abstract class Action implements ITargeted {
             ret += ", ";
         }
 
-        Map<String, String> parametersMap = addParametersString(new LinkedHashMap<String, String>());
+        Map<String, String> parametersMap = addParametersHTML(new LinkedHashMap<String, String>());
         for (String parameterName : parametersMap.keySet()) {
             ret += "<span style='color: #777777;'>" + parameterName + ":</span> " +
                     parametersMap.get(parameterName) + ", ";

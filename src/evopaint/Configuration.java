@@ -13,9 +13,13 @@ import evopaint.pixel.rulebased.Action;
 import evopaint.pixel.rulebased.Condition;
 import evopaint.pixel.rulebased.actions.AssimilationAction;
 import evopaint.pixel.rulebased.actions.CopyAction;
+import evopaint.pixel.rulebased.actions.DrainEnergyAction;
 import evopaint.pixel.rulebased.actions.IdleAction;
+import evopaint.pixel.rulebased.actions.LeechEnergyAction;
 import evopaint.pixel.rulebased.actions.MoveAction;
-import evopaint.pixel.rulebased.conditions.ColorLikenessCondition;
+import evopaint.pixel.rulebased.actions.SetColorAction;
+import evopaint.pixel.rulebased.conditions.ColorLikenessConditionColor;
+import evopaint.pixel.rulebased.conditions.ColorLikenessConditionMyColor;
 import evopaint.pixel.rulebased.conditions.EnergyCondition;
 import evopaint.pixel.rulebased.conditions.ExistenceCondition;
 import evopaint.pixel.rulebased.conditions.TrueCondition;
@@ -55,14 +59,18 @@ public class Configuration {
         add(new TrueCondition());
         add(new ExistenceCondition());
         add(new EnergyCondition());
-        add(new ColorLikenessCondition());
+        add(new ColorLikenessConditionColor());
+        add(new ColorLikenessConditionMyColor());
     }};
 
     public static final List<Action> AVAILABLE_ACTIONS = new ArrayList<Action>() {{
         add(new IdleAction());
-        add(new AssimilationAction());
         add(new CopyAction());
         add(new MoveAction());
+        add(new DrainEnergyAction());
+        add(new LeechEnergyAction());
+        add(new AssimilationAction());
+        add(new SetColorAction());
     }};
 
     public static final List<Qualifier> AVAILABLE_QUALIFIERS = new ArrayList<Qualifier>() {{

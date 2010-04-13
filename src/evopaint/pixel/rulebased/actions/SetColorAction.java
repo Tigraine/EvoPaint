@@ -21,50 +21,81 @@ package evopaint.pixel.rulebased.actions;
 
 import evopaint.Configuration;
 import evopaint.gui.rulesetmanager.JTargetButton;
+import evopaint.gui.rulesetmanager.util.ColorChooserLabel;
 import evopaint.pixel.rulebased.Action;
 import evopaint.pixel.Pixel;
+import evopaint.pixel.PixelColor;
 import evopaint.pixel.rulebased.targeting.ActionMetaTarget;
 import evopaint.util.mapping.RelativeCoordinate;
 import java.util.LinkedHashMap;
+import java.util.Map;
 import javax.swing.JComponent;
+import javax.swing.JPanel;
 
 /**
  *
  * @author Markus Echterhoff <tam@edu.uni-klu.ac.at>
  */
-public class MoveAction extends Action {
+public class SetColorAction extends Action {
 
-    public MoveAction(int energyChange, ActionMetaTarget target) {
+    private PixelColor color;
+
+    public SetColorAction(int energyChange, ActionMetaTarget target, PixelColor color) {
         super(energyChange, target);
+        this.color = color;
     }
 
-    public MoveAction() {
+    public SetColorAction() {
+        this.color = new PixelColor(0);
     }
 
+    public PixelColor getColor() {
+        return color;
+    }
+
+    public void setColor(PixelColor color) {
+        this.color = color;
+    }
+    
     public String getName() {
-        return "move";
+        return "set color";
     }
 
     public int execute(Pixel actor, RelativeCoordinate direction, Configuration configuration) {
         Pixel target = configuration.world.get(actor.getLocation(), direction);
-        if (target != null) {
+        if (target == null) {
             return 0;
         }
-        configuration.world.remove(actor.getLocation());
-        actor.getLocation().move(direction, configuration.world);
-        configuration.world.set(actor);
-
+        target.setPixelColor(color);
         return energyChange;
+    }
+
+    @Override
+    public Map<String, String>addParametersString(Map<String, String> parametersMap) {
+        parametersMap = super.addParametersString(parametersMap);
+        parametersMap.put("color", color.toString());
+        return parametersMap;
+    }
+
+    @Override
+    public Map<String, String>addParametersHTML(Map<String, String> parametersMap) {
+        parametersMap = super.addParametersHTML(parametersMap);
+        parametersMap.put("color", color.toHTML());
+        return parametersMap;
     }
 
     @Override
     public LinkedHashMap<String,JComponent> addParametersGUI(LinkedHashMap<String, JComponent> parametersMap) {
         parametersMap = super.addParametersGUI(parametersMap);
 
+        ColorChooserLabel colorLabel = new ColorChooserLabel(color);
+        JPanel wrapLabelToAvoidUncoloredStretchedBackground = new JPanel();
+        wrapLabelToAvoidUncoloredStretchedBackground.add(colorLabel);
+        parametersMap.put("Color", wrapLabelToAvoidUncoloredStretchedBackground);
+
         JTargetButton jTargetButton = new JTargetButton(this);
         parametersMap.put("Target", jTargetButton);
 
         return parametersMap;
     }
-    
 }

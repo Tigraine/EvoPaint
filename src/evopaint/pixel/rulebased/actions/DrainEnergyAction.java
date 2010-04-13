@@ -21,38 +21,52 @@ package evopaint.pixel.rulebased.actions;
 
 import evopaint.Configuration;
 import evopaint.gui.rulesetmanager.JTargetButton;
+import evopaint.gui.util.AutoSelectOnFocusSpinner;
 import evopaint.pixel.rulebased.Action;
 import evopaint.pixel.Pixel;
 import evopaint.pixel.rulebased.targeting.ActionMetaTarget;
 import evopaint.util.mapping.RelativeCoordinate;
 import java.util.LinkedHashMap;
 import javax.swing.JComponent;
+import javax.swing.JSpinner;
+import javax.swing.SpinnerNumberModel;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 /**
  *
  * @author Markus Echterhoff <tam@edu.uni-klu.ac.at>
  */
-public class MoveAction extends Action {
+public class DrainEnergyAction extends Action {
+    private int amount;
 
-    public MoveAction(int energyChange, ActionMetaTarget target) {
+    public DrainEnergyAction(int energyChange, ActionMetaTarget target, int amount) {
         super(energyChange, target);
+        this.amount = amount;
     }
 
-    public MoveAction() {
+    public DrainEnergyAction() {
+    }
+
+    public int getAmount() {
+        return amount;
+    }
+
+    public void setAmount(int amount) {
+        this.amount = amount;
     }
 
     public String getName() {
-        return "move";
+        return "drain energy";
     }
 
     public int execute(Pixel actor, RelativeCoordinate direction, Configuration configuration) {
         Pixel target = configuration.world.get(actor.getLocation(), direction);
-        if (target != null) {
+        if (target == null) {
             return 0;
         }
-        configuration.world.remove(actor.getLocation());
-        actor.getLocation().move(direction, configuration.world);
-        configuration.world.set(actor);
+        
+        target.changeEnergy((-1) * (target.getEnergy() >= amount ? amount : target.getEnergy()));
 
         return energyChange;
     }
@@ -60,6 +74,15 @@ public class MoveAction extends Action {
     @Override
     public LinkedHashMap<String,JComponent> addParametersGUI(LinkedHashMap<String, JComponent> parametersMap) {
         parametersMap = super.addParametersGUI(parametersMap);
+
+        SpinnerNumberModel spinnerModel = new SpinnerNumberModel(amount, 0, Integer.MAX_VALUE, 1);
+        JSpinner rewardValueSpinner = new AutoSelectOnFocusSpinner(spinnerModel);
+        rewardValueSpinner.addChangeListener(new ChangeListener() {
+            public void stateChanged(ChangeEvent e) {
+                setAmount(((Integer) ((JSpinner) e.getSource()).getValue()).byteValue());
+            }
+        });
+        parametersMap.put("Amount", rewardValueSpinner);
 
         JTargetButton jTargetButton = new JTargetButton(this);
         parametersMap.put("Target", jTargetButton);
