@@ -28,9 +28,11 @@ import evopaint.pixel.rulebased.targeting.ITarget;
 import evopaint.pixel.rulebased.targeting.MetaTarget;
 import evopaint.pixel.rulebased.targeting.SingleTarget;
 import java.awt.BorderLayout;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import javax.swing.BoxLayout;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JToggleButton;
@@ -48,7 +50,10 @@ public class JConditionTargetPanel extends JPanel {
     private JTarget jTarget;
 
     public JConditionTargetPanel(ITarget target) {
-        setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
+        setLayout(new GridBagLayout());
+
+        GridBagConstraints c = new GridBagConstraints();
+        c.insets = new Insets(5, 5, 5, 5);
 
         final JPanel rangePanel = new JPanel();
         rangePanel.setLayout(new BorderLayout());
@@ -66,22 +71,18 @@ public class JConditionTargetPanel extends JPanel {
         jRangeSlider = new JRangeSlider(0, 0, 0, 0, JRangeSlider.VERTICAL,
                 JRangeSlider.RIGHTLEFT_BOTTOMTOP);
 
-        System.out.print(target.getClass());
         if (target instanceof ConditionMetaTarget) {
-            System.out.println(" is condition meta target");
             jRangeSlider.setMinimum(0);
             jRangeSlider.setMaximum(((ConditionMetaTarget)target).getMax());
             jRangeSlider.setLowValue(((ConditionMetaTarget)target).getMin());
             jRangeSlider.setHighValue(((ConditionMetaTarget)target).getMax());
         } else {
             if (((SingleTarget)target).getDirection() == null) {
-                System.out.println(" is no condition meta target and has no direction");
                 jRangeSlider.setMinimum(0);
                 jRangeSlider.setMaximum(0);
                 jRangeSlider.setLowValue(0);
                 jRangeSlider.setHighValue(0);
             } else {
-                System.out.println(" is no condition meta target and has a direction");
                 jRangeSlider.setMinimum(0);
                 jRangeSlider.setMaximum(1);
                 jRangeSlider.setLowValue(1);
@@ -107,10 +108,11 @@ public class JConditionTargetPanel extends JPanel {
         highPanel.add(highValueLabel);
         rangePanel.add(highPanel, BorderLayout.EAST);
 
-        add(rangePanel);
+        add(rangePanel, c);
 
-        final JLabel inLabel = new JLabel("in");
-        add(inLabel);
+        final JLabel ofLabel = new JLabel("of");
+        c.gridx = 1;
+        add(ofLabel, c);
         
         jTarget = new JTarget(target, new ActionListener(){
             public void actionPerformed(ActionEvent e) {
@@ -129,18 +131,19 @@ public class JConditionTargetPanel extends JPanel {
                     highValueLabel.setEnabled(true);
                     lowTextLabel.setEnabled(true);
                     highTextLabel.setEnabled(true);
-                    inLabel.setEnabled(true);
+                    ofLabel.setEnabled(true);
                 } else {
                     jRangeSlider.setEmpty(true);
                     lowValueLabel.setEnabled(false);
                     highValueLabel.setEnabled(false);
                     lowTextLabel.setEnabled(false);
                     highTextLabel.setEnabled(false);
-                    inLabel.setEnabled(false);
+                    ofLabel.setEnabled(false);
                 }
             }
         });
-        add(jTarget);
+        c.gridx = 2;
+        add(jTarget, c);
 
         lowValueLabel.setText(Integer.toString(jRangeSlider.getLowValue()));
         highValueLabel.setText(Integer.toString(jRangeSlider.getHighValue()));
@@ -151,14 +154,14 @@ public class JConditionTargetPanel extends JPanel {
             highValueLabel.setEnabled(true);
             lowTextLabel.setEnabled(true);
             highTextLabel.setEnabled(true);
-            inLabel.setEnabled(true);
+            ofLabel.setEnabled(true);
         } else {
             jRangeSlider.setEmpty(true);
             lowValueLabel.setEnabled(false);
             highValueLabel.setEnabled(false);
             lowTextLabel.setEnabled(false);
             highTextLabel.setEnabled(false);
-            inLabel.setEnabled(false);
+            ofLabel.setEnabled(false);
         }
     }
 

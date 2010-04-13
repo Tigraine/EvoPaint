@@ -76,12 +76,10 @@ public class JTarget extends JPanel {
 
     public JTarget(ITarget target) {
         if (target instanceof MetaTarget) {
-            System.out.println("init meta " + ((MetaTarget)target).getDirections());
             this.directions = ((MetaTarget)target).getDirections();
         } else {
             this.directions = new ArrayList<RelativeCoordinate>();
             RelativeCoordinate direction = ((SingleTarget)target).getDirection();
-            System.out.println("init single " + direction);
 
             if (direction != null) {
                 this.directions.add(direction);

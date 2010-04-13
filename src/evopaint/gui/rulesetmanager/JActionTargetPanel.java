@@ -29,6 +29,10 @@ import evopaint.pixel.rulebased.targeting.MetaTarget;
 import evopaint.pixel.rulebased.targeting.QualifiedMetaTarget;
 import evopaint.pixel.rulebased.targeting.Qualifier;
 import evopaint.pixel.rulebased.targeting.SingleTarget;
+import java.awt.Component;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.BoxLayout;
@@ -48,7 +52,10 @@ public class JActionTargetPanel extends JPanel {
     private int selectedQualifierIndex;
 
     public JActionTargetPanel(ITarget target) {
-        setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
+        setLayout(new GridBagLayout());
+
+        GridBagConstraints c = new GridBagConstraints();
+        c.insets = new Insets(5, 5, 5, 5);
 
         qualifierComboBox = new JComboBox();
         DefaultComboBoxModel model = new DefaultComboBoxModel();
@@ -67,10 +74,11 @@ public class JActionTargetPanel extends JPanel {
             assert(selection != null);
             qualifierComboBox.setSelectedItem(selection);
         }
-        add(qualifierComboBox);
+        add(qualifierComboBox, c);
 
         final JLabel inLabel = new JLabel("in");
-        add(inLabel);
+        c.gridx = 1;
+        add(inLabel, c);
 
         jTarget = new JTarget(target, new ActionListener() {
 
@@ -90,7 +98,8 @@ public class JActionTargetPanel extends JPanel {
                 }
             }
         });
-        add(jTarget);
+        c.gridx = 2;
+        add(jTarget, c);
 
         if (jTarget.numSelected() > 1) {
             qualifierComboBox.setEnabled(true);
