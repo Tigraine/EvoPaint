@@ -29,6 +29,7 @@ public class MainFrame extends JFrame {
     private JPanel mainPanel;
     private MenuBar menuBar;
     private Showcase showcase;
+    private JScrollPane showCaseScrollPane;
     private JOptionsPanel jOptionsPanel;
     private ToolBox toolBox;
     private SelectionToolBox selectionToolBox;
@@ -152,7 +153,7 @@ public class MainFrame extends JFrame {
         wrapperPanelRight.setLayout(new GridBagLayout());
         wrapperPanelRight.add(showcase);
         // and the right side
-        final JScrollPane showCaseScrollPane = new JScrollPane(wrapperPanelRight,
+        showCaseScrollPane = new JScrollPane(wrapperPanelRight,
                 JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
                 JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
 
@@ -247,6 +248,7 @@ public class MainFrame extends JFrame {
             paintPanel.setRuleSet(ruleSet);
             ((CardLayout)contentPane.getLayout()).show(contentPane, "main");
             menuBar.setVisible(true);
+            showCaseScrollPane.requestFocusInWindow();
             configuration.runLevel = runLevelBeforeRuleSetManager;
         }
 
@@ -257,6 +259,7 @@ public class MainFrame extends JFrame {
         public void actionPerformed(ActionEvent e) {
             ((CardLayout)contentPane.getLayout()).show(contentPane, "main");
             menuBar.setVisible(true);
+            showCaseScrollPane.requestFocusInWindow();
             configuration.runLevel = runLevelBeforeRuleSetManager;
         }
 
