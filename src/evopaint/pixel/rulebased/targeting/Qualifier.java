@@ -34,11 +34,11 @@ public abstract class Qualifier implements INamed, Serializable {
 
     public RelativeCoordinate qualify(Pixel actor, List<RelativeCoordinate> directions, Configuration configuration) {
         List<RelativeCoordinate> qualifyingDirections = getCandidates(actor, directions, configuration);
-        if (qualifyingDirections.size() == 0) {
-            return null;
-        }
         if (qualifyingDirections.size() == 1) {
             return qualifyingDirections.get(0);
+        }
+        if (qualifyingDirections.size() == 0) {
+            return null;
         }
         return qualifyingDirections.get(configuration.rng.nextPositiveInt(qualifyingDirections.size()));
     }
