@@ -19,6 +19,7 @@
 
 package evopaint.gui.util;
 
+import evopaint.util.ExceptionHandler;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -155,8 +156,7 @@ public class WrappingScalableCanvas extends JComponent implements IOverlayable {
         try {
             invertedTransform.invert();
         } catch (NoninvertibleTransformException ex) {
-            ex.printStackTrace();
-            System.exit(1);
+            ExceptionHandler.handle(ex);
         }
         Point2D.Float floatPoint = (Point2D.Float)invertedTransform.transform(point, null);
         Point ret = new Point((int)floatPoint.x, (int)floatPoint.y);
@@ -198,8 +198,7 @@ public class WrappingScalableCanvas extends JComponent implements IOverlayable {
         try {
             return scaleTransform.createInverse().createTransformedShape(shape);
         } catch (NoninvertibleTransformException ex) {
-            ex.printStackTrace();
-            System.exit(1);
+            ExceptionHandler.handle(ex);
         }
         assert (false);
         return null;

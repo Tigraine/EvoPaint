@@ -25,6 +25,7 @@ import evopaint.pixel.rulebased.interfaces.ICopyable;
 import evopaint.pixel.rulebased.interfaces.IHTML;
 import evopaint.pixel.rulebased.interfaces.INamed;
 import evopaint.pixel.rulebased.interfaces.IParameterized;
+import evopaint.util.ExceptionHandler;
 import evopaint.util.mapping.RelativeCoordinate;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -52,11 +53,9 @@ public abstract class Qualifier implements INamed, IHTML, IParameterized, ICopya
             ObjectInputStream in = new ObjectInputStream(new ByteArrayInputStream(outByteStream.toByteArray()));
             newQualifier = (Qualifier) in.readObject();
         } catch (ClassNotFoundException ex) {
-            ex.printStackTrace();
-            System.exit(1);
+            ExceptionHandler.handle(ex);
         } catch (IOException ex) {
-            ex.printStackTrace();
-            System.exit(1);
+            ExceptionHandler.handle(ex);
         }
         return newQualifier;
     }

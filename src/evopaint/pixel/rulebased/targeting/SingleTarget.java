@@ -20,6 +20,7 @@
 package evopaint.pixel.rulebased.targeting;
 
 import evopaint.pixel.rulebased.interfaces.IHTML;
+import evopaint.util.ExceptionHandler;
 import evopaint.util.mapping.RelativeCoordinate;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -50,11 +51,9 @@ public class SingleTarget implements ITarget, IHTML {
             ObjectInputStream in = new ObjectInputStream(new ByteArrayInputStream(outByteStream.toByteArray()));
             newTarget = (SingleTarget) in.readObject();
         } catch (ClassNotFoundException ex) {
-            ex.printStackTrace();
-            System.exit(1);
+            ExceptionHandler.handle(ex);
         } catch (IOException ex) {
-            ex.printStackTrace();
-            System.exit(1);
+            ExceptionHandler.handle(ex);
         }
         return newTarget;
     }

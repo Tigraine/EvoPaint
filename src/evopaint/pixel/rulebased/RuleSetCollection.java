@@ -8,6 +8,7 @@ package evopaint.pixel.rulebased;
 import evopaint.pixel.rulebased.interfaces.ICopyable;
 import evopaint.pixel.rulebased.interfaces.IDescribable;
 import evopaint.pixel.rulebased.interfaces.INameable;
+import evopaint.util.ExceptionHandler;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -47,11 +48,9 @@ public class RuleSetCollection implements Serializable, INameable, IDescribable,
             ObjectInputStream in = new ObjectInputStream(new ByteArrayInputStream(outByteStream.toByteArray()));
             newRuleSetCollection = (RuleSetCollection) in.readObject();
         } catch (ClassNotFoundException ex) {
-            ex.printStackTrace();
-            System.exit(1);
+            ExceptionHandler.handle(ex);
         } catch (IOException ex) {
-            ex.printStackTrace();
-            System.exit(1);
+            ExceptionHandler.handle(ex);
         }
         return newRuleSetCollection;
     }

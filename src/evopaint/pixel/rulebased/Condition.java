@@ -12,6 +12,7 @@ import evopaint.pixel.rulebased.interfaces.ICopyable;
 import evopaint.pixel.rulebased.targeting.ConditionTarget;
 import evopaint.pixel.rulebased.targeting.IConditionTarget;
 import evopaint.pixel.rulebased.targeting.ITarget;
+import evopaint.util.ExceptionHandler;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -52,11 +53,9 @@ public abstract class Condition implements IHaveTarget, ICopyable {
             ObjectInputStream in = new ObjectInputStream(new ByteArrayInputStream(outByteStream.toByteArray()));
             newCondition = (Condition) in.readObject();
         } catch (ClassNotFoundException ex) {
-            ex.printStackTrace();
-            System.exit(1);
+            ExceptionHandler.handle(ex);
         } catch (IOException ex) {
-            ex.printStackTrace();
-            System.exit(1);
+            ExceptionHandler.handle(ex);
         }
         return newCondition;
     }

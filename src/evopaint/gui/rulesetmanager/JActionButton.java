@@ -22,6 +22,7 @@ package evopaint.gui.rulesetmanager;
 import evopaint.gui.rulesetmanager.util.NamedObjectListCellRenderer;
 import evopaint.Configuration;
 import evopaint.pixel.rulebased.Action;
+import evopaint.util.ExceptionHandler;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -131,11 +132,9 @@ public class JActionButton extends JButton {
         try {
             createdAction = ((Action)comboBoxActions.getSelectedItem()).getClass().newInstance();
         } catch (InstantiationException ex) {
-                ex.printStackTrace();
-                System.exit(1);
+            ExceptionHandler.handle(ex);
         } catch (IllegalAccessException ex) {
-            ex.printStackTrace();
-            System.exit(1);
+            ExceptionHandler.handle(ex);
         }
         return createdAction;
     }

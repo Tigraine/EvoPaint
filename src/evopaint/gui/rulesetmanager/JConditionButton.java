@@ -22,7 +22,7 @@ package evopaint.gui.rulesetmanager;
 import evopaint.gui.rulesetmanager.util.NamedObjectListCellRenderer;
 import evopaint.Configuration;
 import evopaint.pixel.rulebased.Condition;
-import evopaint.pixel.rulebased.conditions.TrueCondition;
+import evopaint.util.ExceptionHandler;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -127,11 +127,9 @@ public class JConditionButton extends JButton {
         try {
             createdCondition = ((Condition)comboBoxConditions.getSelectedItem()).getClass().newInstance();
         } catch (InstantiationException ex) {
-                ex.printStackTrace();
-                System.exit(1);
+            ExceptionHandler.handle(ex);
         } catch (IllegalAccessException ex) {
-            ex.printStackTrace();
-            System.exit(1);
+            ExceptionHandler.handle(ex);
         }
 
         return createdCondition;

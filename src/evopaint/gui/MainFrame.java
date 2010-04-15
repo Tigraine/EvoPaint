@@ -8,6 +8,7 @@ import evopaint.commands.*;
 import evopaint.gui.listeners.SelectionListenerFactory;
 import evopaint.gui.rulesetmanager.JRuleSetManager;
 import evopaint.pixel.rulebased.RuleSet;
+import evopaint.util.ExceptionHandler;
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Color;
@@ -53,6 +54,8 @@ public class MainFrame extends JFrame {
     public MainFrame(final Configuration configuration, EvoPaint evopaint) {
         this.configuration = configuration;
         this.contentPane = getContentPane();
+
+        this.configuration.exceptionDisplay = new ExceptionHandler(this);
 
         resumeCommand = new ResumeCommand(configuration);
         pauseCommand = new PauseCommand(configuration);

@@ -20,6 +20,7 @@
 package evopaint.gui.rulesetmanager;
 
 import evopaint.pixel.rulebased.targeting.Qualifier;
+import evopaint.util.ExceptionHandler;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -107,11 +108,9 @@ public class JQualifierButton extends JButton {
         try {
             createdQualifier = qualifierComboBox.getSelectedItem().getClass().newInstance();
         } catch (InstantiationException ex) {
-                ex.printStackTrace();
-                System.exit(1);
+            ExceptionHandler.handle(ex);
         } catch (IllegalAccessException ex) {
-            ex.printStackTrace();
-            System.exit(1);
+            ExceptionHandler.handle(ex);
         }
 
         return createdQualifier;
