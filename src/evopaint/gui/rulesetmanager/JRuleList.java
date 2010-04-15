@@ -192,17 +192,20 @@ public class JRuleList extends JPanel implements TreeSelectionListener, ListData
         final JPanel controlPanel = new JPanel();
         controlPanel.setBackground(new Color(0xF2F2F5));
 
+        final JButton btnEdit = new JButton("Edit");
+        btnEdit.addActionListener(btnEditListener);
+
         JButton btnAdd = new JButton("Add");
         btnAdd.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 IRule newRule = new Rule();
                 model.addElement(newRule);
+                list.setSelectedValue(newRule, true);
+                btnEdit.doClick();
             }
         });
         controlPanel.add(btnAdd);
 
-        JButton btnEdit = new JButton("Edit");
-        btnEdit.addActionListener(btnEditListener);
         controlPanel.add(btnEdit);
 
         JButton btnCopy = new JButton("Copy");

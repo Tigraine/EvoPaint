@@ -52,9 +52,7 @@ public class PaintOptionsPanel extends JPanel {
         } else {
             ruleSetRadio.setText(ruleSet.getName());
             cachedRuleSet = ruleSet;
-            if (false == ruleSetRadio.isSelected()) {
-                ruleSetRadio.doClick();
-            }
+            ruleSetRadio.doClick();
         }
     }
 

@@ -15,8 +15,8 @@ import javax.swing.DefaultComboBoxModel;
  * @author tam
  */
 public class ObjectComparisonOperator implements INamed, IHTML, Serializable {
-    public static final int TYPE_EQUAL = 0;
-    public static final int TYPE_NOT_EQUAL = 1;
+    private static final int TYPE_EQUAL = 0;
+    private static final int TYPE_NOT_EQUAL = 1;
     
     public static final ObjectComparisonOperator EQUAL = new ObjectComparisonOperator(TYPE_EQUAL);
     public static final ObjectComparisonOperator NOT_EQUAL = new ObjectComparisonOperator(TYPE_NOT_EQUAL);

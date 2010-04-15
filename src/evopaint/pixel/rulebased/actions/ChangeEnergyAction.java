@@ -20,15 +20,33 @@
 package evopaint.pixel.rulebased.actions;
 
 import evopaint.Configuration;
+import evopaint.gui.util.AutoSelectOnFocusSpinner;
 import evopaint.pixel.rulebased.Action;
 import evopaint.pixel.Pixel;
 import evopaint.util.mapping.RelativeCoordinate;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import javax.swing.JComponent;
+import javax.swing.JSpinner;
+import javax.swing.SpinnerNumberModel;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 /**
  *
  * @author Markus Echterhoff <tam@edu.uni-klu.ac.at>
  */
 public class ChangeEnergyAction extends Action {
+
+    private int amount;
+
+    public int getAmount() {
+        return amount;
+    }
+
+    public void setAmount(int amount) {
+        this.amount = amount;
+    }
 
     public ChangeEnergyAction(int energyChange) {
         super(energyChange, null);
@@ -38,17 +56,59 @@ public class ChangeEnergyAction extends Action {
     }
 
     public String getName() {
-        if (energyChange > 0) {
-            return "give energy";
-        }
-        if (energyChange < 0) {
-            return "take energy";
-        }
-        return "give/take energy";
+        return "change energy";
     }
 
     public int execute(Pixel actor, RelativeCoordinate direction, Configuration configuration) {
+        
+        Pixel target = configuration.world.get(actor.getLocation(), direction);
+        if (target == null) {
+            return 0;
+        }
+
+        target.changeEnergy(amount);
+
         return energyChange;
+    }
+
+    @Override
+    public Map<String, String>addParametersString(Map<String, String> parametersMap) {
+        parametersMap = super.addParametersHTML(parametersMap);
+        if (amount > 0) {
+            parametersMap.put("target's reward", Integer.toString(amount));
+        }
+        else if (amount < 0) {
+            parametersMap.put("target's cost", Integer.toString((-1) * amount));
+        }
+        return parametersMap;
+    }
+
+    @Override
+    public Map<String, String>addParametersHTML(Map<String, String> parametersMap) {
+        parametersMap = super.addParametersHTML(parametersMap);
+        if (amount > 0) {
+            parametersMap.put("target's reward", Integer.toString(amount));
+        }
+        else if (amount < 0) {
+            parametersMap.put("target's cost", Integer.toString((-1) * amount));
+        }
+        return parametersMap;
+    }
+
+    @Override
+    public LinkedHashMap<String,JComponent> addParametersGUI(LinkedHashMap<String, JComponent> parametersMap) {
+        parametersMap = super.addParametersGUI(parametersMap);
+
+        SpinnerNumberModel spinnerModel = new SpinnerNumberModel(amount, Integer.MIN_VALUE, Integer.MAX_VALUE, 1);
+        JSpinner rewardValueSpinner = new AutoSelectOnFocusSpinner(spinnerModel);
+        rewardValueSpinner.addChangeListener(new ChangeListener() {
+            public void stateChanged(ChangeEvent e) {
+                setAmount(((Integer) ((JSpinner) e.getSource()).getValue()).byteValue());
+            }
+        });
+        parametersMap.put("Target's Energy Change", rewardValueSpinner);
+
+        return parametersMap;
     }
 
 }

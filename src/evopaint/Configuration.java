@@ -13,7 +13,6 @@ import evopaint.pixel.rulebased.Action;
 import evopaint.pixel.rulebased.Condition;
 import evopaint.pixel.rulebased.actions.AssimilationAction;
 import evopaint.pixel.rulebased.actions.CopyAction;
-import evopaint.pixel.rulebased.actions.DrainEnergyAction;
 import evopaint.pixel.rulebased.actions.ChangeEnergyAction;
 import evopaint.pixel.rulebased.actions.MoveAction;
 import evopaint.pixel.rulebased.actions.SetColorAction;
@@ -67,7 +66,6 @@ public class Configuration {
         add(new ChangeEnergyAction());
         add(new CopyAction());
         add(new MoveAction());
-        add(new DrainEnergyAction());
         add(new AssimilationAction());
         add(new SetColorAction());
     }};

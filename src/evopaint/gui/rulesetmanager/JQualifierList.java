@@ -120,8 +120,17 @@ public class JQualifierList extends JPanel {
     public void setEnabled(boolean bool) {
         super.setEnabled(bool);
         Component [] wrappers = panelForQualifierWrappers.getComponents();
-        for (Component wrapper : wrappers) {
-            ((JPanel)wrapper).getComponent(0).setEnabled(bool);
+        for (int i = 0; i < wrappers.length; i++) {
+            Component wrapper = wrappers[i];
+            JButton qualifierButton = (JButton)((JPanel)wrapper).getComponent(0);
+            qualifierButton.setEnabled(bool);
+            if (bool == true) {
+                qualifierButton.setText(jQualifiers.get(i).createQualifier().toHTML());
+            } else {
+                qualifierButton.setText("<html><span style='color: #A0A0A0;'>"+
+                        jQualifiers.get(i).createQualifier().toHTML() +
+                        "</span><html>");
+            }
             ((JPanel)wrapper).getComponent(1).setEnabled(bool);
         }
         andButton.setEnabled(bool);

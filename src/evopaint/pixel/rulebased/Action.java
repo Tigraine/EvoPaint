@@ -21,6 +21,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import javax.swing.JComponent;
@@ -83,24 +84,15 @@ public abstract class Action implements IHaveTarget, ICopyable {
     public String toString() {
         String ret = new String();
         ret += getName();
-
-        ret += " (";/*
-        if (false == this instanceof IdleAction) {
-            if (target instanceof MetaTarget) {
-                ret += "Targets: ";
-            } else {
-                ret += "Target: ";
-            }
-            ret += target.toString();
-            ret += ", ";
-        }
-       */
+        ret += "(";
         Map<String, String> parametersMap = addParametersString(new LinkedHashMap<String, String>());
-        for (String parameterName : parametersMap.keySet()) {
-            ret += parameterName + ": " + parametersMap.get(parameterName) + ", ";
+        for (Iterator<String> ii = parametersMap.keySet().iterator(); ii.hasNext();) {
+            String parameterName = ii.next();
+            ret += parameterName + ": " + parametersMap.get(parameterName);
+            if (ii.hasNext()) {
+                ret += ", ";
+            }
         }
-
-        ret = ret.substring(0, ret.length() - 2);
         ret += ")";
 
         return ret;
@@ -109,27 +101,16 @@ public abstract class Action implements IHaveTarget, ICopyable {
     public String toHTML() {
         String ret = new String();
         ret += "<b>" + getName() + "</b>";
-        ret += " (";
-        /*
-        if (false == this instanceof IdleAction) {
-            ret += "<span style='color: #777777;'>";
-            if (target instanceof MetaTarget) {
-                ret += "Targets";
-            } else {
-                ret += "Target";
-            }
-            ret += ":</span> ";
-            ret += target.toHTML();
-            ret += ", ";
-        }
-*/
+        ret += "(";
         Map<String, String> parametersMap = addParametersHTML(new LinkedHashMap<String, String>());
-        for (String parameterName : parametersMap.keySet()) {
+        for (Iterator<String> ii = parametersMap.keySet().iterator(); ii.hasNext();) {
+            String parameterName = ii.next();
             ret += "<span style='color: #777777;'>" + parameterName + ":</span> " +
-                    parametersMap.get(parameterName) + ", ";
+                    parametersMap.get(parameterName);
+            if (ii.hasNext()) {
+                ret += ", ";
+            }
         }
-        
-        ret = ret.substring(0, ret.length() - 2);
         ret += ")";
 
         return ret;
@@ -156,12 +137,22 @@ public abstract class Action implements IHaveTarget, ICopyable {
     }
 
     public Map<String, String> addParametersHTML(Map<String, String> parametersMap) {
-        parametersMap.put("energy change", Integer.toString(energyChange));
+        if (energyChange > 0) {
+            parametersMap.put("my reward", Integer.toString(energyChange));
+        }
+        else if (energyChange < 0) {
+            parametersMap.put("my cost", Integer.toString((-1) * energyChange));
+        }
         return parametersMap;
     }
 
     public Map<String, String> addParametersString(Map<String, String> parametersMap) {
-        parametersMap.put("energy change", Integer.toString(energyChange));
+        if (energyChange > 0) {
+            parametersMap.put("my reward", Integer.toString(energyChange));
+        }
+        else if (energyChange < 0) {
+            parametersMap.put("my cost", Integer.toString((-1) * energyChange));
+        }
         return parametersMap;
     }
 

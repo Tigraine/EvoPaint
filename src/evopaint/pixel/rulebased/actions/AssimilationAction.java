@@ -54,6 +54,7 @@ public class AssimilationAction extends Action {
 
     public AssimilationAction() {
         this.dimensions = new ColorDimensions(true, true, true);
+        ourSharePercent = 50;
     }
     
     public ColorDimensions getDimensions() {

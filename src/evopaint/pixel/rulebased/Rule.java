@@ -18,6 +18,8 @@ import evopaint.pixel.rulebased.targeting.ITarget;
 import evopaint.pixel.rulebased.targeting.MetaTarget;
 import evopaint.pixel.rulebased.targeting.QualifiedMetaTarget;
 import evopaint.pixel.rulebased.targeting.SingleTarget;
+import evopaint.pixel.rulebased.targeting.qualifiers.ExistenceQualifier;
+import evopaint.pixel.rulebased.util.ObjectComparisonOperator;
 import evopaint.util.ExceptionHandler;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -193,9 +195,12 @@ public class Rule implements IRule, IHTML, ICopyable {
         }
         List<Qualifier> qualifiers = ((QualifiedMetaTarget)action.getTarget()).getQualifiers();
         for (Qualifier q : qualifiers) {
-       //     if (false == (q instanceof ExistenceQualifier) &&
-        //            false == (q instanceof NonExistenceQualifier)) {
-        //        if (qualifiers.contains(ExistenceQualifier.getInstance())) {
+         //   if (false == (q instanceof ExistenceQualifier ||
+    //                ((ExistenceQualifier)q).getObjectComparisonOperator() ==
+    //                ObjectComparisonOperator.NOT_EQUAL)) {
+    //            for
+   //         }
+    //            if (qualifiers.contains(ExistenceQualifier.getInstance())) {
         //            return "You have redundant action target qualifiers.\nAll qualifiers except for the Non-Existence qualifier will check if their target is existent,\nso you can safely remove the Existence qualifier, which will improve performance.";
         //        }
         //    }
