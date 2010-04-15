@@ -5,6 +5,7 @@
 
 package evopaint.util;
 
+import evopaint.pixel.rulebased.interfaces.INamed;
 import javax.swing.tree.DefaultMutableTreeNode;
 
 /**
@@ -15,6 +16,10 @@ public class RuleSetNode extends DefaultMutableTreeNode {
 
         public RuleSetNode(Object userObject) {
             super(userObject, false);
+        }
+
+        public String getName() {
+            return ((INamed)getUserObject()).getName();
         }
 
         @Override
