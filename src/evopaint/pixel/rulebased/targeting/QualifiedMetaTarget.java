@@ -33,9 +33,9 @@ import java.util.List;
 public abstract class QualifiedMetaTarget
         extends MetaTarget implements INamed {
 
-    protected List<IQualifier> qualifiers;
+    protected List<Qualifier> qualifiers;
 
-    public QualifiedMetaTarget(List<RelativeCoordinate> directions, List<IQualifier> qualifiers) {
+    public QualifiedMetaTarget(List<RelativeCoordinate> directions, List<Qualifier> qualifiers) {
         super(directions);
         this.qualifiers = qualifiers;
     }
@@ -51,11 +51,11 @@ public abstract class QualifiedMetaTarget
         return "qualified";
     }
 
-    public List<IQualifier> getQualifiers() {
+    public List<Qualifier> getQualifiers() {
         return qualifiers;
     }
 
-    public void setQualifiers(List<IQualifier> qualifiers) {
+    public void setQualifiers(List<Qualifier> qualifiers) {
         this.qualifiers = qualifiers;
     }
 
@@ -77,7 +77,7 @@ public abstract class QualifiedMetaTarget
 
     public RelativeCoordinate getCandidate(Pixel actor, Configuration configuration) {
         List<RelativeCoordinate> qualifyingDirections = new ArrayList(directions);
-        for (IQualifier q : qualifiers) {
+        for (Qualifier q : qualifiers) {
             qualifyingDirections = q.getCandidates(actor, qualifyingDirections, configuration);
         }
         if (qualifyingDirections.size() == 1) {

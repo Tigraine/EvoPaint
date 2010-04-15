@@ -20,9 +20,9 @@
 package evopaint.gui.rulesetmanager;
 
 import evopaint.Configuration;
-import evopaint.pixel.rulebased.conditions.ExistenceCondition;
-import evopaint.pixel.rulebased.targeting.IQualifier;
+import evopaint.pixel.rulebased.targeting.Qualifier;
 import evopaint.pixel.rulebased.targeting.qualifiers.ExistenceQualifier;
+import evopaint.pixel.rulebased.util.ObjectComparisonOperator;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
@@ -43,23 +43,23 @@ import javax.swing.JPanel;
  * @author Markus Echterhoff <tam@edu.uni-klu.ac.at>
  */
 public class JQualifierList extends JPanel {
-    private List<JQualifierComboBox> jQualifiers;
+    private List<JQualifierButton> jQualifiers;
     private JPanel panelForQualifierWrappers;
     private JButton andButton;
     private JLabel whichLabel;
 
-    public List<IQualifier> createQualifiers() {
-        List<IQualifier> qualifiers  = new ArrayList<IQualifier>();
+    public List<Qualifier> createQualifiers() {
+        List<Qualifier> qualifiers  = new ArrayList<Qualifier>();
         for (int i = 0; i < jQualifiers.size(); i++) {
-            IQualifier q = jQualifiers.get(i).getSelectedItem();
+            Qualifier q = jQualifiers.get(i).createQualifier();
             qualifiers.add(q);
         }
         return qualifiers;
     }
 
-    public JQualifierList(List<IQualifier> qualifiers) {
+    public JQualifierList(List<Qualifier> qualifiers) {
         
-        jQualifiers = new ArrayList<JQualifierComboBox>();
+        jQualifiers = new ArrayList<JQualifierButton>();
         setLayout(new FlowLayout(FlowLayout.LEFT, 0, 0));
         setBackground(new Color(0xF2F2F5));
 
@@ -75,7 +75,7 @@ public class JQualifierList extends JPanel {
         panelForQualifierWrappers.setLayout(new BoxLayout(panelForQualifierWrappers, BoxLayout.Y_AXIS));
         container.add(panelForQualifierWrappers, BorderLayout.CENTER);
 
-        for (IQualifier q : qualifiers) {
+        for (Qualifier q : qualifiers) {
             addQualifier(q);
         }
 
@@ -87,29 +87,29 @@ public class JQualifierList extends JPanel {
         container.add(controlPanel, BorderLayout.SOUTH);
 
         if (qualifiers.size() == 0) {
-            addQualifier(ExistenceQualifier.getInstance());
+            addQualifier(new ExistenceQualifier(ObjectComparisonOperator.EQUAL));
             setEnabled(false);
         }
 
     }
 
     public JQualifierList() {
-        this(new ArrayList<IQualifier>());
+        this(new ArrayList<Qualifier>());
     }
 
-    public void addQualifier(IQualifier qualifier) {
+    public void addQualifier(Qualifier qualifier) {
 
         JPanel wrapper = new JPanel(new FlowLayout(FlowLayout.LEFT));
         wrapper.setBackground(new Color(0xF2F2F5));
 
-        JQualifierComboBox jQualifierComboBox = new JQualifierComboBox(qualifier);
-        jQualifiers.add(jQualifierComboBox);
+        JQualifierButton JQualifierButton = new JQualifierButton(this, qualifier);
+        jQualifiers.add(JQualifierButton);
 
-        wrapper.add(jQualifierComboBox);
+        wrapper.add(JQualifierButton);
 
         JButton btnDelete = new JButton(new ImageIcon(getClass().getResource("icons/button-delete_condition.png")));
         btnDelete.setPreferredSize(new Dimension(btnDelete.getPreferredSize().height, btnDelete.getPreferredSize().height));
-        btnDelete.addActionListener(new JQualifierDeleteListener(jQualifierComboBox));
+        btnDelete.addActionListener(new JQualifierDeleteListener(JQualifierButton));
         wrapper.add(btnDelete);
 
         panelForQualifierWrappers.add(wrapper);
@@ -137,15 +137,15 @@ public class JQualifierList extends JPanel {
     private class AndButtonListener implements ActionListener {
 
         public void actionPerformed(ActionEvent e) {
-            IQualifier qualifier = Configuration.AVAILABLE_QUALIFIERS.get(0);
+            Qualifier qualifier = Configuration.AVAILABLE_QUALIFIERS.get(0);
             addQualifier(qualifier);
         }
     }
     
     private class JQualifierDeleteListener implements ActionListener {
-        private JQualifierComboBox jQualifier;
+        private JQualifierButton jQualifier;
 
-        public JQualifierDeleteListener(JQualifierComboBox jQualifier) {
+        public JQualifierDeleteListener(JQualifierButton jQualifier) {
             this.jQualifier = jQualifier;
         }
 

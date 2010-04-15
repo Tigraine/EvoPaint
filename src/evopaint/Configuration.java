@@ -22,11 +22,9 @@ import evopaint.pixel.rulebased.conditions.ColorLikenessConditionMyColor;
 import evopaint.pixel.rulebased.conditions.EnergyCondition;
 import evopaint.pixel.rulebased.conditions.ExistenceCondition;
 import evopaint.pixel.rulebased.conditions.TrueCondition;
-import evopaint.pixel.rulebased.targeting.IQualifier;
+import evopaint.pixel.rulebased.targeting.Qualifier;
 import evopaint.pixel.rulebased.targeting.qualifiers.ExistenceQualifier;
-import evopaint.pixel.rulebased.targeting.qualifiers.LeastEnergyQualifier;
-import evopaint.pixel.rulebased.targeting.qualifiers.MostEnergyQualifier;
-import evopaint.pixel.rulebased.targeting.qualifiers.NonExistenceQualifier;
+import evopaint.pixel.rulebased.targeting.qualifiers.EnergyQualifier;
 import evopaint.util.FileHandler;
 import evopaint.util.RandomNumberGeneratorWrapper;
 import evopaint.util.logging.Logger;
@@ -71,11 +69,9 @@ public class Configuration {
         add(new SetColorAction());
     }};
 
-    public static final List<IQualifier> AVAILABLE_QUALIFIERS = new ArrayList<IQualifier>() {{
-        add(ExistenceQualifier.getInstance());
-        add(NonExistenceQualifier.getInstance());
-        add(LeastEnergyQualifier.getInstance());
-        add(MostEnergyQualifier.getInstance());
+    public static final List<Qualifier> AVAILABLE_QUALIFIERS = new ArrayList<Qualifier>() {{
+        add(new ExistenceQualifier());
+        add(new EnergyQualifier());
     }};
 
     public IRandomNumberGenerator rng;

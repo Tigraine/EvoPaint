@@ -113,7 +113,6 @@ public class ExistenceCondition extends Condition {
         comparisonComboBox.setRenderer(new NamedObjectListCellRenderer());
         comparisonComboBox.setSelectedItem(objectComparisonOperator);
         comparisonComboBox.addActionListener(new ComparisonListener());
-        comparisonComboBox.setPreferredSize(new Dimension(80, 25));
         parametersMap.put("Comparison", comparisonComboBox);
 
         return parametersMap;

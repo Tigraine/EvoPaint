@@ -31,7 +31,7 @@ import java.util.List;
  */
 public class ActionMetaTarget extends QualifiedMetaTarget implements IActionTarget {
 
-    public ActionMetaTarget(List<RelativeCoordinate> directions, List<IQualifier> qualifiers) {
+    public ActionMetaTarget(List<RelativeCoordinate> directions, List<Qualifier> qualifiers) {
         super(directions, qualifiers);
     }
 

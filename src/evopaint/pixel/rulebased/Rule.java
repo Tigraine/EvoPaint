@@ -13,15 +13,11 @@ import evopaint.pixel.rulebased.interfaces.IRule;
 import evopaint.pixel.rulebased.interfaces.ICopyable;
 import evopaint.pixel.rulebased.interfaces.IHTML;
 import evopaint.pixel.rulebased.targeting.ActionMetaTarget;
-import evopaint.pixel.rulebased.targeting.IQualifier;
+import evopaint.pixel.rulebased.targeting.Qualifier;
 import evopaint.pixel.rulebased.targeting.ITarget;
 import evopaint.pixel.rulebased.targeting.MetaTarget;
 import evopaint.pixel.rulebased.targeting.QualifiedMetaTarget;
 import evopaint.pixel.rulebased.targeting.SingleTarget;
-import evopaint.pixel.rulebased.targeting.qualifiers.ExistenceQualifier;
-import evopaint.pixel.rulebased.targeting.qualifiers.LeastEnergyQualifier;
-import evopaint.pixel.rulebased.targeting.qualifiers.MostEnergyQualifier;
-import evopaint.pixel.rulebased.targeting.qualifiers.NonExistenceQualifier;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -87,9 +83,9 @@ public class Rule implements IRule, IHTML, ICopyable {
         ret += action.getTarget().toHTML();
         if (target instanceof ActionMetaTarget) {
             ret += " <span style='color: #0000E6; font-weight: bold;'>which</span> ";
-            List<IQualifier> qualifiers = ((ActionMetaTarget)target).getQualifiers();
-            for (Iterator<IQualifier> ii = qualifiers.iterator(); ii.hasNext();) {
-                ret += ii.next().getName();
+            List<Qualifier> qualifiers = ((ActionMetaTarget)target).getQualifiers();
+            for (Iterator<Qualifier> ii = qualifiers.iterator(); ii.hasNext();) {
+                ret += ii.next().toHTML();
                 if (ii.hasNext()) {
                     ret += " <span style='color: #0000E6; font-weight: bold;'>and</span> ";
                 }
@@ -182,8 +178,8 @@ public class Rule implements IRule, IHTML, ICopyable {
         if (false == action.getTarget() instanceof QualifiedMetaTarget) {
             return null;
         }
-        ArrayList<IQualifier> seen = new ArrayList<IQualifier>();
-        for (IQualifier q : ((QualifiedMetaTarget)action.getTarget()).getQualifiers()) {
+        ArrayList<Qualifier> seen = new ArrayList<Qualifier>();
+        for (Qualifier q : ((QualifiedMetaTarget)action.getTarget()).getQualifiers()) {
             if (seen.contains(q)) { // qualifiers are never created anew
                 return "You have doublicate action target qualifiers.\nThis makes no sense, but will influence performance, so please review your rule!";
             }
@@ -196,14 +192,14 @@ public class Rule implements IRule, IHTML, ICopyable {
         if (false == action.getTarget() instanceof QualifiedMetaTarget) {
             return null;
         }
-        List<IQualifier> qualifiers = ((QualifiedMetaTarget)action.getTarget()).getQualifiers();
-        for (IQualifier q : qualifiers) {
-            if (false == (q instanceof ExistenceQualifier) &&
-                    false == (q instanceof NonExistenceQualifier)) {
-                if (qualifiers.contains(ExistenceQualifier.getInstance())) {
-                    return "You have redundant action target qualifiers.\nAll qualifiers except for the Non-Existence qualifier will check if their target is existent,\nso you can safely remove the Existence qualifier, which will improve performance.";
-                }
-            }
+        List<Qualifier> qualifiers = ((QualifiedMetaTarget)action.getTarget()).getQualifiers();
+        for (Qualifier q : qualifiers) {
+       //     if (false == (q instanceof ExistenceQualifier) &&
+        //            false == (q instanceof NonExistenceQualifier)) {
+        //        if (qualifiers.contains(ExistenceQualifier.getInstance())) {
+        //            return "You have redundant action target qualifiers.\nAll qualifiers except for the Non-Existence qualifier will check if their target is existent,\nso you can safely remove the Existence qualifier, which will improve performance.";
+        //        }
+        //    }
         }
         return null;
     }
@@ -212,18 +208,18 @@ public class Rule implements IRule, IHTML, ICopyable {
         if (false == action.getTarget() instanceof QualifiedMetaTarget) {
             return null;
         }
-        List<IQualifier> qualifiers = ((QualifiedMetaTarget)action.getTarget()).getQualifiers();
-        for (IQualifier q : qualifiers) {
-            if (q instanceof NonExistenceQualifier) {
-                if (qualifiers.size() > 1) {
-                    return "How can a non-existing pixel have any other attributes to check for? Sense much?\nGo fix that before I download gay porn onto your hard disc and screw up your OS\nso the guys at the computer store can have a good laugh at your expense!";
-                }
+        List<Qualifier> qualifiers = ((QualifiedMetaTarget)action.getTarget()).getQualifiers();
+        for (Qualifier q : qualifiers) {
+            /*if (q instanceof NonExistenceQualifier) {
+            if (qualifiers.size() > 1) {
+            return "How can a non-existing pixel have any other attributes to check for? Sense much?\nGo fix that before I download gay porn onto your hard disc and screw up your OS\nso the guys at the computer store can have a good laugh at your expense!";
+            }
             }
             if (q instanceof LeastEnergyQualifier) {
-                if (qualifiers.contains(MostEnergyQualifier.getInstance())) {
-                    return "The one with the least energy which has the most energy, hu?\nFix that before I get really mad at you for even trying!";
-                }
+            if (qualifiers.contains(MostEnergyQualifier.getInstance())) {
+            return "The one with the least energy which has the most energy, hu?\nFix that before I get really mad at you for even trying!";
             }
+            }*/
         }
         return null;
     }

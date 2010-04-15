@@ -20,43 +20,91 @@
 package evopaint.pixel.rulebased.targeting.qualifiers;
 
 import evopaint.Configuration;
+import evopaint.gui.rulesetmanager.util.NamedObjectListCellRenderer;
 import evopaint.pixel.Pixel;
-import evopaint.pixel.rulebased.targeting.IQualifier;
+import evopaint.pixel.rulebased.targeting.Qualifier;
+import evopaint.pixel.rulebased.util.ObjectComparisonOperator;
 import evopaint.util.mapping.RelativeCoordinate;
+import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import javax.swing.JComboBox;
+import javax.swing.JComponent;
 
 /**
  *
  * @author Markus Echterhoff <tam@edu.uni-klu.ac.at>
  */
-public class ExistenceQualifier implements IQualifier {
+public class ExistenceQualifier extends Qualifier {
 
-    private static ExistenceQualifier instance;
+    private ObjectComparisonOperator objectComparisonOperator;
+
+    public ExistenceQualifier(ObjectComparisonOperator objectComparisonOperator) {
+        this.objectComparisonOperator = objectComparisonOperator;
+    }
+
+    public ExistenceQualifier() {
+    }
+
+    public ObjectComparisonOperator getObjectComparisonOperator() {
+        return objectComparisonOperator;
+    }
+
+    public void setObjectComparisonOperator(ObjectComparisonOperator objectComparisonOperator) {
+        this.objectComparisonOperator = objectComparisonOperator;
+    }
 
     public String getName() {
-        return "is a pixel";
+        return "existence";
     }
 
     public List<RelativeCoordinate> getCandidates(Pixel actor, List<RelativeCoordinate> directions, Configuration configuration) {
         List<RelativeCoordinate> ret = new ArrayList(1);
         for (RelativeCoordinate direction : directions) {
             Pixel target = configuration.world.get(actor.getLocation(), direction);
-            if (target != null) {
+            if (false == objectComparisonOperator.compare(target, null)) {
                 ret.add(direction);
             }
         }
         return ret;
     }
 
-    private ExistenceQualifier() {
+    @Override
+    public String toString() {
+        if (objectComparisonOperator == ObjectComparisonOperator.EQUAL) {
+            return "is a pixel";
+        }
+        return "is a free spot";
     }
 
-    public static ExistenceQualifier getInstance() {
-        if (instance == null) {
-            instance = new ExistenceQualifier();
+    @Override
+    public String toHTML() {
+        return toString();
+    }
+
+    @Override
+    public LinkedHashMap<String, JComponent> addParametersGUI(LinkedHashMap<String, JComponent> parametersMap) {
+        parametersMap = super.addParametersGUI(parametersMap);
+
+        JComboBox comparisonComboBox = new JComboBox(ObjectComparisonOperator.createComboBoxModel());
+        comparisonComboBox.setRenderer(new NamedObjectListCellRenderer());
+        if (objectComparisonOperator == null) {
+            objectComparisonOperator = ObjectComparisonOperator.EQUAL;
         }
-        return instance;
+        comparisonComboBox.setSelectedItem(objectComparisonOperator);
+        comparisonComboBox.addActionListener(new ActionListener() {
+
+            public void actionPerformed(ActionEvent e) {
+                setObjectComparisonOperator((ObjectComparisonOperator) ((JComboBox) (e.getSource())).getSelectedItem());
+            }
+        });
+        comparisonComboBox.setPreferredSize(new Dimension(80, 25));
+        parametersMap.put("Comparison", comparisonComboBox);
+
+        return parametersMap;
     }
     
 }

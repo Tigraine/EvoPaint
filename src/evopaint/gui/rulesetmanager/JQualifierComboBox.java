@@ -21,7 +21,7 @@ package evopaint.gui.rulesetmanager;
 
 import evopaint.Configuration;
 import evopaint.gui.rulesetmanager.util.NamedObjectListCellRenderer;
-import evopaint.pixel.rulebased.targeting.IQualifier;
+import evopaint.pixel.rulebased.targeting.Qualifier;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.DefaultComboBoxModel;
@@ -35,10 +35,10 @@ public class JQualifierComboBox extends JComboBox {
     private boolean qualifierEnabled;
     private int selectedQualifierIndex = -1;
 
-    public JQualifierComboBox(IQualifier selected) {
+    public JQualifierComboBox(Qualifier selected) {
         qualifierEnabled = true;
         DefaultComboBoxModel model = new DefaultComboBoxModel();
-        for (IQualifier qualifier : Configuration.AVAILABLE_QUALIFIERS) {
+        for (Qualifier qualifier : Configuration.AVAILABLE_QUALIFIERS) {
             model.addElement(qualifier);
         }
         setModel(model);
@@ -64,8 +64,8 @@ public class JQualifierComboBox extends JComboBox {
     }
 
     @Override
-    public IQualifier getSelectedItem() {
-        return (IQualifier)super.getSelectedItem();
+    public Qualifier getSelectedItem() {
+        return (Qualifier)super.getSelectedItem();
     }
 
 
