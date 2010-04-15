@@ -9,23 +9,22 @@ import com.thoughtworks.xstream.XStream;
 import evopaint.pixel.rulebased.ExampleRuleSetCollectionFactory;
 import evopaint.pixel.rulebased.RuleSet;
 import evopaint.pixel.rulebased.RuleSetCollection;
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
-import java.io.EOFException;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.InvalidClassException;
-import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStreamWriter;
+import java.io.Reader;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 import java.util.Enumeration;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -44,6 +43,7 @@ public class FileHandler implements TreeModelListener {
 
     private File homeDir;
     private File collectionsDir;
+    private XStream xStream;
 
     public File getHomeDir() {
         return homeDir;
@@ -67,44 +67,39 @@ public class FileHandler implements TreeModelListener {
     }
 
     public synchronized DefaultTreeModel readCollections() {
-        File [] collectionFiles = collectionsDir.listFiles();
+        File [] collectionDirs = collectionsDir.listFiles();
         DefaultMutableTreeNode root = new DefaultMutableTreeNode();
         DefaultTreeModel model = new DefaultTreeModel(root, true);
 
         try {
-            for (File collectionFile : collectionFiles) {
-                if (collectionFile.isDirectory()) {
-                    continue;
+            for (File collectionDir : collectionDirs) {
+                if (false == collectionDir.isDirectory()) {
+                    collectionDir.delete();
                 }
-                ObjectInputStream in = new ObjectInputStream(new FileInputStream(collectionFile));
-                RuleSetCollection ruleSetCollection = (RuleSetCollection)in.readObject();
+                File metadataFile = new File(collectionDir, "metadata.xml");
+                Reader reader = new BufferedReader(new InputStreamReader(new FileInputStream(metadataFile), "UTF8"));
+                RuleSetCollection ruleSetCollection = (RuleSetCollection)xStream.fromXML(reader);
+                reader.close();
                 CollectionNode collectionNode = new CollectionNode(ruleSetCollection);
-                try {
-                    while (true) {
-                        RuleSet ruleSet = (RuleSet)in.readObject();
-                        RuleSetNode ruleSetNode = new RuleSetNode(ruleSet);
-                        collectionNode.insert(ruleSetNode, collectionNode.getChildCount());
+                for (File file : collectionDir.listFiles()) {
+                    if (file.getName().equals("metadata.xml")) {
+                        continue;
                     }
-                } catch (EOFException ex) {
-                    // lulz, EOF
+                    reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), "UTF8"));
+                    RuleSet ruleSet = (RuleSet)xStream.fromXML(reader);
+                    reader.close();
+                    RuleSetNode ruleSetNode = new RuleSetNode(ruleSet);
+                    collectionNode.insert(ruleSetNode, collectionNode.getChildCount());
                 }
-                in.close();
                 model.insertNodeInto(collectionNode, root, root.getChildCount());
             }
         } catch (FileNotFoundException ex) {
             ExceptionHandler.handle(ex);
         } catch (InvalidClassException ex) {
-            JOptionPane.showMessageDialog((JFrame)SwingUtilities.getWindowAncestor(new JPanel()),
-                "Either your collection files are corrupted, or we introduced new rules which are not compatible\nwith your current version.\n\nPlease delete your '.evopaint/collections' folder (in ~/ on *n?x and 'My Documents' on Windows)",
-                "Aaaaaaaaand they're gone!",
-                JOptionPane.ERROR_MESSAGE);
-            System.exit(1);
+            ExceptionHandler.handle(ex);
         } catch (IOException ex) {
             ExceptionHandler.handle(ex);
-        } catch (ClassNotFoundException ex) {
-            ExceptionHandler.handle(ex);
         }
-
         model.addTreeModelListener(this);
         return model;
     }
@@ -130,8 +125,7 @@ public class FileHandler implements TreeModelListener {
             File metaDataFile = new File(collectionDir, "metadata.xml");
 
             Writer writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(metaDataFile), "UTF8"));
-            XStream xstream = new XStream();
-            String xml = xstream.toXML(collection);
+            String xml = xStream.toXML(collection);
 
             writer.write(xml);
             writer.close();
@@ -144,7 +138,7 @@ public class FileHandler implements TreeModelListener {
 
                     File ruleSetFile = new File(collectionDir, makeFileName(ruleSet.getName()));
                     writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(ruleSetFile), "UTF8"));
-                    writer.write(xstream.toXML(ruleSet));
+                    writer.write(xStream.toXML(ruleSet));
                     writer.close();
                 }
             }
@@ -257,6 +251,7 @@ public class FileHandler implements TreeModelListener {
     }
 
     public FileHandler() {
+        this.xStream = new XStream();
         checkFiles();
     }
 }

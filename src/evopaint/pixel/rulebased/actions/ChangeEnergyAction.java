@@ -56,7 +56,7 @@ public class ChangeEnergyAction extends Action {
     }
 
     public String getName() {
-        return "change energy";
+        return "changeEnergyOf";
     }
 
     public int execute(Pixel actor, RelativeCoordinate direction, Configuration configuration) {
