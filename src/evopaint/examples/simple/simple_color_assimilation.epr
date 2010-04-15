@@ -1,0 +1,53 @@
+<evopaint.pixel.rulebased.RuleSet>
+  <name>Simple Color Assimilation</name>
+  <description>This one-line rule set will initiate a nice to watch and very colorful spectacle if you apply it to randomly colored pixels. For the full effect, apply this rule set to a large sized fairy dust brush. Since the action requires no cost per default  you can sit back, relax and enjoy the show until you get bored.&lt;br&gt;&lt;br&gt;Don&apos;t miss to use a medium density brush or fill action once the development nears an end for some extra fun!</description>
+  <rules>
+    <evopaint.pixel.rulebased.Rule>
+      <conditions>
+        <evopaint.pixel.rulebased.conditions.TrueCondition>
+          <target class="evopaint.pixel.rulebased.targeting.ConditionTarget"/>
+        </evopaint.pixel.rulebased.conditions.TrueCondition>
+      </conditions>
+      <action class="evopaint.pixel.rulebased.actions.AssimilationAction">
+        <energyChange>0</energyChange>
+        <target class="evopaint.pixel.rulebased.targeting.ActionMetaTarget">
+          <directions>
+            <evopaint.util.mapping.RelativeCoordinate>
+              <x>-1</x>
+              <y>0</y>
+              <type>7</type>
+            </evopaint.util.mapping.RelativeCoordinate>
+            <evopaint.util.mapping.RelativeCoordinate>
+              <x>0</x>
+              <y>-1</y>
+              <type>1</type>
+            </evopaint.util.mapping.RelativeCoordinate>
+            <evopaint.util.mapping.RelativeCoordinate>
+              <x>0</x>
+              <y>1</y>
+              <type>5</type>
+            </evopaint.util.mapping.RelativeCoordinate>
+            <evopaint.util.mapping.RelativeCoordinate>
+              <x>1</x>
+              <y>0</y>
+              <type>3</type>
+            </evopaint.util.mapping.RelativeCoordinate>
+          </directions>
+          <qualifiers>
+            <evopaint.pixel.rulebased.targeting.qualifiers.ExistenceQualifier>
+              <objectComparisonOperator>
+                <type>0</type>
+              </objectComparisonOperator>
+            </evopaint.pixel.rulebased.targeting.qualifiers.ExistenceQualifier>
+          </qualifiers>
+        </target>
+        <dimensions>
+          <hue>true</hue>
+          <saturation>true</saturation>
+          <brightness>true</brightness>
+        </dimensions>
+        <ourSharePercent>50</ourSharePercent>
+      </action>
+    </evopaint.pixel.rulebased.Rule>
+  </rules>
+</evopaint.pixel.rulebased.RuleSet>
