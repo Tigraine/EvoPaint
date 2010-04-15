@@ -23,6 +23,8 @@ import evopaint.pixel.rulebased.conditions.EnergyCondition;
 import evopaint.pixel.rulebased.conditions.ExistenceCondition;
 import evopaint.pixel.rulebased.conditions.TrueCondition;
 import evopaint.pixel.rulebased.targeting.Qualifier;
+import evopaint.pixel.rulebased.targeting.qualifiers.ColorLikenessQualifierColor;
+import evopaint.pixel.rulebased.targeting.qualifiers.ColorLikenessQualifierMyColor;
 import evopaint.pixel.rulebased.targeting.qualifiers.ExistenceQualifier;
 import evopaint.pixel.rulebased.targeting.qualifiers.EnergyQualifier;
 import evopaint.util.FileHandler;
@@ -72,6 +74,8 @@ public class Configuration {
     public static final List<Qualifier> AVAILABLE_QUALIFIERS = new ArrayList<Qualifier>() {{
         add(new ExistenceQualifier());
         add(new EnergyQualifier());
+        add(new ColorLikenessQualifierColor());
+        add(new ColorLikenessQualifierMyColor());
     }};
 
     public IRandomNumberGenerator rng;
