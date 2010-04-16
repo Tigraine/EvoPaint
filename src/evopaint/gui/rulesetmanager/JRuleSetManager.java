@@ -262,18 +262,31 @@ public class JRuleSetManager extends JPanel implements TreeSelectionListener, Fl
                     RuleSet ruleSet = (RuleSet)xStream.fromXML(contentString);
 
                     // make sure the name of the import is unique
-                    boolean found = true;
-                    String originalName = ruleSet.getName().replaceAll(" *\\(\\d+\\)", "");
-                    for (int i = 1; found == true; i++) {
-                        ruleSet.setName(originalName + " (" + i + ")");
-                        found = false;
-                        Enumeration siblingRuleSetNodes = collectionNode.children();
-                        while (siblingRuleSetNodes.hasMoreElements()) {
-                            RuleSetNode node = (RuleSetNode)siblingRuleSetNodes.nextElement();
-                            RuleSet rs = (RuleSet)node.getUserObject();
-                            if (rs.getName().equals(ruleSet.getName())) {
-                                found = true;
-                                break;
+                    // first try given name
+                    boolean found = false;
+                    Enumeration siblingRuleSetNodes = collectionNode.children();
+                    while (siblingRuleSetNodes.hasMoreElements()) {
+                        RuleSetNode node = (RuleSetNode)siblingRuleSetNodes.nextElement();
+                        RuleSet rs = (RuleSet)node.getUserObject();
+                        if (rs.getName().equals(ruleSet.getName())) {
+                            found = true;
+                            break;
+                        }
+                    }
+                    // then add numbers until we are fine
+                    if (found == true) {
+                        String originalName = ruleSet.getName().replaceAll(" *\\(\\d+\\)", "");
+                        for (int i = 1; found == true; i++) {
+                            ruleSet.setName(originalName + " (" + i + ")");
+                            found = false;
+                            siblingRuleSetNodes = collectionNode.children();
+                            while (siblingRuleSetNodes.hasMoreElements()) {
+                                RuleSetNode node = (RuleSetNode)siblingRuleSetNodes.nextElement();
+                                RuleSet rs = (RuleSet)node.getUserObject();
+                                if (rs.getName().equals(ruleSet.getName())) {
+                                    found = true;
+                                    break;
+                                }
                             }
                         }
                     }
