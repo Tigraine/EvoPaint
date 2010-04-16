@@ -41,12 +41,6 @@ public class CommandFactory {
         return moveCommand;
     }
 
-    public SelectCommand GetSelectCommand(SelectionList list) {
-        if (selectionCommand == null)
-            selectionCommand = new SelectCommand(list);
-        return selectionCommand;
-    }
-
     public CommandFactory(Configuration configuration) {
         this.configuration = configuration;
     }

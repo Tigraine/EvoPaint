@@ -71,6 +71,8 @@ public class Showcase extends WrappingScalableCanvas implements MouseInputListen
     private BrushIndicatorOverlay brushIndicatorOverlay;
     private Timer paintingTimer;
     private Painter painter;
+    
+    private SelectionIndicatorOverlay draggingSelectionOverlay;
 
     public Showcase(Configuration configuration, MainFrame mf, World world, Perception perception, CommandFactory commandFactory) {
         super(perception.getImage());
@@ -80,7 +82,7 @@ public class Showcase extends WrappingScalableCanvas implements MouseInputListen
         this.paintCommand = new PaintCommand(configuration);
         this.moveCommand = new MoveCommand(configuration);
         this.moveCommand.setCanvas(this);
-        this.selectCommand = commandFactory.GetSelectCommand(currentSelections);
+        this.selectCommand = new SelectCommand(currentSelections, this);
 
         this.currentSelections.addObserver(this);
 
@@ -118,7 +120,7 @@ public class Showcase extends WrappingScalableCanvas implements MouseInputListen
                 endPoint = startPoint;
                 startPoint = temp;
             }
-            // FIXME Selection.draw(g2, startPoint, endPoint, scale);
+            
         }
 
         for(Selection selection : currentSelections) {
@@ -158,13 +160,14 @@ public class Showcase extends WrappingScalableCanvas implements MouseInputListen
                 moveCommand.setSource(e.getPoint());
                 //moveCommand.setScale(this.scale);
             } else if (mainFrame.getActiveTool() == SelectCommand.class) {
-                // FIXME this.selectionStartPoint = SelectCommand.TranslatePointToScale(e.getPoint(), scale);
-                this.isDrawingSelection = true;
-                // FIXME selectCommand.setLocation(e.getPoint(), scale);
+                this.selectionStartPoint = transformToImageSpace(e.getPoint());
+                draggingSelectionOverlay = new SelectionIndicatorOverlay(this, new Rectangle());
+                subscribe(draggingSelectionOverlay);
+                selectCommand.setLocation(this.selectionStartPoint);
                 selectCommand.execute();
             } else if (mainFrame.getActiveTool() == ZoomCommand.class)
             {
-            	ZoomInCommand zoomInCommand = new ZoomInCommand(this);
+            	ZoomInCommand zoomInCommand = new ZoomInCommand(this);	
             	zoomInCommand.execute();
             	this.setCursor(new Cursor(Cursor.N_RESIZE_CURSOR));
             }
@@ -189,8 +192,10 @@ public class Showcase extends WrappingScalableCanvas implements MouseInputListen
             paintingTimer.stop();
             if (mainFrame.getActiveTool() == SelectCommand.class) {
                 this.isDrawingSelection = false;
-                // FIXME selectCommand.setLocation(e.getPoint(), scale);
+                selectCommand.setLocation(transformToImageSpace(e.getPoint()));
                 selectCommand.execute();
+                unsubscribe(draggingSelectionOverlay);
+                draggingSelectionOverlay = null;
             }
         } else if (e.getButton() == MouseEvent.BUTTON2) {
             toggleMouseButton2Drag = false;
@@ -198,10 +203,14 @@ public class Showcase extends WrappingScalableCanvas implements MouseInputListen
     }
 
     public void mouseDragged(MouseEvent e) {
+    	this.currentMouseDragPosition = transformToImageSpace(e.getPoint());
         if (leftButtonPressed == true) {
-            // FIXME this.currentMouseDragPosition = SelectCommand.TranslatePointToScale(e.getPoint(), scale);
-            if (mainFrame.getActiveTool() == PaintCommand.class) {
-                painter.setLocation(e.getPoint());
+        	if (mainFrame.getActiveTool() == SelectCommand.class) {
+        		Point point = currentMouseDragPosition;
+        		draggingSelectionOverlay.setBounds(new Rectangle(selectionStartPoint, new Dimension(point.x - selectionStartPoint.x, point.y - selectionStartPoint.y)));
+        	}
+            else if (mainFrame.getActiveTool() == PaintCommand.class) {
+                painter.setLocation(currentMouseDragPosition);
             } else if (mainFrame.getActiveTool() == MoveCommand.class) {
                 moveCommand.setDestination(e.getPoint());
                 moveCommand.execute();
@@ -212,7 +221,7 @@ public class Showcase extends WrappingScalableCanvas implements MouseInputListen
         }
         if (mainFrame.getActiveTool() == PaintCommand.class) {
             brushIndicatorOverlay.setBounds(new Rectangle(
-                    transformToImageSpace(e.getPoint()),
+            		transformToImageSpace(e.getPoint()),
                     new Dimension(configuration.brush.size, configuration.brush.size)));
         }
     }
@@ -249,6 +258,10 @@ public class Showcase extends WrappingScalableCanvas implements MouseInputListen
 
     public void setActiveSelection(Selection selection) {
         this.activeSelection = selection;
+        for(Selection sel : currentSelections) {
+        	unsubscribe(sel);
+        }
+        subscribe(selection);
         ClearSelectionHighlight();
     }
 
@@ -267,7 +280,7 @@ public class Showcase extends WrappingScalableCanvas implements MouseInputListen
         SelectionList.SelectionListEventArgs selectionEvent = (SelectionList.SelectionListEventArgs) arg;
         if (selectionEvent.getChangeType() == SelectionList.ChangeType.ITEM_ADDED) {
             Selection selection = selectionEvent.getSelection();
-            this.activeSelection = selection;
+            setActiveSelection(selection);
             Logger.log.error("Selection from %s-%s to %s-%s", selection.getStartPoint().getX(), selection.getStartPoint().getY(), selection.getEndPoint().getX(), selection.getEndPoint().getY());
         }
     }

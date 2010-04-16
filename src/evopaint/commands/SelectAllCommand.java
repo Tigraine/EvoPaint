@@ -39,7 +39,7 @@ public class SelectAllCommand extends AbstractCommand {
     }
 
     public void execute() {
-        Selection selection = new Selection(new Point(0, 0), new Point((int) config.dimension.getHeight(), (int) config.dimension.getWidth()));
+        Selection selection = new Selection(new Point(0, 0), new Point((int) config.dimension.getHeight(), (int) config.dimension.getWidth()), showcase);
         selection.setSelectionName("All");
         showcase.getCurrentSelections().add(selection);
     }

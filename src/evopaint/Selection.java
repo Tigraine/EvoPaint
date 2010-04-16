@@ -3,58 +3,69 @@ package evopaint;
 import java.awt.*;
 import java.util.Observable;
 
+import evopaint.gui.HighlightedSelectionOverlay;
+import evopaint.gui.util.IOverlay;
+import evopaint.gui.util.WrappingScalableCanvas;
+
 /**
- * Created by IntelliJ IDEA.
- * User: daniel
- * Date: 07.03.2010
- * Time: 12:41:14
- * To change this template use File | Settings | File Templates.
+ * Created by IntelliJ IDEA. User: daniel Date: 07.03.2010 Time: 12:41:14 To
+ * change this template use File | Settings | File Templates.
  */
-public class Selection extends Observable {
-    private Point startPoint;
-    private Point endPoint;
+public class Selection extends Observable implements IOverlay {
+	private Point startPoint;
+	private Point endPoint;
+	private String selectionName;
+	private boolean highlighted;
+	private final WrappingScalableCanvas canvas;
+	private HighlightedSelectionOverlay overlay;
+	
+	public Selection(Point startPoint, Point endPoint,
+			WrappingScalableCanvas canvas) {
+		this.startPoint = startPoint;
+		this.endPoint = endPoint;
+		this.canvas = canvas;
+		overlay = new HighlightedSelectionOverlay(this, canvas);
+	}
 
-    public void setHighlighted(boolean highlighted) {
-        this.highlighted = highlighted;
-    }
+	public void setHighlighted(boolean highlighted) {
+		if (highlighted) {
+			canvas.subscribe(overlay);
+		} else {
+			canvas.unsubscribe(overlay);
+		}
+		this.highlighted = highlighted;
+	}	
 
-    private boolean highlighted;
+	public String getSelectionName() {
+		return selectionName;
+	}
 
-    public String getSelectionName() {
-        return selectionName;
-    }
+	public void setSelectionName(String selectionName) {
+		this.selectionName = selectionName;
+		setChanged();
+		notifyObservers();
+	}
 
-    public void setSelectionName(String selectionName) {
-        this.selectionName = selectionName;
-        setChanged();
-        notifyObservers();
-    }
 
-    private String selectionName;
+	public Point getStartPoint() {
+		return startPoint;
+	}
 
-    public Selection(Point startPoint, Point endPoint)
-    {
-        this.startPoint = startPoint;
-        this.endPoint = endPoint;
-    }
+	public Point getEndPoint() {
+		return endPoint;
+	}
 
-    public Point getStartPoint() {
-        return startPoint;
-    }
+	public boolean isHighlighted() {
+		return highlighted;
+	}
 
-    public Point getEndPoint() {
-        return endPoint;
-    }
+	@Override
+	public void paint(Graphics2D g2) {
+		g2.setXORMode(new Color(0x505050));
 
-    public static void draw(Graphics2D gfx, Selection selection, double scale){
-        draw(gfx, selection.getStartPoint(), selection.getEndPoint(), scale);
-    }
-    public static void draw(Graphics2D gfx, Point startPoint, Point endPoint, double scale){
-        gfx.drawRect(startPoint.x, startPoint.y, endPoint.x - startPoint.x, endPoint.y - startPoint.y);
-        //gfx.drawRect((int)(startPoint.x / scale), (int)(startPoint.y / scale), (int)((endPoint.x - startPoint.x) / scale), (int)((endPoint.y - startPoint.y) / scale));
-    }
-
-    public boolean isHighlighted() {
-        return highlighted;
-    }
+		canvas.draw(new Rectangle(this.getStartPoint(), new Dimension(this
+				.getEndPoint().x
+				- this.getStartPoint().x, this.getEndPoint().y
+				- this.getStartPoint().y)));
+	}
 }

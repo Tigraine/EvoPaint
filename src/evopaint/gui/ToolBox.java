@@ -71,7 +71,7 @@ public class ToolBox extends JPanel {
 
         final JToggleButton jButtonSelect = buttons.get(0);
         jButtonSelect.setIcon(new ImageIcon(getClass().getResource("icons/tool-select.png")));
-        jButtonSelect.setEnabled(false); // FIXME reactivate me
+        jButtonSelect.setEnabled(true); // FIXME reactivate me
         jButtonSelect.addActionListener(new java.awt.event.ActionListener() {
 
             public void actionPerformed(java.awt.event.ActionEvent e) {

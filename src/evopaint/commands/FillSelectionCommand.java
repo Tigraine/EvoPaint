@@ -50,8 +50,6 @@ public class FillSelectionCommand extends AbstractCommand {
     public FillSelectionCommand(Showcase showcase) {
         this.showcase = showcase;
         this.configuration = showcase.getConfiguration();
-        // FIXME this.scale = showcase.getScale();
-        // FIXME this.affineTransform = showcase.getAffineTransform();
 
         this.energy = configuration.startingEnergy;
         this.ruleSet = configuration.paint.getCurrentRuleSet();

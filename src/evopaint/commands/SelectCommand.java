@@ -21,6 +21,7 @@ package evopaint.commands;
 
 import evopaint.Selection;
 import evopaint.gui.SelectionList;
+import evopaint.gui.util.WrappingScalableCanvas;
 
 import java.awt.*;
 
@@ -36,17 +37,15 @@ public class SelectCommand extends AbstractCommand {
 
     private Point mouseLocation;
 
-    public SelectCommand(SelectionList list){
+	private final WrappingScalableCanvas canvas;
+
+    public SelectCommand(SelectionList list, WrappingScalableCanvas canvas){
         observableSelectionList = list;
+		this.canvas = canvas;
     }
 
-    public void setLocation(Point location, double scale){
-        mouseLocation = TranslatePointToScale(location, scale);
-    }
-
-    public static Point TranslatePointToScale(Point location, double scale) {
-        Point point = new Point((int)(location.x / scale), (int)(location.y / scale));
-        return point;
+    public void setLocation(Point location){
+        mouseLocation = location;
     }
 
     private Point startPoint;
@@ -61,7 +60,7 @@ public class SelectCommand extends AbstractCommand {
             endPoint = mouseLocation;
             CurrentState = State.IDLE;
             SwapPoints();
-            Selection selection = new Selection(startPoint, endPoint);
+            Selection selection = new Selection(startPoint, endPoint, canvas);
             selection.setSelectionName("New Selection " + nextSelectionId);
             nextSelectionId++;
             observableSelectionList.add(selection);
