@@ -86,19 +86,36 @@ public class Paint {
     }
 
     @Override
-    @SuppressWarnings("EqualsWhichDoesntCheckParameterClass")
-    public boolean equals(Object object) {
-        return hashCode() == object.hashCode();
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Paint other = (Paint) obj;
+        if (this.colorMode != other.colorMode) {
+            return false;
+        }
+        if (this.ruleSetMode != other.ruleSetMode) {
+            return false;
+        }
+        if (this.color != other.color && (this.color == null || !this.color.equals(other.color))) {
+            return false;
+        }
+        if (this.ruleSet != other.ruleSet && (this.ruleSet == null || !this.ruleSet.equals(other.ruleSet))) {
+            return false;
+        }
+        return true;
     }
 
     @Override
     public int hashCode() {
-        int hash = 3;
-        hash = 59 * hash + (this.configuration != null ? this.configuration.hashCode() : 0);
-        hash = 59 * hash + this.colorMode;
-        hash = 59 * hash + this.ruleSetMode;
-        hash = 59 * hash + (this.color != null ? this.color.hashCode() : 0);
-        hash = 59 * hash + (this.ruleSet != null ? this.ruleSet.hashCode() : 0);
+        int hash = 5;
+        hash = 97 * hash + this.colorMode;
+        hash = 97 * hash + this.ruleSetMode;
+        hash = 97 * hash + (this.color != null ? this.color.hashCode() : 0);
+        hash = 97 * hash + (this.ruleSet != null ? this.ruleSet.hashCode() : 0);
         return hash;
     }
 

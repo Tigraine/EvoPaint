@@ -47,6 +47,7 @@ public class ExistenceQualifier extends Qualifier {
     }
 
     public ExistenceQualifier() {
+        this.objectComparisonOperator = ObjectComparisonOperator.EQUAL;
     }
 
     public ObjectComparisonOperator getObjectComparisonOperator() {
@@ -56,6 +57,29 @@ public class ExistenceQualifier extends Qualifier {
     public void setObjectComparisonOperator(ObjectComparisonOperator objectComparisonOperator) {
         this.objectComparisonOperator = objectComparisonOperator;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final ExistenceQualifier other = (ExistenceQualifier) obj;
+        if (this.objectComparisonOperator != other.objectComparisonOperator && (this.objectComparisonOperator == null || !this.objectComparisonOperator.equals(other.objectComparisonOperator))) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 5;
+        hash = 89 * hash + (this.objectComparisonOperator != null ? this.objectComparisonOperator.hashCode() : 0);
+        return hash;
+    }
+
 
     public String getName() {
         return "existence";

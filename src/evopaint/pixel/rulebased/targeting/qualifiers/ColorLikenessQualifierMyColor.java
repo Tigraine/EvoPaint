@@ -64,6 +64,32 @@ public class ColorLikenessQualifierMyColor extends Qualifier {
         this.isLeast = isLeast;
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final ColorLikenessQualifierMyColor other = (ColorLikenessQualifierMyColor) obj;
+        if (this.isLeast != other.isLeast) {
+            return false;
+        }
+        if (this.dimensions != other.dimensions && (this.dimensions == null || !this.dimensions.equals(other.dimensions))) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 37 * hash + (this.isLeast ? 1 : 0);
+        hash = 37 * hash + (this.dimensions != null ? this.dimensions.hashCode() : 0);
+        return hash;
+    }
+
     public String getName() {
         return "color likeness (my color)";
     }

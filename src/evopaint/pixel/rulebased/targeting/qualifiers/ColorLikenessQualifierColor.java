@@ -75,6 +75,36 @@ public class ColorLikenessQualifierColor extends Qualifier {
         this.comparedColor = color;
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final ColorLikenessQualifierColor other = (ColorLikenessQualifierColor) obj;
+        if (this.isLeast != other.isLeast) {
+            return false;
+        }
+        if (this.comparedColor != other.comparedColor && (this.comparedColor == null || !this.comparedColor.equals(other.comparedColor))) {
+            return false;
+        }
+        if (this.dimensions != other.dimensions && (this.dimensions == null || !this.dimensions.equals(other.dimensions))) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 59 * hash + (this.isLeast ? 1 : 0);
+        hash = 59 * hash + (this.comparedColor != null ? this.comparedColor.hashCode() : 0);
+        hash = 59 * hash + (this.dimensions != null ? this.dimensions.hashCode() : 0);
+        return hash;
+    }
+
     public String getName() {
         return "color likeness (color)";
     }

@@ -294,17 +294,32 @@ public class PixelColor implements IHTML, Serializable {
     }
 
     @Override
-    @SuppressWarnings("EqualsWhichDoesntCheckParameterClass")
-    public boolean equals(Object object) {
-        return hashCode() == object.hashCode();
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final PixelColor other = (PixelColor) obj;
+        if (this.hue != other.hue) {
+            return false;
+        }
+        if (this.saturation != other.saturation) {
+            return false;
+        }
+        if (this.brightness != other.brightness) {
+            return false;
+        }
+        return true;
     }
 
     @Override
     public int hashCode() {
         int hash = 7;
-        hash = 41 * hash + Float.floatToIntBits(this.hue);
-        hash = 41 * hash + Float.floatToIntBits(this.saturation);
-        hash = 41 * hash + Float.floatToIntBits(this.brightness);
+        hash = 53 * hash + Float.floatToIntBits(this.hue);
+        hash = 53 * hash + Float.floatToIntBits(this.saturation);
+        hash = 53 * hash + Float.floatToIntBits(this.brightness);
         return hash;
     }
 

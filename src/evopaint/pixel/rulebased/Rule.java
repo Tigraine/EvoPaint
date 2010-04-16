@@ -21,6 +21,9 @@ import evopaint.pixel.rulebased.targeting.ITarget;
 import evopaint.pixel.rulebased.targeting.MetaTarget;
 import evopaint.pixel.rulebased.targeting.QualifiedMetaTarget;
 import evopaint.pixel.rulebased.targeting.SingleTarget;
+import evopaint.pixel.rulebased.targeting.qualifiers.ColorLikenessQualifierColor;
+import evopaint.pixel.rulebased.targeting.qualifiers.ColorLikenessQualifierMyColor;
+import evopaint.pixel.rulebased.targeting.qualifiers.EnergyQualifier;
 import evopaint.pixel.rulebased.targeting.qualifiers.ExistenceQualifier;
 import evopaint.pixel.rulebased.util.ObjectComparisonOperator;
 import evopaint.util.ExceptionHandler;
@@ -149,13 +152,7 @@ public class Rule implements IRule, IHTML, ICopyable {
         if ((msg = validateTargetsNotEmpty()) != null) {
             return msg;
         }
-        if ((msg = validateQualifiersNotDouble()) != null) {
-            return msg;
-        }
-        if ((msg = validateQualifiersNotRedundant()) != null) {
-            return msg;
-        }
-        if ((msg = validateQualifiersNotConflicting()) != null) {
+        if ((msg = validateQualifiers()) != null) {
             return msg;
         }
         return null;
@@ -184,56 +181,106 @@ public class Rule implements IRule, IHTML, ICopyable {
         return null;
     }
 
-    private String validateQualifiersNotDouble() {
+    private String validateQualifiers() {
         if (false == action.getTarget() instanceof QualifiedMetaTarget) {
             return null;
         }
+
+        List<Qualifier> qualifiers = ((QualifiedMetaTarget)action.getTarget()).getQualifiers();
+        
+        boolean foundIsPixel = false;
+        boolean foundIsFreeSpot = false;
+        boolean foundHasLeastEnergy = false;
+        boolean foundHasMostEnergy = false;
+        boolean foundHasColorLeastLikeColor = false;
+        boolean foundHasColorMostLikeColor = false;
+        boolean foundHasColorLeastLikeMe = false;
+        boolean foundHasColorMostLikeMe = false;
+
         ArrayList<Qualifier> seen = new ArrayList<Qualifier>();
-        for (Qualifier q : ((QualifiedMetaTarget)action.getTarget()).getQualifiers()) {
-            if (seen.contains(q)) { // qualifiers are never created anew
-                return "You have doublicate action target qualifiers.\nThis makes no sense, but will influence performance, so please review your rule!";
+        for (Qualifier q : qualifiers) {
+
+            // check for doublicates
+            for (Qualifier seenQ : seen) {
+                if (seenQ.equals(q)) {
+                    return "You have doublicate action target qualifiers.\nThis makes no sense, but will influence performance, so please review your rule!";
+                }
             }
             seen.add(q);
-        }
-        return null;
-    }
 
-    private String validateQualifiersNotRedundant() {
-        if (false == action.getTarget() instanceof QualifiedMetaTarget) {
-            return null;
+            // gather information about existence of qualifiers
+            if (q instanceof ExistenceQualifier) {
+                if (((ExistenceQualifier)q).getObjectComparisonOperator() ==
+                        ObjectComparisonOperator.EQUAL) {
+                    foundIsPixel = true;
+                }
+                else {
+                    foundIsFreeSpot = true;
+                }
+            }
+            else if (q instanceof EnergyQualifier) {
+                if (((EnergyQualifier)q).isLeast()) {
+                    foundHasLeastEnergy = true;
+                }
+                else {
+                    foundHasMostEnergy = true;
+                }
+            }
+            else if (q instanceof ColorLikenessQualifierColor) {
+                if (((ColorLikenessQualifierColor)q).isLeast()) {
+                    foundHasColorLeastLikeColor = true;
+                }
+                else {
+                    foundHasColorMostLikeColor = true;
+                }
+            }
+            else if (q instanceof ColorLikenessQualifierMyColor) {
+                if (((ColorLikenessQualifierMyColor)q).isLeast()) {
+                    foundHasColorLeastLikeMe = true;
+                }
+                else {
+                    foundHasColorMostLikeMe = true;
+                }
+            }
         }
-        List<Qualifier> qualifiers = ((QualifiedMetaTarget)action.getTarget()).getQualifiers();
-        for (Qualifier q : qualifiers) {
-         //   if (false == (q instanceof ExistenceQualifier ||
-    //                ((ExistenceQualifier)q).getObjectComparisonOperator() ==
-    //                ObjectComparisonOperator.NOT_EQUAL)) {
-    //            for
-   //         }
-    //            if (qualifiers.contains(ExistenceQualifier.getInstance())) {
-        //            return "You have redundant action target qualifiers.\nAll qualifiers except for the Non-Existence qualifier will check if their target is existent,\nso you can safely remove the Existence qualifier, which will improve performance.";
-        //        }
-        //    }
-        }
-        return null;
-    }
 
-    private String validateQualifiersNotConflicting() {
-        if (false == action.getTarget() instanceof QualifiedMetaTarget) {
-            return null;
+        if (foundIsPixel) {
+
+            // check for most obvious conflict
+            if (foundIsFreeSpot) {
+                return "Are you female? Just asking, because you want your target to be existent and non existent at the same time.\nHow about we fix that before we continue, shall we?";
+            }
+
+            // check for redundancy
+            if (foundHasLeastEnergy || foundHasMostEnergy ||
+                    foundHasColorLeastLikeColor || foundHasColorMostLikeColor ||
+                    foundHasColorLeastLikeMe || foundHasColorMostLikeMe) {
+                 return "You have redundant action target qualifiers.\nAll qualifiers except for the Non-Existence qualifier will check if their target is existent,\nso you can safely remove the Existence qualifier, which will improve performance.";
+            }
         }
-        List<Qualifier> qualifiers = ((QualifiedMetaTarget)action.getTarget()).getQualifiers();
-        for (Qualifier q : qualifiers) {
-            /*if (q instanceof NonExistenceQualifier) {
-            if (qualifiers.size() > 1) {
-            return "How can a non-existing pixel have any other attributes to check for? Sense much?\nGo fix that before I download gay porn onto your hard disc and screw up your OS\nso the guys at the computer store can have a good laugh at your expense!";
+
+        // check for other conflicts
+        if (foundIsFreeSpot) {
+            if (foundHasLeastEnergy || foundHasMostEnergy ||
+                    foundHasColorLeastLikeColor || foundHasColorMostLikeColor ||
+                    foundHasColorLeastLikeMe || foundHasColorMostLikeMe) {
+                return "How can a non-existing pixel have any other attributes to check for? Sense much?\nGo fix that before I download gay porn onto your hard disc and screw up your OS\nso the guys at the computer store can have a good laugh at your expense!";
             }
-            }
-            if (q instanceof LeastEnergyQualifier) {
-            if (qualifiers.contains(MostEnergyQualifier.getInstance())) {
+        }
+        if (foundHasLeastEnergy && foundHasMostEnergy) {
             return "The one with the least energy which has the most energy, hu?\nFix that before I get really mad at you for even trying!";
-            }
-            }*/
         }
+        // least like green, most like red will favor blue over green
+        // the only case where we would want to catch this is when
+        // the colors are the same. but this means creating a second equals()
+        // which would suck
+        // if (foundHasColorLeastLikeColor && foundHasColorMostLikeColor) {
+        // }
+        if (foundHasColorLeastLikeMe && foundHasColorMostLikeMe) {
+            return "The one whose color is least and most like me at the same time, hu?\nI hate you!";
+        }
+
         return null;
     }
+
 }

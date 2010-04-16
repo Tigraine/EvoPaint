@@ -36,6 +36,36 @@ public class ColorDimensions implements IHTML, Serializable {
         return ret;
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final ColorDimensions other = (ColorDimensions) obj;
+        if (this.hue != other.hue) {
+            return false;
+        }
+        if (this.saturation != other.saturation) {
+            return false;
+        }
+        if (this.brightness != other.brightness) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 29 * hash + (this.hue ? 1 : 0);
+        hash = 29 * hash + (this.saturation ? 1 : 0);
+        hash = 29 * hash + (this.brightness ? 1 : 0);
+        return hash;
+    }
+
     public ColorDimensions(boolean hue, boolean saturation, boolean brightness) {
         this.hue = hue;
         this.saturation = saturation;

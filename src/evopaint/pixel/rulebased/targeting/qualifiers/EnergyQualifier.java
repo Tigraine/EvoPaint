@@ -58,6 +58,28 @@ public class EnergyQualifier extends Qualifier {
         this.isLeast = isLeast;
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final EnergyQualifier other = (EnergyQualifier) obj;
+        if (this.isLeast != other.isLeast) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 5;
+        hash = 97 * hash + (this.isLeast ? 1 : 0);
+        return hash;
+    }
+
     public String getName() {
         return "energy";
     }
