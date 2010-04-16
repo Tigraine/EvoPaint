@@ -57,7 +57,7 @@ public class SetColorAction extends Action {
     }
     
     public String getName() {
-        return "setColor";
+        return "set color";
     }
 
     public int execute(Pixel actor, RelativeCoordinate direction, Configuration configuration) {

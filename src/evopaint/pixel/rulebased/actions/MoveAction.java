@@ -41,7 +41,7 @@ public class MoveAction extends Action {
     }
 
     public String getName() {
-        return "moveTo";
+        return "move";
     }
 
     public int execute(Pixel actor, RelativeCoordinate direction, Configuration configuration) {

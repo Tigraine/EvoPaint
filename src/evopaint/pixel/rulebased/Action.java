@@ -84,7 +84,7 @@ public abstract class Action implements IHaveTarget, ICopyable {
     public String toString() {
         String ret = new String();
         ret += getName();
-        ret += "(";
+        ret += " (";
         Map<String, String> parametersMap = addParametersString(new LinkedHashMap<String, String>());
         for (Iterator<String> ii = parametersMap.keySet().iterator(); ii.hasNext();) {
             String parameterName = ii.next();

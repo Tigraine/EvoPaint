@@ -45,7 +45,7 @@ public class CopyAction extends Action {
     }
 
     public String getName() {
-        return "copyTo";
+        return "copy";
     }
 
     public int execute(Pixel actor, RelativeCoordinate direction, Configuration configuration) {

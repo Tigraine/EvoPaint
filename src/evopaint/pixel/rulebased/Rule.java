@@ -8,6 +8,9 @@ package evopaint.pixel.rulebased;
 import evopaint.Configuration;
 import evopaint.pixel.Pixel;
 import evopaint.pixel.rulebased.actions.ChangeEnergyAction;
+import evopaint.pixel.rulebased.actions.CopyAction;
+import evopaint.pixel.rulebased.actions.MoveAction;
+import evopaint.pixel.rulebased.actions.SetColorAction;
 import evopaint.pixel.rulebased.conditions.TrueCondition;
 import evopaint.pixel.rulebased.interfaces.IRule;
 import evopaint.pixel.rulebased.interfaces.ICopyable;
@@ -83,6 +86,12 @@ public class Rule implements IRule, IHTML, ICopyable {
         ret += action.toHTML();
         ret += " ";
         ITarget target = action.getTarget();
+        if (action instanceof MoveAction || action instanceof CopyAction) {
+            ret += " to ";
+        }
+        else if (action instanceof ChangeEnergyAction || action instanceof SetColorAction) {
+            ret += " of ";
+        }
         ret += action.getTarget().toHTML();
         if (target instanceof ActionMetaTarget) {
             ret += " <span style='color: #0000E6; font-weight: bold;'>which</span> ";
