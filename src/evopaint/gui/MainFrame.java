@@ -55,7 +55,10 @@ public class MainFrame extends JFrame {
         this.configuration = configuration;
         this.contentPane = getContentPane();
 
-        this.configuration.exceptionDisplay = new ExceptionHandler(this);
+        this.configuration.exceptionHandler = new ExceptionHandler(this);
+
+        setTitle("EvoPaint");
+
 
         resumeCommand = new ResumeCommand(configuration);
         pauseCommand = new PauseCommand(configuration);

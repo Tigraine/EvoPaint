@@ -77,7 +77,7 @@ public class Configuration {
         add(new ColorLikenessQualifierMyColor());
     }};
 
-    public ExceptionHandler exceptionDisplay;
+    public ExceptionHandler exceptionHandler;
     public IRandomNumberGenerator rng;
     public FileHandler fileHandler;
     public World world; // TODO make use of me
