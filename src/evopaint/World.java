@@ -64,7 +64,7 @@ public class World extends ParallaxMap<Pixel> {
         int [] indices = getShuffledIndices(configuration.rng);
         
         for (int i = 0; i < indices.length; i++) {
-            Pixel pixie = get(indices[i]);
+            Pixel pixie = getUnclamped(indices[i]);
             if (pixie.isAlive()) {
                 pixie.act(this.configuration);
             } else {

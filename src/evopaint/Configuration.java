@@ -30,6 +30,7 @@ import evopaint.pixel.rulebased.actions.CopyAction;
 import evopaint.pixel.rulebased.actions.ChangeEnergyAction;
 import evopaint.pixel.rulebased.actions.MoveAction;
 import evopaint.pixel.rulebased.actions.SetColorAction;
+import evopaint.pixel.rulebased.actions.PartnerProcreationAction;
 import evopaint.pixel.rulebased.conditions.ColorLikenessConditionColor;
 import evopaint.pixel.rulebased.conditions.ColorLikenessConditionMyColor;
 import evopaint.pixel.rulebased.conditions.EnergyCondition;
@@ -80,6 +81,7 @@ public class Configuration {
         add(new CopyAction());
         add(new MoveAction());
         add(new AssimilationAction());
+        add(new PartnerProcreationAction());
         add(new SetColorAction());
     }};
 

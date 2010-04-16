@@ -33,22 +33,22 @@ public class AbsoluteCoordinate extends Coordinate implements Serializable {
     }
 
     public void move(RelativeCoordinate rc, ParallaxMap map) {
-        this.x = ParallaxMap.clamp(x + rc.x, map.width);
-        this.y = ParallaxMap.clamp(y + rc.y, map.height);
+        this.x = ParallaxMap.wrap(x + rc.x, map.width);
+        this.y = ParallaxMap.wrap(y + rc.y, map.height);
     }
 
     public AbsoluteCoordinate(int x, int y, ParallaxMap map) {
         super(x, y);
-        this.x = ParallaxMap.clamp(x, map.width);
-        this.y = ParallaxMap.clamp(y, map.height);
+        this.x = ParallaxMap.wrap(x, map.width);
+        this.y = ParallaxMap.wrap(y, map.height);
     }
 
     public AbsoluteCoordinate(AbsoluteCoordinate ac, RelativeCoordinate rc, ParallaxMap map) {
         super(ac.x, ac.y);
         this.x += rc.x;
         this.y += rc.y;
-        this.x = ParallaxMap.clamp(x, map.width);
-        this.y = ParallaxMap.clamp(y, map.height);
+        this.x = ParallaxMap.wrap(x, map.width);
+        this.y = ParallaxMap.wrap(y, map.height);
     }
 
     public AbsoluteCoordinate(AbsoluteCoordinate ac) {

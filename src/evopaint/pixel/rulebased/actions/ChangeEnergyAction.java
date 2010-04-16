@@ -99,14 +99,15 @@ public class ChangeEnergyAction extends Action {
     public LinkedHashMap<String,JComponent> addParametersGUI(LinkedHashMap<String, JComponent> parametersMap) {
         parametersMap = super.addParametersGUI(parametersMap);
 
-        SpinnerNumberModel spinnerModel = new SpinnerNumberModel(amount, Integer.MIN_VALUE, Integer.MAX_VALUE, 1);
-        JSpinner rewardValueSpinner = new AutoSelectOnFocusSpinner(spinnerModel);
-        rewardValueSpinner.addChangeListener(new ChangeListener() {
+        SpinnerNumberModel amountSpinnerModel =
+                new SpinnerNumberModel(amount, Integer.MIN_VALUE, Integer.MAX_VALUE, 1);
+        JSpinner amountSpinner = new AutoSelectOnFocusSpinner(amountSpinnerModel);
+        amountSpinner.addChangeListener(new ChangeListener() {
             public void stateChanged(ChangeEvent e) {
-                setAmount(((Integer) ((JSpinner) e.getSource()).getValue()).byteValue());
+                amount = (Integer)((JSpinner)e.getSource()).getValue();
             }
         });
-        parametersMap.put("Target's Energy Change", rewardValueSpinner);
+        parametersMap.put("Target's Energy Change", amountSpinner);
 
         return parametersMap;
     }

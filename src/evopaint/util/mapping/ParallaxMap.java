@@ -84,24 +84,28 @@ public class ParallaxMap<T> extends AbstractCollection<T> {
         return height;
     }
 
-    public T getNotSynchronized(int i) {
+    public T getNotSynchronizedUnclamped(int i) {
+        return data[i];
+    }
+
+    public synchronized T getUnclamped(int i) {
         return data[i];
     }
 
     public synchronized T get(int i) {
-        return data[i];
+        return data[wrap(i, data.length)];
     }
 
     public synchronized T get(int x, int y) {
-        return data[clamp(y, height) * width + clamp(x, width)];
+        return data[wrap(y, height) * width + wrap(x, width)];
     }
 
     public synchronized T get(AbsoluteCoordinate ac) {
-        return data[clamp(ac.y, height) * width + clamp(ac.x, width)];
+        return data[wrap(ac.y, height) * width + wrap(ac.x, width)];
     }
 
     public synchronized T get(AbsoluteCoordinate ac, RelativeCoordinate rc) {
-        return data[clamp(ac.y + rc.y, height) * width + clamp(ac.x + rc.x, width)];
+        return data[wrap(ac.y + rc.y, height) * width + wrap(ac.x + rc.x, width)];
     }
 
     public synchronized T [] getNeighborhood(AbsoluteCoordinate ac) {
@@ -113,9 +117,53 @@ public class ParallaxMap<T> extends AbstractCollection<T> {
         Object [] ret = new Object [9];
         int loc = y * width + x;
         for (int i = loc - 4, j = 0; i <= loc + 4; i++, j++) {
-            ret[j] = data[i];
+            ret[j] = data[wrap(i, data.length)];
         }
         return (T[])ret;
+    }
+
+    /* *
+     * gets absolute index of a random free spot in the neighborhood of ac
+     * the returned index will be wrapped to lie within the bounds of this
+     * parallax map.
+     *
+     * @return a new AbsoluteCoordinate, pointing to the free spot
+     */
+    public synchronized AbsoluteCoordinate getRandomFreeNeighborCoordinateOf(AbsoluteCoordinate ac, IRandomNumberGenerator rng) {
+
+        // get number of free spots in neighborhood
+        int numFree = 0;
+        for (int y = ac.y - 1; y <= ac.y + 1; y++) {
+            for (int x = ac.x - 1; x <= ac.x + 1; x++) {
+                if (get(x, y) == null) {
+                    numFree++;
+                }
+            }
+        }
+
+        // lazy way out if we have no free spots
+        if (numFree == 0) {
+            return null;
+        }
+
+        // gather indices of free spots
+        int [] indices = new int[numFree];
+        int i = 0;
+        for (int y = ac.y - 1; y <= ac.y + 1; y++) {
+            for (int x = ac.x - 1; x <= ac.x + 1; x++) {
+                if (get(x, y) == null) {
+                    indices[i] = wrap(y, height) * width + wrap(x, width);
+                    i++;
+                    if (i == numFree - 1) {
+                        int chosenIndex = indices[rng.nextPositiveInt(indices.length)];
+                        return new AbsoluteCoordinate(chosenIndex % width, chosenIndex / width, this);
+                    }
+                }
+            }
+        }
+        
+        assert (false);
+        return null;
     }
 
     public synchronized int [] getShuffledIndices(IRandomNumberGenerator rng) {
@@ -158,7 +206,7 @@ public class ParallaxMap<T> extends AbstractCollection<T> {
     }
 
     public synchronized void set(AbsoluteCoordinate ac, T object) {
-        int i = clamp(ac.y, height) * width + clamp(ac.x, width);
+        int i = wrap(ac.y, height) * width + wrap(ac.x, width);
         set(i, object);
     }
 
@@ -174,12 +222,12 @@ public class ParallaxMap<T> extends AbstractCollection<T> {
     }
 
     protected synchronized void set(int x, int y, T object) {
-        int i = clamp(y, height) * width + clamp(x, width);
+        int i = wrap(y, height) * width + wrap(x, width);
         set(i, object);
     }
 
     public synchronized void remove(AbsoluteCoordinate ac) {
-        int i = clamp(ac.y, height) * width + clamp(ac.x, width);
+        int i = wrap(ac.y, height) * width + wrap(ac.x, width);
         set(i, null);
     }
 
@@ -188,7 +236,7 @@ public class ParallaxMap<T> extends AbstractCollection<T> {
         return false;
     }
 
-    public static int clamp(int index, int length) {
+    public static int wrap(int index, int length) {
         while (index < 0) {
             index += length;
         }

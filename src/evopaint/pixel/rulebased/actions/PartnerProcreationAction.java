@@ -20,12 +20,16 @@
 package evopaint.pixel.rulebased.actions;
 
 import evopaint.Configuration;
-import evopaint.pixel.rulebased.Action;
 import evopaint.gui.rulesetmanager.util.DimensionsListener;
 import evopaint.gui.util.AutoSelectOnFocusSpinner;
 import evopaint.pixel.ColorDimensions;
 import evopaint.pixel.Pixel;
+import evopaint.pixel.PixelColor;
+import evopaint.pixel.rulebased.Action;
+import evopaint.pixel.rulebased.RuleBasedPixel;
+import evopaint.pixel.rulebased.RuleSet;
 import evopaint.pixel.rulebased.targeting.ActionMetaTarget;
+import evopaint.util.mapping.AbsoluteCoordinate;
 import evopaint.util.mapping.RelativeCoordinate;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -41,22 +45,23 @@ import javax.swing.event.ChangeListener;
  *
  * @author Markus Echterhoff <tam@edu.uni-klu.ac.at>
  */
-public class AssimilationAction extends Action {
-
+public class PartnerProcreationAction extends Action {
+    private int partnerEnergyChange;
     private ColorDimensions dimensions;
     private byte ourSharePercent;
 
-    public AssimilationAction(int energyChange, ActionMetaTarget target, ColorDimensions dimensions, byte ourSharePercent) {
-        super(energyChange, target);
+    public PartnerProcreationAction(int energyChange, int partnerEnergyChange, ActionMetaTarget partner, ColorDimensions dimensions, byte ourSharePercent) {
+        super(energyChange, partner);
+        this.partnerEnergyChange = partnerEnergyChange;
         this.dimensions = dimensions;
         this.ourSharePercent = ourSharePercent;
     }
 
-    public AssimilationAction() {
+    public PartnerProcreationAction() {
         this.dimensions = new ColorDimensions(true, true, true);
         ourSharePercent = 50;
     }
-    
+
     public ColorDimensions getDimensions() {
         return dimensions;
     }
@@ -74,22 +79,51 @@ public class AssimilationAction extends Action {
     }
 
     public String getName() {
-        return "assimilate";
+        return "procreate with partner";
     }
 
     public int execute(Pixel actor, RelativeCoordinate direction, Configuration configuration) {
-        Pixel target = configuration.world.get(actor.getLocation(), direction);
-        if (target == null) {
+        Pixel partner = configuration.world.get(actor.getLocation(), direction);
+        if (partner == null) {
             return 0;
         }
-        target.getPixelColor().mixWith(actor.getPixelColor(),
-                ((float)ourSharePercent) / 100, dimensions);
+
+        AbsoluteCoordinate randomFreeSpot =
+                configuration.world.getRandomFreeNeighborCoordinateOf(
+                actor.getLocation(), configuration.rng);
+
+        if (randomFreeSpot == null) {
+            return 0;
+        }
+
+        PixelColor newPixelColor = new PixelColor(partner.getPixelColor());
+        newPixelColor.mixWith(actor.getPixelColor(), ((float)ourSharePercent) / 100, dimensions);
+
+        // TODO really mix these rule sets
+        RuleSet newRuleSet = configuration.rng.nextBoolean() ? ((RuleBasedPixel)actor).getRuleSet() : ((RuleBasedPixel)partner).getRuleSet();
+
+        Pixel newPixel = new RuleBasedPixel(
+                newPixelColor,
+                randomFreeSpot,
+                (actor.getEnergy() + getEnergyChange() + partner.getEnergy() + partnerEnergyChange) / 2,
+                newRuleSet);
+
+        configuration.world.set(newPixel);
+
+        partner.changeEnergy(partnerEnergyChange);
+
         return energyChange;
     }
 
     @Override
     public Map<String, String>addParametersString(Map<String, String> parametersMap) {
         parametersMap = super.addParametersString(parametersMap);
+        if (partnerEnergyChange > 0) {
+            parametersMap.put("partner's reward", Integer.toString(partnerEnergyChange));
+        }
+        else if (partnerEnergyChange < 0) {
+            parametersMap.put("partner's cost", Integer.toString((-1) * partnerEnergyChange));
+        }
         parametersMap.put("dimensions", dimensions.toString());
         parametersMap.put("our share in %", Integer.toString(ourSharePercent));
         return parametersMap;
@@ -98,6 +132,12 @@ public class AssimilationAction extends Action {
     @Override
     public Map<String, String>addParametersHTML(Map<String, String> parametersMap) {
         parametersMap = super.addParametersHTML(parametersMap);
+        if (partnerEnergyChange > 0) {
+            parametersMap.put("partner's reward", Integer.toString(partnerEnergyChange));
+        }
+        else if (partnerEnergyChange < 0) {
+            parametersMap.put("partner's cost", Integer.toString((-1) * partnerEnergyChange));
+        }
         parametersMap.put("dimensions", dimensions.toHTML());
         parametersMap.put("our share in %", Integer.toString(ourSharePercent));
         return parametersMap;
@@ -106,6 +146,15 @@ public class AssimilationAction extends Action {
     @Override
     public LinkedHashMap<String,JComponent> addParametersGUI(LinkedHashMap<String, JComponent> parametersMap) {
         parametersMap = super.addParametersGUI(parametersMap);
+
+        SpinnerNumberModel partnerEnergyModel = new SpinnerNumberModel(partnerEnergyChange, Integer.MIN_VALUE, Integer.MAX_VALUE, 1);
+        JSpinner partnerEnergyChangeSpinner = new AutoSelectOnFocusSpinner(partnerEnergyModel);
+        partnerEnergyChangeSpinner.addChangeListener(new ChangeListener() {
+            public void stateChanged(ChangeEvent e) {
+                partnerEnergyChange = (Integer) ((JSpinner) e.getSource()).getValue();
+            }
+        });
+        parametersMap.put("Partner's Energy Change", partnerEnergyChangeSpinner);
 
         JPanel dimensionsPanel = new JPanel();
         JToggleButton btnH = new JToggleButton("H");
