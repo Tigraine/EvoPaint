@@ -81,18 +81,36 @@ public class ColorLikenessQualifierColor extends Qualifier {
 
     @Override
     public String toString() {
+        String ret = new String();
+        ret += "is colored the ";
         if (isLeast) {
-            return "is colored the least like " + comparedColor.toString();
+            ret += "least";
+        } else {
+            ret += "most";
         }
-        return "is colored the most like " + comparedColor.toHTML();
+        ret += " like ";
+        ret += comparedColor.toString();
+        ret += " (dimensions: ";
+        ret += dimensions.toString();
+        ret += ")";
+        return ret;
     }
 
     @Override
     public String toHTML() {
-                if (isLeast) {
-            return "is colored the least like " + comparedColor.toHTML();
+        String ret = new String();
+        ret += "is colored the ";
+        if (isLeast) {
+            ret += "least";
+        } else {
+            ret += "most";
         }
-        return "is colored the most like " + comparedColor.toHTML();
+        ret += " like ";
+        ret += comparedColor.toHTML();
+        ret += " <span style='color: #777777;'>(dimensions: ";
+        ret += dimensions.toHTML();
+        ret += ")</span>";
+        return ret;
     }
 
     public List<RelativeCoordinate> getCandidates(Pixel origin, List<RelativeCoordinate> directions, Configuration configuration) {

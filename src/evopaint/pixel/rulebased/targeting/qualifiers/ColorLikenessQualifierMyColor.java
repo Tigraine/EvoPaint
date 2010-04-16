@@ -70,15 +70,34 @@ public class ColorLikenessQualifierMyColor extends Qualifier {
 
     @Override
     public String toString() {
+        String ret = new String();
+        ret += "is colored the ";
         if (isLeast) {
-            return "is colored the least like me";
+            ret += "least";
+        } else {
+            ret += "most";
         }
-        return "is colored the most like me";
+        ret += " like me";
+        ret += " (dimensions: ";
+        ret += dimensions.toString();
+        ret += ")";
+        return ret;
     }
 
     @Override
     public String toHTML() {
-        return toString();
+        String ret = new String();
+        ret += "is colored the ";
+        if (isLeast) {
+            ret += "least";
+        } else {
+            ret += "most";
+        }
+        ret += " like me";
+        ret += " <span style='color: #777777;'>(dimensions: ";
+        ret += dimensions.toHTML();
+        ret += ")</span>";
+        return ret;
     }
 
     public List<RelativeCoordinate> getCandidates(Pixel actor, List<RelativeCoordinate> directions, Configuration configuration) {

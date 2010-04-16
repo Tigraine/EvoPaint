@@ -83,8 +83,10 @@ public class JRuleSetManager extends JPanel implements TreeSelectionListener {
         jRuleSetTree = new JRuleSetTree(treeModel, new TreeDoubleClickListener());
         jRuleSetTree.addTreeSelectionListener(this);
 
+        jRuleList = new JRuleList(configuration, jRuleSetTree, new EditRuleBtnListener(), new DoubleClickOnRuleListener());
+
         // FIRST CARD
-        jRuleSetBrowser = new JRuleSetBrowser(configuration, jRuleSetTree);
+        jRuleSetBrowser = new JRuleSetBrowser(configuration, jRuleSetTree, jRuleList);
         jDescriptionPanel = new JDescriptionPanel(configuration, jRuleSetTree);
 
         // [ browser | description ]
@@ -93,8 +95,6 @@ public class JRuleSetManager extends JPanel implements TreeSelectionListener {
         upperSplitPane.setDividerLocation(250);
         upperSplitPane.setContinuousLayout(true);
         upperSplitPane.setResizeWeight(0.1); // most space goes to description
-
-        jRuleList = new JRuleList(configuration, jRuleSetTree, new EditRuleBtnListener(), new DoubleClickOnRuleListener());
 
         // [ browser | description ]
         // [       rule list       ]

@@ -68,12 +68,14 @@ public class JRuleSetBrowser extends JPanel implements TreeSelectionListener {
     private Component newDialogOwner;
     private JButton browserBtnDelete;
     private JButton browserBtnCopy;
+    private JRuleList jRuleListReference;
 
-    public JRuleSetBrowser(Configuration configuration, JRuleSetTree tree) {
+    public JRuleSetBrowser(Configuration configuration, JRuleSetTree tree, JRuleList jRuleListReference) {
         this.configuration = configuration;
         this.tree = tree;
         this.treeModel = (DefaultTreeModel)tree.getModel();
         this.root = (DefaultMutableTreeNode)treeModel.getRoot();
+        this.jRuleListReference = jRuleListReference;
         tree.addTreeSelectionListener(this);
         
         setLayout(new BorderLayout());
@@ -296,6 +298,11 @@ public class JRuleSetBrowser extends JPanel implements TreeSelectionListener {
     private class BtnCopyListener implements ActionListener {
         
         public void actionPerformed(ActionEvent e) {
+            if (jRuleListReference.isDirty()) {
+                jRuleListReference.clean(); // so that if you create a rule
+                                            // and immediatly copy it, the copy
+                                            // will not be empty. I hate polishing.
+            }
             
             DefaultMutableTreeNode selectedNode = (DefaultMutableTreeNode)
                        tree.getLastSelectedPathComponent();
