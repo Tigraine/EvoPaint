@@ -7,6 +7,7 @@ package evopaint.gui;
 
 import evopaint.Configuration;
 import evopaint.Paint;
+import evopaint.interfaces.IPaintChangeListener;
 import evopaint.pixel.PixelColor;
 import evopaint.pixel.rulebased.RuleSet;
 import java.awt.Color;
@@ -33,11 +34,11 @@ import javax.swing.JRadioButton;
  *
  * @author tam
  */
-public class PaintOptionsPanel extends JPanel {
+public class PaintOptionsPanel extends JPanel implements IPaintChangeListener {
     private Configuration configuration;
     private JRadioButton colorRadio;
     private JRadioButton fairyDustRadio;
-    private JRadioButton noColorRadio;
+    private JRadioButton useExistingColorRadio;
     private JRadioButton ruleSetRadio;
     private JRadioButton noRuleSetRadio;
     private JRadioButton useExistingRuleSetRadio;
@@ -46,32 +47,35 @@ public class PaintOptionsPanel extends JPanel {
     private JColorChooser colorChooser;
     private RuleSet cachedRuleSet;
 
-    public void setRuleSet(RuleSet ruleSet) {
-        if (ruleSet == null) {
-            noRuleSetRadio.setSelected(true);
-        } else {
-            ruleSetRadio.setText(ruleSet.getName());
-            cachedRuleSet = ruleSet;
-            ruleSetRadio.doClick();
-        }
-    }
-
-    public void setPaint(Paint paint) {
-        switch (paint.getColorMode()) {
+    public void paintChanged() {
+        switch (configuration.paint.getCurrentColorMode()) {
             case Paint.COLOR: colorRadio.setSelected(true);
-                colorRadio.setText("<html>" + configuration.paint.getColor().toHTML() + "</html>");
+                colorRadio.setText("<html>" + configuration.paint.getCurrentColor().toHTML() + "</html>");
             break;
             case Paint.FAIRY_DUST: fairyDustRadio.setSelected(true);
             break;
-            case Paint.EXISTING_COLOR: noColorRadio.setSelected(true);
+            case Paint.EXISTING_COLOR: useExistingColorRadio.setSelected(true);
             break;
             default: assert(false);
         }
-        setRuleSet(paint.getRuleSet());
+        switch (configuration.paint.getCurrentRuleSetMode()) {
+            case Paint.RULE_SET: ruleSetRadio.setSelected(true);
+                ruleSetRadio.setText(configuration.paint.getCurrentRuleSet().getName());
+            break;
+            case Paint.NO_RULE_SET: noRuleSetRadio.setSelected(true);
+            break;
+            case Paint.EXISTING_RULE_SET: useExistingRuleSetRadio.setSelected(true);
+            break;
+            default: assert(false);
+        }
     }
+
+
     
     public PaintOptionsPanel(final Configuration configuration, ActionListener openRuleSetManagerListener) {
         this.configuration = configuration;
+
+        this.configuration.paint.subscribe(this);
 
         setLayout(new GridBagLayout());
         GridBagConstraints constraints = new GridBagConstraints();
@@ -103,14 +107,10 @@ public class PaintOptionsPanel extends JPanel {
 
         // color button
         colorRadio = new JRadioButton();
-        colorRadio.setText("<html>" + configuration.paint.getColor().toHTML() + "</html>");
+        colorRadio.setText("<html>" + configuration.paint.getCurrentColor().toHTML() + "</html>");
         colorRadio.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                configuration.paint = new Paint(configuration,
-                        Paint.COLOR,
-                        configuration.paint.getRuleSetMode(),
-                        configuration.paint.getColor(),
-                        configuration.paint.getRuleSet());
+                configuration.paint.changeCurrentColorMode(Paint.COLOR);
             }
         });
         colorRadio.setSelected(true);
@@ -130,11 +130,7 @@ public class PaintOptionsPanel extends JPanel {
         fairyDustRadio = new JRadioButton("Fairy Dust");
         fairyDustRadio.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                configuration.paint = new Paint(configuration,
-                        Paint.FAIRY_DUST,
-                        configuration.paint.getRuleSetMode(),
-                        configuration.paint.getColor(),
-                        configuration.paint.getRuleSet());
+                configuration.paint.changeCurrentColorMode(Paint.FAIRY_DUST);
             }
         });
         fairyDustRadio.setPreferredSize(radioColorPanel.getPreferredSize());
@@ -142,24 +138,20 @@ public class PaintOptionsPanel extends JPanel {
         panelForColorButtons.add(fairyDustRadio);
 
         // use existing button
-        noColorRadio = new JRadioButton("Use Existing");
-        noColorRadio.addActionListener(new ActionListener() {
+        useExistingColorRadio = new JRadioButton("Use Existing");
+        useExistingColorRadio.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                configuration.paint = new Paint(configuration,
-                        Paint.EXISTING_COLOR,
-                        configuration.paint.getRuleSetMode(),
-                        configuration.paint.getColor(),
-                        configuration.paint.getRuleSet());
+                configuration.paint.changeCurrentColorMode(Paint.EXISTING_COLOR);
             }
         });
-        noColorRadio.setPreferredSize(radioColorPanel.getPreferredSize());
-        noColorRadio.setAlignmentX(Component.LEFT_ALIGNMENT);
-        panelForColorButtons.add(noColorRadio);
+        useExistingColorRadio.setPreferredSize(radioColorPanel.getPreferredSize());
+        useExistingColorRadio.setAlignmentX(Component.LEFT_ALIGNMENT);
+        panelForColorButtons.add(useExistingColorRadio);
 
         ButtonGroup group = new ButtonGroup();
         group.add(colorRadio);
         group.add(fairyDustRadio);
-        group.add(noColorRadio);
+        group.add(useExistingColorRadio);
 
         constraints.gridy = 1;
         add(panelForColorButtons, constraints);
@@ -185,14 +177,14 @@ public class PaintOptionsPanel extends JPanel {
 
         // rule set radio
         ruleSetRadio = new JRadioButton();
-        ruleSetRadio.setText("<select me>");
+        final String initialRuleSetRadioText = new String("<select me>");
+        ruleSetRadio.setText(initialRuleSetRadioText);
         ruleSetRadio.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                configuration.paint = new Paint(configuration,
-                        configuration.paint.getColorMode(),
-                        Paint.RULE_SET,
-                        configuration.paint.getColor(),
-                        cachedRuleSet);
+                if (ruleSetRadio.getText() == initialRuleSetRadioText) { // intentional object comparison
+                    return;
+                }
+                configuration.paint.changeCurrentRuleSetMode(Paint.RULE_SET);
             }
         });
         radioRuleSetPanel.add(ruleSetRadio);
@@ -213,11 +205,7 @@ public class PaintOptionsPanel extends JPanel {
         noRuleSetRadio.setSelected(true);
         noRuleSetRadio.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                configuration.paint = new Paint(configuration,
-                        configuration.paint.getColorMode(),
-                        Paint.NO_RULE_SET,
-                        configuration.paint.getColor(),
-                        null);
+                configuration.paint.changeCurrentRuleSetMode(Paint.NO_RULE_SET);
             }
         });
         noRuleSetRadio.setPreferredSize(radioRuleSetPanel.getPreferredSize());
@@ -229,11 +217,7 @@ public class PaintOptionsPanel extends JPanel {
         useExistingRuleSetRadio.setSelected(true);
         useExistingRuleSetRadio.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                configuration.paint = new Paint(configuration,
-                        configuration.paint.getColorMode(),
-                        Paint.EXISTING_RULE_SET,
-                        configuration.paint.getColor(),
-                        null);
+                configuration.paint.changeCurrentRuleSetMode(Paint.EXISTING_RULE_SET);
             }
         });
         useExistingRuleSetRadio.setPreferredSize(radioRuleSetPanel.getPreferredSize());
@@ -255,7 +239,7 @@ public class PaintOptionsPanel extends JPanel {
     private class EditColorListener implements ActionListener {
 
         public void actionPerformed(ActionEvent e) {
-            colorChooser.setColor(configuration.paint.getColor().getInteger());
+            colorChooser.setColor(configuration.paint.getCurrentColor().getInteger());
             colorChooser.setPreviewPanel(new JPanel());
             JDialog dialog = JColorChooser.createDialog(editColorBtn, "Choose Color", true,
                     colorChooser, new ColorChooserOKListener(), new ColorChooserCancelListener());
@@ -269,12 +253,7 @@ public class PaintOptionsPanel extends JPanel {
 
          public void actionPerformed(ActionEvent e) {
             Color c = colorChooser.getColor();
-            configuration.paint = new Paint(configuration,
-                    Paint.COLOR,
-                    configuration.paint.getRuleSetMode(),
-                    new PixelColor(c.getRGB()),
-                    configuration.paint.getRuleSet());
-            colorRadio.setText("<html>" + configuration.paint.getColor().toHTML() + "</html>");
+            configuration.paint.changeCurrentColor(new PixelColor(c.getRGB()));
         }
     }
 

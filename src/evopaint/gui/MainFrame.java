@@ -210,10 +210,6 @@ public class MainFrame extends JFrame {
         this.configuration = conf;
     }
 
-    public void setPaint(Paint paint) {
-        paintPanel.setPaint(paint);
-    }
-
     private class MainFrameKeyListener implements KeyListener {
 
         public void keyTyped(KeyEvent e) {
@@ -246,7 +242,7 @@ public class MainFrame extends JFrame {
         public void actionPerformed(ActionEvent e) {
             RuleSet ruleSet = jRuleSetManager.getSelectedRuleSet();
             assert (ruleSet != null);
-            paintPanel.setRuleSet(ruleSet);
+            configuration.paint.changeCurrentRuleSet(ruleSet);
             ((CardLayout)contentPane.getLayout()).show(contentPane, "main");
             menuBar.setVisible(true);
             showCaseScrollPane.requestFocusInWindow();

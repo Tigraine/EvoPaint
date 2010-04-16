@@ -38,11 +38,11 @@ public class FillSelectionCommand extends AbstractCommand {
         // FIXME this.affineTransform = showcase.getAffineTransform();
 
         this.energy = configuration.startingEnergy;
-        this.ruleSet = configuration.paint.getRuleSet();
+        this.ruleSet = configuration.paint.getCurrentRuleSet();
     }
 
     public void execute() {
-        this.color = configuration.paint.getColor();
+        this.color = configuration.paint.getCurrentColor();
         this.selection = showcase.getActiveSelection();
         for (int x = selection.getStartPoint().x; x < selection.getEndPoint().x; x++){
             for (int y = selection.getStartPoint().y; y < selection.getEndPoint().y; y++){

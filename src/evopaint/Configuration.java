@@ -8,7 +8,6 @@ package evopaint;
 import evopaint.interfaces.IRandomNumberGenerator;
 import evopaint.interfaces.ITool;
 import evopaint.pixel.Pixel;
-import evopaint.pixel.PixelColor;
 import evopaint.pixel.rulebased.Action;
 import evopaint.pixel.rulebased.Condition;
 import evopaint.pixel.rulebased.actions.AssimilationAction;
@@ -32,7 +31,6 @@ import evopaint.util.RandomNumberGeneratorWrapper;
 import evopaint.util.logging.Logger;
 import java.awt.Dimension;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 import org.uncommons.maths.random.CellularAutomatonRNG;
 import org.uncommons.maths.random.DefaultSeedGenerator;
@@ -84,7 +82,6 @@ public class Configuration {
     public Brush brush;
     public Paint paint;
     public ITool activeTool; // TODO make use of me
-    public LinkedList<Paint> paintHistory;
 
     // BEGIN user configurable
     public int fps = 60;
@@ -123,8 +120,7 @@ public class Configuration {
     public Configuration() {
         rng = createRNG();
         brush = new Brush(this);
-        paint = new Paint(this, Paint.COLOR, Paint.NO_RULE_SET, new PixelColor(0xFF0000), null);
+        paint = new Paint(this);
         fileHandler = new FileHandler();
-        paintHistory = new LinkedList<Paint>();
     }
 }

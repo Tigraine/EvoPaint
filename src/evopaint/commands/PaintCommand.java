@@ -28,15 +28,6 @@ public class PaintCommand extends AbstractCommand {
         //Config.log.debug(this);
         Logger.log.information("Executing Paint command on x: %s y: %s", location.x, location.y);
         configuration.brush.paint(location.x, location.y);
-
-        if (false == (configuration.paint.getColorMode() == Paint.EXISTING_COLOR &&
-                configuration.paint.getRuleSet() == null) &&
-                false == configuration.paintHistory.contains(configuration.paint)) {
-            configuration.paintHistory.addFirst(configuration.paint);
-            if (configuration.paintHistory.size() > configuration.paintHistorySize) {
-                configuration.paintHistory.removeLast();
-            }
-        }
     }
 }
 

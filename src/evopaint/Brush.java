@@ -41,8 +41,8 @@ public class Brush {
         for (int y = yBegin; y < yEnd; y++) {
             for (int x = xBegin; x < xEnd; x++) {
 
-                PixelColor newColor = new PixelColor(configuration.paint.getColor());
-                switch (configuration.paint.getColorMode()) {
+                PixelColor newColor = new PixelColor(configuration.paint.getCurrentColor());
+                switch (configuration.paint.getCurrentColorMode()) {
                     case Paint.COLOR:
                         break;
                     case Paint.FAIRY_DUST:
@@ -59,8 +59,8 @@ public class Brush {
                         assert(false);
                 }
 
-                RuleSet ruleSet = configuration.paint.getRuleSet();
-                switch (configuration.paint.getRuleSetMode()) {
+                RuleSet ruleSet = configuration.paint.getCurrentRuleSet();
+                switch (configuration.paint.getCurrentRuleSetMode()) {
                     case Paint.RULE_SET:
                         break;
                     case Paint.NO_RULE_SET:

@@ -138,6 +138,7 @@ public class Showcase extends WrappingScalableCanvas implements MouseInputListen
             if (mainFrame.getActiveTool() == PaintCommand.class) {
                 painter.setLocation(e.getPoint());
                 paintingTimer.start();
+                configuration.paint.rememberCurrent();
             } else if (mainFrame.getActiveTool() == MoveCommand.class) {
                 moveCommand.setSource(e.getPoint());
                 //moveCommand.setScale(this.scale);
@@ -148,30 +149,7 @@ public class Showcase extends WrappingScalableCanvas implements MouseInputListen
                 selectCommand.execute();
             }
         } else if (e.getButton() == MouseEvent.BUTTON3) {
-             if (configuration.paintHistory.size() < 1) {
-                 return;
-             }
-            //if (false == e.isPopupTrigger()) {
-            //    return;
-            //}
-            final JPopupMenu paintHistoryMenu = new JPopupMenu("Paint History");
-            for (final Paint paint : configuration.paintHistory) {
-                JMenuItem menuItem = paint.toMenuItem();
-                menuItem.addActionListener(new ActionListener() {
-
-                    public void actionPerformed(ActionEvent e) {
-                        configuration.paint = paint;
-                        mainFrame.setPaint(paint);
-                        if (false == configuration.paintHistory.getFirst().equals(paint) &&
-                                configuration.paintHistory.contains(paint)) {
-                            configuration.paintHistory.remove(paint);
-                            configuration.paintHistory.addFirst(paint);
-                        }
-                    }
-                });
-                paintHistoryMenu.add(menuItem);
-            }
-            paintHistoryMenu.show(e.getComponent(), e.getX(), e.getY());
+            configuration.paint.showHistory(this, e.getPoint());
         } else if (e.getButton() == MouseEvent.BUTTON2) {
             toggleMouseButton2Drag = true;
             moveCommand.setSource(e.getPoint());
