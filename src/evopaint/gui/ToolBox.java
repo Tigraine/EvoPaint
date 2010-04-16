@@ -25,6 +25,9 @@ import evopaint.commands.MoveCommand;
  
 import evopaint.commands.PaintCommand;
 import evopaint.commands.SelectCommand;
+import evopaint.commands.ZoomCommand;
+import evopaint.commands.ZoomInCommand;
+
 import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Dimension;
@@ -89,12 +92,12 @@ public class ToolBox extends JPanel {
 
         final JToggleButton jButtonZoom = buttons.get(2);
         jButtonZoom.setIcon(new ImageIcon(getClass().getResource("icons/tool-zoom.png")));
-        jButtonZoom.setEnabled(false);
+        jButtonZoom.setEnabled(true);
         jButtonZoom.addActionListener(new java.awt.event.ActionListener() {
 
             public void actionPerformed(java.awt.event.ActionEvent e) {
-                mf.setActiveTool(MoveCommand.class);
-                mf.getShowcase().setCursor(new Cursor(Cursor.MOVE_CURSOR));
+                mf.setActiveTool(ZoomCommand.class);
+                mf.getShowcase().setCursor(new Cursor(Cursor.N_RESIZE_CURSOR));
             }
         });
 

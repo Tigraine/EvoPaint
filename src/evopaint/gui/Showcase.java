@@ -27,6 +27,8 @@ import evopaint.World;
 import evopaint.Perception;
 import evopaint.gui.util.WrappingScalableCanvas;
 import evopaint.util.logging.Logger;
+
+import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -160,9 +162,21 @@ public class Showcase extends WrappingScalableCanvas implements MouseInputListen
                 this.isDrawingSelection = true;
                 // FIXME selectCommand.setLocation(e.getPoint(), scale);
                 selectCommand.execute();
+            } else if (mainFrame.getActiveTool() == ZoomCommand.class)
+            {
+            	ZoomInCommand zoomInCommand = new ZoomInCommand(this);
+            	zoomInCommand.execute();
+            	this.setCursor(new Cursor(Cursor.N_RESIZE_CURSOR));
             }
         } else if (e.getButton() == MouseEvent.BUTTON3) {
-            configuration.paint.showHistory(this, e.getPoint());
+        	if (mainFrame.getActiveTool() == ZoomCommand.class){
+            	ZoomOutCommand zoomOutCommand = new ZoomOutCommand(this);
+            	zoomOutCommand.execute();
+            	this.setCursor(new Cursor(Cursor.N_RESIZE_CURSOR));
+            }
+        	else {
+        		configuration.paint.showHistory(this, e.getPoint());
+        	}
         } else if (e.getButton() == MouseEvent.BUTTON2) {
             toggleMouseButton2Drag = true;
             moveCommand.setSource(e.getPoint());
