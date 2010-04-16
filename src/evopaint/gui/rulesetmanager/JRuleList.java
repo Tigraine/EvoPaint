@@ -199,7 +199,7 @@ public class JRuleList extends JPanel implements TreeSelectionListener, ListData
         final JPanel controlPanel = new JPanel();
         controlPanel.setBackground(new Color(0xF2F2F5));
 
-        btnEdit = new JButton(new ImageIcon(getClass().getResource("../icons/button-edit.png")));
+        btnEdit = new JButton(new ImageIcon(getClass().getResource("icons/button-edit.png")));
         btnEdit.setToolTipText("Opens the selected rule in the Rule Editor");
         btnEdit.setEnabled(false);
         btnEdit.addActionListener(btnEditListener);

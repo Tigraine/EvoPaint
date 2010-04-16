@@ -156,7 +156,7 @@ public class JDescriptionPanel extends JPanel implements TreeSelectionListener {
 
         viewerControlPanel = new JPanel();
         viewerControlPanel.setBackground(new Color(0xF2F2F5));
-        btnEdit = new JButton(new ImageIcon(getClass().getResource("../icons/button-edit.png")));
+        btnEdit = new JButton(new ImageIcon(getClass().getResource("icons/button-edit.png")));
         btnEdit.setToolTipText("Edit name and description of this collection or rule set");
         btnEdit.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
