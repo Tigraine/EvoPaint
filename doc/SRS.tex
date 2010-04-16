@@ -1,0 +1,231 @@
+\documentclass[titlepage,12pt]{scrartcl}
+\usepackage{times,t1enc,graphicx,mathptmx,listings,exscale}
+\usepackage[utf8]{inputenc}
+
+\parindent0pt
+\parskip1.5ex
+\renewcommand{\baselinestretch}{1.3}
+
+\begin{document}
+
+\title{Software Requirements Specification}
+\author{Augustin Malle}
+
+\subject{EvoPaint}
+
+\maketitle
+
+\thispagestyle{empty}
+\tableofcontents
+
+\newpage
+
+\section{Introduction}
+
+This document is related to the project "EvoPaint", a bachelor thesis at the Alpen-Adria-University Klagenfurt. EvoPaint is a program which can create und control artificial worlds and their evolutionary approaches. Therefore the program graphically illustrates the evolution. During the evolutionary development the program provide tools which can be used to change and control the world and its organisms. The Project is mainly developed for research and learning purposes. Anyway it also provides interesting possibilities for users which are new at this topic.
+
+\subsection{Purpose}
+The purpose of this Software Requirements Specification (short SRS) is the determination of all functionalities which should be realized within the 8h bachelor project for the project "EvoPaint". This document serves as a reference for all Stakeholders of this Project. It serves as a reference document for developers of "EvoPaint" to find out what functionalities are to be implemented during the development cycle and how they should perform. Further on it serves as a reference for the test phase at the end of the development cycle. It also serves the accepter of the project Dr. Leitner to keep track of the project.
+
+\subsection{Scope}
+The Software aims to provide an introduction to the topic of artificial evolutions. It also provides very flexible ways to control and affect a running evolution. 
+
+\subsection{Definitions, acronyms, and abbreviations}
+SRS - System Requirements Specification
+
+\subsection{References}
+Game of Life
+
+\section{Overall description}
+\subsection{Product functions}
+\begin{itemize}
+\item	Relations
+\item	Rules
+\item	Pixels
+\item	Mapping
+\item	World
+\item	New Evolution
+\item	Open 
+\item	Save
+\item	Save As
+\item	Import 
+\item	Export 
+\item	(Options)
+\item	End
+\item	Set Name
+\item	Fill
+\item	Fill 50%
+\item	Open as New
+\item	Copy 
+\item	(Options)
+\item	Delete Current
+\item	Select Selections
+\item	Clear Selections
+\item	Rule Editor
+\item	RSE-Gui
+\item	Load Rule
+\item	Save Rule
+\item	Add Rule
+\item	Edit Rule
+\item	Copy Rule
+\item	Delete Rule
+\item	AddTemplateRule
+\item	DescribeTemplateRule
+\item	CopyTemplateRule
+\item	DelteTemplateRule
+\item	LogicalRuleEditor
+\item	RuleSetEditorGui
+\item	User Guide
+\item	Help (F1)
+\item	Get the Source Code
+\item	About
+\end{itemize}
+
+
+\subsection{User characteristics}
+EvoPaint is mainly a research project which was not created for a client or a specific user group. The users which will use EvoPaint will be mainly people which are interested in evolutionary algorithms, or artificial evolution. So we can say that they are familiar with other topics of information technology. The requirements for the user are marginal but they should at least know the basics of Boolean algebra to use our application
+
+\section{Specific requirements}
+\subsection{External interface requirements}
+\subsubsection{User interfaces}
+The EvoPaint user interface consists of graphical output and pointing device input. The pointing device should have at least to mouse buttons. EvoPaints user interfaces consist of several parts described in the following section.
+
+\paragraph{3.1.1.1	EvoPaintGUI}
+The EvoPaintGui is the main interaction screen of the EvoPaint application. It consists of the menu bar, the side bar and the evolution screen. The menu bar provides three main options: World, Selection and Info. 
+The World option contains general functionalities like save and load the evolution. The Selection option contains functionalities which enables the user to control and manage different selections. The Info option contains the user guide the link to EvoPaints Homepage and a short description about EvoPaint.
+The side bar also contains different user interface elements. It can mainly be subdivided into three parts. The movie bar which gives the user the possibility to play, pause and stop the evolution. Secondly there is the toolbar where different tools can be chosen. Third there is the selection list where all selections are listed with name and at last there are the tool options where different adjustment can be taken.
+The last there is the evolution screen where the evolution is simulated.
+
+\paragraph{3.1.1.2	Rule Set Editor}
+This rule editor needs to provide a user friendly interface to define boolean expressions which the user can intuitively handle.
+
+\subsubsection{Software interfaces}
+EvoPaint requires the following software to be present. Please note that these are the versions available during the development of EvoPaint, older versions or different implementations might work as well, but are untested and unsupported. 
+
+uncommons-maths-1.2.jar
+
+\subsection{System features}
+\subsubsection{Painting}
+\paragraph{3.2.1.1	Introduction/Purpose of feature}
+With the painting tool EvoPaint provides an action which can be used to directly take influence onto the evolution. Within this tool the color and the rules for the painted section are adjustable. Also the size of the brush can be changed. There are different painting options. The user mainly paints color and rules at the same time. There also is the option to turn off one of these two to for example just paint the preset color. In this case the rules which are already present at the evolutions screen are saved and just the color of the regarding pictures are changed. On the other side it is also possible just to paint the rules. In this case the colors of the pixels are kept and the rules would be overwritten. The user should also have the possibility to paint into the evolution screen without using any rules. 
+There should also be a fairy dust option. In the painting case this fills the area beneath the brush with pixel of random color.
+
+\paragraph{3.2.1.2	Stimulus/Response sequence}
+By clicking on the paint brush icon located in the toolbox the paint tool is activated. 
+The user is now able to paint with the mouse (pressed left mouse button) on the evolution screen.
+
+\subsubsection{Move evolutions}
+\paragraph{3.2.2.1	Introduction/Purpose of feature}
+The move tool provides the user the possibility to move the evolution screen. So it is possible to focus interesting sections of the evolution. It also provides the user a full view of the evolutionary system without restrictions.
+\paragraph{3.2.2.2	Stimulus/Response sequence}
+The move tool is activating by clicking on the move icon in the tool menu.
+
+
+\subsubsection{3.2.3	Selecting evolution parts}
+\paragraph{3.2.3.1	Introduction/Purpose of feature}
+The feature enables the user to select different evolution parts. This feature is the basic for other functions like "Fill Selection" or "Copy Seleciton".
+\paragraph{3.2.3.2	Stimulus/Response sequence}
+The user is able to select a part of the evolution using the select tool located in the toolbox.
+
+\subsubsection{Rule eidtor}
+\paragraph{3.2.4.1	Introduction/Purpose of feature}
+With the rule editor the user can create and edit rules. After this the rules can be applied to the different pixels / organisms. This rule editor needs to provide a user friendly interface to define boolean expressions which the user can intuitively handle. 
+\paragraph{3.2.4.2	Stimulus/Response sequence}
+The rule editor is accessible in the rule paint menu.
+
+\subsubsection{Zoom}
+\paragraph{3.2.5.1	Introduction/Purpose of feature}
+This tool enables the user to zoom into the evolution and focus on tiny details. 
+\paragraph{3.2.5.2	Stimulus/Response sequence}
+The user can zoom into the evolution with simply scrolling his mouse wheel.
+
+\subsubsection{Stop evolution}
+\paragraph{3.2.6.1	Introduction/Purpose of feature}
+TWith this feature the current evolution screen should be painted all together. That means that the cpu is heavily disburdened. 
+\paragraph{3.2.6.2	Stimulus/Response sequence}
+To make use of this tool the user just needs to press the stop button located at the top of the toolbox. The evolution is stopped immediately.
+
+\subsubsection{New evolution}
+\paragraph{3.2.7.1	Introduction/Purpose of feature}
+This feature should totally refresh the program. The size of the new Evolution should be defined by the user. The old evolution should be totally dropped.
+\paragraph{3.2.7.2	Stimulus/Response sequence}
+The "New evolution" feature can be accessed over the menu bar (File -> new evolution). In the following panel the user needs to insert the width and the high of the new evolution which should be created. The saved rules should stay unaffected.
+
+\subsubsection{Open evolution}
+\paragraph{3.2.8.1	Introduction/Purpose of feature}
+The "load evolution" feature provides the user to load an evolution from a saved EvoPaint file. 
+\paragraph{3.2.8.2	Stimulus/Response sequence}
+This feature is accessible over the menu bar (World'Open). Thereupon appears a dialog where the user can choose the EvoPaint-file which he wants to load in the current evolution screen.
+
+\subsubsection{Save evolution}
+\paragraph{3.2.9.1	Introduction/Purpose of feature}
+This function saves a current evolution from the evolution screen. This gives the user the possibility to save interesting evolutionary systems for later consideration.
+\paragraph{3.2.9.2	Stimulus/Response sequence}
+The feature is accessible over the menu bar (World'Save, World'Save as). The difference between these two possibilities is that the first one does not provide a dialog in which the user can determine where he can save a file if the evolution was saved before.
+
+\subsubsection{Import}
+\paragraph{3.2.10.1	Introduction/Purpose of feature}
+With this feature it is possible to import any pictures from the file directory into EvoPaint. Of course there are no rules which could be imported. So the user needs to import a random picture and then he can determine different rules for various sections of the evolutions screen.
+\paragraph{3.2.10.2	Stimulus/Response sequence}
+This feature is accessible over the menu bar (World'Import). Thereupon a dialog is shown where the user can choose the pictures to be imported. The user now can choose the desired file and press ok. Now the picture will be loaded into the evolution screen and it can be used for further editing.
+
+\subsubsection{Export}
+\paragraph{3.2.11.1	Introduction/Purpose of feature}
+With this function the user can save pictures of the current evolution screen. They can be saved in the jpg or the png file format. 
+\paragraph{3.2.11.2	Stimulus/Response sequence}
+The export function is accessible over the menu bar (World' Export). If the user clicks on the option "Export" a java save dialog is shown. There the user can choose the file format either png or jpg, the place the file is to be saved and the name of the file to be saved. By clicking on the "Ok" button of the java save dialog the picture is saved at the specified place. By clicking on the "Cancel" button the action is cancelled and EvoPaint application and evolution is continuing.
+
+\subsubsection{End}
+\paragraph{3.2.12.1	Introduction/Purpose of feature}
+This function stops the evolution and the simply close the EvoPaint. 
+\paragraph{3.2.12.2	Stimulus/Response sequence}
+The function is accessible over the menu bar (World'End). Thereupon a dialog appears where the user is asked if he really wants to end EvoPaint. By clicking on "Ja" the program exits. By clicking on the second option "Nein" the dialog is closed without further reaction.
+
+\subsubsection{Set name of a selection}
+\paragraph{3.2.13.1	Introduction/Purpose of feature}
+The purpose of this function is to order and keep the overview to the different selections created by the selection tool. So the user has the possibility give these selections a specific name.
+\paragraph{3.2.13.2	Stimulus/Response sequence}
+This function is accessible over the menu bar (Selections'Set Name). By clicking on this option a dialog appears where the user can enter the desired name.
+
+\subsubsection{Fill}
+\paragraph{3.2.14.1	Introduction/Purpose of feature}
+This function fills a selection with a color. The user can choose the color and click on the option fill in the menu bar.
+\paragraph{3.2.14.2	Stimulus/Response sequence}
+The color needs to be set within the paint options at the right side beneath the toolbox. By clicking on the fill options (Selection ' Fill) the selection is filled with the desired color
+
+\subsubsection{Fill 50}
+\paragraph{3.2.15.1	Introduction/Purpose of feature}
+This function fills a selection with a color to 50. The user can choose the color and click on the option fill 50 in the menu bar.
+\paragraph{3.2.5.2	Stimulus/Response sequence}
+Like at the fill option the color needs to be set in the paint options beneath the toolbox. Activating this function fills the selection with the preset color
+
+\subsubsection{Open as new}
+\paragraph{3.2.16.1	Introduction/Purpose of feature}
+This feature opens a selection in a new EvoPaint evolution screen. The purpose of this feature is to extract a part of an evolution and observe it out of the source system
+\paragraph{3.2.16.2	Stimulus/Response sequence}
+The feature is accessible over the menu bar (Selection ' Open as new). A new EvoPaint Window with the chosen selection is opened
+
+\subsubsection{Copy}
+\paragraph{3.2.17.1	Introduction/Purpose of feature}
+With this function the user can copy different Selections and paste them on other places at the evolution screen.
+
+\subsubsection{Delete current}
+\paragraph{3.2.18.1	Introduction/Purpose of feature}
+With this function the user is able to delete previous selections. 
+\paragraph{3.2.18.2	Stimulus/Response sequence}
+The user needs to select the selection he wants to delete and click on the option delete current accessible in the menu bar (Selections' Delete current).
+
+\subsubsection{Select selections}
+\paragraph{3.2.19.1	Introduction/Purpose of feature}
+With this feature the user is able to select different selection which he created between the evolution time of EvoPaint.
+\paragraph{3.2.19.2	Stimulus/Response sequence}
+This feature is accessible within the menu bar. (Selection ' Selection).
+
+\subsubsection{clear selections}
+\paragraph{3.2.20.1	Introduction/Purpose of feature}
+This feature enables the user to delete all selection. This cannot be undone. 
+\paragraph{3.2.20.2	Stimulus/Response sequence}
+This feature is accessible within the menu bar. (Selection ' Clear Selections)
+
+
+\end{document}
