@@ -19,6 +19,8 @@
 
 package evopaint.gui.rulesetmanager;
 
+import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.io.xml.DomDriver;
 import evopaint.Configuration;
 import evopaint.gui.rulesetmanager.util.NamedObjectListCellRenderer;
 import evopaint.pixel.rulebased.RuleSet;
@@ -33,6 +35,9 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Insets;
+import java.awt.Toolkit;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.StringSelection;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -69,6 +74,7 @@ public class JRuleSetBrowser extends JPanel implements TreeSelectionListener {
     private Component newDialogOwner;
     private JButton browserBtnDelete;
     private JButton browserBtnCopy;
+    private JButton browserBtnClip;
     private JRuleList jRuleListReference;
 
     public JRuleSetBrowser(Configuration configuration, JRuleSetTree tree, JRuleList jRuleListReference) {
@@ -97,19 +103,23 @@ public class JRuleSetBrowser extends JPanel implements TreeSelectionListener {
         JPanel controlPanel = new JPanel();
         controlPanel.setBackground(new Color(0xF2F2F5));
         JButton browserBtnNew = new JButton(new ImageIcon(getClass().getResource("icons/button-new.png")));
+        browserBtnNew.setToolTipText("Opens a dialog to create a new collection or rule set");
         newDialogOwner = browserBtnNew;
         browserBtnNew.addActionListener(new BrowserBtnNewListener());
         controlPanel.add(browserBtnNew);
         browserBtnCopy = new JButton(new ImageIcon(getClass().getResource("icons/button-copy.png")));
+        browserBtnCopy.setToolTipText("Copies the selected rule set or collection");
         browserBtnCopy.addActionListener(new BtnCopyListener());
         browserBtnCopy.setEnabled(false);
         controlPanel.add(browserBtnCopy);
         browserBtnDelete = new JButton(new ImageIcon(getClass().getResource("icons/button-delete.png")));
+        browserBtnDelete.setToolTipText("Deletes the selected collection or rule set");
         browserBtnDelete.addActionListener(new BtnDeleteListener());
         browserBtnDelete.setEnabled(false);
         controlPanel.add(browserBtnDelete);
-        JButton browserBtnClip = new JButton(new ImageIcon(getClass().getResource("icons/button-clipboard.png")));
-        //browserBtnClip.addActionListener(new BtnDeleteListener());
+        browserBtnClip = new JButton(new ImageIcon(getClass().getResource("icons/button-clipboard.png")));
+        browserBtnClip.setToolTipText("Exports the selected rule set to the clipboard. Paste anywhere with Ctrl-V");
+        browserBtnClip.addActionListener(new BtnClipListener());
         browserBtnClip.setEnabled(false);
         controlPanel.add(browserBtnClip);
 
@@ -124,11 +134,22 @@ public class JRuleSetBrowser extends JPanel implements TreeSelectionListener {
         if (userObject == null) {
             browserBtnDelete.setEnabled(false);
             browserBtnCopy.setEnabled(false);
+            browserBtnClip.setEnabled(false);
             return;
         }
-        
+
         browserBtnDelete.setEnabled(true);
         browserBtnCopy.setEnabled(true);
+
+        if (userObject instanceof RuleSetCollection) {
+            browserBtnClip.setEnabled(false);
+            return;
+        }
+
+        if (userObject instanceof RuleSet) {
+            browserBtnClip.setEnabled(true);
+            return;
+        }
     }
 
     private class BrowserBtnNewListener implements ActionListener {
@@ -431,4 +452,19 @@ public class JRuleSetBrowser extends JPanel implements TreeSelectionListener {
             tree.updateVisibleRemove(parentNode, childIndex);
         }
     }
+
+    private class BtnClipListener implements ActionListener {
+
+        public void actionPerformed(ActionEvent e) {
+            Clipboard cb = Toolkit.getDefaultToolkit().getSystemClipboard();
+            XStream xStream = new XStream(new DomDriver());
+            RuleSetNode ruleSetNode = (RuleSetNode)
+                    tree.getLastSelectedPathComponent();
+            RuleSet ruleSet = (RuleSet)ruleSetNode.getUserObject();
+            String xml = xStream.toXML(ruleSet);
+            StringSelection contents = new StringSelection(xml);
+            cb.setContents(contents, null);
+        }
+    }
+    
 }

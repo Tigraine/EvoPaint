@@ -46,6 +46,8 @@ import javax.swing.JScrollPane;
 import javax.swing.border.LineBorder;
 import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -55,13 +57,16 @@ import javax.swing.tree.DefaultTreeModel;
  *
  * @author Markus Echterhoff <tam@edu.uni-klu.ac.at>
  */
-public class JRuleList extends JPanel implements TreeSelectionListener, ListDataListener {
+public class JRuleList extends JPanel implements TreeSelectionListener, ListDataListener, ListSelectionListener {
     private Configuration configuration;
     private DragDropList list;
     private DefaultListModel model;
     private RuleSetNode lastSelectedRuleSetNode;
     private boolean dirty;
     private JRuleSetTree tree;
+    private JButton btnEdit;
+    private JButton btnCopy;
+    private JButton btnDelete;
 
     public boolean isDirty() {
         return dirty;
@@ -179,6 +184,7 @@ public class JRuleList extends JPanel implements TreeSelectionListener, ListData
         list.setBorder(null);
         list.setCellRenderer(new RuleCellRenderer());
         list.addMouseListener(doubleClickListener);
+        list.addListSelectionListener(this);
         list.setSelectionForeground(Color.BLACK);
         list.setSelectionBackground(new Color(0xe9eff8));
         // DO NOT GIVE THIS LIST A PREFERRED SIZE, IT WILL FUCK UP THE H-SCROLLBAR
@@ -193,10 +199,13 @@ public class JRuleList extends JPanel implements TreeSelectionListener, ListData
         final JPanel controlPanel = new JPanel();
         controlPanel.setBackground(new Color(0xF2F2F5));
 
-        final JButton btnEdit = new JButton(new ImageIcon(getClass().getResource("icons/button-edit.png")));
+        btnEdit = new JButton(new ImageIcon(getClass().getResource("icons/button-edit.png")));
+        btnEdit.setToolTipText("Opens the selected rule in the Rule Editor");
+        btnEdit.setEnabled(false);
         btnEdit.addActionListener(btnEditListener);
 
         JButton btnAdd = new JButton(new ImageIcon(getClass().getResource("icons/button-add.png")));
+        btnAdd.setToolTipText("Adds a new rule and opens it in the Rule Editor");
         btnAdd.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 IRule newRule = new Rule();
@@ -209,7 +218,9 @@ public class JRuleList extends JPanel implements TreeSelectionListener, ListData
 
         controlPanel.add(btnEdit);
 
-        JButton btnCopy = new JButton(new ImageIcon(getClass().getResource("icons/button-copy.png")));
+        btnCopy = new JButton(new ImageIcon(getClass().getResource("icons/button-copy.png")));
+        btnCopy.setToolTipText("Copies the selected rule");
+        btnCopy.setEnabled(false);
         btnCopy.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 if (list.isSelectionEmpty()) {
@@ -224,7 +235,9 @@ public class JRuleList extends JPanel implements TreeSelectionListener, ListData
         });
         controlPanel.add(btnCopy);
 
-        JButton btnDelete = new JButton(new ImageIcon(getClass().getResource("icons/button-delete.png")));
+        btnDelete = new JButton(new ImageIcon(getClass().getResource("icons/button-delete.png")));
+        btnDelete.setToolTipText("Deletes the selected rule");
+        btnDelete.setEnabled(false);
         btnDelete.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 if (list.isSelectionEmpty()) {
@@ -243,6 +256,27 @@ public class JRuleList extends JPanel implements TreeSelectionListener, ListData
         
         add(controlPanel, BorderLayout.SOUTH);
     }
+
+    public void valueChanged(ListSelectionEvent e) {
+
+        // user interaction is said to cause multiple selection events
+        // this magic method sorts out uninteresting ones
+        if (e.getValueIsAdjusting()) {
+            return;
+        }
+
+        if (list.getSelectedIndex() == -1) { // no rule selected
+            btnEdit.setEnabled(false);
+            btnCopy.setEnabled(false);
+            btnDelete.setEnabled(false);
+            return;
+        }
+
+        btnEdit.setEnabled(true);
+        btnCopy.setEnabled(true);
+        btnDelete.setEnabled(true);
+    }
+
 
     private class RuleCellRenderer extends DefaultListCellRenderer {
         @Override
