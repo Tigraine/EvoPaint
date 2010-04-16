@@ -22,8 +22,8 @@ public abstract class Pixel {
         return pixelColor;
     }
 
-    public void setPixelColor(PixelColor pixelColor) {
-        this.pixelColor = pixelColor;
+    public void setPixelColor(float [] hsb) {
+        this.pixelColor.setHSB(hsb);
     }
 
     public AbsoluteCoordinate getLocation() {

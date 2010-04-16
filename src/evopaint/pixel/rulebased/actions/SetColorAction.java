@@ -57,7 +57,7 @@ public class SetColorAction extends Action {
     }
     
     public String getName() {
-        return "set color";
+        return "setColor";
     }
 
     public int execute(Pixel actor, RelativeCoordinate direction, Configuration configuration) {
@@ -65,7 +65,7 @@ public class SetColorAction extends Action {
         if (target == null) {
             return 0;
         }
-        target.setPixelColor(color);
+        target.setPixelColor(color.getHSB());
         return energyChange;
     }
 
