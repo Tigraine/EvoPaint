@@ -52,6 +52,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 import javax.swing.border.LineBorder;
@@ -102,7 +103,7 @@ public class JRuleSetBrowser extends JPanel implements TreeSelectionListener {
         // create buttons for control panel of browser
         JPanel controlPanel = new JPanel();
         controlPanel.setBackground(new Color(0xF2F2F5));
-        JButton browserBtnNew = new JButton(new ImageIcon(getClass().getResource("icons/button-new.png")));
+        JButton browserBtnNew = new JButton(new ImageIcon(getClass().getResource("icons/button-add.png")));
         browserBtnNew.setToolTipText("Opens a dialog to create a new collection or rule set");
         newDialogOwner = browserBtnNew;
         browserBtnNew.addActionListener(new BrowserBtnNewListener());
@@ -117,9 +118,14 @@ public class JRuleSetBrowser extends JPanel implements TreeSelectionListener {
         browserBtnDelete.addActionListener(new BtnDeleteListener());
         browserBtnDelete.setEnabled(false);
         controlPanel.add(browserBtnDelete);
-        browserBtnClip = new JButton(new ImageIcon(getClass().getResource("icons/button-clipboard.png")));
+        browserBtnClip = new JButton(new ImageIcon(getClass().getResource("icons/button-import.png")));
+        browserBtnClip.setToolTipText("Opens an import dialog to import a rule set");
+        browserBtnClip.addActionListener(new BtnImportListener());
+        browserBtnClip.setEnabled(false);
+        controlPanel.add(browserBtnClip);
+        browserBtnClip = new JButton(new ImageIcon(getClass().getResource("icons/button-export.png")));
         browserBtnClip.setToolTipText("Exports the selected rule set to the clipboard. Paste anywhere with Ctrl-V");
-        browserBtnClip.addActionListener(new BtnClipListener());
+        browserBtnClip.addActionListener(new BtnExportListener());
         browserBtnClip.setEnabled(false);
         controlPanel.add(browserBtnClip);
 
@@ -453,7 +459,40 @@ public class JRuleSetBrowser extends JPanel implements TreeSelectionListener {
         }
     }
 
-    private class BtnClipListener implements ActionListener {
+    private class BtnImportListener implements ActionListener {
+
+        public void actionPerformed(ActionEvent e) {
+            /*
+            JDialog dialog = new JDialog((JFrame)SwingUtilities.getWindowAncestor(newDialogOwner), "Import Rule Set", true);
+            JTextArea textArea = new JTextArea();
+            dialog.add(textArea);
+
+            JPanel controlPanel = new JPanel();
+            final JButton btnOK = new JButton("OK");
+            btnOK.addActionListener(new importDialogOKListener());
+            controlPanel.add(btnOK);
+            final JButton btnCancel = new JButton("Cancel");
+            btnCancel.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    dialog.dispose();
+                }
+             });
+            controlPanel.add(btnCancel);
+
+            Clipboard cb = Toolkit.getDefaultToolkit().getSystemClipboard();
+            XStream xStream = new XStream(new DomDriver());
+            RuleSetNode ruleSetNode = (RuleSetNode)
+                    tree.getLastSelectedPathComponent();
+            RuleSet ruleSet = (RuleSet)ruleSetNode.getUserObject();
+            String xml = xStream.toXML(ruleSet);
+            StringSelection contents = new StringSelection(xml);
+            cb.setContents(contents, null);
+             
+             */
+        }
+    }
+
+    private class BtnExportListener implements ActionListener {
 
         public void actionPerformed(ActionEvent e) {
             Clipboard cb = Toolkit.getDefaultToolkit().getSystemClipboard();
