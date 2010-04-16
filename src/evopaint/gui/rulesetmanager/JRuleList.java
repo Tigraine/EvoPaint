@@ -86,6 +86,7 @@ public class JRuleList extends JPanel implements TreeSelectionListener, ListData
         // inform the tree listeners about the changes
         CollectionNode parentNode = (CollectionNode)lastSelectedRuleSetNode.getParent();
         DefaultTreeModel treeModel = (DefaultTreeModel)tree.getModel();
+        System.out.println(parentNode);
         treeModel.nodesChanged(parentNode,
                 new int [] {parentNode.getIndex(lastSelectedRuleSetNode)});
 

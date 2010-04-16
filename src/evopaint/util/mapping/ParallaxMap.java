@@ -154,7 +154,7 @@ public class ParallaxMap<T> extends AbstractCollection<T> {
                 if (get(x, y) == null) {
                     indices[i] = wrap(y, height) * width + wrap(x, width);
                     i++;
-                    if (i == numFree - 1) {
+                    if (i == numFree) {
                         int chosenIndex = indices[rng.nextPositiveInt(indices.length)];
                         return new AbsoluteCoordinate(chosenIndex % width, chosenIndex / width, this);
                     }
