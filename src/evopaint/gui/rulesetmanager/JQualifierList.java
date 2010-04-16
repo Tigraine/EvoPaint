@@ -128,7 +128,7 @@ public class JQualifierList extends JPanel {
                 qualifierButton.setText(jQualifiers.get(i).createQualifier().toHTML());
             } else {
                 qualifierButton.setText("<html><span style='color: #A0A0A0;'>"+
-                        jQualifiers.get(i).createQualifier().toHTML() +
+                        jQualifiers.get(i).createQualifier().toString().replaceAll(".?", "&nbsp;") +
                         "</span><html>");
             }
             ((JPanel)wrapper).getComponent(1).setEnabled(bool);

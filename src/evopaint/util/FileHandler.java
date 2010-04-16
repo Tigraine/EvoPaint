@@ -207,7 +207,7 @@ public class FileHandler implements TreeModelListener {
                 CollectionNode collectionNode = (CollectionNode)parentNode;
                 assert(collectionNode != null);
                 File ruleSetFile = new File(collectionsDir,
-                        makeDirectoryName(collectionNode.getName()) + File.pathSeparator +
+                        makeDirectoryName(collectionNode.getName()) + File.separator +
                         makeFileName(ruleSetNode.getName()));
                 writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(ruleSetFile), "UTF8"));
                 writer.write(xStream.toXML((RuleSet)ruleSetNode.getUserObject()));
@@ -293,7 +293,7 @@ public class FileHandler implements TreeModelListener {
                 assert(collectionNode != null);
                 File ruleSetFile = new File(collectionsDir,
                     makeDirectoryName(collectionNode.getName() +
-                    File.pathSeparator +
+                    File.separator +
                     makeFileName(((RuleSetNode)addedNode).getName())));
                 writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(ruleSetFile), "UTF8"));
                 writer.write(xStream.toXML((RuleSet)addedNode.getUserObject()));
@@ -335,7 +335,7 @@ public class FileHandler implements TreeModelListener {
             assert(collectionNode != null);
             File ruleSetFile = new File(collectionsDir,
                     makeDirectoryName(collectionNode.getName() +
-                    File.pathSeparator +
+                    File.separator +
                     makeFileName(((RuleSetNode)removedNode).getName())));
             if (false == ruleSetFile.delete()) {
                 System.out.println("Failed to delete rule set file: " + ruleSetFile.getAbsolutePath());
