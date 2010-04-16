@@ -19,7 +19,6 @@
 
 package evopaint.gui.rulesetmanager;
 
-import evopaint.pixel.rulebased.Action;
 import evopaint.pixel.rulebased.targeting.ITarget;
 import evopaint.pixel.rulebased.targeting.MetaTarget;
 import evopaint.pixel.rulebased.targeting.SingleTarget;

@@ -1,6 +1,22 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+ *  Copyright (C) 2010 Markus Echterhoff <tam@edu.uni-klu.ac.at>,
+ *                      Daniel Hölbling,
+ *                      Augustin Malle
+ *
+ *  This file is part of EvoPaint.
+ *
+ *  EvoPaint is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with EvoPaint.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 package evopaint.gui;
@@ -8,26 +24,20 @@ package evopaint.gui;
 import evopaint.Configuration;
 import evopaint.EvoPaint;
 import evopaint.Manifest;
-import evopaint.Perception;
 import evopaint.Selection;
-import evopaint.World;
 import evopaint.commands.DeleteCurrentSelectionCommand;
 import evopaint.commands.FillSelectionCommand;
 import evopaint.commands.FillSelectionCommandScattered;
 import evopaint.commands.SelectAllCommand;
 import evopaint.gui.listeners.SelectionListenerFactory;
-import evopaint.gui.SelectionList;
-import evopaint.pixel.Pixel;
 import evopaint.util.logging.Logger;
 
 import javax.swing.*;
 
-import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -36,7 +46,9 @@ import java.util.Observer;
 
 /**
  *
- * @author tam
+ * @author Markus Echterhoff <tam@edu.uni-klu.ac.at>
+ * @author Daniel Hölbling
+ * @author Augustin Malle
  */
 public class MenuBar extends JMenuBar implements Observer {
     private Configuration configuration;

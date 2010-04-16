@@ -21,7 +21,7 @@ package evopaint.gui.util;
 
 /**
  *
- * @author tam
+ * @author Markus Echterhoff <tam@edu.uni-klu.ac.at>
  */
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.StringSelection;

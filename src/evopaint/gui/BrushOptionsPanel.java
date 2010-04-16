@@ -1,6 +1,24 @@
+/*
+ *  Copyright (C) 2010 Markus Echterhoff <tam@edu.uni-klu.ac.at>
+ *
+ *  This file is part of EvoPaint.
+ *
+ *  EvoPaint is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with EvoPaint.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package evopaint.gui;
 
-import evopaint.Brush;
 import evopaint.Configuration;
 import evopaint.gui.util.AutoSelectOnFocusSpinner;
 import java.awt.Checkbox;
@@ -9,26 +27,20 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.GridLayout;
 import java.awt.Insets;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import javax.swing.ButtonGroup;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JRadioButton;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
-import javax.swing.border.LineBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+/**
+ *
+ * @author Markus Echterhoff <tam@edu.uni-klu.ac.at>
+ */
 public class BrushOptionsPanel extends JPanel {
 
-    private JRadioButton radioColor;
     private Configuration configuration;
     Checkbox checkboxRandom;
 
@@ -76,5 +88,6 @@ public class BrushOptionsPanel extends JPanel {
             configuration.brush.size = (Integer)spinnerBrushSize.getValue();
         }
     }
+    
 }
 

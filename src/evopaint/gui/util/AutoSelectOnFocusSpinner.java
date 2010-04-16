@@ -29,7 +29,7 @@ import javax.swing.SwingUtilities;
 
 /**
  *
- * @author tam
+ * @author Markus Echterhoff <tam@edu.uni-klu.ac.at>
  */
 public class AutoSelectOnFocusSpinner extends JSpinner {
 

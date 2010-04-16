@@ -31,7 +31,6 @@ import javax.swing.plaf.UIResource;
  *
  * @author Markus Echterhoff <tam@edu.uni-klu.ac.at>
  */
-
 public class NamedObjectListCellRenderer extends DefaultListCellRenderer implements ListCellRenderer, UIResource {
 
     public NamedObjectListCellRenderer() {

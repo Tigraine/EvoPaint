@@ -20,11 +20,9 @@
 package evopaint.pixel.rulebased.targeting.qualifiers;
 
 import evopaint.Configuration;
-import evopaint.gui.rulesetmanager.util.ColorChooserLabel;
 import evopaint.gui.rulesetmanager.util.DimensionsListener;
 import evopaint.pixel.ColorDimensions;
 import evopaint.pixel.Pixel;
-import evopaint.pixel.PixelColor;
 import evopaint.pixel.rulebased.targeting.Qualifier;
 import evopaint.util.mapping.RelativeCoordinate;
 import java.awt.event.ActionEvent;

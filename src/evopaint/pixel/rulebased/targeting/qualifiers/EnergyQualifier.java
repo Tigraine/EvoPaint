@@ -20,12 +20,9 @@
 package evopaint.pixel.rulebased.targeting.qualifiers;
 
 import evopaint.Configuration;
-import evopaint.gui.rulesetmanager.util.NamedObjectListCellRenderer;
 import evopaint.pixel.Pixel;
 import evopaint.pixel.rulebased.targeting.Qualifier;
-import evopaint.pixel.rulebased.util.ObjectComparisonOperator;
 import evopaint.util.mapping.RelativeCoordinate;
-import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
