@@ -37,6 +37,7 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.DefaultListModel;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JList;
@@ -192,10 +193,10 @@ public class JRuleList extends JPanel implements TreeSelectionListener, ListData
         final JPanel controlPanel = new JPanel();
         controlPanel.setBackground(new Color(0xF2F2F5));
 
-        final JButton btnEdit = new JButton("Edit");
+        final JButton btnEdit = new JButton(new ImageIcon(getClass().getResource("icons/button-edit.png")));
         btnEdit.addActionListener(btnEditListener);
 
-        JButton btnAdd = new JButton("Add");
+        JButton btnAdd = new JButton(new ImageIcon(getClass().getResource("icons/button-add.png")));
         btnAdd.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 IRule newRule = new Rule();
@@ -208,7 +209,7 @@ public class JRuleList extends JPanel implements TreeSelectionListener, ListData
 
         controlPanel.add(btnEdit);
 
-        JButton btnCopy = new JButton("Copy");
+        JButton btnCopy = new JButton(new ImageIcon(getClass().getResource("icons/button-copy.png")));
         btnCopy.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 if (list.isSelectionEmpty()) {
@@ -223,7 +224,7 @@ public class JRuleList extends JPanel implements TreeSelectionListener, ListData
         });
         controlPanel.add(btnCopy);
 
-        JButton btnDelete = new JButton("Delete");
+        JButton btnDelete = new JButton(new ImageIcon(getClass().getResource("icons/button-delete.png")));
         btnDelete.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 if (list.isSelectionEmpty()) {

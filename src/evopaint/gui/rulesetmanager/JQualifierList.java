@@ -107,7 +107,7 @@ public class JQualifierList extends JPanel {
 
         wrapper.add(JQualifierButton);
 
-        JButton btnDelete = new JButton(new ImageIcon(getClass().getResource("icons/button-delete_condition.png")));
+        JButton btnDelete = new JButton(new ImageIcon(getClass().getResource("icons/button-delete-condition.png")));
         btnDelete.setPreferredSize(new Dimension(btnDelete.getPreferredSize().height, btnDelete.getPreferredSize().height));
         btnDelete.addActionListener(new JQualifierDeleteListener(JQualifierButton));
         wrapper.add(btnDelete);

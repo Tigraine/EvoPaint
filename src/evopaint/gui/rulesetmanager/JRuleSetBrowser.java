@@ -39,6 +39,7 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 import javax.swing.ButtonGroup;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
@@ -95,18 +96,22 @@ public class JRuleSetBrowser extends JPanel implements TreeSelectionListener {
         // create buttons for control panel of browser
         JPanel controlPanel = new JPanel();
         controlPanel.setBackground(new Color(0xF2F2F5));
-        JButton browserBtnNew = new JButton("New...");
+        JButton browserBtnNew = new JButton(new ImageIcon(getClass().getResource("icons/button-new.png")));
         newDialogOwner = browserBtnNew;
         browserBtnNew.addActionListener(new BrowserBtnNewListener());
         controlPanel.add(browserBtnNew);
-        browserBtnCopy = new JButton("Copy");
+        browserBtnCopy = new JButton(new ImageIcon(getClass().getResource("icons/button-copy.png")));
         browserBtnCopy.addActionListener(new BtnCopyListener());
         browserBtnCopy.setEnabled(false);
         controlPanel.add(browserBtnCopy);
-        browserBtnDelete = new JButton("Delete");
+        browserBtnDelete = new JButton(new ImageIcon(getClass().getResource("icons/button-delete.png")));
         browserBtnDelete.addActionListener(new BtnDeleteListener());
         browserBtnDelete.setEnabled(false);
         controlPanel.add(browserBtnDelete);
+        JButton browserBtnClip = new JButton(new ImageIcon(getClass().getResource("icons/button-clipboard.png")));
+        //browserBtnClip.addActionListener(new BtnDeleteListener());
+        browserBtnClip.setEnabled(false);
+        controlPanel.add(browserBtnClip);
 
         add(scrollPaneForTree, BorderLayout.CENTER);
         add(controlPanel, BorderLayout.SOUTH);

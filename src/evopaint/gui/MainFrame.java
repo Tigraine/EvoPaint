@@ -85,7 +85,6 @@ public class MainFrame extends JFrame {
 
         setTitle("EvoPaint");
 
-
         resumeCommand = new ResumeCommand(configuration);
         pauseCommand = new PauseCommand(configuration);
         zoomInCommand = new ZoomInCommand(showcase);

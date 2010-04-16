@@ -29,6 +29,7 @@ import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -155,7 +156,7 @@ public class JDescriptionPanel extends JPanel implements TreeSelectionListener {
 
         viewerControlPanel = new JPanel();
         viewerControlPanel.setBackground(new Color(0xF2F2F5));
-        btnEdit = new JButton("Edit");
+        btnEdit = new JButton(new ImageIcon(getClass().getResource("icons/button-edit.png")));
         btnEdit.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                     ((CardLayout)contentPane.getLayout()).show(contentPane, "editor");

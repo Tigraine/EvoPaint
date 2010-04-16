@@ -90,7 +90,7 @@ public class JConditionList extends JPanel {
 
         wrapper.add(jConditionButton);
 
-        JButton btnDelete = new JButton(new ImageIcon(getClass().getResource("icons/button-delete_condition.png")));
+        JButton btnDelete = new JButton(new ImageIcon(getClass().getResource("icons/button-delete-condition.png")));
         btnDelete.setPreferredSize(new Dimension(btnDelete.getPreferredSize().height, btnDelete.getPreferredSize().height));
         btnDelete.addActionListener(new JConditionDeleteListener(jConditionButton));
         wrapper.add(btnDelete);
