@@ -22,10 +22,13 @@ package evopaint.commands;
 
 
 import evopaint.Configuration;
+import evopaint.Selection;
+import evopaint.gui.SelectionManager;
 import evopaint.util.logging.Logger;
 
 
 import java.awt.Point;
+import java.awt.Rectangle;
 
 /*
  *
@@ -35,6 +38,7 @@ import java.awt.Point;
 public class PaintCommand extends AbstractCommand {
     private Configuration configuration;
     private Point location;
+	private final SelectionManager selectionManager;
 
     public Point getLocation() {
         return location;
@@ -44,12 +48,27 @@ public class PaintCommand extends AbstractCommand {
         this.location = location;
     }
 
-    public PaintCommand(Configuration configuration) {
+    public PaintCommand(Configuration configuration, SelectionManager selectionManager) {
         this.configuration = configuration;
+		this.selectionManager = selectionManager;
     }
 
     public void execute() {
-        //Config.log.debug(this);
+        Selection activeSelection = selectionManager.getActiveSelection();
+        if (activeSelection != null) {
+			Rectangle rectangle = activeSelection.getRectangle();
+			int brushSize = configuration.brush.size / 2;
+
+			if (location.x - brushSize < rectangle.x)
+				location.x = rectangle.x + brushSize;
+			if (location.x + brushSize > rectangle.x + rectangle.width) 
+				location.x = rectangle.x + rectangle.width - brushSize;
+			if (location.y - brushSize < rectangle.y)
+				location.y = rectangle.y + brushSize;
+			if (location.y + brushSize > rectangle.y + rectangle.height)
+				location.y = rectangle.y + rectangle.height - brushSize;
+        }
+        System.out.println("painting");
         Logger.log.information("Executing Paint command on x: %s y: %s", location.x, location.y);
         configuration.brush.paint(location.x, location.y);
     }

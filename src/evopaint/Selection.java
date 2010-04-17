@@ -18,11 +18,13 @@ public class Selection extends Observable implements IOverlay {
 	private boolean highlighted;
 	private final WrappingScalableCanvas canvas;
 	private HighlightedSelectionOverlay overlay;
+	private Rectangle rect;
 	
 	public Selection(Point startPoint, Point endPoint,
 			WrappingScalableCanvas canvas) {
 		this.startPoint = startPoint;
 		this.endPoint = endPoint;
+		this.rect = new Rectangle(startPoint, new Dimension(endPoint.x - startPoint.x, endPoint.y - startPoint.y));
 		this.canvas = canvas;
 		overlay = new HighlightedSelectionOverlay(this, canvas);
 	}
@@ -57,6 +59,10 @@ public class Selection extends Observable implements IOverlay {
 
 	public boolean isHighlighted() {
 		return highlighted;
+	}
+	
+	public Rectangle getRectangle() {
+		return rect;
 	}
 
 	@Override
