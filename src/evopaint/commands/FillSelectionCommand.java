@@ -76,7 +76,7 @@ public class FillSelectionCommand extends AbstractCommand {
 		}
 
 		if (rectangle.contains(location)) {
-			System.out.println("Filling inside rect");
+			//System.out.println("Filling inside rect " + rectangle);
 
 			for (int x = rectangle.x; x < rectangle.x + rectangle.width; x++) {
 				for (int y = rectangle.y; y < rectangle.y + rectangle.height; y++) {
@@ -88,7 +88,7 @@ public class FillSelectionCommand extends AbstractCommand {
 				}
 			}
 		} else {
-			System.out.println("Filling outside rect");
+			//System.out.println("Filling outside rect");
 			Point currentLoc = new Point();
 			for (int x = 0; x < configuration.world.getWidth(); x++) {
 				for (int y = 0; y < configuration.world.getHeight(); y++) {
@@ -106,7 +106,7 @@ public class FillSelectionCommand extends AbstractCommand {
 	}
 
 	private void createPixel(int x, int y) {
-		PixelColor currentColor = configuration.paint.getCurrentColor();
+		PixelColor currentColor = new PixelColor(configuration.paint.getCurrentColor());
 		switch (configuration.paint.getCurrentColorMode()) {
 		case Paint.FAIRY_DUST:
 			currentColor.setInteger(configuration.rng.nextPositiveInt());
