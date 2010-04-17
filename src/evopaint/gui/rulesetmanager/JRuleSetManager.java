@@ -19,44 +19,23 @@
 
 package evopaint.gui.rulesetmanager;
 
-import com.thoughtworks.xstream.XStream;
-import com.thoughtworks.xstream.io.xml.DomDriver;
 import evopaint.Configuration;
-import evopaint.gui.rulesetmanager.util.NamedObjectListCellRenderer;
 import evopaint.pixel.rulebased.RuleSet;
 import evopaint.pixel.rulebased.RuleSetCollection;
 import evopaint.pixel.rulebased.interfaces.IRule;
-import evopaint.util.CollectionNode;
-import evopaint.util.ExceptionHandler;
 import evopaint.util.RuleSetNode;
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Container;
 import java.awt.Toolkit;
-import java.awt.datatransfer.Clipboard;
-import java.awt.datatransfer.DataFlavor;
-import java.awt.datatransfer.FlavorEvent;
-import java.awt.datatransfer.FlavorListener;
-import java.awt.datatransfer.Transferable;
-import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.io.IOException;
-import java.util.Enumeration;
-import javax.swing.Box;
-import javax.swing.BoxLayout;
-import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JDialog;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSplitPane;
-import javax.swing.SwingUtilities;
 import javax.swing.border.LineBorder;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
@@ -68,7 +47,7 @@ import javax.swing.tree.TreePath;
  *
  * @author Markus Echterhoff <tam@edu.uni-klu.ac.at>
  */
-public class JRuleSetManager extends JPanel implements TreeSelectionListener, FlavorListener{
+public class JRuleSetManager extends JPanel implements TreeSelectionListener {
 
     private Configuration configuration;
     private RuleSet selectedRuleSet;
@@ -100,8 +79,6 @@ public class JRuleSetManager extends JPanel implements TreeSelectionListener, Fl
         this.contentPane = this;
 
         setLayout(new CardLayout());
-
-        Toolkit.getDefaultToolkit().getSystemClipboard().addFlavorListener(this);
 
         DefaultTreeModel treeModel = configuration.fileHandler.readCollections();
         jRuleSetTree = new JRuleSetTree(treeModel, new TreeDoubleClickListener());
@@ -194,130 +171,6 @@ public class JRuleSetManager extends JPanel implements TreeSelectionListener, Fl
         }
 
         assert(false);
-    }
-
-
-
-    public void flavorsChanged(FlavorEvent e) {
-        Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemSelection();
-        Transferable contentObject = clipboard.getContents(null);
-
-        if (contentObject == null ||
-                false == contentObject.isDataFlavorSupported(DataFlavor.stringFlavor)) {
-            return;
-        }
-
-        try {
-            final String contentString =
-                    (String) contentObject.getTransferData(DataFlavor.stringFlavor);
-
-            if (contentString == null) {
-                return;
-            }
-
-            if (false == contentString.startsWith("<evopaint.pixel.rulebased.RuleSet>")) {
-                return;
-            }
-
-            final JDialog importDialog = new JDialog(
-                    (JFrame)SwingUtilities.getWindowAncestor(contentPane),
-                    "Import Rule Set", true);
-            importDialog.setLayout(new BoxLayout(importDialog.getContentPane(), BoxLayout.Y_AXIS));
-
-            importDialog.add(Box.createVerticalStrut(10));
-            JPanel labelAlignmentPanel = new JPanel();
-            labelAlignmentPanel.add(new JLabel("Import to Collection:"));
-            importDialog.add(labelAlignmentPanel);
-            importDialog.add(Box.createVerticalStrut(10));
-
-            // collections combo box
-            JPanel comboBoxAlignmentPanel = new JPanel();
-            DefaultMutableTreeNode root = (DefaultMutableTreeNode)
-                    jRuleSetTree.getModel().getRoot();
-            Enumeration children = root.children();
-            if (children == null) {
-                System.out.println("no collections to import into");
-                return;
-            }
-            DefaultComboBoxModel comboBoxModel = new DefaultComboBoxModel();
-            while (children.hasMoreElements()) {
-                CollectionNode collectionNode =
-                        (CollectionNode)children.nextElement();
-                comboBoxModel.addElement(collectionNode);
-            }
-            final JComboBox collectionComboBox = new JComboBox(comboBoxModel);
-            collectionComboBox.setRenderer(new NamedObjectListCellRenderer());
-            comboBoxAlignmentPanel.add(collectionComboBox);
-            importDialog.add(comboBoxAlignmentPanel);
-
-            // control panel
-            JPanel controlPanel = new JPanel();
-            JButton btnOK = new JButton("OK");
-            btnOK.addActionListener(new ActionListener() {
-
-                public void actionPerformed(ActionEvent e) {
-                    CollectionNode collectionNode = (CollectionNode)
-                            collectionComboBox.getSelectedItem();
-                    XStream xStream = new XStream(new DomDriver());
-                    RuleSet ruleSet = (RuleSet)xStream.fromXML(contentString);
-
-                    // make sure the name of the import is unique
-                    // first try given name
-                    boolean found = false;
-                    Enumeration siblingRuleSetNodes = collectionNode.children();
-                    while (siblingRuleSetNodes.hasMoreElements()) {
-                        RuleSetNode node = (RuleSetNode)siblingRuleSetNodes.nextElement();
-                        RuleSet rs = (RuleSet)node.getUserObject();
-                        if (rs.getName().equals(ruleSet.getName())) {
-                            found = true;
-                            break;
-                        }
-                    }
-                    // then add numbers until we are fine
-                    if (found == true) {
-                        String originalName = ruleSet.getName().replaceAll(" *\\(\\d+\\)", "");
-                        for (int i = 1; found == true; i++) {
-                            ruleSet.setName(originalName + " (" + i + ")");
-                            found = false;
-                            siblingRuleSetNodes = collectionNode.children();
-                            while (siblingRuleSetNodes.hasMoreElements()) {
-                                RuleSetNode node = (RuleSetNode)siblingRuleSetNodes.nextElement();
-                                RuleSet rs = (RuleSet)node.getUserObject();
-                                if (rs.getName().equals(ruleSet.getName())) {
-                                    found = true;
-                                    break;
-                                }
-                            }
-                        }
-                    }
-                    
-                    RuleSetNode ruleSetNode = new RuleSetNode(ruleSet);
-                    ((DefaultTreeModel)jRuleSetTree.getModel()).insertNodeInto(
-                            ruleSetNode, collectionNode, collectionNode.getChildCount());
-                    importDialog.dispose();
-                }
-            });
-            importDialog.add(Box.createVerticalStrut(10));
-            controlPanel.add(btnOK);
-
-            JButton btnCancel = new JButton("Cancel");
-            btnCancel.addActionListener(new ActionListener() {
-
-                public void actionPerformed(ActionEvent e) {
-                    importDialog.dispose();
-                }
-            });
-            controlPanel.add(btnCancel);
-
-            importDialog.add(controlPanel);
-
-            importDialog.pack();
-            importDialog.setVisible(true);
-        } catch (UnsupportedFlavorException ex) {
-            ExceptionHandler.handle(ex);
-        } catch (IOException ex) {
-            ExceptionHandler.handle(ex);
-        }
     }
 
     private class RuleEditorOKListener implements ActionListener {

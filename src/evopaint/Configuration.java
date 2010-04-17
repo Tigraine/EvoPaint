@@ -20,6 +20,8 @@
 package evopaint;
 
 
+import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.io.xml.DomDriver;
 import evopaint.interfaces.IRandomNumberGenerator;
 import evopaint.interfaces.ITool;
 import evopaint.pixel.Pixel;
@@ -41,7 +43,6 @@ import evopaint.pixel.rulebased.targeting.qualifiers.ColorLikenessQualifierColor
 import evopaint.pixel.rulebased.targeting.qualifiers.ColorLikenessQualifierMyColor;
 import evopaint.pixel.rulebased.targeting.qualifiers.ExistenceQualifier;
 import evopaint.pixel.rulebased.targeting.qualifiers.EnergyQualifier;
-import evopaint.util.ExceptionHandler;
 import evopaint.util.FileHandler;
 import evopaint.util.RandomNumberGeneratorWrapper;
 import evopaint.util.logging.Logger;
@@ -92,8 +93,8 @@ public class Configuration {
         add(new ColorLikenessQualifierMyColor());
     }};
 
-    public ExceptionHandler exceptionHandler;
     public IRandomNumberGenerator rng;
+    public XStream xStream;
     public FileHandler fileHandler;
     public World world; // TODO make use of me
     public Brush brush;
@@ -138,6 +139,7 @@ public class Configuration {
         rng = createRNG();
         brush = new Brush(this);
         paint = new Paint(this);
-        fileHandler = new FileHandler();
+        xStream = new XStream(new DomDriver());
+        fileHandler = new FileHandler(xStream);
     }
 }

@@ -20,56 +20,120 @@
 package evopaint.util;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.JTextPane;
+import javax.swing.border.BevelBorder;
+import javax.swing.border.LineBorder;
 
 /**
  *
  * @author Markus Echterhoff <tam@edu.uni-klu.ac.at>
  */
 public class ExceptionHandler {
-    private static JDialog dialog;
-    private static JTextArea textArea;
+    private static ExceptionHandler instance;
 
-    public ExceptionHandler(JFrame mainFrame) {
-        dialog = new JDialog(mainFrame, "FUUUUUUUUUUUUUUUUUUUUUUUUUU", true);
-        dialog.setLayout(new BorderLayout());
+    private static String fatalHeading = "Fatal Error";
+    private static String fatalMessage = "<p>EvoPaint has seriously fucked up and is going to shut down now.</p><p>If you want to help prevent this error from happening again, take a moment to write down what you did just before now and send it together with the text below to Markus Echterhoff using tam@edu.uni-klu.ac.at.</p>";
+    private static String defaultHeading = "That didn't work";
+    private static String defaultMessage = "<p>EvoPaint has encountered a problem doing stuff.</p><p>If you want to help prevent this error from happening again, take a moment to write down what you did just before now and send it together with the text below to the EvoPaint developers.</p>";
 
-        JLabel errorLabel = new JLabel("EvoPaint caught an exception. This is never good so we shut down for now.");
-        dialog.add(errorLabel, BorderLayout.NORTH);
+    private boolean fatal;
+    private JDialog dialog;
+    private JTextPane messagePane;
+    private JTextArea exceptionTextArea;
 
-        textArea = new JTextArea();
-        dialog.add(textArea, BorderLayout.CENTER);
+    private ExceptionHandler(JFrame mainFrame) {
+        dialog = new JDialog(mainFrame, "Sorry...", true);
+        dialog.setLayout(new BorderLayout(10, 10));
+        dialog.setPreferredSize(new Dimension(800, 600));
+
+        messagePane = new JTextPane();
+        messagePane.setContentType("text/html");
+        messagePane.setEditable(false);
+        messagePane.setBorder(new LineBorder(new JPanel().getBackground(), 10));
+        dialog.add(messagePane, BorderLayout.NORTH);
+
+        exceptionTextArea = new JTextArea();
+        exceptionTextArea.setBorder(null);
+        JScrollPane scrollPane = new JScrollPane(exceptionTextArea,
+                JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
+                JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        scrollPane.setBorder(new LineBorder(new JPanel().getBackground(), 10));
+        scrollPane.setViewportBorder(new BevelBorder(BevelBorder.LOWERED));
         
-        final JButton okButton = new JButton("This is my fault");
+        dialog.add(scrollPane, BorderLayout.CENTER);
+
+        JPanel controlPanel = new JPanel();
+        final JButton okButton = new JButton("Damn");
         okButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                System.exit(1);
+                dialog.dispose();
+                if (fatal) {
+                    System.exit(1);
+                }
             }
         });
-        dialog.add(okButton, BorderLayout.SOUTH);
+        controlPanel.add(okButton);
+        final JButton okButton2 = new JButton("Crap");
+        okButton2.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                dialog.dispose();
+                if (fatal) {
+                    System.exit(1);
+                }
+            }
+        });
+        controlPanel.add(okButton2);
+        
+        dialog.add(controlPanel, BorderLayout.SOUTH);
+    }
+
+    public static void init(JFrame mainFrame) {
+        instance = new ExceptionHandler(mainFrame);
     }
 
     public static void handle(Exception ex) {
-        if (dialog != null) {
-            StringWriter stringWriter = new StringWriter();
-            PrintWriter printWriter = new PrintWriter(stringWriter, true);
-            ex.printStackTrace(printWriter);
-            printWriter.flush();
-            stringWriter.flush();
-            textArea.setText(stringWriter.toString());
-            dialog.pack();
-            dialog.setVisible(true);
-        } else {
+        handle(ex, true);
+    }
+
+    public static void handle(Exception ex, boolean fatal) {
+        handle(ex, fatal, fatal ? fatalMessage : defaultMessage);
+    }
+
+    public static void handle(Exception ex, boolean fatal, String msg) {
+        if (instance == null) {
             ex.printStackTrace();
-            System.exit(1);
         }
+
+        instance.handleInternal(ex, fatal, msg);
+    }
+
+    private void handleInternal(Exception ex, boolean fatal, String msg) {
+
+        this.fatal = fatal;
+
+        messagePane.setText("<html><body style='padding:10; background: ffb1ba;'><h1 style='text-align: center;'>" + (fatal ? fatalHeading : defaultHeading) + "</h1>" + msg + "</body></html>");
+
+        StringWriter stringWriter = new StringWriter();
+        PrintWriter printWriter = new PrintWriter(stringWriter, true);
+        ex.printStackTrace(printWriter);
+        printWriter.flush();
+        stringWriter.flush();
+        exceptionTextArea.setText(stringWriter.toString());
+
+        dialog.pack();
+        dialog.setVisible(true);
     }
 }

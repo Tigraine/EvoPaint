@@ -77,6 +77,7 @@ public class JRuleList extends JPanel implements TreeSelectionListener, ListData
             return;
         }
         assert(lastSelectedRuleSetNode != null);
+        System.out.println("asdf " + lastSelectedRuleSetNode.getClass());
 
         // replace rules in rule set node
         RuleSet ruleSet = (RuleSet)lastSelectedRuleSetNode.getUserObject();
@@ -119,6 +120,14 @@ public class JRuleList extends JPanel implements TreeSelectionListener, ListData
     }
 
     public void valueChanged(TreeSelectionEvent e) {
+
+        // if this is a removal event of a dirty rule set, we don't care
+        // or else we will reveive a nive NullPointException for trying...
+        if (false == e.isAddedPath()) {
+            dirty = false;
+            return;
+        }
+
         clean();
 
         DefaultMutableTreeNode node = (DefaultMutableTreeNode)e.getPath().getLastPathComponent();
@@ -132,7 +141,7 @@ public class JRuleList extends JPanel implements TreeSelectionListener, ListData
             return;
         }
 
-        // save collection node for writing it back to disc if changed
+        // save rule set node for writing it back to disc if changed
         lastSelectedRuleSetNode = (RuleSetNode)node;
 
         // save data listeners

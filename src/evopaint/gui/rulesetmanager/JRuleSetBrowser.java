@@ -19,14 +19,14 @@
 
 package evopaint.gui.rulesetmanager;
 
-import com.thoughtworks.xstream.XStream;
-import com.thoughtworks.xstream.io.xml.DomDriver;
+import com.thoughtworks.xstream.XStreamException;
 import evopaint.Configuration;
 import evopaint.gui.rulesetmanager.util.NamedObjectListCellRenderer;
 import evopaint.pixel.rulebased.RuleSet;
 import evopaint.pixel.rulebased.RuleSetCollection;
 import evopaint.pixel.rulebased.interfaces.IRule;
 import evopaint.util.CollectionNode;
+import evopaint.util.ExceptionHandler;
 import evopaint.util.RuleSetNode;
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -52,7 +52,6 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 import javax.swing.border.LineBorder;
@@ -75,7 +74,8 @@ public class JRuleSetBrowser extends JPanel implements TreeSelectionListener {
     private Component newDialogOwner;
     private JButton browserBtnDelete;
     private JButton browserBtnCopy;
-    private JButton browserBtnClip;
+    private JButton browserBtnImport;
+    private JButton browserBtnExport;
     private JRuleList jRuleListReference;
 
     public JRuleSetBrowser(Configuration configuration, JRuleSetTree tree, JRuleList jRuleListReference) {
@@ -118,16 +118,15 @@ public class JRuleSetBrowser extends JPanel implements TreeSelectionListener {
         browserBtnDelete.addActionListener(new BtnDeleteListener());
         browserBtnDelete.setEnabled(false);
         controlPanel.add(browserBtnDelete);
-        browserBtnClip = new JButton(new ImageIcon(getClass().getResource("icons/button-import.png")));
-        browserBtnClip.setToolTipText("Opens an import dialog to import a rule set");
-        browserBtnClip.addActionListener(new BtnImportListener());
-        browserBtnClip.setEnabled(false);
-        controlPanel.add(browserBtnClip);
-        browserBtnClip = new JButton(new ImageIcon(getClass().getResource("icons/button-export.png")));
-        browserBtnClip.setToolTipText("Exports the selected rule set to the clipboard. Paste anywhere with Ctrl-V");
-        browserBtnClip.addActionListener(new BtnExportListener());
-        browserBtnClip.setEnabled(false);
-        controlPanel.add(browserBtnClip);
+        browserBtnImport = new JButton(new ImageIcon(getClass().getResource("icons/button-import.png")));
+        browserBtnImport.setToolTipText("Opens an import dialog to import a rule set");
+        browserBtnImport.addActionListener(new BtnImportListener());
+        controlPanel.add(browserBtnImport);
+        browserBtnExport = new JButton(new ImageIcon(getClass().getResource("icons/button-export.png")));
+        browserBtnExport.setToolTipText("Exports the selected rule set to the clipboard. Paste anywhere with Ctrl-V");
+        browserBtnExport.addActionListener(new BtnExportListener());
+        browserBtnExport.setEnabled(false);
+        controlPanel.add(browserBtnExport);
 
         add(scrollPaneForTree, BorderLayout.CENTER);
         add(controlPanel, BorderLayout.SOUTH);
@@ -140,7 +139,7 @@ public class JRuleSetBrowser extends JPanel implements TreeSelectionListener {
         if (userObject == null) {
             browserBtnDelete.setEnabled(false);
             browserBtnCopy.setEnabled(false);
-            browserBtnClip.setEnabled(false);
+            browserBtnExport.setEnabled(false);
             return;
         }
 
@@ -148,12 +147,12 @@ public class JRuleSetBrowser extends JPanel implements TreeSelectionListener {
         browserBtnCopy.setEnabled(true);
 
         if (userObject instanceof RuleSetCollection) {
-            browserBtnClip.setEnabled(false);
+            browserBtnExport.setEnabled(false);
             return;
         }
 
         if (userObject instanceof RuleSet) {
-            browserBtnClip.setEnabled(true);
+            browserBtnExport.setEnabled(true);
             return;
         }
     }
@@ -462,47 +461,24 @@ public class JRuleSetBrowser extends JPanel implements TreeSelectionListener {
     private class BtnImportListener implements ActionListener {
 
         public void actionPerformed(ActionEvent e) {
-            /*
-            JDialog dialog = new JDialog((JFrame)SwingUtilities.getWindowAncestor(newDialogOwner), "Import Rule Set", true);
-            JTextArea textArea = new JTextArea();
-            dialog.add(textArea);
-
-            JPanel controlPanel = new JPanel();
-            final JButton btnOK = new JButton("OK");
-            btnOK.addActionListener(new importDialogOKListener());
-            controlPanel.add(btnOK);
-            final JButton btnCancel = new JButton("Cancel");
-            btnCancel.addActionListener(new ActionListener() {
-                public void actionPerformed(ActionEvent e) {
-                    dialog.dispose();
-                }
-             });
-            controlPanel.add(btnCancel);
-
-            Clipboard cb = Toolkit.getDefaultToolkit().getSystemClipboard();
-            XStream xStream = new XStream(new DomDriver());
-            RuleSetNode ruleSetNode = (RuleSetNode)
-                    tree.getLastSelectedPathComponent();
-            RuleSet ruleSet = (RuleSet)ruleSetNode.getUserObject();
-            String xml = xStream.toXML(ruleSet);
-            StringSelection contents = new StringSelection(xml);
-            cb.setContents(contents, null);
-             
-             */
+            new JImportRuleSetDialog(configuration, (JFrame)SwingUtilities.getWindowAncestor(browserBtnImport), tree);
         }
     }
 
     private class BtnExportListener implements ActionListener {
 
         public void actionPerformed(ActionEvent e) {
-            Clipboard cb = Toolkit.getDefaultToolkit().getSystemClipboard();
-            XStream xStream = new XStream(new DomDriver());
             RuleSetNode ruleSetNode = (RuleSetNode)
                     tree.getLastSelectedPathComponent();
             RuleSet ruleSet = (RuleSet)ruleSetNode.getUserObject();
-            String xml = xStream.toXML(ruleSet);
-            StringSelection contents = new StringSelection(xml);
-            cb.setContents(contents, null);
+            try {
+                String xml = configuration.xStream.toXML(ruleSet);
+                StringSelection contents = new StringSelection(xml);
+                Clipboard cb = Toolkit.getDefaultToolkit().getSystemClipboard();
+                cb.setContents(contents, null);
+            } catch (XStreamException ex) {
+                ExceptionHandler.handle(ex, false);
+            }
         }
     }
     

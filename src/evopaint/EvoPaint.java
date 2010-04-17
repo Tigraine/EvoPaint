@@ -21,6 +21,7 @@ package evopaint;
 
 import evopaint.pixel.Pixel;
 import evopaint.gui.MainFrame;
+import evopaint.util.ExceptionHandler;
 
 import java.awt.image.BufferedImage;
 
@@ -90,9 +91,13 @@ public class EvoPaint {
     }
 
     public static void main(String args[]) {
-        EvoPaint evopaint = new EvoPaint();
-
-        evopaint.work();
+        try {
+            EvoPaint evopaint = new EvoPaint();
+            
+            evopaint.work();
+        } catch (Exception ex) {
+            ExceptionHandler.handle(ex);
+        }
     }
     
     public EvoPaint() {

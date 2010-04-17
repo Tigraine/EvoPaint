@@ -81,8 +81,6 @@ public class MainFrame extends JFrame {
         this.configuration = configuration;
         this.contentPane = getContentPane();
 
-        this.configuration.exceptionHandler = new ExceptionHandler(this);
-
         setTitle("EvoPaint");
 
         resumeCommand = new ResumeCommand(configuration);
@@ -101,6 +99,9 @@ public class MainFrame extends JFrame {
                 // mu!
             }
         }
+
+        ExceptionHandler.init(this);
+
         ToolTipManager.sharedInstance().setInitialDelay(500);
         ToolTipManager.sharedInstance().setReshowDelay(300);
 

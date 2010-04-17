@@ -20,7 +20,7 @@
 package evopaint.util;
 
 import com.thoughtworks.xstream.XStream;
-import com.thoughtworks.xstream.io.xml.DomDriver;
+import com.thoughtworks.xstream.XStreamException;
 import evopaint.pixel.rulebased.RuleSet;
 import evopaint.pixel.rulebased.RuleSetCollection;
 import java.io.BufferedReader;
@@ -31,7 +31,6 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.InvalidClassException;
 import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.io.UnsupportedEncodingException;
@@ -80,93 +79,39 @@ public class FileHandler implements TreeModelListener {
         DefaultMutableTreeNode root = new DefaultMutableTreeNode();
         DefaultTreeModel model = new DefaultTreeModel(root, true);
 
-        try {
-            for (File collectionDir : collectionDirs) {
-                if (false == collectionDir.isDirectory()) {
-                    collectionDir.delete();
-                }
-                File metadataFile = new File(collectionDir, "metadata.xml");
-                Reader reader = new BufferedReader(new InputStreamReader(new FileInputStream(metadataFile), "UTF8"));
-                RuleSetCollection ruleSetCollection = (RuleSetCollection)xStream.fromXML(reader);
-                reader.close();
-                CollectionNode collectionNode = new CollectionNode(ruleSetCollection);
-                for (File file : collectionDir.listFiles()) {
-                    if (file.getName().equals("metadata.xml")) {
-                        continue;
-                    }
-                    reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), "UTF8"));
-                    RuleSet ruleSet = (RuleSet)xStream.fromXML(reader);
-                    reader.close();
-                    RuleSetNode ruleSetNode = new RuleSetNode(ruleSet);
-                    collectionNode.insert(ruleSetNode, collectionNode.getChildCount());
-                }
-                model.insertNodeInto(collectionNode, root, root.getChildCount());
+        for (File collectionDir : collectionDirs) {
+            if (false == collectionDir.isDirectory()) {
+                collectionDir.delete();
             }
-        } catch (FileNotFoundException ex) {
-            ExceptionHandler.handle(ex);
-        } catch (InvalidClassException ex) {
-            ExceptionHandler.handle(ex);
-        } catch (IOException ex) {
-            ExceptionHandler.handle(ex);
+            
+            File metadataFile = new File(collectionDir, "metadata.xml");
+            RuleSetCollection ruleSetCollection = (RuleSetCollection)importFromFile(metadataFile);
+            
+            if (ruleSetCollection == null) {
+                continue;
+            }
+
+            CollectionNode collectionNode = new CollectionNode(ruleSetCollection);
+            for (File file : collectionDir.listFiles()) {
+                if (file.getName().equals("metadata.xml")) {
+                    continue;
+                }
+                
+                RuleSet ruleSet = (RuleSet)importFromFile(file);
+
+                if (ruleSet == null) {
+                    continue;
+                }
+
+                RuleSetNode ruleSetNode = new RuleSetNode(ruleSet);
+                collectionNode.insert(ruleSetNode, collectionNode.getChildCount());
+            }
+            model.insertNodeInto(collectionNode, root, root.getChildCount());
         }
         model.addTreeModelListener(this);
         return model;
     }
 
-    /*
-    public synchronized void renameCollection(RuleSetCollection collection, String newName) {
-        if (newName == null || collection.getName().equals(newName)) {
-            return;
-        }
-
-        File collectionFile = new File(collectionsDir, makeDirectoryName(collection.getName()));
-        collectionFile.renameTo(new File(collectionsDir, makeFileName(newName)));
-    }
-
-    public synchronized void writeCollection(CollectionNode collectionNode) {
-        try {
-            RuleSetCollection collection = (RuleSetCollection)collectionNode.getUserObject();
-
-            File collectionDir = new File(collectionsDir, makeDirectoryName(collection.getName()));
-            if (false == collectionDir.exists()) {
-                collectionDir.mkdir();
-            }
-
-            File metaDataFile = new File(collectionDir, "metadata.xml");
-
-            Writer writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(metaDataFile), "UTF8"));
-            writer.write(xStream.toXML(collection));
-            writer.close();
-
-            Enumeration enumerationA = collectionNode.children();
-            if (enumerationA != null) {
-                while (enumerationA.hasMoreElements()) {
-                    RuleSetNode ruleSetNode = (RuleSetNode)enumerationA.nextElement();
-                    RuleSet ruleSet = (RuleSet)ruleSetNode.getUserObject();
-
-                    File ruleSetFile = new File(collectionDir, makeFileName(ruleSet.getName()));
-                    writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(ruleSetFile), "UTF8"));
-                    writer.write(xStream.toXML(ruleSet));
-                    writer.close();
-                }
-            }
-        } catch (UnsupportedEncodingException ex) {
-            ExceptionHandler.handle(ex);
-        } catch (FileNotFoundException ex) {
-            ExceptionHandler.handle(ex);
-        } catch (IOException ex) {
-            ExceptionHandler.handle(ex);
-        }
-    }
-     
-
-    public synchronized void deleteCollection(CollectionNode collectionNode) {
-        RuleSetCollection collection = (RuleSetCollection)collectionNode.getUserObject();
-        File collectionFile = new File(collectionsDir, makeDirectoryName(collection.getName()));
-        collectionFile.delete();
-    }
-*/
-    
     private synchronized void createExampleCollections(File dir) {
         try {
             URL examplesURL = getClass().getResource("/evopaint/examples");
@@ -211,68 +156,48 @@ public class FileHandler implements TreeModelListener {
         DefaultMutableTreeNode changedNode = (DefaultMutableTreeNode)
                 parentNode.getChildAt(e.getChildIndices()[0]);
 
-        Writer writer = null;
-        try {
-            if (changedNode instanceof RuleSetNode) {
-                RuleSetNode ruleSetNode = (RuleSetNode)changedNode;
-                CollectionNode collectionNode = (CollectionNode)parentNode;
-                assert(collectionNode != null);
-                File ruleSetFile = new File(collectionsDir,
-                        makeDirectoryName(collectionNode.getName()) + File.separator +
-                        makeFileName(ruleSetNode.getName()));
-                writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(ruleSetFile), "UTF8"));
-                writer.write(xStream.toXML((RuleSet)ruleSetNode.getUserObject()));
-                writer.close();
-                return;
-            }
+        if (changedNode instanceof RuleSetNode) {
+            RuleSetNode ruleSetNode = (RuleSetNode)changedNode;
+            CollectionNode collectionNode = (CollectionNode)parentNode;
+            assert(collectionNode != null);
+            File ruleSetFile = new File(collectionsDir,
+                    makeDirectoryName(collectionNode.getName()) + File.separator +
+                    makeFileName(ruleSetNode.getName()));
+            exportToFile((RuleSet)ruleSetNode.getUserObject(), ruleSetFile);
+            return;
+        }
 
-            if (changedNode instanceof CollectionNode) {
-                //System.out.println("collection directory changed");
-                CollectionNode collectionNode = (CollectionNode)changedNode;
-                assert(collectionNode != null);
-                File [] collectionDirs = collectionsDir.listFiles();
+        if (changedNode instanceof CollectionNode) {
+            //System.out.println("collection directory changed");
+            CollectionNode collectionNode = (CollectionNode)changedNode;
+            assert(collectionNode != null);
+            File [] collectionDirs = collectionsDir.listFiles();
 
-                for (int i = 0; i < collectionDirs.length; i++) {
-                    boolean found = false;
-                    Enumeration enumeration = parentNode.children();
-                    while (enumeration.hasMoreElements()) {
-                        String name = makeDirectoryName(((CollectionNode)enumeration.nextElement()).getName());
-                        if (collectionDirs[i].getName().equals(name)) {
-                            found = true;
-                            break;
-                        }
-                    }
-                    if (found == false) {
-                        if (false == collectionDirs[i].renameTo(new File(collectionsDir,
-                                makeDirectoryName(collectionNode.getName())))) {
-                            System.out.println("Failed to rename collection directory: " + collectionDirs[i].getAbsolutePath());
-                        } else {
-                            File metaDataFile = new File(collectionsDir,
-                                    makeDirectoryName(collectionNode.getName()) +
-                                    "/metadata.xml");
-                            writer = new BufferedWriter(
-                                    new OutputStreamWriter(new FileOutputStream(metaDataFile), "UTF8"));
-                            writer.write(xStream.toXML(
-                                    (RuleSetCollection) collectionNode.getUserObject()));
-                            writer.close();
-                        }
+            for (int i = 0; i < collectionDirs.length; i++) {
+                boolean found = false;
+                Enumeration enumeration = parentNode.children();
+                while (enumeration.hasMoreElements()) {
+                    String name = makeDirectoryName(((CollectionNode)enumeration.nextElement()).getName());
+                    if (collectionDirs[i].getName().equals(name)) {
+                        found = true;
                         break;
                     }
                 }
-                return;
+                if (found == false) {
+                    if (false == collectionDirs[i].renameTo(new File(collectionsDir,
+                            makeDirectoryName(collectionNode.getName())))) {
+                        System.out.println("Failed to rename collection directory: " + collectionDirs[i].getAbsolutePath());
+                    } else {
+                        File metaDataFile = new File(collectionsDir,
+                                makeDirectoryName(collectionNode.getName()) +
+                                "/metadata.xml");
+
+                        exportToFile(collectionNode.getUserObject(), metaDataFile);
+                    }
+                    break;
+                }
             }
-        } catch (UnsupportedEncodingException ex) {
-            ExceptionHandler.handle(ex);
-        } catch (FileNotFoundException ex) {
-            ExceptionHandler.handle(ex);
-        } catch (IOException ex) {
-            ExceptionHandler.handle(ex);
-        } finally {
-            try {
-                writer.close();
-            } catch (IOException ex) {
-                ExceptionHandler.handle(ex);
-            }
+            return;
         }
         assert (false);
     }
@@ -282,47 +207,29 @@ public class FileHandler implements TreeModelListener {
                 (DefaultMutableTreeNode)e.getTreePath().getLastPathComponent();
         DefaultMutableTreeNode addedNode =
                 (DefaultMutableTreeNode)e.getChildren()[0];
+        
         //System.out.println("file handler: detected node insertion");
-        Writer writer = null;
-        try {
-            if (addedNode instanceof CollectionNode) {
-                File collectionDir = new File(collectionsDir,
-                        makeDirectoryName(((CollectionNode)addedNode).getName()));
-                if (false == collectionDir.exists()) {
-                    collectionDir.mkdir();
-                }
-
-                File metaDataFile = new File(collectionDir, "metadata.xml");
-                writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(metaDataFile), "UTF8"));
-                writer.write(xStream.toXML((RuleSetCollection)addedNode.getUserObject()));
-                writer.close();
-                return;
+        if (addedNode instanceof CollectionNode) {
+            File collectionDir = new File(collectionsDir,
+                    makeDirectoryName(((CollectionNode)addedNode).getName()));
+            if (false == collectionDir.exists()) {
+                collectionDir.mkdir();
             }
 
-            if (addedNode instanceof RuleSetNode) {
-                CollectionNode collectionNode = (CollectionNode)parentNode;
-                assert(collectionNode != null);
-                File ruleSetFile = new File(collectionsDir,
-                    makeDirectoryName(collectionNode.getName() +
-                    File.separator +
-                    makeFileName(((RuleSetNode)addedNode).getName())));
-                writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(ruleSetFile), "UTF8"));
-                writer.write(xStream.toXML((RuleSet)addedNode.getUserObject()));
-                writer.close();
-                return;
-            }
-        } catch (UnsupportedEncodingException ex) {
-            ExceptionHandler.handle(ex);
-        } catch (FileNotFoundException ex) {
-            ExceptionHandler.handle(ex);
-        } catch (IOException ex) {
-            ExceptionHandler.handle(ex);
-        } finally {
-            try {
-                writer.close();
-            } catch (IOException ex) {
-                ExceptionHandler.handle(ex);
-            }
+            File metaDataFile = new File(collectionDir, "metadata.xml");
+            exportToFile(addedNode.getUserObject(), metaDataFile);
+            return;
+        }
+
+        if (addedNode instanceof RuleSetNode) {
+            CollectionNode collectionNode = (CollectionNode)parentNode;
+            assert(collectionNode != null);
+            File ruleSetFile = new File(collectionsDir,
+                makeDirectoryName(collectionNode.getName() +
+                File.separator +
+                makeFileName(((RuleSetNode)addedNode).getName())));
+            exportToFile(addedNode.getUserObject(), ruleSetFile);
+            return;
         }
 
         assert(false);
@@ -362,8 +269,55 @@ public class FileHandler implements TreeModelListener {
         System.exit(1);
     }
 
-    public FileHandler() {
-        this.xStream = new XStream(new DomDriver());
+    private Object importFromFile(File file) {
+        Reader reader = null;
+        try {
+            reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), "UTF8"));
+        } catch (UnsupportedEncodingException ex) {
+            ExceptionHandler.handle(ex);
+        } catch (FileNotFoundException ex) {
+            ExceptionHandler.handle(ex);
+        }
+        try {
+            return xStream.fromXML(reader);
+        } catch (XStreamException ex) {
+            ExceptionHandler.handle(ex, false, "<p>I could not parse the file \"" + file.getAbsolutePath() + "\".</p><p>This either means this file is corrupted in some way or some internals have changed and we have no proper backwards compability yet. Please have a look at the message below and try to fix your rule set if you can. They are stored in XML format, so any text editor will do. Except Notepad.exe, because it sucks and will display your rule set without line breaks</p><p>If you cannot fix it, you can always delete the file in question and recreate the rule set using the rule set editor.</p>");
+        } finally {
+            try {
+                if (reader != null) {
+                    reader.close();
+                }
+            } catch (IOException ex) {
+                ExceptionHandler.handle(ex);
+            }
+        }
+        return null;
+    }
+
+    public void exportToFile(Object object, File file) {
+        Writer writer = null;
+        try {
+            writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file), "UTF8"));
+            writer.write(xStream.toXML(object));
+        } catch (UnsupportedEncodingException ex) {
+            ExceptionHandler.handle(ex);
+        } catch (FileNotFoundException ex) {
+            ExceptionHandler.handle(ex);
+        } catch (IOException ex) {
+            ExceptionHandler.handle(ex);
+        } finally {
+            try {
+                if (writer != null) {
+                    writer.close();
+                }
+            } catch (IOException ex) {
+                ExceptionHandler.handle(ex);
+            }
+        }
+    }
+
+    public FileHandler(XStream xStream) {
+        this.xStream = xStream;
         checkFiles();
     }
 }
