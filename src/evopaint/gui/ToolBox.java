@@ -25,6 +25,7 @@ import evopaint.commands.MoveCommand;
  
 import evopaint.commands.FillSelectionCommand;
 import evopaint.commands.PaintCommand;
+import evopaint.commands.PickCommand;
 import evopaint.commands.SelectCommand;
 import evopaint.commands.ZoomCommand;
 import evopaint.commands.ZoomInCommand;
@@ -136,12 +137,12 @@ public class ToolBox extends JPanel {
 
         final JToggleButton jButtonPick = buttons.get(6);
         jButtonPick.setIcon(new ImageIcon(getClass().getResource("icons/tool-pick.png")));
-        jButtonPick.setEnabled(false);
+        jButtonPick.setEnabled(true);
         jButtonPick.addActionListener(new java.awt.event.ActionListener() {
 
             public void actionPerformed(java.awt.event.ActionEvent e) {
-                mf.setActiveTool(MoveCommand.class);
-                mf.getShowcase().setCursor(new Cursor(Cursor.MOVE_CURSOR));
+                mf.setActiveTool(PickCommand.class);
+                mf.getShowcase().setCursor(new Cursor(Cursor.CROSSHAIR_CURSOR));
             }
         });
     }
