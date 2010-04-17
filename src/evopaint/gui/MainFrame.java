@@ -157,8 +157,18 @@ public class MainFrame extends JFrame {
         
         selectionToolBox = new SelectionToolBox(showcase);
         constraintsWrapper.gridy++;
-        constraintsWrapper.fill = GridBagConstraints.NONE;
-        wrapperPanelLeft.add(selectionToolBox, constraintsWrapper);
+        
+        //FIXME: Tam macht das.. 
+        constraintsWrapper.fill = GridBagConstraints.NORTHWEST;
+        JScrollPane scroller = new JScrollPane(selectionToolBox,
+                JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
+                JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        scroller.setBorder(null);
+        scroller.setViewportBorder(null);
+        scroller.setSize(new Dimension(300, 300));
+        scroller.setPreferredSize(new Dimension(300, 300));
+        scroller.setVisible(true);
+        wrapperPanelLeft.add(scroller, constraintsWrapper);
 
         separator = new JSeparator(JSeparator.HORIZONTAL);
         constraintsWrapper.gridy++;
