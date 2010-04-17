@@ -192,11 +192,11 @@ public class Showcase extends WrappingScalableCanvas implements MouseInputListen
     }
 
     public void mouseDragged(MouseEvent e) {
-    	this.currentMouseDragPosition = transformToImageSpace(e.getPoint());
+    	this.currentMouseDragPosition = e.getPoint();
         if (leftButtonPressed == true) {
         	if (mainFrame.getActiveTool() == SelectCommand.class) {
-        		Point point = currentMouseDragPosition;
-        		draggingSelectionOverlay.setBounds(new Rectangle(selectionStartPoint, new Dimension(point.x - selectionStartPoint.x, point.y - selectionStartPoint.y)));
+        		Point pointInImageSpace = transformToImageSpace(currentMouseDragPosition);
+        		draggingSelectionOverlay.setBounds(new Rectangle(selectionStartPoint, new Dimension(pointInImageSpace.x - selectionStartPoint.x, pointInImageSpace.y - selectionStartPoint.y)));
         	}
             else if (mainFrame.getActiveTool() == PaintCommand.class) {
                 painter.setLocation(currentMouseDragPosition);
