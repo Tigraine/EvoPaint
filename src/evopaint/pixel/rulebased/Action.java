@@ -132,7 +132,9 @@ public abstract class Action implements IHaveTarget, ICopyable {
     }
 
     public int execute(Pixel actor, Configuration configuration) {
-
+        if (actor.getEnergy() + energyChange < 0) { // die trying
+            return energyChange;
+        }
         return target.execute(this, actor, configuration);
     }
     

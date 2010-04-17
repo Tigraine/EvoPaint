@@ -88,6 +88,10 @@ public class PartnerProcreationAction extends Action {
             return 0;
         }
 
+        if (partner.getEnergy() + partnerEnergyChange < 0) {
+            return 0;
+        }
+
         AbsoluteCoordinate randomFreeSpot =
                 configuration.world.getRandomFreeNeighborCoordinateOf(
                 actor.getLocation(), configuration.rng);
