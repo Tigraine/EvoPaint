@@ -149,6 +149,7 @@ public class MainFrame extends JFrame {
         toolBox = new ToolBox(this);
         constraintsWrapper.gridy = 0;
         constraintsWrapper.fill = GridBagConstraints.HORIZONTAL;
+
         wrapperPanelLeft.add(toolBox, constraintsWrapper);
         
         JSeparator separator = new JSeparator(JSeparator.HORIZONTAL);
@@ -157,17 +158,14 @@ public class MainFrame extends JFrame {
         wrapperPanelLeft.add(separator, constraintsWrapper);
         
         selectionToolBox = new SelectionToolBox(showcase);
-        constraintsWrapper.gridy++;
-        
-        constraintsWrapper.fill = GridBagConstraints.NONE;
+        //selectionToolBox.setPreferredSize(new Dimension(200, 200));
         JScrollPane scroller = new JScrollPane(selectionToolBox,
                 JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
                 JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-        scroller.setBorder(null);
-        scroller.setViewportBorder(null);
-        //scroller.setSize(new Dimension(300, 300));
-        //scroller.setPreferredSize(new Dimension(300, 300));
-        //scroller.setVisible(true);
+        scroller.setPreferredSize(new Dimension(100, 100));
+
+        constraintsWrapper.gridy++;
+        constraintsWrapper.fill = GridBagConstraints.HORIZONTAL;
         wrapperPanelLeft.add(scroller, constraintsWrapper);
 
         separator = new JSeparator(JSeparator.HORIZONTAL);
@@ -213,7 +211,7 @@ public class MainFrame extends JFrame {
         showCaseScrollPane.getViewport().addMouseWheelListener(showcase);
         mainPanel.add(showCaseScrollPane, BorderLayout.CENTER);
 
-        setPreferredSize(new Dimension(800, 600));
+        setPreferredSize(new Dimension(900, 800));
 
         this.pack();
         this.setVisible(true);
