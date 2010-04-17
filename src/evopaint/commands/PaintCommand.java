@@ -68,8 +68,6 @@ public class PaintCommand extends AbstractCommand {
 			if (location.y + brushSize > rectangle.y + rectangle.height)
 				location.y = rectangle.y + rectangle.height - brushSize;
         }
-        System.out.println("painting");
-        Logger.log.information("Executing Paint command on x: %s y: %s", location.x, location.y);
         configuration.brush.paint(location.x, location.y);
     }
 }
