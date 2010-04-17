@@ -103,11 +103,14 @@ public class EnergyQualifier extends Qualifier {
                 if (target == null) {
                     continue;
                 }
-                if (ret.size() > 0 && target.getEnergy() < minEnergy) {
+                if (target.getEnergy() < minEnergy) {
                     minEnergy = target.getEnergy();
                     ret.clear();
+                    ret.add(direction);
+                } else if (target.getEnergy() == minEnergy) {
+                    ret.add(direction);
                 }
-                ret.add(direction);
+                
             }
         } else {
             int maxEnergy = 0;
@@ -116,11 +119,13 @@ public class EnergyQualifier extends Qualifier {
                 if (target == null) {
                     continue;
                 }
-                if (ret.size() > 0 && target.getEnergy() > maxEnergy) {
+                if (target.getEnergy() > maxEnergy) {
                     maxEnergy = target.getEnergy();
                     ret.clear();
+                    ret.add(direction);
+                } else if (target.getEnergy() == maxEnergy) {
+                    ret.add(direction);
                 }
-                ret.add(direction);
             }
         }
         return ret;
