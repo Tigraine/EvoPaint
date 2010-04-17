@@ -29,6 +29,9 @@ import evopaint.pixel.rulebased.RuleBasedPixel;
 import evopaint.pixel.rulebased.RuleSet;
 import evopaint.util.mapping.AbsoluteCoordinate;
 
+import java.awt.Dimension;
+import java.awt.Point;
+import java.awt.Rectangle;
 import java.awt.geom.AffineTransform;
 
 /*
@@ -46,6 +49,7 @@ public class FillSelectionCommand extends AbstractCommand {
     private RuleSet ruleSet;
     private Showcase showcase;
     protected int density = 1;
+	private Point location;
 
     public FillSelectionCommand(Showcase showcase) {
         this.showcase = showcase;
@@ -54,18 +58,50 @@ public class FillSelectionCommand extends AbstractCommand {
         this.energy = configuration.startingEnergy;
         this.ruleSet = configuration.paint.getCurrentRuleSet();
     }
+    
+    public void setLocation(Point location) {
+		this.location = location;
+    }
 
     public void execute() {
         this.color = configuration.paint.getCurrentColor();
         this.selection = showcase.getActiveSelection();
-        for (int x = selection.getStartPoint().x; x < selection.getEndPoint().x; x++){
-            for (int y = selection.getStartPoint().y; y < selection.getEndPoint().y; y++){
-                if ((x % density) != 0) continue;
-                if ((y % density) != 0) continue;
-                Pixel newPixel = new RuleBasedPixel(new PixelColor(color), new AbsoluteCoordinate(x, y, configuration.world), energy, ruleSet);
-                configuration.world.set(newPixel);
-            }
+        Rectangle rectangle;
+        if (selection == null) {
+        	rectangle = new Rectangle(0, 0, configuration.world.getWidth(), configuration.world.getHeight());
+        } else {
+        	rectangle = new Rectangle(selection.getStartPoint(), new Dimension(selection.getEndPoint().x - selection.getStartPoint().x, selection.getEndPoint().y - selection.getStartPoint().y));
         }
-
+        
+        
+        if (rectangle.contains(location)) {
+        	System.out.println("Filling inside rect");
+        	
+        	for (int x = rectangle.x; x < rectangle.x + rectangle.width; x++){
+              for (int y = rectangle.y; y < rectangle.y + rectangle.height; y++){
+                  if ((x % density) != 0) continue;
+                  if ((y % density) != 0) continue;
+                  RuleBasedPixel newPixel = createPixel(x, y);
+              }
+          }
+        } else{
+        	Point currentLoc = new Point();
+        	for(int x = 0; x < configuration.world.getWidth(); x++) {
+        		for(int y = 0; y < configuration.world.getHeight(); y++) {
+        			currentLoc.setLocation(x, y);
+        			if ((x % density != 0)) continue;
+        			if ((y % density != 0)) continue;
+        			if (!rectangle.contains(currentLoc)) {
+        				RuleBasedPixel newPixel = createPixel(x, y);
+        			}
+        		}
+        	}
+        }
     }
+
+	private RuleBasedPixel createPixel(int x, int y) {
+		RuleBasedPixel newPixel = new RuleBasedPixel(configuration.paint.getCurrentColor(), new AbsoluteCoordinate(x, y, configuration.world), configuration.startingEnergy, configuration.paint.getCurrentRuleSet());
+		  configuration.world.set(newPixel);
+		return newPixel;
+	}
 }

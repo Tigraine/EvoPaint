@@ -60,6 +60,7 @@ public class Showcase extends WrappingScalableCanvas implements MouseInputListen
     private PaintCommand paintCommand;
     private MoveCommand moveCommand;
     private SelectCommand selectCommand;
+    private FillSelectionCommand fillCommand;
 
     private SelectionList currentSelections = new SelectionList();
     private Selection activeSelection;
@@ -83,6 +84,7 @@ public class Showcase extends WrappingScalableCanvas implements MouseInputListen
         this.moveCommand = new MoveCommand(configuration);
         this.moveCommand.setCanvas(this);
         this.selectCommand = new SelectCommand(currentSelections, this);
+        this.fillCommand = new FillSelectionCommand(this);
 
         this.currentSelections.addObserver(this);
 
@@ -111,25 +113,6 @@ public class Showcase extends WrappingScalableCanvas implements MouseInputListen
         super.paint(g);
 
         Graphics2D g2 = (Graphics2D) g;
-        
-        if (isDrawingSelection && selectionStartPoint != null && currentMouseDragPosition != null) {
-            Point startPoint = selectionStartPoint;
-            Point endPoint = currentMouseDragPosition;
-            if (startPoint.x > endPoint.x || startPoint.y > endPoint.y) {
-                Point temp = endPoint;
-                endPoint = startPoint;
-                startPoint = temp;
-            }
-            
-        }
-
-        for(Selection selection : currentSelections) {
-            // FIXME if (selection.isHighlighted())
-                // FIXME Selection.draw(g2, selection, scale);
-        }
-        if (activeSelection != null) {
-           // FIXME Selection.draw(g2, activeSelection, scale);
-        }
     }
 
     public void mouseWheelMoved(MouseWheelEvent e) {
@@ -165,11 +148,13 @@ public class Showcase extends WrappingScalableCanvas implements MouseInputListen
                 subscribe(draggingSelectionOverlay);
                 selectCommand.setLocation(this.selectionStartPoint);
                 selectCommand.execute();
-            } else if (mainFrame.getActiveTool() == ZoomCommand.class)
-            {
+            } else if (mainFrame.getActiveTool() == ZoomCommand.class) {
             	ZoomInCommand zoomInCommand = new ZoomInCommand(this);	
             	zoomInCommand.execute();
             	this.setCursor(new Cursor(Cursor.N_RESIZE_CURSOR));
+            } else if (mainFrame.getActiveTool() == FillSelectionCommand.class) {
+            	fillCommand.setLocation(transformToImageSpace(e.getPoint()));
+            	fillCommand.execute();
             }
         } else if (e.getButton() == MouseEvent.BUTTON3) {
         	if (mainFrame.getActiveTool() == ZoomCommand.class){
