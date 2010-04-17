@@ -110,7 +110,6 @@ public class EnergyQualifier extends Qualifier {
                 } else if (target.getEnergy() == minEnergy) {
                     ret.add(direction);
                 }
-                
             }
         } else {
             int maxEnergy = 0;
