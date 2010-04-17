@@ -1,6 +1,6 @@
 /*
  *  Copyright (C) 2010 Markus Echterhoff <tam@edu.uni-klu.ac.at>,
- *                      Daniel Hölbling
+ *                      Daniel Hoelbling (http://www.tigraine.at)
  *
  *  This file is part of EvoPaint.
  *
@@ -27,7 +27,7 @@ import java.util.Random;
 /**
  *
  * @author Markus Echterhoff <tam@edu.uni-klu.ac.at>
- * @author Daniel Hölbling
+ * @author Daniel Hoelbling (http://www.tigraine.at)
  */
 public interface IRandomNumberGenerator {
     int nextPositiveInt();

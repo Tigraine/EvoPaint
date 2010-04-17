@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2010 Daniel Hölbling
+ *  Copyright (C) 2010 Daniel Hoelbling (http://www.tigraine.at)
  *
  *  This file is part of EvoPaint.
  *
@@ -24,7 +24,7 @@ import evopaint.interfaces.ICommand;
 
 /*
  *
- * @author Daniel Hölbling
+ * @author Daniel Hoelbling (http://www.tigraine.at)
  */
 public class SetRandomNumberGeneratorSeed implements ICommand {
     private RandomNumberGeneratorWrapper rng;

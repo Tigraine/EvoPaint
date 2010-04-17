@@ -1,6 +1,6 @@
 /*
  *  Copyright (C) 2010 Markus Echterhoff <tam@edu.uni-klu.ac.at>,
- *                      Daniel Hölbling
+ *                      Daniel Hoelbling (http://www.tigraine.at)
  *
  *  This file is part of EvoPaint.
  *
@@ -47,7 +47,7 @@ import javax.swing.event.MouseInputListener;
 /**
  *
  * @author Markus Echterhoff <tam@edu.uni-klu.ac.at>
- * @author Daniel Hölbling
+ * @author Daniel Hoelbling (http://www.tigraine.at)
  */
 public class Showcase extends WrappingScalableCanvas implements MouseInputListener, MouseWheelListener, Observer, SelectionManager {
     private Configuration configuration;

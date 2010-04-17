@@ -1,6 +1,6 @@
 /*
  *  Copyright (C) 2010 Markus Echterhoff <tam@edu.uni-klu.ac.at>,
- *                      Daniel Hölbling
+ *                      Daniel Hoelbling (http://www.tigraine.at)
  *
  *  This file is part of EvoPaint.
  *
@@ -26,7 +26,7 @@ import evopaint.interfaces.ICommand;
 /*
  *
  * @author Markus Echterhoff <tam@edu.uni-klu.ac.at>
- * @author Daniel Hölbling
+ * @author Daniel Hoelbling (http://www.tigraine.at)
  */
 public class ResumeCommand implements ICommand {
     private Configuration configuration;

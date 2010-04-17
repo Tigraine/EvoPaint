@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2010 Daniel Hölbling
+ *  Copyright (C) 2010 Daniel Hoelbling (http://www.tigraine.at)
  *
  *  This file is part of EvoPaint.
  *
@@ -25,7 +25,7 @@ import java.awt.event.ActionListener;
 
 /*
  *
- * @author Daniel Hölbling
+ * @author Daniel Hoelbling (http://www.tigraine.at)
  */
 public abstract class AbstractCommand implements ICommand, ActionListener {
     public void actionPerformed(ActionEvent actionEvent) {

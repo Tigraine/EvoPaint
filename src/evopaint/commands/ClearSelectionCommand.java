@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2010 Daniel Hölbling
+ *  Copyright (C) 2010 Daniel Hoelbling (http://www.tigraine.at)
  *
  *  This file is part of EvoPaint.
  *
@@ -23,7 +23,7 @@ import evopaint.gui.SelectionManager;
 
 /*
  *
- * @author Daniel Hölbling
+ * @author Daniel Hoelbling (http://www.tigraine.at)
  */
 public class ClearSelectionCommand extends AbstractCommand {
     private SelectionManager manager;

@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2010 Daniel Hölbling
+ *  Copyright (C) 2010 Daniel Hoelbling (http://www.tigraine.at)
  *
  *  This file is part of EvoPaint.
  *
@@ -33,7 +33,7 @@ import java.awt.geom.AffineTransform;
 
 /*
  *
- * @author Daniel Hölbling
+ * @author Daniel Hoelbling (http://www.tigraine.at)
  */
 public class FillSelectionCommand extends AbstractCommand {
     private Configuration configuration;

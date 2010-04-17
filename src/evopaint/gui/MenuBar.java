@@ -1,6 +1,6 @@
 /*
  *  Copyright (C) 2010 Markus Echterhoff <tam@edu.uni-klu.ac.at>,
- *                      Daniel Hölbling,
+ *                      Daniel Hoelbling (http://www.tigraine.at),
  *                      Augustin Malle
  *
  *  This file is part of EvoPaint.
@@ -47,7 +47,7 @@ import java.util.Observer;
 /**
  *
  * @author Markus Echterhoff <tam@edu.uni-klu.ac.at>
- * @author Daniel Hölbling
+ * @author Daniel Hoelbling (http://www.tigraine.at)
  * @author Augustin Malle
  */
 public class MenuBar extends JMenuBar implements Observer {

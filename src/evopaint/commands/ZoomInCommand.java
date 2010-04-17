@@ -24,7 +24,7 @@ import evopaint.gui.Showcase;
 /*
  *
  * @author Markus Echterhoff <tam@edu.uni-klu.ac.at>
- * @author Daniel Hölbling
+ * @author Daniel Hoelbling (http://www.tigraine.at)
  */
 public class ZoomInCommand extends ZoomCommand {
     public ZoomInCommand(Showcase showcase)
