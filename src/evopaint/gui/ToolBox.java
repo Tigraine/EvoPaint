@@ -23,6 +23,7 @@ package evopaint.gui;
 
 import evopaint.commands.MoveCommand;
  
+import evopaint.commands.EraseCommand;
 import evopaint.commands.FillSelectionCommand;
 import evopaint.commands.PaintCommand;
 import evopaint.commands.PickCommand;
@@ -126,12 +127,12 @@ public class ToolBox extends JPanel {
 
         final JToggleButton jButtonErase = buttons.get(5);
         jButtonErase.setIcon(new ImageIcon(getClass().getResource("icons/tool-erase.png")));
-        jButtonErase.setEnabled(false);
+        jButtonErase.setEnabled(true);
         jButtonErase.addActionListener(new java.awt.event.ActionListener() {
 
             public void actionPerformed(java.awt.event.ActionEvent e) {
-                mf.setActiveTool(MoveCommand.class);
-                mf.getShowcase().setCursor(new Cursor(Cursor.MOVE_CURSOR));
+                mf.setActiveTool(EraseCommand.class);
+                mf.getShowcase().setCursor(new Cursor(Cursor.CROSSHAIR_CURSOR));
             }
         });
 

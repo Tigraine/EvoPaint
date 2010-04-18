@@ -61,6 +61,7 @@ public class Showcase extends WrappingScalableCanvas implements MouseInputListen
     private MoveCommand moveCommand;
     private SelectCommand selectCommand;
     private FillSelectionCommand fillCommand;
+    private EraseCommand eraseCommand;
 
     private SelectionList currentSelections = new SelectionList();
     private Selection activeSelection;
@@ -85,6 +86,7 @@ public class Showcase extends WrappingScalableCanvas implements MouseInputListen
         this.moveCommand.setCanvas(this);
         this.selectCommand = new SelectCommand(currentSelections, this);
         this.fillCommand = new FillSelectionCommand(this);
+        this.eraseCommand = new EraseCommand(configuration, this);
 
         this.currentSelections.addObserver(this);
 
@@ -159,6 +161,9 @@ public class Showcase extends WrappingScalableCanvas implements MouseInputListen
             	PickCommand pickCommand = new PickCommand(configuration);
             	pickCommand.setLocation(transformToImageSpace(e.getPoint()));
             	pickCommand.execute();
+            } else if (mainFrame.getActiveTool() == EraseCommand.class) {
+            	eraseCommand.setLocation(transformToImageSpace(e.getPoint()));
+            	eraseCommand.execute();
             }
         } else if (e.getButton() == MouseEvent.BUTTON3) {
         	if (mainFrame.getActiveTool() == ZoomCommand.class){
