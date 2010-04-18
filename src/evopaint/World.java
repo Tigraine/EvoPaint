@@ -65,8 +65,10 @@ public class World extends ParallaxMap<Pixel> {
         
         for (int i = 0; i < indices.length; i++) {
             Pixel pixie = getUnclamped(indices[i]);
-            pixie.act(this.configuration);
-            if (false == pixie.isAlive()) {
+            if (pixie.isAlive()) {                  // only act when alive
+                pixie.act(this.configuration);
+            }
+            if (false == pixie.isAlive()) {     // immediate removal on death
                 set(indices[i], null);
             }
         }
