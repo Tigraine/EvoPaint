@@ -89,4 +89,8 @@ public abstract class Pixel {
         this.location = new AbsoluteCoordinate(pixel.location); // ACs can be moved
         this.energy = pixel.energy; // primitive
     }
+
+	public void kill() {
+		this.energy = 0;
+	}
 }
