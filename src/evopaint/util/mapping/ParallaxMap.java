@@ -231,6 +231,11 @@ public class ParallaxMap<T> extends AbstractCollection<T> {
         set(i, null);
     }
 
+    public synchronized void remove(int x, int y) {
+        int i = wrap(y, height) * width + wrap(x, width);
+        set(i, null);
+    }
+
     @Override
     public boolean remove(Object o) {
         return false;
