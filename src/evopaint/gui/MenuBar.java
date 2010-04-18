@@ -121,12 +121,12 @@ public class MenuBar extends JMenuBar implements Observer {
         JMenuItem selectionSetName = new JMenuItem("Set Name...");
         selectionMenu.add(selectionSetName);
         selectionSetName.addActionListener(listenerFactory.CreateSelectionSetNameListener());
-        JMenuItem fillSelection = new JMenuItem("Fill");
-        fillSelection.addActionListener(new FillSelectionCommand(showcase));
-        selectionMenu.add(fillSelection);
-        JMenuItem fillHalfSelection = new JMenuItem("Fill 50%");
-        fillHalfSelection.addActionListener(new FillSelectionCommandScattered(showcase));
-        selectionMenu.add(fillHalfSelection);
+//        JMenuItem fillSelection = new JMenuItem("Fill");
+//        fillSelection.addActionListener(new FillSelectionCommand(showcase));
+//        selectionMenu.add(fillSelection);
+//        JMenuItem fillHalfSelection = new JMenuItem("Fill 50%");
+//        fillHalfSelection.addActionListener(new FillSelectionCommandScattered(showcase));
+//        selectionMenu.add(fillHalfSelection);
         selectionMenu.add(new JMenuItem("Open as new"));
         selectionMenu.add(new JMenuItem("Copy"));
         selectionMenu.add(new JMenuItem("Options..."));
