@@ -108,9 +108,9 @@ public class JQualifierButton extends JButton {
         try {
             createdQualifier = qualifierComboBox.getSelectedItem().getClass().newInstance();
         } catch (InstantiationException ex) {
-            ExceptionHandler.handle(ex);
+            ExceptionHandler.handle(ex, true);
         } catch (IllegalAccessException ex) {
-            ExceptionHandler.handle(ex);
+            ExceptionHandler.handle(ex, true);
         }
 
         return createdQualifier;

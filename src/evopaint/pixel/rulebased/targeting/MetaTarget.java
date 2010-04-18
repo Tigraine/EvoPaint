@@ -63,9 +63,9 @@ public class MetaTarget implements ITarget, IHTML {
             ObjectInputStream in = new ObjectInputStream(new ByteArrayInputStream(outByteStream.toByteArray()));
             newTarget = (MetaTarget) in.readObject();
         } catch (ClassNotFoundException ex) {
-            ExceptionHandler.handle(ex);
+            ExceptionHandler.handle(ex, true);
         } catch (IOException ex) {
-            ExceptionHandler.handle(ex);
+            ExceptionHandler.handle(ex, true);
         }
         return newTarget;
     }

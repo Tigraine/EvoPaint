@@ -83,9 +83,9 @@ public class RuleSet implements Serializable, INameable, IDescribable, ICopyable
             ObjectInputStream in = new ObjectInputStream(new ByteArrayInputStream(outByteStream.toByteArray()));
             newRuleSet = (RuleSet) in.readObject();
         } catch (ClassNotFoundException ex) {
-            ExceptionHandler.handle(ex);
+            ExceptionHandler.handle(ex, true);
         } catch (IOException ex) {
-            ExceptionHandler.handle(ex);
+            ExceptionHandler.handle(ex, true);
         }
         return newRuleSet;
     }

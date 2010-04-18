@@ -67,9 +67,9 @@ public abstract class Condition implements IHaveTarget, ICopyable {
             ObjectInputStream in = new ObjectInputStream(new ByteArrayInputStream(outByteStream.toByteArray()));
             newCondition = (Condition) in.readObject();
         } catch (ClassNotFoundException ex) {
-            ExceptionHandler.handle(ex);
+            ExceptionHandler.handle(ex, true);
         } catch (IOException ex) {
-            ExceptionHandler.handle(ex);
+            ExceptionHandler.handle(ex, true);
         }
         return newCondition;
     }

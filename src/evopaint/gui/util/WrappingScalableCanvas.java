@@ -156,7 +156,7 @@ public class WrappingScalableCanvas extends JComponent implements IOverlayable {
         try {
             invertedTransform.invert();
         } catch (NoninvertibleTransformException ex) {
-            ExceptionHandler.handle(ex);
+            ExceptionHandler.handle(ex, false);
         }
         Point2D.Float floatPoint = (Point2D.Float)invertedTransform.transform(point, null);
         Point ret = new Point((int)floatPoint.x, (int)floatPoint.y);
@@ -198,7 +198,7 @@ public class WrappingScalableCanvas extends JComponent implements IOverlayable {
         try {
             return scaleTransform.createInverse().createTransformedShape(shape);
         } catch (NoninvertibleTransformException ex) {
-            ExceptionHandler.handle(ex);
+            ExceptionHandler.handle(ex, false);
         }
         assert (false);
         return null;

@@ -20,13 +20,11 @@
 package evopaint.util;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
@@ -53,6 +51,9 @@ public class ExceptionHandler {
     private JDialog dialog;
     private JTextPane messagePane;
     private JTextArea exceptionTextArea;
+
+    public ExceptionHandler() {
+    }
 
     private ExceptionHandler(JFrame mainFrame) {
         dialog = new JDialog(mainFrame, "Sorry...", true);
@@ -104,23 +105,28 @@ public class ExceptionHandler {
         instance = new ExceptionHandler(mainFrame);
     }
 
-    public static void handle(Exception ex) {
-        handle(ex, true);
+    // do not change the signature of this method. needed by awt
+    public void handle(Throwable t) {
+        handle(t, true);
     }
 
-    public static void handle(Exception ex, boolean fatal) {
-        handle(ex, fatal, fatal ? fatalMessage : defaultMessage);
+    public static void handle(Throwable t, boolean fatal) {
+        handle(t, fatal, fatal ? fatalMessage : defaultMessage);
     }
 
-    public static void handle(Exception ex, boolean fatal, String msg) {
+    public static void handle(Throwable t, boolean fatal, String msg) {
         if (instance == null) {
-            ex.printStackTrace();
+            t.printStackTrace();
         }
 
-        instance.handleInternal(ex, fatal, msg);
+        instance.handleInternal(t, fatal, msg);
     }
 
-    private void handleInternal(Exception ex, boolean fatal, String msg) {
+    private void handleInternal(Throwable t, boolean fatal, String msg) {
+        if (instance == null) {
+            t.printStackTrace();
+            System.exit(1);
+        }
 
         this.fatal = fatal;
 
@@ -128,7 +134,7 @@ public class ExceptionHandler {
 
         StringWriter stringWriter = new StringWriter();
         PrintWriter printWriter = new PrintWriter(stringWriter, true);
-        ex.printStackTrace(printWriter);
+        t.printStackTrace(printWriter);
         printWriter.flush();
         stringWriter.flush();
         exceptionTextArea.setText(stringWriter.toString());

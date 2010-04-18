@@ -88,9 +88,9 @@ public abstract class Action implements IHaveTarget, ICopyable {
             ObjectInputStream in = new ObjectInputStream(new ByteArrayInputStream(outByteStream.toByteArray()));
             newAction = (Action) in.readObject();
         } catch (ClassNotFoundException ex) {
-            ExceptionHandler.handle(ex);
+            ExceptionHandler.handle(ex, true);
         } catch (IOException ex) {
-            ExceptionHandler.handle(ex);
+            ExceptionHandler.handle(ex, true);
         }
         return newAction;
     }

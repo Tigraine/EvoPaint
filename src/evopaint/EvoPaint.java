@@ -91,12 +91,13 @@ public class EvoPaint {
     }
 
     public static void main(String args[]) {
+        System.setProperty("sun.awt.exception.handler", ExceptionHandler.class.getName());
         try {
             EvoPaint evopaint = new EvoPaint();
             
             evopaint.work();
-        } catch (Exception ex) {
-            ExceptionHandler.handle(ex);
+        } catch (Throwable t) {
+            ExceptionHandler.handle(t, true);
         }
     }
     

@@ -136,9 +136,9 @@ public class FileHandler implements TreeModelListener {
                 }
             }
         } catch (FileNotFoundException ex) {
-            ExceptionHandler.handle(ex);
+            ExceptionHandler.handle(ex, true);
         } catch (IOException ex) {
-            ExceptionHandler.handle(ex);
+            ExceptionHandler.handle(ex, true);
         }
     }
 
@@ -274,9 +274,9 @@ public class FileHandler implements TreeModelListener {
         try {
             reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), "UTF8"));
         } catch (UnsupportedEncodingException ex) {
-            ExceptionHandler.handle(ex);
+            ExceptionHandler.handle(ex, false);
         } catch (FileNotFoundException ex) {
-            ExceptionHandler.handle(ex);
+            ExceptionHandler.handle(ex, true);
         }
         try {
             return xStream.fromXML(reader);
@@ -288,7 +288,7 @@ public class FileHandler implements TreeModelListener {
                     reader.close();
                 }
             } catch (IOException ex) {
-                ExceptionHandler.handle(ex);
+                ExceptionHandler.handle(ex, true);
             }
         }
         return null;
@@ -300,18 +300,18 @@ public class FileHandler implements TreeModelListener {
             writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file), "UTF8"));
             writer.write(xStream.toXML(object));
         } catch (UnsupportedEncodingException ex) {
-            ExceptionHandler.handle(ex);
+            ExceptionHandler.handle(ex, false);
         } catch (FileNotFoundException ex) {
-            ExceptionHandler.handle(ex);
+            ExceptionHandler.handle(ex, true);
         } catch (IOException ex) {
-            ExceptionHandler.handle(ex);
+            ExceptionHandler.handle(ex, true);
         } finally {
             try {
                 if (writer != null) {
                     writer.close();
                 }
             } catch (IOException ex) {
-                ExceptionHandler.handle(ex);
+                ExceptionHandler.handle(ex, true);
             }
         }
     }
