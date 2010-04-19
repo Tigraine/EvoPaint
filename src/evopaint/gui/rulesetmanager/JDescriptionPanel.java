@@ -27,6 +27,8 @@ import evopaint.pixel.rulebased.interfaces.INamed;
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Color;
+import java.awt.Point;
+import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.ImageIcon;
@@ -36,6 +38,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
+import javax.swing.border.BevelBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
@@ -128,6 +131,7 @@ public class JDescriptionPanel extends JPanel implements TreeSelectionListener {
         description = ((IDescribed)userObject).getDescription();
         render();
         viewerControlPanel.setVisible(true);
+        viewerTextPane.setCaretPosition(0);
     }
 
     public JDescriptionPanel(Configuration configuration, JRuleSetTree tree) {
@@ -152,7 +156,6 @@ public class JDescriptionPanel extends JPanel implements TreeSelectionListener {
                 JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         viewerScrollPane.setBorder(null);
         viewerScrollPane.setViewportBorder(null);
-        //viewerScrollPane.setPreferredSize(new Dimension(300, 100));
 
         viewerControlPanel = new JPanel();
         viewerControlPanel.setBackground(new Color(0xF2F2F5));
@@ -163,6 +166,7 @@ public class JDescriptionPanel extends JPanel implements TreeSelectionListener {
                     ((CardLayout)contentPane.getLayout()).show(contentPane, "editor");
                 editorTitleField.setText(title);
                 editorDescriptionArea.setText(description);
+                editorDescriptionArea.setCaretPosition(0);
             }
         });
         viewerControlPanel.add(btnEdit);
@@ -172,13 +176,21 @@ public class JDescriptionPanel extends JPanel implements TreeSelectionListener {
 
         // editor
         JPanel editor = new JPanel();
-        editor.setLayout(new BorderLayout());
-        editor.setBackground(new Color(0xF2F2F5));
+        editor.setBorder(new LineBorder(getBackground(), 10));
+        editor.setLayout(new BorderLayout(10, 10));
+        //editor.setBackground(new Color(0xF2F2F5));
         editorTitleField = new JTextField();
+        editorTitleField.setBorder(new BevelBorder(BevelBorder.LOWERED));
         editorDescriptionArea = new JTextArea();
         editorDescriptionArea.setLineWrap(true);
+        JScrollPane editorScrollPane = new JScrollPane(editorDescriptionArea,
+                JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
+                JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        editorScrollPane.setBorder(null);
+        editorScrollPane.setViewportBorder(new BevelBorder(BevelBorder.LOWERED));
+
         JPanel editorControlPanel = new JPanel();
-        editorControlPanel.setBackground(new Color(0xF2F2F5));
+        //editorControlPanel.setBackground(new Color(0xF2F2F5));
         JButton btnSave = new JButton("Save");
         btnSave.addActionListener(new DescriptionEditorBtnSaveListener());
         btnSave.addActionListener(new ActionListener() {
@@ -195,7 +207,7 @@ public class JDescriptionPanel extends JPanel implements TreeSelectionListener {
         });
         editorControlPanel.add(btnCancel);
         editor.add(editorTitleField, BorderLayout.NORTH);
-        editor.add(editorDescriptionArea, BorderLayout.CENTER);
+        editor.add(editorScrollPane, BorderLayout.CENTER);
         editor.add(editorControlPanel, BorderLayout.SOUTH);
 
         add(viewer, "viewer");

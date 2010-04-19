@@ -27,7 +27,6 @@ import evopaint.util.RuleSetNode;
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Container;
-import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -164,7 +163,7 @@ public class JRuleSetManager extends JPanel implements TreeSelectionListener {
 
         if (userObject instanceof RuleSet) {
             splitPaneVertical.getBottomComponent().setVisible(true);
-            splitPaneVertical.setDividerLocation(260);
+            splitPaneVertical.setDividerLocation(350);
             selectedRuleSet = (RuleSet)userObject;
             btnUse.setEnabled(true);
             return;
