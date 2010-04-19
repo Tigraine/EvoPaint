@@ -19,7 +19,7 @@
 
 package evopaint.pixel.rulebased.targeting;
 
-import evopaint.pixel.rulebased.interfaces.IHTML;
+import evopaint.interfaces.IRandomNumberGenerator;
 import evopaint.util.ExceptionHandler;
 import evopaint.util.mapping.RelativeCoordinate;
 import java.io.ByteArrayInputStream;
@@ -35,7 +35,7 @@ import java.util.List;
  *
  * @author Markus Echterhoff <tam@edu.uni-klu.ac.at>
  */
-public class MetaTarget implements ITarget, IHTML {
+public class MetaTarget implements ITarget {
     protected List<RelativeCoordinate> directions;
 
     public MetaTarget(List<RelativeCoordinate> directions) {
@@ -44,6 +44,55 @@ public class MetaTarget implements ITarget, IHTML {
 
     public MetaTarget() {
         this.directions = new ArrayList<RelativeCoordinate>();
+    }
+
+    public int getType() {
+        return Target.META_TARGET;
+    }
+
+    public void mixWith(ITarget theirTarget, float theirShare, IRandomNumberGenerator rng) {
+        
+        MetaTarget theirMetaTarget = (MetaTarget)theirTarget;
+
+        // cache size() calls for maximum performance
+        int ourSize = directions.size();
+        int theirSize = theirMetaTarget.directions.size();
+
+        // now mix as many directions as we have in common and add the rest depending
+        // on share percentage
+        // we have more directions
+        if (ourSize > theirSize) {
+            int i = 0;
+            while (i < theirSize) {
+                if (rng.nextFloat() < theirShare) {
+                    directions.set(i, theirMetaTarget.directions.get(i));
+                }
+                i++;
+            }
+            int removed = 0;
+            while (i < ourSize - removed) {
+                if (rng.nextFloat() < theirShare) {
+                    directions.remove(i);
+                    removed ++;
+                } else {
+                    i++;
+                }
+            }
+        } else { // they have more directions or we have an equal number of directions
+           int i = 0;
+            while (i < ourSize) {
+                if (rng.nextFloat() < theirShare) {
+                    directions.set(i, theirMetaTarget.directions.get(i));
+                }
+                i++;
+            }
+            while (i < theirSize) {
+                if (rng.nextFloat() < theirShare) {
+                    directions.add(theirMetaTarget.directions.get(i));
+                }
+                i++;
+            }
+        }
     }
 
     public List<RelativeCoordinate> getDirections() {

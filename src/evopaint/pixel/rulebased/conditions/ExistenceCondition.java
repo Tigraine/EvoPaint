@@ -21,12 +21,12 @@ package evopaint.pixel.rulebased.conditions;
 
 import evopaint.gui.rulesetmanager.JConditionTargetButton;
 import evopaint.gui.rulesetmanager.util.NamedObjectListCellRenderer;
+import evopaint.interfaces.IRandomNumberGenerator;
 import evopaint.pixel.rulebased.targeting.IConditionTarget;
 import evopaint.pixel.rulebased.util.ObjectComparisonOperator;
 import evopaint.pixel.rulebased.Condition;
 import evopaint.pixel.Pixel;
 import evopaint.pixel.rulebased.targeting.MetaTarget;
-import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.LinkedHashMap;
@@ -48,6 +48,18 @@ public class ExistenceCondition extends Condition {
 
     public ExistenceCondition() {
         objectComparisonOperator = ObjectComparisonOperator.EQUAL;
+    }
+
+    public int getType() {
+        return Condition.EXISTENCE;
+    }
+
+    @Override
+    public void mixWith(Condition theirCondition, float theirShare, IRandomNumberGenerator rng) {
+        super.mixWith(theirCondition, theirShare, rng);
+        if (rng.nextFloat() < theirShare) {
+            objectComparisonOperator = ((ExistenceCondition)theirCondition).objectComparisonOperator;
+        }
     }
 
     public ObjectComparisonOperator getComparisonOperator() {

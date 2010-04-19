@@ -21,6 +21,7 @@ package evopaint.pixel.rulebased.actions;
 
 import evopaint.Configuration;
 import evopaint.gui.rulesetmanager.util.ColorChooserLabel;
+import evopaint.interfaces.IRandomNumberGenerator;
 import evopaint.pixel.rulebased.Action;
 import evopaint.pixel.Pixel;
 import evopaint.pixel.PixelColor;
@@ -46,6 +47,18 @@ public class SetColorAction extends Action {
 
     public SetColorAction() {
         this.color = new PixelColor(0);
+    }
+
+    public int getType() {
+        return Action.SET_COLOR;
+    }
+
+    @Override
+    public void mixWith(Action theirAction, float theirShare, IRandomNumberGenerator rng) {
+        super.mixWith(theirAction, theirShare, rng);
+        if (rng.nextFloat() < theirShare) {
+            color.setColor(((SetColorAction)theirAction).color);
+        }
     }
 
     public PixelColor getColor() {

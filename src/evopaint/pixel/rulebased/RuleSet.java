@@ -19,6 +19,7 @@
 
 package evopaint.pixel.rulebased;
 
+import evopaint.interfaces.IRandomNumberGenerator;
 import evopaint.pixel.rulebased.interfaces.ICopyable;
 import evopaint.pixel.rulebased.interfaces.IDescribable;
 import evopaint.pixel.rulebased.interfaces.INameable;
@@ -88,6 +89,44 @@ public class RuleSet implements Serializable, INameable, IDescribable, ICopyable
             ExceptionHandler.handle(ex, true);
         }
         return newRuleSet;
+    }
+
+    public void mixWith(RuleSet theirRuleSet, float theirShare, IRandomNumberGenerator rng) {
+        // cache size() calls for maximum performance
+        int ourSize = rules.size();
+        int theirSize = theirRuleSet.rules.size();
+
+        // now mix as many rules as we have in common and add the rest depending
+        // on share percentage
+        // we have more rules
+        if (ourSize > theirSize) {
+            int i = 0;
+            while (i < theirSize) {
+                rules.get(i).mixWith((Rule)theirRuleSet.rules.get(i), theirShare, rng);
+                i++;
+            }
+            int removed = 0;
+            while (i < ourSize - removed) {
+                if (rng.nextFloat() < theirShare) {
+                    rules.remove(i);
+                    removed ++;
+                } else {
+                    i++;
+                }
+            }
+        } else { // they have more rules or we have an equal number of rules
+           int i = 0;
+            while (i < ourSize) {
+                rules.get(i).mixWith((Rule)theirRuleSet.rules.get(i), theirShare, rng);
+                i++;
+            }
+            while (i < theirSize) {
+                if (rng.nextFloat() < theirShare) {
+                    rules.add(theirRuleSet.rules.get(i));
+                }
+                i++;
+            }
+        }
     }
 
     public RuleSet(String name, String description, List<IRule> rules) {

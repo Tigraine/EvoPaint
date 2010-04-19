@@ -41,6 +41,10 @@ public class CopyAction extends Action {
         super(energyChange, target);
     }
 
+    public int getType() {
+        return Action.COPY;
+    }
+
     public CopyAction() {
     }
 

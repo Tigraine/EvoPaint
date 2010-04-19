@@ -20,6 +20,7 @@
 package evopaint.pixel.rulebased.conditions;
 
 import evopaint.Configuration;
+import evopaint.interfaces.IRandomNumberGenerator;
 import evopaint.pixel.rulebased.Condition;
 import evopaint.pixel.Pixel;
 import java.util.LinkedHashMap;
@@ -32,6 +33,15 @@ import javax.swing.JComponent;
 public class TrueCondition extends Condition {
 
     public TrueCondition() {
+    }
+
+    public int getType() {
+        return Condition.TRUE;
+    }
+
+    @Override
+    public void mixWith(Condition theirCondition, float theirShare, IRandomNumberGenerator rng) {
+        // already mixed - I love this condition <3
     }
 
     @Override // always true condition does not need target checking

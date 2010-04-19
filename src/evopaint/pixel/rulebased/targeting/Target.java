@@ -17,28 +17,14 @@
  *  along with EvoPaint.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package evopaint.pixel.rulebased.interfaces;
-
-import evopaint.Configuration;
-import evopaint.interfaces.IRandomNumberGenerator;
-import evopaint.pixel.Pixel;
-import evopaint.pixel.rulebased.Action;
-import evopaint.pixel.rulebased.Condition;
-import evopaint.pixel.rulebased.Rule;
-import java.io.Serializable;
-import java.util.List;
+package evopaint.pixel.rulebased.targeting;
 
 /**
  *
  * @author Markus Echterhoff <tam@edu.uni-klu.ac.at>
  */
-public interface IRule extends IHTML, Serializable, ICopyable {
+public abstract class Target implements ITarget {
 
-    public Action getAction();
-    public void setAction(Action action);
-    public List<Condition> getConditions();
-    public void setConditions(List<Condition> conditions);
-    public boolean apply(Pixel pixel, Configuration configuration);
-    public String validate();
-    public void mixWith(Rule theirRule, float theirShare, IRandomNumberGenerator rng);
+    public static final int SINGLE_TARGET = 0;
+    public static final int META_TARGET = 1;
 }

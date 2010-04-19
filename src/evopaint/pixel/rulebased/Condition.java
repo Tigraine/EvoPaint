@@ -21,6 +21,7 @@ package evopaint.pixel.rulebased;
 
 import evopaint.pixel.rulebased.targeting.IHaveTarget;
 import evopaint.Configuration;
+import evopaint.interfaces.IRandomNumberGenerator;
 import evopaint.pixel.Pixel;
 import evopaint.pixel.rulebased.interfaces.ICopyable;
 import evopaint.pixel.rulebased.targeting.ConditionTarget;
@@ -40,7 +41,25 @@ import java.util.Map;
  */
 public abstract class Condition implements IHaveTarget, ICopyable {
 
+    protected static final int COLOR_LIKENESS_CONDITION_COLOR = 0;
+    protected static final int COLOR_LIKENESS_CONDITION_MY_COLOR = 1;
+    protected static final int ENERGY = 2;
+    protected static final int EXISTENCE = 3;
+    protected static final int TRUE = 4;
+
     private IConditionTarget target;
+
+    public abstract int getType();
+
+    public void mixWith(Condition theirCondition, float theirShare, IRandomNumberGenerator rng) {
+        if (getType() == theirCondition.target.getType()) {
+            target.mixWith(theirCondition.target, theirShare, rng);
+        } else {
+            if (rng.nextFloat() < theirShare) {
+                target = (IConditionTarget)theirCondition.target.getCopy();
+            }
+        }
+    }
 
     public Condition(IConditionTarget target) {
         this.target = target;

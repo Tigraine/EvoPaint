@@ -23,6 +23,7 @@ import evopaint.gui.rulesetmanager.JConditionTargetButton;
 import evopaint.gui.rulesetmanager.util.DimensionsListener;
 import evopaint.gui.rulesetmanager.util.NamedObjectListCellRenderer;
 import evopaint.gui.util.AutoSelectOnFocusSpinner;
+import evopaint.interfaces.IRandomNumberGenerator;
 import evopaint.pixel.rulebased.Condition;
 import evopaint.pixel.ColorDimensions;
 import evopaint.pixel.Pixel;
@@ -60,6 +61,23 @@ public class ColorLikenessConditionMyColor extends Condition {
     public ColorLikenessConditionMyColor() {
         dimensions = new ColorDimensions(true, true, true);
         comparisonOperator = NumberComparisonOperator.GREATER_OR_EQUAL;
+    }
+
+    public int getType() {
+        return Condition.COLOR_LIKENESS_CONDITION_MY_COLOR;
+    }
+
+    @Override
+    public void mixWith(Condition theirCondition, float theirShare, IRandomNumberGenerator rng) {
+        super.mixWith(theirCondition, theirShare, rng);
+        ColorLikenessConditionMyColor c = (ColorLikenessConditionMyColor)theirCondition;
+        dimensions.mixWith(c.dimensions, theirShare, rng);
+        if (rng.nextFloat() < theirShare) {
+            compareToLikenessPercentage = c.compareToLikenessPercentage;
+        }
+        if (rng.nextFloat() < theirShare) {
+            comparisonOperator = c.comparisonOperator;
+        }
     }
 
     public int getCompareToLikenessPercentage() {

@@ -76,6 +76,12 @@ public class PixelColor implements IHTML, Serializable {
         this.brightness = hsb[2];
     }
 
+    public void setColor(PixelColor theirColor) {
+        hue = theirColor.hue;
+        saturation = theirColor.saturation;
+        brightness = theirColor.brightness;
+    }
+
     @Override
     public String toString() {
         return "#" + Integer.toHexString(Color.HSBtoRGB(hue, saturation, brightness)).substring(2).toUpperCase();

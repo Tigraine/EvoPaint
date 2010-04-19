@@ -23,12 +23,17 @@ import evopaint.Configuration;
 import evopaint.pixel.rulebased.Action;
 import evopaint.gui.rulesetmanager.util.DimensionsListener;
 import evopaint.gui.util.AutoSelectOnFocusSpinner;
+import evopaint.interfaces.IRandomNumberGenerator;
 import evopaint.pixel.ColorDimensions;
 import evopaint.pixel.Pixel;
+import evopaint.pixel.rulebased.RuleBasedPixel;
 import evopaint.pixel.rulebased.targeting.ActionMetaTarget;
 import evopaint.util.mapping.RelativeCoordinate;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import javax.swing.JCheckBox;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
@@ -45,16 +50,33 @@ public class AssimilationAction extends Action {
 
     private ColorDimensions dimensions;
     private byte ourSharePercent;
+    private boolean mixRuleSet;
 
-    public AssimilationAction(int energyChange, ActionMetaTarget target, ColorDimensions dimensions, byte ourSharePercent) {
+    public AssimilationAction(int energyChange, ActionMetaTarget target, ColorDimensions dimensions, byte ourSharePercent, boolean mixRuleSet) {
         super(energyChange, target);
         this.dimensions = dimensions;
         this.ourSharePercent = ourSharePercent;
+        this.mixRuleSet = mixRuleSet;
     }
 
     public AssimilationAction() {
         this.dimensions = new ColorDimensions(true, true, true);
         ourSharePercent = 50;
+        this.mixRuleSet = true;
+    }
+
+    public int getType() {
+        return Action.ASSIMILATION;
+    }
+
+    @Override
+    public void mixWith(Action theirAction, float theirShare, IRandomNumberGenerator rng) {
+        super.mixWith(theirAction, theirShare, rng);
+        AssimilationAction a = (AssimilationAction)theirAction;
+        dimensions.mixWith(a.dimensions, theirShare, rng);
+        if (rng.nextFloat() < theirShare) {
+            ourSharePercent = a.ourSharePercent;
+        }
     }
     
     public ColorDimensions getDimensions() {
@@ -84,6 +106,9 @@ public class AssimilationAction extends Action {
         }
         target.getPixelColor().mixWith(actor.getPixelColor(),
                 ((float)ourSharePercent) / 100, dimensions);
+        if (mixRuleSet) {
+            ((RuleBasedPixel)target).getRuleSet().mixWith(((RuleBasedPixel)actor).getRuleSet(), ourSharePercent, configuration.rng);
+        }
         return energyChange;
     }
 
@@ -140,6 +165,16 @@ public class AssimilationAction extends Action {
             }
         });
         parametersMap.put("Our share in %", ourSharePercentSpinner);
+
+        final JCheckBox mixRuleSetCheckBox = new JCheckBox();
+        mixRuleSetCheckBox.setSelected(mixRuleSet);
+        mixRuleSetCheckBox.addActionListener(new ActionListener() {
+
+            public void actionPerformed(ActionEvent e) {
+                mixRuleSet = mixRuleSetCheckBox.isSelected();
+            }
+        });
+        parametersMap.put("Also mix rule sets:", mixRuleSetCheckBox);
 
         return parametersMap;
     }

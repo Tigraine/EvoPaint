@@ -19,7 +19,7 @@
 
 package evopaint.pixel.rulebased.targeting;
 
-import evopaint.pixel.rulebased.interfaces.IHTML;
+import evopaint.interfaces.IRandomNumberGenerator;
 import evopaint.util.ExceptionHandler;
 import evopaint.util.mapping.RelativeCoordinate;
 import java.io.ByteArrayInputStream;
@@ -32,7 +32,7 @@ import java.io.ObjectOutputStream;
  *
  * @author Markus Echterhoff <tam@edu.uni-klu.ac.at>
  */
-public class SingleTarget implements ITarget, IHTML {
+public class SingleTarget implements ITarget {
     protected RelativeCoordinate direction;
 
     public SingleTarget(RelativeCoordinate direction) {
@@ -40,6 +40,16 @@ public class SingleTarget implements ITarget, IHTML {
     }
 
     public SingleTarget() {
+    }
+
+    public int getType() {
+        return Target.SINGLE_TARGET;
+    }
+
+    public void mixWith(ITarget theirTarget, float theirShare, IRandomNumberGenerator rng) {
+        if (rng.nextFloat() < theirShare) {
+            direction = ((SingleTarget)theirTarget).direction;
+        }
     }
 
     public SingleTarget getCopy() {

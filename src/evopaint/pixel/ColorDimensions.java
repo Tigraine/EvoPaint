@@ -19,6 +19,7 @@
 
 package evopaint.pixel;
 
+import evopaint.interfaces.IRandomNumberGenerator;
 import evopaint.pixel.rulebased.interfaces.IHTML;
 import java.io.Serializable;
 
@@ -48,6 +49,18 @@ public class ColorDimensions implements IHTML, Serializable {
         ret += brightness ? "B" : "";
         ret += "]";
         return ret;
+    }
+    
+    public void mixWith(ColorDimensions theirColorDimensions, float theirShare, IRandomNumberGenerator rng) {
+        if (rng.nextFloat() < theirShare) {
+            hue = theirColorDimensions.hue;
+        }
+        if (rng.nextFloat() < theirShare) {
+            saturation = theirColorDimensions.saturation;
+        }
+        if (rng.nextFloat() < theirShare) {
+            brightness = theirColorDimensions.brightness;
+        }
     }
 
     @Override

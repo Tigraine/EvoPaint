@@ -60,7 +60,7 @@ public class FillSelectionCommand extends AbstractCommand {
         this.configuration = showcase.getConfiguration();
 
         this.energy = configuration.startingEnergy;
-        this.ruleSet = configuration.paint.getCurrentRuleSet();
+        //this.ruleSet = configuration.paint.getCurrentRuleSet().getCopy();
     }
 
     public void setLocation(Point location) {
@@ -134,13 +134,15 @@ public class FillSelectionCommand extends AbstractCommand {
                 if (pixel == null) {
                     return;
                 }
-                currentColor.setHSB(pixel.getPixelColor().getHSB());
+                currentColor.setColor(pixel.getPixelColor());
                 break;
             default:
                 break;
         }
 
-        RuleSet currentRuleSet = configuration.paint.getCurrentRuleSet();
+        RuleSet currentRuleSet = configuration.operationMode == Configuration.OPERATIONMODE_AGENT_SIMULATION ?
+                    configuration.paint.getCurrentRuleSet().getCopy() :
+                    configuration.paint.getCurrentRuleSet();
         switch (configuration.paint.getCurrentRuleSetMode()) {
             case Paint.NO_RULE_SET:
                 currentRuleSet = null;

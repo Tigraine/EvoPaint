@@ -67,13 +67,15 @@ public class Brush {
                         if (pixie == null) {
                             continue;
                         }
-                        newColor.setHSB(pixie.getPixelColor().getHSB());
+                        newColor.setColor(pixie.getPixelColor());
                         break;
                     default:
                         assert(false);
                 }
 
-                RuleSet ruleSet = configuration.paint.getCurrentRuleSet();
+                RuleSet ruleSet = configuration.operationMode == Configuration.OPERATIONMODE_AGENT_SIMULATION ?
+                    configuration.paint.getCurrentRuleSet().getCopy() :
+                    configuration.paint.getCurrentRuleSet();
                 switch (configuration.paint.getCurrentRuleSetMode()) {
                     case Paint.RULE_SET:
                         break;

@@ -20,10 +20,10 @@
 package evopaint.gui.rulesetmanager;
 
 import evopaint.gui.rulesetmanager.util.JRangeSlider;
-import evopaint.pixel.rulebased.targeting.ActionMetaTarget;
 import evopaint.pixel.rulebased.targeting.IConditionTarget;
 import evopaint.pixel.rulebased.targeting.ConditionMetaTarget;
 import evopaint.pixel.rulebased.targeting.ConditionTarget;
+import evopaint.pixel.rulebased.targeting.ITarget;
 import evopaint.pixel.rulebased.targeting.ITarget;
 import evopaint.pixel.rulebased.targeting.MetaTarget;
 import evopaint.pixel.rulebased.targeting.SingleTarget;

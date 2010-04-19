@@ -20,6 +20,7 @@
 package evopaint.pixel.rulebased;
 
 import evopaint.Configuration;
+import evopaint.interfaces.IRandomNumberGenerator;
 import evopaint.pixel.Pixel;
 import evopaint.pixel.rulebased.actions.ChangeEnergyAction;
 import evopaint.pixel.rulebased.actions.CopyAction;
@@ -295,6 +296,69 @@ public class Rule implements IRule, IHTML, ICopyable {
         }
 
         return null;
+    }
+
+    public void mixWith(Rule theirRule, float theirShare, IRandomNumberGenerator rng) {
+        // conditions
+        // cache size() calls for maximum performance
+        int ourSize = conditions.size();
+        int theirSize = theirRule.conditions.size();
+
+        // now mix as many conditions as we have in common and add the rest depending
+        // on share percentage
+        // we have more conditions
+        if (ourSize > theirSize) {
+            int i = 0;
+            while (i < theirSize) {
+                Condition ourCondition = conditions.get(i);
+                Condition theirCondition = theirRule.conditions.get(i);
+                if (ourCondition.getType() == theirCondition.getType()) {
+                    ourCondition.mixWith(theirCondition, theirShare, rng);
+                } else {
+                    if (rng.nextFloat() < theirShare) {
+                        conditions.set(i, theirCondition);
+                    }
+                }
+                i++;
+            }
+            int removed = 0;
+            while (i < ourSize - removed) {
+                if (rng.nextFloat() < theirShare) {
+                    conditions.remove(i);
+                    removed ++;
+                } else {
+                    i++;
+                }
+            }
+        } else { // they have more conditions or we have an equal number of conditions
+           int i = 0;
+            while (i < ourSize) {
+                Condition ourCondition = conditions.get(i);
+                Condition theirCondition = theirRule.conditions.get(i);
+                if (ourCondition.getType() == theirCondition.getType()) {
+                    ourCondition.mixWith(theirCondition, theirShare, rng);
+                } else {
+                    if (rng.nextFloat() < theirShare) {
+                        conditions.set(i, theirCondition);
+                    }
+                }
+                i++;
+            }
+            while (i < theirSize) {
+                if (rng.nextFloat() < theirShare) {
+                    conditions.add(theirRule.conditions.get(i));
+                }
+                i++;
+            }
+        }
+
+        if (action.getType() == theirRule.action.getType()) {
+            action.mixWith(theirRule.action, theirShare, rng);
+        } else {
+            if (rng.nextFloat() < theirShare) {
+                action = theirRule.action.getCopy();
+            }
+        }
     }
 
 }

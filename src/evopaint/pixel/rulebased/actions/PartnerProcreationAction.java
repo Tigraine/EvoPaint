@@ -22,6 +22,7 @@ package evopaint.pixel.rulebased.actions;
 import evopaint.Configuration;
 import evopaint.gui.rulesetmanager.util.DimensionsListener;
 import evopaint.gui.util.AutoSelectOnFocusSpinner;
+import evopaint.interfaces.IRandomNumberGenerator;
 import evopaint.pixel.ColorDimensions;
 import evopaint.pixel.Pixel;
 import evopaint.pixel.PixelColor;
@@ -31,8 +32,11 @@ import evopaint.pixel.rulebased.RuleSet;
 import evopaint.pixel.rulebased.targeting.ActionMetaTarget;
 import evopaint.util.mapping.AbsoluteCoordinate;
 import evopaint.util.mapping.RelativeCoordinate;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import javax.swing.JCheckBox;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
@@ -49,6 +53,7 @@ public class PartnerProcreationAction extends Action {
     private int partnerEnergyChange;
     private ColorDimensions dimensions;
     private byte ourSharePercent;
+    private boolean mixRuleSet;
 
     public PartnerProcreationAction(int energyChange, int partnerEnergyChange, ActionMetaTarget partner, ColorDimensions dimensions, byte ourSharePercent) {
         super(energyChange, partner);
@@ -60,6 +65,23 @@ public class PartnerProcreationAction extends Action {
     public PartnerProcreationAction() {
         this.dimensions = new ColorDimensions(true, true, true);
         ourSharePercent = 50;
+    }
+
+    public int getType() {
+        return Action.PARTNER_PROCREATION;
+    }
+
+    @Override
+    public void mixWith(Action theirAction, float theirShare, IRandomNumberGenerator rng) {
+        super.mixWith(theirAction, theirShare, rng);
+        PartnerProcreationAction a = (PartnerProcreationAction)theirAction;
+        dimensions.mixWith(a.dimensions, theirShare, rng);
+        if (rng.nextFloat() < theirShare) {
+            partnerEnergyChange = a.partnerEnergyChange;
+        }
+        if (rng.nextFloat() < theirShare) {
+            ourSharePercent = a.ourSharePercent;
+        }
     }
 
     public ColorDimensions getDimensions() {
@@ -100,11 +122,15 @@ public class PartnerProcreationAction extends Action {
             return 0;
         }
 
+        // mix the colors
         PixelColor newPixelColor = new PixelColor(partner.getPixelColor());
         newPixelColor.mixWith(actor.getPixelColor(), ((float)ourSharePercent) / 100, dimensions);
 
-        // TODO really mix these rule sets
-        RuleSet newRuleSet = configuration.rng.nextBoolean() ? ((RuleBasedPixel)actor).getRuleSet() : ((RuleBasedPixel)partner).getRuleSet();
+        // mix the rule sets
+        RuleSet newRuleSet = ((RuleBasedPixel)actor).getRuleSet().getCopy();
+        if (mixRuleSet) {
+            newRuleSet.mixWith(((RuleBasedPixel)actor).getRuleSet(), ourSharePercent, configuration.rng);
+        }
 
         Pixel newPixel = new RuleBasedPixel(
                 newPixelColor,
@@ -193,6 +219,16 @@ public class PartnerProcreationAction extends Action {
             }
         });
         parametersMap.put("Our share in %", ourSharePercentSpinner);
+
+        final JCheckBox mixRuleSetCheckBox = new JCheckBox();
+        mixRuleSetCheckBox.setSelected(mixRuleSet);
+        mixRuleSetCheckBox.addActionListener(new ActionListener() {
+
+            public void actionPerformed(ActionEvent e) {
+                mixRuleSet = mixRuleSetCheckBox.isSelected();
+            }
+        });
+        parametersMap.put("Also mix rule sets:", mixRuleSetCheckBox);
 
         return parametersMap;
     }

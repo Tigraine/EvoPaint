@@ -23,11 +23,13 @@ package evopaint.pixel.rulebased;
 import evopaint.pixel.rulebased.targeting.IHaveTarget;
 import evopaint.Configuration;
 import evopaint.gui.util.AutoSelectOnFocusSpinner;
+import evopaint.interfaces.IRandomNumberGenerator;
 import evopaint.pixel.Pixel;
 import evopaint.pixel.rulebased.interfaces.ICopyable;
 import evopaint.pixel.rulebased.targeting.ActionMetaTarget;
 import evopaint.pixel.rulebased.targeting.ActionTarget;
 import evopaint.pixel.rulebased.targeting.IActionTarget;
+import evopaint.pixel.rulebased.targeting.IConditionTarget;
 import evopaint.pixel.rulebased.targeting.ITarget;
 import evopaint.util.ExceptionHandler;
 import evopaint.util.mapping.RelativeCoordinate;
@@ -51,6 +53,13 @@ import javax.swing.event.ChangeListener;
  */
 public abstract class Action implements IHaveTarget, ICopyable {
 
+    protected final static int ASSIMILATION = 0;
+    protected final static int CHANGE_ENERGY = 1;
+    protected final static int COPY = 2;
+    protected final static int MOVE = 3;
+    protected final static int PARTNER_PROCREATION = 4;
+    protected final static int SET_COLOR = 5;
+
     protected int energyChange;
     private IActionTarget target;
 
@@ -61,6 +70,18 @@ public abstract class Action implements IHaveTarget, ICopyable {
 
     protected Action() {
         this.target = new ActionTarget();
+    }
+
+    public abstract int getType();
+
+    public void mixWith(Action theirAction, float theirShare, IRandomNumberGenerator rng) {
+        if (getType() == theirAction.target.getType()) {
+            target.mixWith(theirAction.target, theirShare, rng);
+        } else {
+            if (rng.nextFloat() < theirShare) {
+                target = (IActionTarget)theirAction.target.getCopy();
+            }
+        }
     }
 
     public int getEnergyChange() {

@@ -21,6 +21,7 @@ package evopaint.pixel.rulebased.actions;
 
 import evopaint.Configuration;
 import evopaint.gui.util.AutoSelectOnFocusSpinner;
+import evopaint.interfaces.IRandomNumberGenerator;
 import evopaint.pixel.rulebased.Action;
 import evopaint.pixel.Pixel;
 import evopaint.util.mapping.RelativeCoordinate;
@@ -39,6 +40,18 @@ import javax.swing.event.ChangeListener;
 public class ChangeEnergyAction extends Action {
 
     private int amount;
+
+    public int getType() {
+        return Action.CHANGE_ENERGY;
+    }
+
+    @Override
+    public void mixWith(Action theirAction, float theirShare, IRandomNumberGenerator rng) {
+        super.mixWith(theirAction, theirShare, rng);
+        if (rng.nextFloat() < theirShare) {
+            amount = ((ChangeEnergyAction)theirAction).amount;
+        }
+    }
 
     public int getAmount() {
         return amount;

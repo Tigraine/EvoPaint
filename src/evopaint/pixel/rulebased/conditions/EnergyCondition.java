@@ -25,6 +25,7 @@ import evopaint.pixel.rulebased.util.NumberComparisonOperator;
 import evopaint.pixel.rulebased.Condition;
 import evopaint.gui.util.AutoSelectOnFocusSpinner;
 import evopaint.gui.rulesetmanager.util.NamedObjectListCellRenderer;
+import evopaint.interfaces.IRandomNumberGenerator;
 import evopaint.pixel.Pixel;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -53,6 +54,22 @@ public class EnergyCondition extends Condition {
 
     public EnergyCondition() {
         comparisonOperator = NumberComparisonOperator.GREATER_THAN;
+    }
+
+    public int getType() {
+        return Condition.ENERGY;
+    }
+
+    @Override
+    public void mixWith(Condition theirCondition, float theirShare, IRandomNumberGenerator rng) {
+        super.mixWith(theirCondition, theirShare, rng);
+        EnergyCondition c = (EnergyCondition)theirCondition;
+        if (rng.nextFloat() < theirShare) {
+            energyValue = c.energyValue;
+        }
+        if (rng.nextFloat() < theirShare) {
+            comparisonOperator = c.comparisonOperator;
+        }
     }
 
     public NumberComparisonOperator getComparisonOperator() {
