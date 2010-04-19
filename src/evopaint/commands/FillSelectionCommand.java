@@ -143,14 +143,14 @@ public class FillSelectionCommand extends AbstractCommand {
         RuleSet currentRuleSet = configuration.paint.getCurrentRuleSet();
         switch (configuration.paint.getCurrentRuleSetMode()) {
             case Paint.NO_RULE_SET:
-                ruleSet = null;
+                currentRuleSet = null;
                 break;
             case Paint.EXISTING_RULE_SET:
                 Pixel pixel = configuration.world.get(x, y);
                 if (pixel == null || !(pixel instanceof RuleBasedPixel)) {
-                    ruleSet = null;
+                    currentRuleSet = null;
                 } else {
-                    ruleSet = ((RuleBasedPixel) pixel).getRuleSet();
+                    currentRuleSet = ((RuleBasedPixel) pixel).getRuleSet();
                 }
                 break;
             default:
