@@ -55,16 +55,18 @@ public class PartnerProcreationAction extends Action {
     private byte ourSharePercent;
     private boolean mixRuleSet;
 
-    public PartnerProcreationAction(int energyChange, int partnerEnergyChange, ActionMetaTarget partner, ColorDimensions dimensions, byte ourSharePercent) {
+    public PartnerProcreationAction(int energyChange, int partnerEnergyChange, ActionMetaTarget partner, ColorDimensions dimensions, byte ourSharePercent, boolean mixRuleSet) {
         super(energyChange, partner);
         this.partnerEnergyChange = partnerEnergyChange;
         this.dimensions = dimensions;
         this.ourSharePercent = ourSharePercent;
+        this.mixRuleSet = mixRuleSet;
     }
 
     public PartnerProcreationAction() {
         this.dimensions = new ColorDimensions(true, true, true);
         ourSharePercent = 50;
+        this.mixRuleSet = true;
     }
 
     public int getType() {

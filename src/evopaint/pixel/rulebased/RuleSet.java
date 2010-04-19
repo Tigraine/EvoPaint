@@ -138,7 +138,7 @@ public class RuleSet implements Serializable, INameable, IDescribable, ICopyable
     public RuleSet(RuleSet ruleSet) {
         this.name = ruleSet.name;
         this.description = ruleSet.description;
-        this.rules = ruleSet.rules;
+        this.rules = ruleSet.rules; // TODO copy mich
     }
     
 }

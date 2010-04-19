@@ -61,7 +61,7 @@ public class CopyAction extends Action {
                 new PixelColor(actor.getPixelColor()),
                 new AbsoluteCoordinate(actor.getLocation(), direction, configuration.world),
                 actor.getEnergy() + getEnergyChange(),
-                new RuleSet(((RuleBasedPixel)actor).getRuleSet()));
+                ((RuleBasedPixel)actor).getRuleSet());
         configuration.world.set(newPixel);
 
         return energyChange;
