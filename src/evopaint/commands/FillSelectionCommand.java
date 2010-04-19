@@ -140,9 +140,7 @@ public class FillSelectionCommand extends AbstractCommand {
                 break;
         }
 
-        RuleSet currentRuleSet = configuration.operationMode == Configuration.OPERATIONMODE_AGENT_SIMULATION ?
-                    configuration.paint.getCurrentRuleSet().getCopy() :
-                    configuration.paint.getCurrentRuleSet();
+        RuleSet currentRuleSet = configuration.paint.getCurrentRuleSet();
         switch (configuration.paint.getCurrentRuleSetMode()) {
             case Paint.NO_RULE_SET:
                 currentRuleSet = null;

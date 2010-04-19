@@ -20,13 +20,14 @@
 package evopaint.pixel.rulebased.actions;
 
 import evopaint.Configuration;
-import evopaint.pixel.rulebased.Action;
 import evopaint.gui.rulesetmanager.util.DimensionsListener;
 import evopaint.gui.util.AutoSelectOnFocusSpinner;
+import evopaint.pixel.rulebased.Action;
 import evopaint.interfaces.IRandomNumberGenerator;
 import evopaint.pixel.ColorDimensions;
 import evopaint.pixel.Pixel;
 import evopaint.pixel.rulebased.RuleBasedPixel;
+import evopaint.pixel.rulebased.RuleSet;
 import evopaint.pixel.rulebased.targeting.ActionMetaTarget;
 import evopaint.util.mapping.RelativeCoordinate;
 import java.awt.event.ActionEvent;
@@ -107,8 +108,10 @@ public class AssimilationAction extends Action {
         target.getPixelColor().mixWith(actor.getPixelColor(),
                 ((float)ourSharePercent) / 100, dimensions);
         if (mixRuleSet) {
-            ((RuleBasedPixel)target).getRuleSet().mixWith(((RuleBasedPixel)actor).getRuleSet(), ourSharePercent, configuration.rng);
+            RuleSet newRuleSet = ((RuleBasedPixel)target).getRuleSet().getCopy();
+            newRuleSet.mixWith(((RuleBasedPixel)actor).getRuleSet(), ourSharePercent, configuration.rng);
         }
+
         return energyChange;
     }
 

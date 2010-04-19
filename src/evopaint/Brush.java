@@ -73,9 +73,7 @@ public class Brush {
                         assert(false);
                 }
 
-                RuleSet ruleSet = configuration.operationMode == Configuration.OPERATIONMODE_AGENT_SIMULATION ?
-                    configuration.paint.getCurrentRuleSet().getCopy() :
-                    configuration.paint.getCurrentRuleSet();
+                RuleSet ruleSet = configuration.paint.getCurrentRuleSet();
                 switch (configuration.paint.getCurrentRuleSetMode()) {
                     case Paint.RULE_SET:
                         break;
