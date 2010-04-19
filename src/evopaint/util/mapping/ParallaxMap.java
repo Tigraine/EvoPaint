@@ -64,7 +64,7 @@ public class ParallaxMap<T> extends AbstractCollection<T> {
     private T [] data;
     protected int width;
     protected int height;
-    private int nrElements;
+    private int numElements;
 
     @Override
     public int size() {
@@ -82,6 +82,14 @@ public class ParallaxMap<T> extends AbstractCollection<T> {
 
     public int getHeight() {
         return height;
+    }
+
+    public void setData(Object [] data) {
+        this.data = (T[])data;
+    }
+
+    public T [] getData() {
+        return data;
     }
 
     public T getNotSynchronizedUnclamped(int i) {
@@ -106,20 +114,6 @@ public class ParallaxMap<T> extends AbstractCollection<T> {
 
     public synchronized T get(AbsoluteCoordinate ac, RelativeCoordinate rc) {
         return data[wrap(ac.y + rc.y, height) * width + wrap(ac.x + rc.x, width)];
-    }
-
-    public synchronized T [] getNeighborhood(AbsoluteCoordinate ac) {
-        return getNeighborhood(ac.x, ac.y);
-    }
-
-    @SuppressWarnings({"unchecked"})
-    public synchronized T [] getNeighborhood(int x, int y) {
-        Object [] ret = new Object [9];
-        int loc = y * width + x;
-        for (int i = loc - 4, j = 0; i <= loc + 4; i++, j++) {
-            ret[j] = data[wrap(i, data.length)];
-        }
-        return (T[])ret;
     }
 
     /* *
@@ -167,9 +161,9 @@ public class ParallaxMap<T> extends AbstractCollection<T> {
     }
 
     public synchronized int [] getShuffledIndices(IRandomNumberGenerator rng) {
-        int [] indices = new int[nrElements];
+        int [] indices = new int[numElements];
 
-        for (int i = 0, ii = 0; ii < nrElements && i < data.length; i++) {
+        for (int i = 0, ii = 0; ii < numElements && i < data.length; i++) {
             if (data[i] != null) {
                 indices[ii++] = i;
             }
@@ -213,10 +207,10 @@ public class ParallaxMap<T> extends AbstractCollection<T> {
     public synchronized void set(int i, T object) {
         if (data[i] == null) {
             if (object != null) {
-                nrElements++;
+                numElements++;
             }
         } else if (object == null) {
-                nrElements--;
+                numElements--;
         }
         data[i] = object;
     }
@@ -249,6 +243,13 @@ public class ParallaxMap<T> extends AbstractCollection<T> {
             index -= length;
         }
         return index;
+    }
+
+    public synchronized void reset() {
+        for (int i = 0; i < data.length; i++) {
+            data[i] = null;
+        }
+        numElements = 0;
     }
 
     public ParallaxMap(T[] array, int width, int height) {

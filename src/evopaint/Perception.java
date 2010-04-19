@@ -28,6 +28,7 @@ import java.awt.image.DataBufferInt;
  * @author Markus Echterhoff <tam@edu.uni-klu.ac.at>
  */
 public class Perception {
+    private Configuration configuration;
     private BufferedImage image;
     private int[] internalImage;
 
@@ -35,18 +36,20 @@ public class Perception {
         return image;
     }
 
-    public void createImage(World world) {
+    public void createImage() {
         for (int i = 0; i < internalImage.length; i++) {
-            Pixel pixie = world.getNotSynchronizedUnclamped(i);
+            Pixel pixie = configuration.world.getNotSynchronizedUnclamped(i);
             internalImage[i] =
                         pixie == null ?
-                        world.getConfiguration().backgroundColor :
+                        configuration.backgroundColor :
                         pixie.getPixelColor().getInteger();
         }
     }
 
-    public Perception(BufferedImage image) {
-        this.image = image;
+    public Perception(Configuration configuration) {
+        this.configuration = configuration;
+        this.image = new BufferedImage(configuration.dimension.width, configuration.dimension.height,
+                BufferedImage.TYPE_INT_RGB);
         this.internalImage = ((DataBufferInt)this.image.getRaster().getDataBuffer()).getData();
 
     }

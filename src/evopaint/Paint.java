@@ -21,8 +21,8 @@ package evopaint;
 
 import evopaint.gui.util.ColorIcon;
 import evopaint.gui.util.FairyDustIcon;
-import evopaint.interfaces.IPaintChanger;
-import evopaint.interfaces.IPaintChangeListener;
+import evopaint.interfaces.IChanging;
+import evopaint.interfaces.IChangeListener;
 import evopaint.pixel.PixelColor;
 import evopaint.pixel.rulebased.RuleSet;
 import java.awt.Color;
@@ -50,7 +50,7 @@ import javax.swing.JPopupMenu;
  *
  * @author Markus Echterhoff <tam@edu.uni-klu.ac.at>
  */
-public class Paint implements IPaintChanger {
+public class Paint implements IChanging {
     public static final int COLOR = 0;
     public static final int FAIRY_DUST = 1;
     public static final int EXISTING_COLOR = 2;
@@ -63,7 +63,7 @@ public class Paint implements IPaintChanger {
     private LinkedList<Paint> paintHistory;
     private Paint currentPaint;
     private JPopupMenu paintHistoryMenu;
-    private List<IPaintChangeListener> changeListeners;
+    private List<IChangeListener> changeListeners;
 
     private int colorMode;
     private int ruleSetMode;
@@ -74,7 +74,7 @@ public class Paint implements IPaintChanger {
         this.configuration = configuration;
         this.paintHistory = new LinkedList<Paint>();
         this.paintHistoryMenu = new JPopupMenu();
-        this.changeListeners = new ArrayList<IPaintChangeListener>();
+        this.changeListeners = new ArrayList<IChangeListener>();
         this.currentPaint = new Paint(configuration, Paint.COLOR, Paint.NO_RULE_SET, new PixelColor(0xFF0000), null);
     }
 
@@ -167,19 +167,19 @@ public class Paint implements IPaintChanger {
 
     private void changePaint(Paint newPaint) {
         currentPaint = newPaint;
-        for (IPaintChangeListener changeObserver : changeListeners) {
-            changeObserver.paintChanged();
+        for (IChangeListener changeObserver : changeListeners) {
+            changeObserver.changed();
         }
     }
 
-    public void subscribe(IPaintChangeListener subscriber) {
+    public void addChangeListener(IChangeListener subscriber) {
         if (this.changeListeners.contains(subscriber)) {
             return;
         }
         this.changeListeners.add(subscriber);
     }
 
-    public void unsubsribe(IPaintChangeListener subscriber) {
+    public void removeChangeListener(IChangeListener subscriber) {
          this.changeListeners.remove(subscriber);
     }
 

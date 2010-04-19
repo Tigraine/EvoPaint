@@ -24,11 +24,12 @@ package evopaint.commands;
 import evopaint.Configuration;
 import evopaint.Selection;
 import evopaint.gui.SelectionManager;
-import evopaint.util.logging.Logger;
+import evopaint.interfaces.IChangeListener;
 
 
 import java.awt.Point;
 import java.awt.Rectangle;
+import javax.swing.SwingUtilities;
 
 /*
  *
@@ -54,21 +55,30 @@ public class PaintCommand extends AbstractCommand {
     }
 
     public void execute() {
-        Selection activeSelection = selectionManager.getActiveSelection();
-        if (activeSelection != null) {
-			Rectangle rectangle = activeSelection.getRectangle();
-			int brushSize = configuration.brush.size / 2;
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                configuration.world.addChangeListener(new IChangeListener() {
+                    public void changed() {
+                        Selection activeSelection = selectionManager.getActiveSelection();
+                        if (activeSelection != null) {
+                            Rectangle rectangle = activeSelection.getRectangle();
+                            int brushSize = configuration.brush.size / 2;
 
-			if (location.x - brushSize < rectangle.x)
-				location.x = rectangle.x + brushSize;
-			if (location.x + brushSize > rectangle.x + rectangle.width) 
-				location.x = rectangle.x + rectangle.width - brushSize;
-			if (location.y - brushSize < rectangle.y)
-				location.y = rectangle.y + brushSize;
-			if (location.y + brushSize > rectangle.y + rectangle.height)
-				location.y = rectangle.y + rectangle.height - brushSize;
-        }
-        configuration.brush.paint(location.x, location.y);
+                            if (location.x - brushSize < rectangle.x)
+                                    location.x = rectangle.x + brushSize;
+                            if (location.x + brushSize > rectangle.x + rectangle.width)
+                                    location.x = rectangle.x + rectangle.width - brushSize;
+                            if (location.y - brushSize < rectangle.y)
+                                    location.y = rectangle.y + brushSize;
+                            if (location.y + brushSize > rectangle.y + rectangle.height)
+                                    location.y = rectangle.y + rectangle.height - brushSize;
+                        }
+                        configuration.brush.paint(location.x, location.y);
+                    }
+                });
+            }
+        });
     }
+
 }
 

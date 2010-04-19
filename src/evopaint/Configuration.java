@@ -59,9 +59,8 @@ import org.uncommons.maths.random.SeedGenerator;
  * @author Markus Echterhoff <tam@edu.uni-klu.ac.at>
  */
 public class Configuration {
-    public static final int COLORMODE_COLOR = 0;
-    public static final int COLORMODE_FAIRY_DUST = 1;
-    public static final int COLORMODE_USE_EXISTING = 2;
+    public static final int OPERATIONMODE_AGENT_SIMULATION = 0;
+    public static final int OPERATIONMODE_CELLULAR_AUTOMATON = 1;
 
     public static final int RUNLEVEL_RUNNING = 2;
     public static final int RUNLEVEL_PAINTING_ONLY = 1;
@@ -102,6 +101,7 @@ public class Configuration {
     public ITool activeTool; // TODO make use of me
 
     // BEGIN user configurable
+    public int operationMode = OPERATIONMODE_AGENT_SIMULATION;
     public int fps = 60;
     public Dimension dimension = new Dimension(300, 300);
     public int backgroundColor = 0;

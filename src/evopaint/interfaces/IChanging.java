@@ -23,6 +23,7 @@ package evopaint.interfaces;
  *
  * @author Markus Echterhoff <tam@edu.uni-klu.ac.at>
  */
-public interface IPaintChangeListener {
-    public void paintChanged();
+public interface IChanging {
+    public void addChangeListener(IChangeListener listener);
+    public void removeChangeListener(IChangeListener listener);
 }

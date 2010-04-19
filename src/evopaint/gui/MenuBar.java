@@ -30,7 +30,10 @@ import evopaint.commands.FillSelectionCommand;
 import evopaint.commands.FillSelectionCommandScattered;
 import evopaint.commands.SelectAllCommand;
 import evopaint.gui.listeners.SelectionListenerFactory;
+import evopaint.interfaces.IChangeListener;
 import evopaint.util.logging.Logger;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 
 import javax.swing.*;
 
@@ -59,16 +62,21 @@ public class MenuBar extends JMenuBar implements Observer {
     private Wizard nw;
     private MenuBar mb;
 
-    public MenuBar(Configuration configuration, final EvoPaint evopaint, SelectionListenerFactory listenerFactory, Showcase showcase) {
+    public MenuBar(final Configuration configuration, final EvoPaint evopaint, SelectionListenerFactory listenerFactory, Showcase showcase) {
         this.configuration = configuration;
         this.evopaint = evopaint;
         this.showcase = showcase;
         this.mb=this;
+
+        setLayout(new GridBagLayout());
+
+        GridBagConstraints c = new GridBagConstraints();
+
         showcase.getCurrentSelections().addObserver(this);
         // World Menu
         JMenu worldMenu = new JMenu();
         worldMenu.setText("World");
-        add(worldMenu);
+        add(worldMenu, c);
 
         // File Menu Items        
         JMenuItem newItem = new JMenuItem();
@@ -111,7 +119,8 @@ public class MenuBar extends JMenuBar implements Observer {
 
         // selection menu
         selectionMenu = new JMenu("Selection");
-        add(selectionMenu);
+        c.gridx = 1;
+        add(selectionMenu, c);
 
 
         JMenuItem selectAll = new JMenuItem("Select All");
@@ -142,7 +151,8 @@ public class MenuBar extends JMenuBar implements Observer {
         // info menu
         JMenu infoMenu = new JMenu();
         infoMenu.setText("Info");
-        add(infoMenu);
+        c.gridx = 2;
+        add(infoMenu, c);
 
         JMenuItem userGuide = new JMenuItem();
         userGuide.setText("User Guide");
@@ -189,6 +199,49 @@ public class MenuBar extends JMenuBar implements Observer {
             }
         });
         infoMenu.add(about);
+
+
+
+        final JMenu modeMenu = new JMenu("Mode: Agent Simulation");
+
+        JRadioButtonMenuItem menuRadioAgentSimulation = new JRadioButtonMenuItem("Agent Simulation", true);
+        menuRadioAgentSimulation.addActionListener(new ActionListener() {
+
+            public void actionPerformed(ActionEvent e) {
+                configuration.world.addChangeListener(new IChangeListener() {
+
+                    public void changed() {
+                        configuration.operationMode = Configuration.OPERATIONMODE_AGENT_SIMULATION;
+                        modeMenu.setText("Mode: Agent Simulation");
+                    }
+                });
+            }
+        });
+        modeMenu.add(menuRadioAgentSimulation);
+
+        JRadioButtonMenuItem menuRadioCellularAutomaton = new JRadioButtonMenuItem("Cellular Automaton", false);
+        menuRadioCellularAutomaton.addActionListener(new ActionListener() {
+
+            public void actionPerformed(ActionEvent e) {
+                configuration.world.addChangeListener(new IChangeListener() {
+
+                    public void changed() {
+                        configuration.operationMode = Configuration.OPERATIONMODE_CELLULAR_AUTOMATON;
+                        modeMenu.setText("Mode: Cellular Automaton");
+                    }
+                });
+            }
+        });
+        modeMenu.add(menuRadioCellularAutomaton);
+
+        ButtonGroup modeGroup = new ButtonGroup();
+        modeGroup.add(menuRadioAgentSimulation);
+        modeGroup.add(menuRadioCellularAutomaton);
+
+        c.gridx = 3;
+        c.weightx = 1;
+        c.anchor = GridBagConstraints.EAST;
+        add(modeMenu, c);
 
     }
 /*

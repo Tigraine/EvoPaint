@@ -51,9 +51,13 @@ public class RuleBasedPixel extends Pixel {
         }
     }
 
-    public RuleBasedPixel(RuleBasedPixel pixel) {
+    public RuleBasedPixel(RuleBasedPixel pixel, boolean copyRuleSet) {
         super(pixel);
-        this.ruleSet = new RuleSet(pixel.ruleSet);
+        if (copyRuleSet) {
+            this.ruleSet = new RuleSet(pixel.ruleSet);
+        } else {
+            this.ruleSet = pixel.ruleSet;
+        }
     }
 
     public RuleBasedPixel(PixelColor pixelColor, AbsoluteCoordinate location, int energy, RuleSet ruleSet) {

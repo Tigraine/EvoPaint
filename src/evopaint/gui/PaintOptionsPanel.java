@@ -21,7 +21,7 @@ package evopaint.gui;
 
 import evopaint.Configuration;
 import evopaint.Paint;
-import evopaint.interfaces.IPaintChangeListener;
+import evopaint.interfaces.IChangeListener;
 import evopaint.pixel.PixelColor;
 import java.awt.Color;
 import java.awt.Component;
@@ -47,7 +47,7 @@ import javax.swing.JRadioButton;
  *
  * @author Markus Echterhoff <tam@edu.uni-klu.ac.at>
  */
-public class PaintOptionsPanel extends JPanel implements IPaintChangeListener {
+public class PaintOptionsPanel extends JPanel implements IChangeListener {
     private Configuration configuration;
     private JRadioButton colorRadio;
     private JRadioButton fairyDustRadio;
@@ -59,7 +59,7 @@ public class PaintOptionsPanel extends JPanel implements IPaintChangeListener {
     private JButton editRuleSetBtn;
     private JColorChooser colorChooser;
 
-    public void paintChanged() {
+    public void changed() {
         switch (configuration.paint.getCurrentColorMode()) {
             case Paint.COLOR: colorRadio.setSelected(true);
                 colorRadio.setText("<html>" + configuration.paint.getCurrentColor().toHTML() + "</html>");
@@ -87,7 +87,7 @@ public class PaintOptionsPanel extends JPanel implements IPaintChangeListener {
     public PaintOptionsPanel(final Configuration configuration, ActionListener openRuleSetManagerListener) {
         this.configuration = configuration;
 
-        this.configuration.paint.subscribe(this);
+        this.configuration.paint.addChangeListener(this);
 
         setLayout(new GridBagLayout());
         GridBagConstraints constraints = new GridBagConstraints();

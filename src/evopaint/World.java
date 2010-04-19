@@ -19,48 +19,50 @@
 
 package evopaint;
 
+import evopaint.interfaces.IChanging;
+import evopaint.interfaces.IChangeListener;
 import evopaint.pixel.Pixel;
+import evopaint.pixel.rulebased.RuleBasedPixel;
 
-import evopaint.util.logging.Logger;
 import evopaint.util.mapping.ParallaxMap;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
  * @author Markus Echterhoff <tam@edu.uni-klu.ac.at>
  */
-public class World extends ParallaxMap<Pixel> {
+public class World extends ParallaxMap<Pixel> implements IChanging {
 
     private Configuration configuration;
-    private long time;
+    private final List<IChangeListener> pendingOperations = new ArrayList();
+
+    public World(Pixel [] pixels, Configuration configuration) {
+        super(pixels, configuration.dimension.width, configuration.dimension.height);
+        this.configuration = configuration;
+    }
 
     public void step() {
-
-        if (time == Long.MAX_VALUE) {
-            java.lang.System.out.println("time overflowed");
+        if (pendingOperations.size() > 0) {
+            synchronized(pendingOperations) {
+                for (IChangeListener subscriber : pendingOperations) {
+                    subscriber.changed();
+                }
+                pendingOperations.clear();
+            }
         }
- 
-        Logger.log.information("Time: %s", new Object[]{time});
-       
-        //Collections.shuffle(this.relations, this.rng.getRandom());
-
-        //if (this.configuration.numThreads > 1) {
-            //this.parallel();
-        //} else {
-            this.serial();
-        //}
-
-        this.time++;
-
-        //if (time == 1000)
-          //  java.lang.System.exit(0);
-
+        if (configuration.operationMode == Configuration.OPERATIONMODE_AGENT_SIMULATION) {
+            this.stepAgents();
+        } else {
+            this.stepCellularAutomaton();
+        }
     }
 
     public void set(Pixel pixel) {
         super.set(pixel.getLocation().x, pixel.getLocation().y, pixel);
     }
 
-    private void serial() {
+    private void stepAgents() {
         int [] indices = getShuffledIndices(configuration.rng);
         
         for (int i = 0; i < indices.length; i++) {
@@ -73,65 +75,31 @@ public class World extends ParallaxMap<Pixel> {
             }
         }
     }
-/*
-    private void parallel() {
-        List<List<PixelRelation>> partitionedRelations = this.partition(this.relations, this.configuration.numRelationThreads);
 
-        // make threads
-        List<Thread> relatorThreads = new ArrayList<Thread>();
-        for (List<PixelRelation> part : partitionedRelations) {
+    private void stepCellularAutomaton() {
+        Pixel [] currentData = getData();
+        Pixel [] newData = new Pixel [currentData.length];
 
-            // get random seed out of our rng
-            byte [] seed = new byte[4];
-            this.rng.getRandom().nextBytes(seed);
-
-            // and seed a new rng for each thread, so they can do random shit in
-            // a well defined order (without race conditions on the main rng)
-            Thread relator = new Relator(this, part, new RandomNumberGeneratorWrapper(new CellularAutomatonRNG(seed)), configuration);
-            relatorThreads.add(relator);
-            relator.start();
-        }
-
-        // join threads
-        for (Thread relatorThread : relatorThreads) {
-            try {
-                relatorThread.join();
-            }
-            catch (InterruptedException ex) {
-                Logger.log.warning("Exception during Relating %s", ex.getMessage());
+        for (int i = 0; i < currentData.length; i++) {
+            Pixel pixie = currentData[i];
+            if (pixie != null) {
+                RuleBasedPixel oldPixie = new RuleBasedPixel((RuleBasedPixel)pixie, false);
+                pixie.act(this.configuration);
+                newData[i] = pixie;
+                currentData[i] = oldPixie;
             }
         }
+        
+        setData(newData);
     }
 
-    private List<List<PixelRelation>> partition(List<PixelRelation> relations, int numChunks) {
-
-        List<List<PixelRelation>> ret = new ArrayList<List<PixelRelation>>();
-
-        int chunkSize = relations.size() / numChunks;
-        int rest = relations.size() % numChunks;
-        for (int i = 0; i < numChunks; i++) {
-            List subList = relations.subList(i * chunkSize, (i + 1) * chunkSize + (i < rest ? 1 : 0));
-            ret.add(subList);
+    public void addChangeListener(IChangeListener subscriber) {
+        synchronized(pendingOperations) {
+            pendingOperations.add(subscriber);
         }
-
-        // do not ever try to do it this way. the ternary is just fine...
-        // adding the rest like this will cause concurrent modification exceptions
-        // in parallel operation mode
-        // 
-        // for (int i = 0; i < rest; i++) {
-        //    ret.get(i).add(relations.get(relations.size() - i - 1));
-        // }
-
-        return ret;
-    }
-*/
-    public Configuration getConfiguration() {
-        return configuration;
     }
 
-    public World(Pixel [] pixels, long time, Configuration configuration) {
-        super(pixels, configuration.dimension.width, configuration.dimension.height);
-        this.time = time;
-        this.configuration = configuration;
+    public void removeChangeListener(IChangeListener subscriber) {
+        assert (false); // should not be called since pending operations are cleared automatically
     }
 }

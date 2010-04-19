@@ -23,8 +23,6 @@ import evopaint.pixel.Pixel;
 import evopaint.gui.MainFrame;
 import evopaint.util.ExceptionHandler;
 
-import java.awt.image.BufferedImage;
-
 /**
  *
  * @author Markus Echterhoff <tam@edu.uni-klu.ac.at>
@@ -52,7 +50,7 @@ public class EvoPaint {
     }
 
     public void work() {
-        this.perception.createImage(configuration.world);
+        this.perception.createImage();
         frame.getShowcase().repaint();
         long timeStamp = System.currentTimeMillis();
 
@@ -80,7 +78,7 @@ public class EvoPaint {
             long currentTime = System.currentTimeMillis();
             if (currentTime - timeStamp > 1000 / configuration.fps) {
                 timeStamp = currentTime;
-                this.perception.createImage(configuration.world);
+                this.perception.createImage();
                 frame.getShowcase().repaint();
             }
         }
@@ -105,15 +103,11 @@ public class EvoPaint {
         this.configuration = new Configuration();
 
         // create empty world
-        long time = 0;
         this.configuration.world = new World(
                 new Pixel[configuration.dimension.width * configuration.dimension.height],
-                time, configuration);
+                configuration);
 
-        this.perception = new Perception(new BufferedImage(configuration.dimension.width, configuration.dimension.height,
-                BufferedImage.TYPE_INT_RGB));
-
-        this.perception.createImage(configuration.world);
+        this.perception = new Perception(configuration);
 
         this.frame = new MainFrame(configuration, this);
     }
