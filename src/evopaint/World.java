@@ -46,8 +46,8 @@ public class World extends ParallaxMap<Pixel> implements IChanging {
 
         if (pendingOperations.size() > 0) {
             synchronized(pendingOperations) {
-                for (IChangeListener subscriber : pendingOperations) {
-                    subscriber.changed();
+                for (IChangeListener listener : pendingOperations) {
+                    listener.changed();
                 }
                 pendingOperations.clear();
             }

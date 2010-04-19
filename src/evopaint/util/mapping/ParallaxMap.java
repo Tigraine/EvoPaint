@@ -252,6 +252,15 @@ public class ParallaxMap<T> extends AbstractCollection<T> {
         numElements = 0;
     }
 
+    public synchronized void recount() {
+        numElements = 0;
+        for (int i = 0; i < data.length; i++) {
+            if (data[i] != null) {
+                numElements++;
+            }
+        }
+    }
+
     public ParallaxMap(T[] array, int width, int height) {
         assert (array != null);
         assert (width > 0);
