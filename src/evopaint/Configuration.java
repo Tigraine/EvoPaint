@@ -102,7 +102,7 @@ public class Configuration {
 
     // BEGIN user configurable
     public int operationMode = OPERATIONMODE_AGENT_SIMULATION;
-    public int fps = 60;
+    public int fps = 30;
     public Dimension dimension = new Dimension(300, 300);
     public int backgroundColor = 0;
     public int startingEnergy = 100;

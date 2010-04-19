@@ -43,6 +43,7 @@ public class World extends ParallaxMap<Pixel> implements IChanging {
     }
 
     public void step() {
+
         if (pendingOperations.size() > 0) {
             synchronized(pendingOperations) {
                 for (IChangeListener subscriber : pendingOperations) {
@@ -51,6 +52,20 @@ public class World extends ParallaxMap<Pixel> implements IChanging {
                 pendingOperations.clear();
             }
         }
+
+        if (configuration.runLevel != Configuration.RUNLEVEL_RUNNING) {
+            // if painting, return so we can paint
+            if (configuration.runLevel == Configuration.RUNLEVEL_PAINTING_ONLY) {
+                return;
+            }
+            // if stopped, sleep
+            try {
+                Thread.sleep(500);
+            } catch (InterruptedException ex) {
+            }
+            return;
+        }
+
         if (configuration.operationMode == Configuration.OPERATIONMODE_AGENT_SIMULATION) {
             this.stepAgents();
         } else {

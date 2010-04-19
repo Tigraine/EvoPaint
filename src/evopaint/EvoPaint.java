@@ -56,30 +56,19 @@ public class EvoPaint {
 
         while (true) {
 
-            if (configuration.runLevel == Configuration.RUNLEVEL_RUNNING) {
-                configuration.world.step();
-            }
-            else if (configuration.runLevel == Configuration.RUNLEVEL_PAINTING_ONLY) {
-                long timedifference = System.currentTimeMillis() - timeStamp;
-                if (timedifference < 1000 / configuration.fps) {
-                    try {
-                    Thread.sleep(timedifference);
-                    } catch (InterruptedException ex) {
-                    }
-                }
-            } else {
-                try {
-                    Thread.sleep(500);
-                } catch (InterruptedException ex) {
-                }
-                continue;
-            }
+            configuration.world.step();
 
             long currentTime = System.currentTimeMillis();
             if (currentTime - timeStamp > 1000 / configuration.fps) {
                 timeStamp = currentTime;
                 this.perception.createImage();
                 frame.getShowcase().repaint();
+            }
+            else if (configuration.runLevel == Configuration.RUNLEVEL_PAINTING_ONLY) {
+                try {
+                    Thread.sleep(currentTime - timeStamp);
+                } catch (InterruptedException ex) {
+                }
             }
         }
     }
