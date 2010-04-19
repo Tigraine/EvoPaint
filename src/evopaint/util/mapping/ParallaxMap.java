@@ -92,27 +92,23 @@ public class ParallaxMap<T> extends AbstractCollection<T> {
         return data;
     }
 
-    public T getNotSynchronizedUnclamped(int i) {
+    public T getUnclamped(int i) {
         return data[i];
     }
 
-    public synchronized T getUnclamped(int i) {
-        return data[i];
-    }
-
-    public synchronized T get(int i) {
+    public T get(int i) {
         return data[wrap(i, data.length)];
     }
 
-    public synchronized T get(int x, int y) {
+    public T get(int x, int y) {
         return data[wrap(y, height) * width + wrap(x, width)];
     }
 
-    public synchronized T get(AbsoluteCoordinate ac) {
+    public T get(AbsoluteCoordinate ac) {
         return data[wrap(ac.y, height) * width + wrap(ac.x, width)];
     }
 
-    public synchronized T get(AbsoluteCoordinate ac, RelativeCoordinate rc) {
+    public T get(AbsoluteCoordinate ac, RelativeCoordinate rc) {
         return data[wrap(ac.y + rc.y, height) * width + wrap(ac.x + rc.x, width)];
     }
 
@@ -123,7 +119,7 @@ public class ParallaxMap<T> extends AbstractCollection<T> {
      *
      * @return a new AbsoluteCoordinate, pointing to the free spot
      */
-    public synchronized AbsoluteCoordinate getRandomFreeNeighborCoordinateOf(AbsoluteCoordinate ac, IRandomNumberGenerator rng) {
+    public AbsoluteCoordinate getRandomFreeNeighborCoordinateOf(AbsoluteCoordinate ac, IRandomNumberGenerator rng) {
 
         // get number of free spots in neighborhood
         int numFree = 0;
@@ -160,7 +156,7 @@ public class ParallaxMap<T> extends AbstractCollection<T> {
         return null;
     }
 
-    public synchronized int [] getShuffledIndices(IRandomNumberGenerator rng) {
+    public int [] getShuffledIndices(IRandomNumberGenerator rng) {
         int [] indices = new int[numElements];
 
         for (int i = 0, ii = 0; ii < numElements && i < data.length; i++) {
@@ -199,12 +195,12 @@ public class ParallaxMap<T> extends AbstractCollection<T> {
         return data[i];
     }
 
-    public synchronized void set(AbsoluteCoordinate ac, T object) {
+    public void set(AbsoluteCoordinate ac, T object) {
         int i = wrap(ac.y, height) * width + wrap(ac.x, width);
         set(i, object);
     }
 
-    public synchronized void set(int i, T object) {
+    public void set(int i, T object) {
         if (data[i] == null) {
             if (object != null) {
                 numElements++;
@@ -215,17 +211,17 @@ public class ParallaxMap<T> extends AbstractCollection<T> {
         data[i] = object;
     }
 
-    protected synchronized void set(int x, int y, T object) {
+    protected void set(int x, int y, T object) {
         int i = wrap(y, height) * width + wrap(x, width);
         set(i, object);
     }
 
-    public synchronized void remove(AbsoluteCoordinate ac) {
+    public void remove(AbsoluteCoordinate ac) {
         int i = wrap(ac.y, height) * width + wrap(ac.x, width);
         set(i, null);
     }
 
-    public synchronized void remove(int x, int y) {
+    public void remove(int x, int y) {
         int i = wrap(y, height) * width + wrap(x, width);
         set(i, null);
     }
@@ -245,14 +241,14 @@ public class ParallaxMap<T> extends AbstractCollection<T> {
         return index;
     }
 
-    public synchronized void reset() {
+    public void reset() {
         for (int i = 0; i < data.length; i++) {
             data[i] = null;
         }
         numElements = 0;
     }
 
-    public synchronized void recount() {
+    public void recount() {
         numElements = 0;
         for (int i = 0; i < data.length; i++) {
             if (data[i] != null) {

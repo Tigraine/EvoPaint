@@ -38,7 +38,7 @@ public class Perception {
 
     public void createImage() {
         for (int i = 0; i < internalImage.length; i++) {
-            Pixel pixie = configuration.world.getNotSynchronizedUnclamped(i);
+            Pixel pixie = configuration.world.getUnclamped(i);
             internalImage[i] =
                         pixie == null ?
                         configuration.backgroundColor :
