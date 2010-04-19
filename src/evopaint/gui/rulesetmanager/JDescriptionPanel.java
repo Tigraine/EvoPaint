@@ -24,13 +24,18 @@ import evopaint.pixel.rulebased.interfaces.IDescribable;
 import evopaint.pixel.rulebased.interfaces.IDescribed;
 import evopaint.pixel.rulebased.interfaces.INameable;
 import evopaint.pixel.rulebased.interfaces.INamed;
+import evopaint.util.ExceptionHandler;
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Color;
-import java.awt.Point;
-import java.awt.Rectangle;
+import java.awt.Desktop;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JPanel;
@@ -40,6 +45,8 @@ import javax.swing.JTextField;
 import javax.swing.JTextPane;
 import javax.swing.border.BevelBorder;
 import javax.swing.border.LineBorder;
+import javax.swing.event.HyperlinkEvent;
+import javax.swing.event.HyperlinkListener;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -151,6 +158,21 @@ public class JDescriptionPanel extends JPanel implements TreeSelectionListener {
         viewerTextPane.setContentType("text/html");
         viewerTextPane.setEditable(false);
         viewerTextPane.setBackground(Color.WHITE);
+        viewerTextPane.addHyperlinkListener(new HyperlinkListener() {
+
+            public void hyperlinkUpdate(HyperlinkEvent e) {
+                if (e.getEventType() != HyperlinkEvent.EventType.ACTIVATED) {
+                    return;
+                }
+                try {
+                    Desktop.getDesktop().browse(e.getURL().toURI());
+                } catch (URISyntaxException ex) {
+                    ExceptionHandler.handle(ex, false, "The URL \"" + e.getURL().toString() + "\" is invalid.");
+                } catch (IOException ex) {
+                    ExceptionHandler.handle(ex, false, "Could not open the URI for some reason");
+                }
+            }
+        });
         JScrollPane viewerScrollPane = new JScrollPane(viewerTextPane,
                 JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
                 JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
@@ -183,6 +205,7 @@ public class JDescriptionPanel extends JPanel implements TreeSelectionListener {
         editorTitleField.setBorder(new BevelBorder(BevelBorder.LOWERED));
         editorDescriptionArea = new JTextArea();
         editorDescriptionArea.setLineWrap(true);
+        editorDescriptionArea.setWrapStyleWord(true);
         JScrollPane editorScrollPane = new JScrollPane(editorDescriptionArea,
                 JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
                 JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);

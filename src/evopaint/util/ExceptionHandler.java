@@ -107,6 +107,13 @@ public class ExceptionHandler {
 
     // do not change the signature of this method. needed by awt
     public void handle(Throwable t) {
+
+        // http://bugs.sun.com/view_bug.do?bug_id=6828938
+        if (t.getStackTrace()[0].toString().equals(
+                "sun.font.FontDesignMetrics.charsWidth(FontDesignMetrics.java:492)")) {
+            handle(t, false, "<p>This is a stupid java bug. See http://bugs.sun.com/view_bug.do?bug_id=6828938 for the status on this bug and update your java installation once it has been fixed. For now just don't click behind the last character of a line.</p><p>Yeah, it sucks, but for now there is not much we can do about it, just press 'Damn' or 'Crap' and continue editing.</p>");
+        }
+
         handle(t, true);
     }
 
