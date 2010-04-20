@@ -20,8 +20,8 @@
 package evopaint.pixel.rulebased.targeting;
 
 import evopaint.Configuration;
-import evopaint.pixel.Pixel;
 import evopaint.pixel.rulebased.Action;
+import evopaint.pixel.rulebased.RuleBasedPixel;
 import evopaint.util.mapping.RelativeCoordinate;
 
 /**
@@ -37,7 +37,7 @@ public class ActionTarget extends SingleTarget implements IActionTarget {
     public ActionTarget() {
     }
 
-    public int execute(Action action, Pixel actor, Configuration configuration) {
+    public int execute(Action action, RuleBasedPixel actor, Configuration configuration) {
         return action.execute(actor, direction, configuration);
     }
 

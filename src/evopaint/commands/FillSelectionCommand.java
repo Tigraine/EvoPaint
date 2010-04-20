@@ -25,7 +25,6 @@ import evopaint.Paint;
 import evopaint.Selection;
 import evopaint.gui.Showcase;
 import evopaint.interfaces.IChangeListener;
-import evopaint.pixel.Pixel;
 import evopaint.pixel.PixelColor;
 import evopaint.pixel.rulebased.RuleBasedPixel;
 import evopaint.pixel.rulebased.RuleSet;
@@ -129,7 +128,7 @@ public class FillSelectionCommand extends AbstractCommand {
                 currentColor.setInteger(configuration.rng.nextPositiveInt());
                 break;
             case Paint.EXISTING_COLOR:
-                Pixel pixel = configuration.world.get(x, y);
+                RuleBasedPixel pixel = configuration.world.get(x, y);
                 if (pixel == null) {
                     return;
                 }
@@ -145,11 +144,11 @@ public class FillSelectionCommand extends AbstractCommand {
                 currentRuleSet = null;
                 break;
             case Paint.EXISTING_RULE_SET:
-                Pixel pixel = configuration.world.get(x, y);
+                RuleBasedPixel pixel = configuration.world.get(x, y);
                 if (pixel == null || !(pixel instanceof RuleBasedPixel)) {
                     currentRuleSet = null;
                 } else {
-                    currentRuleSet = ((RuleBasedPixel) pixel).getRuleSet();
+                    currentRuleSet = pixel.getRuleSet();
                 }
                 break;
             default:

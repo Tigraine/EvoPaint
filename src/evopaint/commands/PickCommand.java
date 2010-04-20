@@ -3,7 +3,6 @@ package evopaint.commands;
 import java.awt.Point;
 
 import evopaint.Configuration;
-import evopaint.pixel.Pixel;
 import evopaint.pixel.rulebased.RuleBasedPixel;
 import evopaint.pixel.rulebased.RuleSet;
 
@@ -18,12 +17,12 @@ public class PickCommand extends AbstractCommand {
 	
 	@Override
 	public void execute() {
-		Pixel pixel = config.world.get(location.x, location.y);
+		RuleBasedPixel pixel = config.world.get(location.x, location.y);
 		if (pixel == null) return; 
 		config.paint.changeCurrentColor(pixel.getPixelColor());
 		
 		if (pixel instanceof RuleBasedPixel) {
-			RuleSet ruleSet = ((RuleBasedPixel)pixel).getRuleSet();
+			RuleSet ruleSet = pixel.getRuleSet();
 			if (ruleSet != null) {
 				config.paint.changeCurrentRuleSet(ruleSet);
 			}

@@ -22,7 +22,7 @@ package evopaint.pixel.rulebased.conditions;
 import evopaint.Configuration;
 import evopaint.interfaces.IRandomNumberGenerator;
 import evopaint.pixel.rulebased.Condition;
-import evopaint.pixel.Pixel;
+import evopaint.pixel.rulebased.RuleBasedPixel;
 import java.util.LinkedHashMap;
 import javax.swing.JComponent;
 
@@ -45,11 +45,11 @@ public class TrueCondition extends Condition {
     }
 
     @Override // always true condition does not need target checking
-    public boolean isMet(Pixel actor, Configuration configuration) {
+    public boolean isMet(RuleBasedPixel actor, Configuration configuration) {
         return true;
     }
 
-    public boolean isMet(Pixel actor, Pixel target) {
+    public boolean isMet(RuleBasedPixel actor, RuleBasedPixel target) {
         return true;
     }
 

@@ -24,7 +24,6 @@ import evopaint.pixel.rulebased.targeting.IHaveTarget;
 import evopaint.Configuration;
 import evopaint.gui.util.AutoSelectOnFocusSpinner;
 import evopaint.interfaces.IRandomNumberGenerator;
-import evopaint.pixel.Pixel;
 import evopaint.pixel.rulebased.targeting.ActionMetaTarget;
 import evopaint.pixel.rulebased.targeting.ActionTarget;
 import evopaint.pixel.rulebased.targeting.IActionTarget;
@@ -133,7 +132,7 @@ public abstract class Action implements IHaveTarget {
         return ret;
     }
 
-    public int execute(Pixel actor, Configuration configuration) {
+    public int execute(RuleBasedPixel actor, Configuration configuration) {
         if (actor.getEnergy() + energyChange < 0) { // die trying
             return energyChange;
         }
@@ -175,6 +174,6 @@ public abstract class Action implements IHaveTarget {
         return parametersMap;
     }
 
-    public abstract int execute(Pixel actor, RelativeCoordinate direction, Configuration configuration);
+    public abstract int execute(RuleBasedPixel actor, RelativeCoordinate direction, Configuration configuration);
 
 }

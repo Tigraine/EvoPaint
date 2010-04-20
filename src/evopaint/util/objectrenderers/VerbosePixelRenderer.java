@@ -1,7 +1,7 @@
 package evopaint.util.objectrenderers;
 
-import evopaint.pixel.Pixel;
 import evopaint.interfaces.IObjectRenderer;
+import evopaint.pixel.rulebased.RuleBasedPixel;
 
 /**
  * Created by IntelliJ IDEA.
@@ -12,7 +12,7 @@ import evopaint.interfaces.IObjectRenderer;
  */
 public class VerbosePixelRenderer implements IObjectRenderer {
     public String render(Object object) {
-        Pixel pixel = (Pixel) object;
+        RuleBasedPixel pixel = (RuleBasedPixel) object;
         String ret = object.getClass().getSimpleName();
         return ret;
     }

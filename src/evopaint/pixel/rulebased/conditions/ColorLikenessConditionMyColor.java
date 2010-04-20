@@ -26,7 +26,7 @@ import evopaint.gui.util.AutoSelectOnFocusSpinner;
 import evopaint.interfaces.IRandomNumberGenerator;
 import evopaint.pixel.rulebased.Condition;
 import evopaint.pixel.ColorDimensions;
-import evopaint.pixel.Pixel;
+import evopaint.pixel.rulebased.RuleBasedPixel;
 import evopaint.pixel.rulebased.targeting.IConditionTarget;
 import evopaint.pixel.rulebased.util.NumberComparisonOperator;
 import java.awt.event.ActionEvent;
@@ -108,7 +108,7 @@ public class ColorLikenessConditionMyColor extends Condition {
         return "color likeness (compared to me)";
     }
 
-    public boolean isMet(Pixel actor, Pixel target) {
+    public boolean isMet(RuleBasedPixel actor, RuleBasedPixel target) {
         if (target == null) { // never forget to skip empty spots
             return false;
         }

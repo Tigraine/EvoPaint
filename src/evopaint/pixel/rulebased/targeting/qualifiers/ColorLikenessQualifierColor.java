@@ -23,8 +23,8 @@ import evopaint.Configuration;
 import evopaint.gui.rulesetmanager.util.ColorChooserLabel;
 import evopaint.gui.rulesetmanager.util.DimensionsListener;
 import evopaint.pixel.ColorDimensions;
-import evopaint.pixel.Pixel;
 import evopaint.pixel.PixelColor;
+import evopaint.pixel.rulebased.RuleBasedPixel;
 import evopaint.pixel.rulebased.targeting.Qualifier;
 import evopaint.util.mapping.RelativeCoordinate;
 import java.awt.event.ActionEvent;
@@ -143,12 +143,12 @@ public class ColorLikenessQualifierColor extends Qualifier {
         return ret;
     }
 
-    public List<RelativeCoordinate> getCandidates(Pixel origin, List<RelativeCoordinate> directions, Configuration configuration) {
+    public List<RelativeCoordinate> getCandidates(RuleBasedPixel origin, List<RelativeCoordinate> directions, Configuration configuration) {
         List<RelativeCoordinate> ret = new ArrayList(1);
         if (isLeast) {
             double maxDistance = 0d;
             for (RelativeCoordinate direction : directions) {
-                Pixel target = configuration.world.get(origin.getLocation(), direction);
+                RuleBasedPixel target = configuration.world.get(origin.getLocation(), direction);
                 if (target == null) {
                     continue;
                 }
@@ -164,7 +164,7 @@ public class ColorLikenessQualifierColor extends Qualifier {
         } else {
             double minDistance = Double.MAX_VALUE;
             for (RelativeCoordinate direction : directions) {
-                Pixel target = configuration.world.get(origin.getLocation(), direction);
+                RuleBasedPixel target = configuration.world.get(origin.getLocation(), direction);
                 if (target == null) {
                     continue;
                 }

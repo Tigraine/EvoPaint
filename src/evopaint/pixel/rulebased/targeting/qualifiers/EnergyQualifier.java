@@ -20,7 +20,7 @@
 package evopaint.pixel.rulebased.targeting.qualifiers;
 
 import evopaint.Configuration;
-import evopaint.pixel.Pixel;
+import evopaint.pixel.rulebased.RuleBasedPixel;
 import evopaint.pixel.rulebased.targeting.Qualifier;
 import evopaint.util.mapping.RelativeCoordinate;
 import java.awt.event.ActionEvent;
@@ -94,12 +94,12 @@ public class EnergyQualifier extends Qualifier {
         return toString();
     }
 
-    public List<RelativeCoordinate> getCandidates(Pixel origin, List<RelativeCoordinate> directions, Configuration configuration) {
+    public List<RelativeCoordinate> getCandidates(RuleBasedPixel origin, List<RelativeCoordinate> directions, Configuration configuration) {
         List<RelativeCoordinate> ret = new ArrayList(1);
         if (isLeast) {
             int minEnergy = Integer.MAX_VALUE;
             for (RelativeCoordinate direction : directions) {
-                Pixel target = configuration.world.get(origin.getLocation(), direction);
+                RuleBasedPixel target = configuration.world.get(origin.getLocation(), direction);
                 if (target == null) {
                     continue;
                 }
@@ -114,7 +114,7 @@ public class EnergyQualifier extends Qualifier {
         } else {
             int maxEnergy = 0;
             for (RelativeCoordinate direction : directions) {
-                Pixel target = configuration.world.get(origin.getLocation(), direction);
+                RuleBasedPixel target = configuration.world.get(origin.getLocation(), direction);
                 if (target == null) {
                     continue;
                 }

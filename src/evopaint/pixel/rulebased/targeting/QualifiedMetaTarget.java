@@ -20,7 +20,7 @@
 package evopaint.pixel.rulebased.targeting;
 
 import evopaint.Configuration;
-import evopaint.pixel.Pixel;
+import evopaint.pixel.rulebased.RuleBasedPixel;
 import evopaint.pixel.rulebased.interfaces.INamed;
 import evopaint.util.mapping.RelativeCoordinate;
 import java.util.ArrayList;
@@ -75,7 +75,7 @@ public abstract class QualifiedMetaTarget
         return ret;
     }
 
-    public RelativeCoordinate getCandidate(Pixel actor, Configuration configuration) {
+    public RelativeCoordinate getCandidate(RuleBasedPixel actor, Configuration configuration) {
         List<RelativeCoordinate> qualifyingDirections = new ArrayList(directions);
         for (Qualifier q : qualifiers) {
             qualifyingDirections = q.getCandidates(actor, qualifyingDirections, configuration);

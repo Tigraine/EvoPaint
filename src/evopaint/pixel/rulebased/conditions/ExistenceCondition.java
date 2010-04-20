@@ -25,7 +25,7 @@ import evopaint.interfaces.IRandomNumberGenerator;
 import evopaint.pixel.rulebased.targeting.IConditionTarget;
 import evopaint.pixel.rulebased.util.ObjectComparisonOperator;
 import evopaint.pixel.rulebased.Condition;
-import evopaint.pixel.Pixel;
+import evopaint.pixel.rulebased.RuleBasedPixel;
 import evopaint.pixel.rulebased.targeting.MetaTarget;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -74,7 +74,7 @@ public class ExistenceCondition extends Condition {
         return "existence";
     }
 
-    public boolean isMet(Pixel actor, Pixel target) {
+    public boolean isMet(RuleBasedPixel actor, RuleBasedPixel target) {
         return !objectComparisonOperator.compare(target, null);
     }
 

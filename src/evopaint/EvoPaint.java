@@ -19,8 +19,8 @@
 
 package evopaint;
 
-import evopaint.pixel.Pixel;
 import evopaint.gui.MainFrame;
+import evopaint.pixel.rulebased.RuleBasedPixel;
 import evopaint.util.ExceptionHandler;
 
 /**
@@ -93,7 +93,7 @@ public class EvoPaint {
 
         // create empty world
         this.configuration.world = new World(
-                new Pixel[configuration.dimension.width * configuration.dimension.height],
+                new RuleBasedPixel[configuration.dimension.width * configuration.dimension.height],
                 configuration);
 
         this.perception = new Perception(configuration);

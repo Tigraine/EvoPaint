@@ -27,7 +27,7 @@ import evopaint.Configuration;
 import evopaint.Selection;
 import evopaint.gui.SelectionManager;
 import evopaint.interfaces.IChangeListener;
-import evopaint.pixel.Pixel;
+import evopaint.pixel.rulebased.RuleBasedPixel;
 import javax.swing.SwingUtilities;
 
 /*
@@ -80,7 +80,7 @@ public class EraseCommand extends AbstractCommand {
                                 new Dimension(brushSize, brushSize));
                         for (int x = rectangle.x; x < rectangle.x + rectangle.width; x++) {
                             for (int y = rectangle.y; y < rectangle.y + rectangle.height; y++) {
-                                Pixel pixel = configuration.world.get(x, y);
+                                RuleBasedPixel pixel = configuration.world.get(x, y);
                                 if (pixel != null) {
                                     pixel.kill();
                                     pixel.getPixelColor().setInteger(configuration.backgroundColor);

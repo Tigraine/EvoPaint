@@ -21,7 +21,6 @@ package evopaint.pixel.rulebased;
 
 import evopaint.Configuration;
 import evopaint.interfaces.IRandomNumberGenerator;
-import evopaint.pixel.Pixel;
 import evopaint.pixel.rulebased.actions.ChangeEnergyAction;
 import evopaint.pixel.rulebased.actions.CopyAction;
 import evopaint.pixel.rulebased.actions.MoveAction;
@@ -117,7 +116,7 @@ public class Rule implements IRule, IHTML {
         return ret;
     }
 
-    public boolean apply(Pixel actor, Configuration configuration) {
+    public boolean apply(RuleBasedPixel actor, Configuration configuration) {
         for (Condition condition : conditions) {
             if (condition.isMet(actor, configuration) == false) {
                 return false;

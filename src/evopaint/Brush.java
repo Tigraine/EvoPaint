@@ -19,7 +19,6 @@
 
 package evopaint;
 
-import evopaint.pixel.Pixel;
 import evopaint.pixel.PixelColor;
 import evopaint.pixel.rulebased.RuleBasedPixel;
 import evopaint.pixel.rulebased.RuleSet;
@@ -63,7 +62,7 @@ public class Brush {
                         newColor.setInteger(configuration.rng.nextPositiveInt());
                         break;
                     case Paint.EXISTING_COLOR:
-                        Pixel pixie = configuration.world.get(x, y);
+                        RuleBasedPixel pixie = configuration.world.get(x, y);
                         if (pixie == null) {
                             continue;
                         }
@@ -81,20 +80,20 @@ public class Brush {
                         ruleSet = null;
                         break;
                     case Paint.EXISTING_RULE_SET:
-                        Pixel pixie = configuration.world.get(x, y);
+                        RuleBasedPixel pixie = configuration.world.get(x, y);
                         if (pixie == null) {
                             ruleSet = null;
                         } else {
-                            ruleSet = ((RuleBasedPixel)pixie).getRuleSet();
+                            ruleSet = pixie.getRuleSet();
                         }
                         break;
                     default:
                         assert(false);
                 }
 
-                Pixel newPixel = null;
+                RuleBasedPixel newPixel = null;
                 switch (configuration.pixelType) {
-                    case Pixel.RULESET:
+                    case RuleBasedPixel.RULESET:
                         newPixel = new RuleBasedPixel(newColor, new AbsoluteCoordinate(x, y, configuration.world), configuration.startingEnergy, ruleSet);
                         break;
                     default: assert(false);

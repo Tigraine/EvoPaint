@@ -20,13 +20,13 @@
 package evopaint.pixel.rulebased.targeting;
 
 import evopaint.Configuration;
-import evopaint.pixel.Pixel;
 import evopaint.pixel.rulebased.Action;
+import evopaint.pixel.rulebased.RuleBasedPixel;
 
 /**
  *
  * @author Markus Echterhoff <tam@edu.uni-klu.ac.at>
  */
 public interface IActionTarget extends ITarget {
-    public int execute(Action action, Pixel actor, Configuration configuration);
+    public int execute(Action action, RuleBasedPixel actor, Configuration configuration);
 }

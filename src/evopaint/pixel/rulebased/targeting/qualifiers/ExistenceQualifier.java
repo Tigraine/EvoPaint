@@ -21,7 +21,7 @@ package evopaint.pixel.rulebased.targeting.qualifiers;
 
 import evopaint.Configuration;
 import evopaint.gui.rulesetmanager.util.NamedObjectListCellRenderer;
-import evopaint.pixel.Pixel;
+import evopaint.pixel.rulebased.RuleBasedPixel;
 import evopaint.pixel.rulebased.targeting.Qualifier;
 import evopaint.pixel.rulebased.util.ObjectComparisonOperator;
 import evopaint.util.mapping.RelativeCoordinate;
@@ -85,10 +85,10 @@ public class ExistenceQualifier extends Qualifier {
         return "existence";
     }
 
-    public List<RelativeCoordinate> getCandidates(Pixel actor, List<RelativeCoordinate> directions, Configuration configuration) {
+    public List<RelativeCoordinate> getCandidates(RuleBasedPixel actor, List<RelativeCoordinate> directions, Configuration configuration) {
         List<RelativeCoordinate> ret = new ArrayList(1);
         for (RelativeCoordinate direction : directions) {
-            Pixel target = configuration.world.get(actor.getLocation(), direction);
+            RuleBasedPixel target = configuration.world.get(actor.getLocation(), direction);
             if (false == objectComparisonOperator.compare(target, null)) {
                 ret.add(direction);
             }

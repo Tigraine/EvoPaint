@@ -26,7 +26,7 @@ import evopaint.pixel.rulebased.Condition;
 import evopaint.gui.util.AutoSelectOnFocusSpinner;
 import evopaint.gui.rulesetmanager.util.NamedObjectListCellRenderer;
 import evopaint.interfaces.IRandomNumberGenerator;
-import evopaint.pixel.Pixel;
+import evopaint.pixel.rulebased.RuleBasedPixel;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.LinkedHashMap;
@@ -92,7 +92,7 @@ public class EnergyCondition extends Condition {
         return "energy";
     }
 
-    public boolean isMet(Pixel actor, Pixel target) {
+    public boolean isMet(RuleBasedPixel actor, RuleBasedPixel target) {
         if (target == null) { // never forget to skip empty spots
             return false;
         }

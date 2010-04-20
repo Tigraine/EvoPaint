@@ -21,7 +21,6 @@ package evopaint.pixel.rulebased.actions;
 
 import evopaint.Configuration;
 import evopaint.pixel.rulebased.Action;
-import evopaint.pixel.Pixel;
 import evopaint.pixel.rulebased.RuleBasedPixel;
 import evopaint.pixel.rulebased.targeting.ActionMetaTarget;
 import evopaint.util.mapping.AbsoluteCoordinate;
@@ -50,13 +49,13 @@ public class CopyAction extends Action {
         return "copy";
     }
 
-    public int execute(Pixel actor, RelativeCoordinate direction, Configuration configuration) {
-        Pixel target = configuration.world.get(actor.getLocation(), direction);
+    public int execute(RuleBasedPixel actor, RelativeCoordinate direction, Configuration configuration) {
+        RuleBasedPixel target = configuration.world.get(actor.getLocation(), direction);
         if (target != null) {
             return 0;
         }
 
-        Pixel newPixel = new RuleBasedPixel(((RuleBasedPixel)actor));
+        RuleBasedPixel newPixel = new RuleBasedPixel(actor);
         newPixel.setLocation(new AbsoluteCoordinate(actor.getLocation(), direction, configuration.world));
         configuration.world.set(newPixel);
 

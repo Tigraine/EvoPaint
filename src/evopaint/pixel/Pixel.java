@@ -61,6 +61,10 @@ public abstract class Pixel {
         return energy > 0;
     }
 
+    public void kill() {
+            this.energy = 0;
+    }
+
     public void changeEnergy(int energy) {
         // lazy way out for non energy changing actions
         if (energy == 0) {
@@ -83,7 +87,7 @@ public abstract class Pixel {
             }
         }
     }
-    
+
     public abstract void act(Configuration configuration);
 
     public Pixel(PixelColor pixelColor, AbsoluteCoordinate location, int energy) {
@@ -98,7 +102,4 @@ public abstract class Pixel {
         this.energy = pixel.energy;
     }
 
-	public void kill() {
-		this.energy = 0;
-	}
 }

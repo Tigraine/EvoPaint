@@ -22,7 +22,6 @@ package evopaint.pixel.rulebased;
 import evopaint.pixel.rulebased.targeting.IHaveTarget;
 import evopaint.Configuration;
 import evopaint.interfaces.IRandomNumberGenerator;
-import evopaint.pixel.Pixel;
 import evopaint.pixel.rulebased.targeting.ConditionTarget;
 import evopaint.pixel.rulebased.targeting.IConditionTarget;
 import evopaint.pixel.rulebased.targeting.ITarget;
@@ -82,10 +81,10 @@ public abstract class Condition implements IHaveTarget {
         return parametersMap;
     }
 
-    public boolean isMet(Pixel actor, Configuration configuration) {
+    public boolean isMet(RuleBasedPixel actor, Configuration configuration) {
         return target.meets(this, actor, configuration);
     }
     
-    public abstract boolean isMet(Pixel actor, Pixel target);
+    public abstract boolean isMet(RuleBasedPixel actor, RuleBasedPixel target);
 
 }

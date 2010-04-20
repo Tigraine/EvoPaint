@@ -20,8 +20,8 @@
 package evopaint.pixel.rulebased.targeting;
 
 import evopaint.Configuration;
-import evopaint.pixel.Pixel;
 import evopaint.pixel.rulebased.Condition;
+import evopaint.pixel.rulebased.RuleBasedPixel;
 import evopaint.util.mapping.RelativeCoordinate;
 import java.util.List;
 
@@ -39,10 +39,10 @@ public class ConditionMetaTarget
     public ConditionMetaTarget() {
     }
 
-    public boolean meets(Condition condition, Pixel actor, Configuration configuration) {
+    public boolean meets(Condition condition, RuleBasedPixel actor, Configuration configuration) {
         int metCounter = 0;
         for (RelativeCoordinate direction : directions) {
-            Pixel target = configuration.world.get(actor.getLocation(), direction);
+            RuleBasedPixel target = configuration.world.get(actor.getLocation(), direction);
             if (condition.isMet(actor, target)) {
                 metCounter++;
                 if (metCounter >= min && max == directions.size()) {

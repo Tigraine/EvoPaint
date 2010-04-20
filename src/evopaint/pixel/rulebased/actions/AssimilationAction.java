@@ -25,10 +25,10 @@ import evopaint.gui.util.AutoSelectOnFocusSpinner;
 import evopaint.pixel.rulebased.Action;
 import evopaint.interfaces.IRandomNumberGenerator;
 import evopaint.pixel.ColorDimensions;
-import evopaint.pixel.Pixel;
 import evopaint.pixel.PixelColor;
-import evopaint.pixel.rulebased.Rule;
 import evopaint.pixel.rulebased.RuleBasedPixel;
+import evopaint.pixel.rulebased.RuleSet;
+import evopaint.pixel.rulebased.interfaces.IRule;
 import evopaint.pixel.rulebased.targeting.ActionMetaTarget;
 import evopaint.util.mapping.RelativeCoordinate;
 import java.awt.event.ActionEvent;
@@ -103,8 +103,8 @@ public class AssimilationAction extends Action {
         return "assimilate";
     }
 
-    public int execute(Pixel actor, RelativeCoordinate direction, Configuration configuration) {
-        Pixel target = configuration.world.get(actor.getLocation(), direction);
+    public int execute(RuleBasedPixel actor, RelativeCoordinate direction, Configuration configuration) {
+        RuleBasedPixel target = configuration.world.get(actor.getLocation(), direction);
         if (target == null) {
             return 0;
         }
@@ -117,10 +117,50 @@ public class AssimilationAction extends Action {
 
         // mix rule set
         if (mixRuleSet) {
-            //List<Rule> newRules = new ArrayList(((RuleBasedPixel)target).getRules());
+            List<IRule> ourRules = (actor.getRuleSet().getRules());
+            List<IRule> theirNewRules = new ArrayList(target.getRuleSet().getRules());
 
-            //ArrayList newRules = RuleSet.mixRules(actor, target, ourSharePercent, configuration.rng);
-            //((RuleBasedPixel)target).setRules(newRules);
+            // cache size() calls for maximum performance
+            int ourSize = ourRules.size();
+            int theirSize = theirNewRules.size();
+
+            // now mix as many rules as we have in common and add the rest depending
+            // on share percentage
+            // we have more rules
+            if (ourSize > theirSize) {
+                int i = 0;
+                while (i < theirSize) {
+                    if (configuration.rng.nextFloat() < ((float)ourSharePercent) / 100) {
+                        theirNewRules.set(i, ourRules.get(i));
+                    }
+                    i++;
+                }
+                while (i < ourSize) {
+                    if (configuration.rng.nextFloat() < ((float)ourSharePercent) / 100) {
+                        theirNewRules.add(ourRules.get(i));
+                    }
+                    i++;
+                }
+            } else { // they have more rules or we have an equal number of rules
+               int i = 0;
+                while (i < ourSize) {
+                    if (configuration.rng.nextFloat() < ((float)ourSharePercent) / 100) {
+                        theirNewRules.set(i, ourRules.get(i));
+                    }
+                    i++;
+                }
+                int removed = 0;
+                while (i < theirSize - removed) {
+                    if (configuration.rng.nextFloat() < ((float)ourSharePercent) / 100) {
+                        theirNewRules.remove(i);
+                        removed ++;
+                    } else {
+                        i++;
+                    }
+                }
+            }
+
+            target.setRuleSet(new RuleSet(theirNewRules));
         }
 
         return energyChange;

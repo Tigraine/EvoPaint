@@ -21,7 +21,6 @@ package evopaint;
 
 import evopaint.interfaces.IChanging;
 import evopaint.interfaces.IChangeListener;
-import evopaint.pixel.Pixel;
 import evopaint.pixel.rulebased.RuleBasedPixel;
 
 import evopaint.util.mapping.ParallaxMap;
@@ -32,12 +31,12 @@ import java.util.List;
  *
  * @author Markus Echterhoff <tam@edu.uni-klu.ac.at>
  */
-public class World extends ParallaxMap<Pixel> implements IChanging {
+public class World extends ParallaxMap<RuleBasedPixel> implements IChanging {
 
     private Configuration configuration;
     private final List<IChangeListener> pendingOperations = new ArrayList();
 
-    public World(Pixel [] pixels, Configuration configuration) {
+    public World(RuleBasedPixel [] pixels, Configuration configuration) {
         super(pixels, configuration.dimension.width, configuration.dimension.height);
         this.configuration = configuration;
     }
@@ -73,7 +72,7 @@ public class World extends ParallaxMap<Pixel> implements IChanging {
         }
     }
 
-    public void set(Pixel pixel) {
+    public void set(RuleBasedPixel pixel) {
         super.set(pixel.getLocation().x, pixel.getLocation().y, pixel);
     }
 
@@ -81,7 +80,7 @@ public class World extends ParallaxMap<Pixel> implements IChanging {
         int [] indices = getShuffledIndices(configuration.rng);
         
         for (int i = 0; i < indices.length; i++) {
-            Pixel pixie = getUnclamped(indices[i]);
+            RuleBasedPixel pixie = getUnclamped(indices[i]);
             if (pixie.isAlive()) {                  // only act when alive
                 pixie.act(this.configuration);
             }
@@ -92,15 +91,15 @@ public class World extends ParallaxMap<Pixel> implements IChanging {
     }
 
     private void stepCellularAutomaton() {
-        Pixel [] currentData = getData();
-        Pixel [] newData = new Pixel [currentData.length];
+        RuleBasedPixel [] currentData = getData();
+        RuleBasedPixel [] newData = new RuleBasedPixel [currentData.length];
 
         for (int i = 0; i < currentData.length; i++) {
-            Pixel pixie = currentData[i];
+            RuleBasedPixel pixie = currentData[i];
             if (pixie != null) {
                 RuleBasedPixel oldPixie = new RuleBasedPixel(
                         pixie.getPixelColor(), pixie.getLocation(), pixie.getEnergy(),
-                        ((RuleBasedPixel)pixie).getRuleSet());
+                        pixie.getRuleSet());
                 pixie.act(this.configuration);
                 newData[i] = pixie;
                 currentData[i] = oldPixie;

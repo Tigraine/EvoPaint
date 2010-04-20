@@ -24,7 +24,6 @@ import evopaint.gui.rulesetmanager.util.DimensionsListener;
 import evopaint.gui.util.AutoSelectOnFocusSpinner;
 import evopaint.interfaces.IRandomNumberGenerator;
 import evopaint.pixel.ColorDimensions;
-import evopaint.pixel.Pixel;
 import evopaint.pixel.PixelColor;
 import evopaint.pixel.rulebased.Action;
 import evopaint.pixel.rulebased.RuleBasedPixel;
@@ -106,8 +105,8 @@ public class PartnerProcreationAction extends Action {
         return "procreate with partner";
     }
 
-    public int execute(Pixel actor, RelativeCoordinate direction, Configuration configuration) {
-        Pixel partner = configuration.world.get(actor.getLocation(), direction);
+    public int execute(RuleBasedPixel actor, RelativeCoordinate direction, Configuration configuration) {
+        RuleBasedPixel partner = configuration.world.get(actor.getLocation(), direction);
         if (partner == null) {
             return 0;
         }
@@ -129,12 +128,12 @@ public class PartnerProcreationAction extends Action {
         newPixelColor.mixWith(actor.getPixelColor(), ((float)ourSharePercent) / 100, dimensions);
 
         // mix the rule sets
-        RuleSet newRuleSet = new RuleSet(((RuleBasedPixel)actor).getRuleSet());
+        RuleSet newRuleSet = new RuleSet(actor.getRuleSet());
         if (mixRuleSet) {
-            newRuleSet.mixWith(((RuleBasedPixel)partner).getRuleSet(), ourSharePercent, configuration.rng);
+            newRuleSet.mixWith(partner.getRuleSet(), ourSharePercent, configuration.rng);
         }
 
-        Pixel newPixel = new RuleBasedPixel(
+        RuleBasedPixel newPixel = new RuleBasedPixel(
                 newPixelColor,
                 randomFreeSpot,
                 (actor.getEnergy() + getEnergyChange() + partner.getEnergy() + partnerEnergyChange) / 2,

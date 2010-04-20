@@ -20,8 +20,8 @@
 package evopaint.pixel.rulebased.targeting;
 
 import evopaint.Configuration;
-import evopaint.pixel.Pixel;
 import evopaint.pixel.rulebased.Action;
+import evopaint.pixel.rulebased.RuleBasedPixel;
 import evopaint.util.mapping.RelativeCoordinate;
 import java.util.List;
 
@@ -42,7 +42,7 @@ public class ActionMetaTarget extends QualifiedMetaTarget implements IActionTarg
     public ActionMetaTarget() {
     }
 
-    public int execute(Action action, Pixel actor, Configuration configuration) {
+    public int execute(Action action, RuleBasedPixel actor, Configuration configuration) {
         RelativeCoordinate direction = getCandidate(actor, configuration);
         if (direction == null) {
             return 0;

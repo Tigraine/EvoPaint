@@ -20,8 +20,8 @@
 package evopaint.pixel.rulebased.targeting;
 
 import evopaint.Configuration;
-import evopaint.pixel.Pixel;
 import evopaint.pixel.rulebased.Condition;
+import evopaint.pixel.rulebased.RuleBasedPixel;
 import evopaint.util.mapping.RelativeCoordinate;
 
 /**
@@ -38,8 +38,8 @@ public class ConditionTarget
     public ConditionTarget() {
     }
 
-    public boolean meets(Condition condition, Pixel actor, Configuration configuration) {
-        Pixel target = configuration.world.get(actor.getLocation(), direction);
+    public boolean meets(Condition condition, RuleBasedPixel actor, Configuration configuration) {
+        RuleBasedPixel target = configuration.world.get(actor.getLocation(), direction);
         return condition.isMet(actor, target);
     }
     

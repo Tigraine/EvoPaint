@@ -20,7 +20,7 @@
 package evopaint.pixel.rulebased.targeting;
 
 import evopaint.Configuration;
-import evopaint.pixel.Pixel;
+import evopaint.pixel.rulebased.RuleBasedPixel;
 import evopaint.pixel.rulebased.interfaces.IHTML;
 import evopaint.pixel.rulebased.interfaces.INamed;
 import evopaint.pixel.rulebased.interfaces.IParameterized;
@@ -53,6 +53,6 @@ public abstract class Qualifier implements INamed, IHTML, IParameterized, Serial
         return parametersMap;
     }
 
-    public abstract List<RelativeCoordinate> getCandidates(Pixel actor, List<RelativeCoordinate> directions, Configuration configuration);
+    public abstract List<RelativeCoordinate> getCandidates(RuleBasedPixel actor, List<RelativeCoordinate> directions, Configuration configuration);
 
 }

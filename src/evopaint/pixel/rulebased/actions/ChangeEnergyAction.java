@@ -23,7 +23,7 @@ import evopaint.Configuration;
 import evopaint.gui.util.AutoSelectOnFocusSpinner;
 import evopaint.interfaces.IRandomNumberGenerator;
 import evopaint.pixel.rulebased.Action;
-import evopaint.pixel.Pixel;
+import evopaint.pixel.rulebased.RuleBasedPixel;
 import evopaint.util.mapping.RelativeCoordinate;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -72,9 +72,9 @@ public class ChangeEnergyAction extends Action {
         return "change energy";
     }
 
-    public int execute(Pixel actor, RelativeCoordinate direction, Configuration configuration) {
+    public int execute(RuleBasedPixel actor, RelativeCoordinate direction, Configuration configuration) {
         
-        Pixel target = configuration.world.get(actor.getLocation(), direction);
+        RuleBasedPixel target = configuration.world.get(actor.getLocation(), direction);
         if (target == null) {
             return 0;
         }

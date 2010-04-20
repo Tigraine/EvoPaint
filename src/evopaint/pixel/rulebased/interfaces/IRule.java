@@ -21,10 +21,10 @@ package evopaint.pixel.rulebased.interfaces;
 
 import evopaint.Configuration;
 import evopaint.interfaces.IRandomNumberGenerator;
-import evopaint.pixel.Pixel;
 import evopaint.pixel.rulebased.Action;
 import evopaint.pixel.rulebased.Condition;
 import evopaint.pixel.rulebased.Rule;
+import evopaint.pixel.rulebased.RuleBasedPixel;
 import java.io.Serializable;
 import java.util.List;
 
@@ -38,7 +38,7 @@ public interface IRule extends IHTML, Serializable {
     public void setAction(Action action);
     public List<Condition> getConditions();
     public void setConditions(List<Condition> conditions);
-    public boolean apply(Pixel pixel, Configuration configuration);
+    public boolean apply(RuleBasedPixel pixel, Configuration configuration);
     public String validate();
     public void mixWith(Rule theirRule, float theirShare, IRandomNumberGenerator rng);
 }

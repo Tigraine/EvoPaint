@@ -1,6 +1,6 @@
 package evopaint.util.logging;
 
-import evopaint.pixel.Pixel;
+import evopaint.pixel.rulebased.RuleBasedPixel;
 import evopaint.util.objectrenderers.PixelRenderer;
 import evopaint.util.objectrenderers.ExceptionRenderer;
 import evopaint.util.objectrenderers.VerbosePixelRenderer;
@@ -24,10 +24,10 @@ public class Logger {
     private static void initLogger(int logLevel, int logVerbosity) {
         log = new ConsoleLog(logLevel);
         if (logVerbosity == Log.Verbosity.VERBOSEVERBOSE) {
-            log.addRenderer(Pixel.class, new VerbosePixelRenderer());
+            log.addRenderer(RuleBasedPixel.class, new VerbosePixelRenderer());
         }
         else {
-            log.addRenderer(Pixel.class, new PixelRenderer());
+            log.addRenderer(RuleBasedPixel.class, new PixelRenderer());
         }
         log.addRenderer(Exception.class, new ExceptionRenderer());
     }

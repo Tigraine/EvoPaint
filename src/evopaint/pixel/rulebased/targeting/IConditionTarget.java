@@ -20,13 +20,13 @@
 package evopaint.pixel.rulebased.targeting;
 
 import evopaint.Configuration;
-import evopaint.pixel.Pixel;
 import evopaint.pixel.rulebased.Condition;
+import evopaint.pixel.rulebased.RuleBasedPixel;
 
 /**
  *
  * @author Markus Echterhoff <tam@edu.uni-klu.ac.at>
  */
 public interface IConditionTarget extends ITarget {
-    public boolean meets(Condition condition, Pixel actor, Configuration configuration);
+    public boolean meets(Condition condition, RuleBasedPixel actor, Configuration configuration);
 }
