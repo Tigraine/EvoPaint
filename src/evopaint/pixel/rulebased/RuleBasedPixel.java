@@ -22,7 +22,6 @@ package evopaint.pixel.rulebased;
 import evopaint.Configuration;
 import evopaint.pixel.Pixel;
 import evopaint.pixel.PixelColor;
-import evopaint.pixel.rulebased.interfaces.IRule;
 import evopaint.util.mapping.AbsoluteCoordinate;
 
 /**
@@ -44,7 +43,7 @@ public class RuleBasedPixel extends Pixel {
         if (ruleSet == null) {
             return;
         }
-        for (IRule rule : ruleSet.getRules()) {
+        for (Rule rule : ruleSet.getRules()) {
             if (rule.apply(this, configuration)) {
                 break;
             }

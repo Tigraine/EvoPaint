@@ -22,9 +22,9 @@ package evopaint.gui.rulesetmanager;
 import com.thoughtworks.xstream.XStreamException;
 import evopaint.Configuration;
 import evopaint.gui.rulesetmanager.util.NamedObjectListCellRenderer;
+import evopaint.pixel.rulebased.Rule;
 import evopaint.pixel.rulebased.RuleSet;
 import evopaint.pixel.rulebased.RuleSetCollection;
-import evopaint.pixel.rulebased.interfaces.IRule;
 import evopaint.util.CollectionNode;
 import evopaint.util.ExceptionHandler;
 import evopaint.util.RuleSetNode;
@@ -303,7 +303,7 @@ public class JRuleSetBrowser extends JPanel implements TreeSelectionListener {
                 
                     RuleSet ruleSet = new RuleSet(nameField.getText(),
                             "These rules are made for ruling, that's just what they'll do. One of these days these rule are gonna rule all over you.",
-                            new ArrayList<IRule>());
+                            new ArrayList<Rule>());
 
                     // check if name is free
                     String desiredName = nameField.getText();

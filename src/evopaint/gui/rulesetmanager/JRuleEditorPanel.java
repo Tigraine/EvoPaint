@@ -25,7 +25,6 @@ import evopaint.pixel.rulebased.Condition;
 import evopaint.pixel.rulebased.Rule;
 import evopaint.pixel.rulebased.actions.ChangeEnergyAction;
 import evopaint.pixel.rulebased.conditions.TrueCondition;
-import evopaint.pixel.rulebased.interfaces.IRule;
 import evopaint.pixel.rulebased.targeting.ActionMetaTarget;
 import evopaint.pixel.rulebased.targeting.ITarget;
 import evopaint.pixel.rulebased.targeting.QualifiedMetaTarget;
@@ -56,7 +55,7 @@ public class JRuleEditorPanel extends JPanel {
     private JActionTargetButton jActionTargetButton;
     private JQualifierList jQualifierList;
 
-    public JRuleEditorPanel(Configuration configuration, IRule rule, ActionListener OKListener, ActionListener CancelListener) {
+    public JRuleEditorPanel(Configuration configuration, Rule rule, ActionListener OKListener, ActionListener CancelListener) {
         this.configuration = configuration;
         
         setLayout(new BorderLayout(20, 20));
@@ -159,7 +158,7 @@ public class JRuleEditorPanel extends JPanel {
         add(controlPanel, BorderLayout.SOUTH);
     }
 
-    public IRule createRule() {
+    public Rule createRule() {
         List<Condition> conditions = jConditionList.createConditions();
 
         Action action = jActionButton.createAction();

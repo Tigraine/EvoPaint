@@ -26,7 +26,6 @@ import evopaint.pixel.rulebased.actions.CopyAction;
 import evopaint.pixel.rulebased.actions.MoveAction;
 import evopaint.pixel.rulebased.actions.SetColorAction;
 import evopaint.pixel.rulebased.conditions.TrueCondition;
-import evopaint.pixel.rulebased.interfaces.IRule;
 import evopaint.pixel.rulebased.interfaces.IHTML;
 import evopaint.pixel.rulebased.targeting.ActionMetaTarget;
 import evopaint.pixel.rulebased.targeting.Qualifier;
@@ -47,7 +46,7 @@ import java.util.List;
  *
  * @author Markus Echterhoff <tam@edu.uni-klu.ac.at>
  */
-public class Rule implements IRule, IHTML {
+public class Rule implements IHTML {
     private List<Condition> conditions;
     private Action action;
 

@@ -23,7 +23,6 @@ import evopaint.Configuration;
 import evopaint.gui.util.DragDropList;
 import evopaint.pixel.rulebased.Rule;
 import evopaint.pixel.rulebased.RuleSet;
-import evopaint.pixel.rulebased.interfaces.IRule;
 import evopaint.util.CollectionNode;
 import evopaint.util.RuleSetNode;
 import java.awt.BorderLayout;
@@ -92,25 +91,25 @@ public class JRuleList extends JPanel implements TreeSelectionListener, ListData
         dirty = false;
     }
     
-    public List<IRule> getRules() {
-        List<IRule> rules = new ArrayList<IRule>(model.capacity());
+    public List<Rule> getRules() {
+        List<Rule> rules = new ArrayList<Rule>(model.capacity());
 
         for (int i = 0; i < model.size(); i++) {
-            rules.add((IRule)model.get(i));
+            rules.add((Rule)model.get(i));
         }
         return rules;
     }
 
-    public void replaceSelectedRule(IRule rule) {
+    public void replaceSelectedRule(Rule rule) {
         model.set(list.getSelectedIndex(), rule);
         dirty = true;
     }
 
-    public IRule getSelectedRule() {
+    public Rule getSelectedRule() {
         if (list.isSelectionEmpty()) {
             return null;
         }
-        return (IRule)list.getSelectedValue();
+        return (Rule)list.getSelectedValue();
     }
 
     public int locationToIndex(Point location) {
@@ -149,7 +148,7 @@ public class JRuleList extends JPanel implements TreeSelectionListener, ListData
         model = new DefaultListModel();
 
         RuleSet ruleSet = (RuleSet)userObject;
-        for (IRule rule : ruleSet.getRules()) {
+        for (Rule rule : ruleSet.getRules()) {
             model.addElement(rule);
         }
 
@@ -216,7 +215,7 @@ public class JRuleList extends JPanel implements TreeSelectionListener, ListData
         btnAdd.setToolTipText("Adds a new rule and opens it in the Rule Editor");
         btnAdd.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                IRule newRule = new Rule();
+                Rule newRule = new Rule();
                 model.addElement(newRule);
                 list.setSelectedValue(newRule, true);
                 btnEdit.doClick();
@@ -236,7 +235,7 @@ public class JRuleList extends JPanel implements TreeSelectionListener, ListData
                 }
                 int index = list.getSelectedIndex();
                 final Rule protoRule = (Rule)model.get(index);
-                IRule newRule = new Rule(protoRule);
+                Rule newRule = new Rule(protoRule);
                 model.addElement(newRule);
                 
             }
@@ -295,7 +294,7 @@ public class JRuleList extends JPanel implements TreeSelectionListener, ListData
                                            boolean isSelected,
                                            boolean cellHasFocus) {
 
-            JLabel ret = (JLabel)super.getListCellRendererComponent(list, ((IRule)value).toHTML(), index, isSelected, cellHasFocus);
+            JLabel ret = (JLabel)super.getListCellRendererComponent(list, ((Rule)value).toHTML(), index, isSelected, cellHasFocus);
             ret.setText("<html>" + ret.getText() + "</html>");
             return ret;
         }

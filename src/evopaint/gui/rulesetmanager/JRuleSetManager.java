@@ -20,9 +20,9 @@
 package evopaint.gui.rulesetmanager;
 
 import evopaint.Configuration;
+import evopaint.pixel.rulebased.Rule;
 import evopaint.pixel.rulebased.RuleSet;
 import evopaint.pixel.rulebased.RuleSetCollection;
-import evopaint.pixel.rulebased.interfaces.IRule;
 import evopaint.util.RuleSetNode;
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
@@ -173,7 +173,7 @@ public class JRuleSetManager extends JPanel implements TreeSelectionListener {
     private class RuleEditorOKListener implements ActionListener {
 
         public void actionPerformed(ActionEvent e) {
-            IRule rule = jRuleEditor.createRule();
+            Rule rule = jRuleEditor.createRule();
             String errorMsg = rule.validate();
             if (errorMsg == null) {
                 jRuleList.replaceSelectedRule(rule);
@@ -195,7 +195,7 @@ public class JRuleSetManager extends JPanel implements TreeSelectionListener {
     
     private class EditRuleBtnListener implements ActionListener {
         public void actionPerformed(ActionEvent e) {
-            IRule selectedRule = jRuleList.getSelectedRule();
+            Rule selectedRule = jRuleList.getSelectedRule();
 
             if (selectedRule == null) {
                 return;
@@ -220,7 +220,7 @@ public class JRuleSetManager extends JPanel implements TreeSelectionListener {
                     return;
                 }
                 
-                IRule selectedRule = jRuleList.getSelectedRule();
+                Rule selectedRule = jRuleList.getSelectedRule();
 
                 assert (selectedRule != null);
 

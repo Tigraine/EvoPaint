@@ -22,7 +22,6 @@ package evopaint.pixel.rulebased;
 import evopaint.interfaces.IRandomNumberGenerator;
 import evopaint.pixel.rulebased.interfaces.IDescribable;
 import evopaint.pixel.rulebased.interfaces.INameable;
-import evopaint.pixel.rulebased.interfaces.IRule;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -34,7 +33,7 @@ import java.util.List;
 public class RuleSet implements Serializable, INameable, IDescribable {
     private String name;
     private String description;
-    private List<IRule> rules;
+    private List<Rule> rules;
 
     public String getName() {
         return name;
@@ -47,7 +46,7 @@ public class RuleSet implements Serializable, INameable, IDescribable {
     @Override
     public String toString() {
         String ret = "Rule set '" + name + "' consists of:\n";
-        for (IRule rule : rules) {
+        for (Rule rule : rules) {
             ret += "\t" + rule.toString() + "\n";
         }
         return ret;
@@ -61,11 +60,11 @@ public class RuleSet implements Serializable, INameable, IDescribable {
         this.description = description;
     }
 
-    public List<IRule> getRules() {
+    public List<Rule> getRules() {
         return rules;
     }
 
-    public void setRules(List<IRule> rules) {
+    public void setRules(List<Rule> rules) {
         this.rules = rules;
     }
 
@@ -80,7 +79,7 @@ public class RuleSet implements Serializable, INameable, IDescribable {
         if (ourSize > theirSize) {
             int i = 0;
             while (i < theirSize) {
-                rules.get(i).mixWith((Rule)theirRuleSet.rules.get(i), theirShare, rng);
+                rules.get(i).mixWith(theirRuleSet.rules.get(i), theirShare, rng);
                 i++;
             }
             int removed = 0;
@@ -95,7 +94,7 @@ public class RuleSet implements Serializable, INameable, IDescribable {
         } else { // they have more rules or we have an equal number of rules
            int i = 0;
             while (i < ourSize) {
-                rules.get(i).mixWith((Rule)theirRuleSet.rules.get(i), theirShare, rng);
+                rules.get(i).mixWith(theirRuleSet.rules.get(i), theirShare, rng);
                 i++;
             }
             while (i < theirSize) {
@@ -107,7 +106,7 @@ public class RuleSet implements Serializable, INameable, IDescribable {
         }
     }
 
-    public RuleSet(String name, String description, List<IRule> rules) {
+    public RuleSet(String name, String description, List<Rule> rules) {
         this.name = name;
         this.description = description;
         this.rules = rules;
@@ -119,7 +118,7 @@ public class RuleSet implements Serializable, INameable, IDescribable {
         this.rules = new ArrayList(ruleSet.rules);
     }
 
-    public RuleSet(List<IRule> rules) {
+    public RuleSet(List<Rule> rules) {
         this.name = "new rule set";
         this.description = "describe me";
         this.rules = rules;
