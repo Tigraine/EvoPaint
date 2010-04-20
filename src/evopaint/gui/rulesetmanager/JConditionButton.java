@@ -52,7 +52,7 @@ public class JConditionButton extends JButton {
     
     public JConditionButton(Configuration configuration, final JConditionList jConditionList, Condition conditionArg) {
         this.configuration = configuration;
-        this.createdCondition = conditionArg.getCopy();
+        this.createdCondition = conditionArg;
 
         this.dialog = new JDialog((JFrame)SwingUtilities.getWindowAncestor(this), "Edit Condition", true);
         dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);

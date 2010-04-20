@@ -26,13 +26,16 @@ import evopaint.pixel.rulebased.Action;
 import evopaint.interfaces.IRandomNumberGenerator;
 import evopaint.pixel.ColorDimensions;
 import evopaint.pixel.Pixel;
+import evopaint.pixel.PixelColor;
+import evopaint.pixel.rulebased.Rule;
 import evopaint.pixel.rulebased.RuleBasedPixel;
-import evopaint.pixel.rulebased.RuleSet;
 import evopaint.pixel.rulebased.targeting.ActionMetaTarget;
 import evopaint.util.mapping.RelativeCoordinate;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import javax.swing.JCheckBox;
 import javax.swing.JComponent;
@@ -105,11 +108,19 @@ public class AssimilationAction extends Action {
         if (target == null) {
             return 0;
         }
-        target.getPixelColor().mixWith(actor.getPixelColor(),
+        
+        // mix color
+        PixelColor newPixelColor = new PixelColor(target.getPixelColor());
+        newPixelColor.mixWith(actor.getPixelColor(),
                 ((float)ourSharePercent) / 100, dimensions);
+        target.setPixelColor(newPixelColor);
+
+        // mix rule set
         if (mixRuleSet) {
-            RuleSet newRuleSet = ((RuleBasedPixel)target).getRuleSet().getCopy();
-            newRuleSet.mixWith(((RuleBasedPixel)actor).getRuleSet(), ourSharePercent, configuration.rng);
+            //List<Rule> newRules = new ArrayList(((RuleBasedPixel)target).getRules());
+
+            //ArrayList newRules = RuleSet.mixRules(actor, target, ourSharePercent, configuration.rng);
+            //((RuleBasedPixel)target).setRules(newRules);
         }
 
         return energyChange;

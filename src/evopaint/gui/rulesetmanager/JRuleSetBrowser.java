@@ -346,7 +346,7 @@ public class JRuleSetBrowser extends JPanel implements TreeSelectionListener {
             if (selectedNode instanceof CollectionNode) {
                 RuleSetCollection collection =
                         (RuleSetCollection)selectedNode.getUserObject();
-                RuleSetCollection newCollection = collection.getCopy();
+                RuleSetCollection newCollection = new RuleSetCollection(collection);
 
                 // make sure the name of the copy is unique
                 boolean found = true;
@@ -374,7 +374,7 @@ public class JRuleSetBrowser extends JPanel implements TreeSelectionListener {
                     while (ruleSetNodes.hasMoreElements()) {
                         RuleSetNode node = (RuleSetNode)ruleSetNodes.nextElement();
                         RuleSet ruleSet = (RuleSet)node.getUserObject();
-                        RuleSet newRuleSet = ruleSet.getCopy();
+                        RuleSet newRuleSet = new RuleSet(ruleSet);
                         RuleSetNode newRuleSetNode = new RuleSetNode(newRuleSet);
                         newCollectionNode.insert(newRuleSetNode, newCollectionNode.getChildCount());
                     }
@@ -395,7 +395,7 @@ public class JRuleSetBrowser extends JPanel implements TreeSelectionListener {
                 RuleSetCollection collection = (RuleSetCollection)
                         collectionNode.getUserObject();
                 RuleSet ruleSet = (RuleSet)selectedNode.getUserObject();
-                RuleSet newRuleSet = ruleSet.getCopy();
+                RuleSet newRuleSet = new RuleSet(ruleSet);
 
                 // make sure the name of the copy is unique
                 String originalName = ruleSet.getName().replaceAll(" *\\(\\d+\\)", "");

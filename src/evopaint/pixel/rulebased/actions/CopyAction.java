@@ -22,9 +22,7 @@ package evopaint.pixel.rulebased.actions;
 import evopaint.Configuration;
 import evopaint.pixel.rulebased.Action;
 import evopaint.pixel.Pixel;
-import evopaint.pixel.PixelColor;
 import evopaint.pixel.rulebased.RuleBasedPixel;
-import evopaint.pixel.rulebased.RuleSet;
 import evopaint.pixel.rulebased.targeting.ActionMetaTarget;
 import evopaint.util.mapping.AbsoluteCoordinate;
 import evopaint.util.mapping.RelativeCoordinate;
@@ -57,11 +55,9 @@ public class CopyAction extends Action {
         if (target != null) {
             return 0;
         }
-        Pixel newPixel = new RuleBasedPixel(
-                new PixelColor(actor.getPixelColor()),
-                new AbsoluteCoordinate(actor.getLocation(), direction, configuration.world),
-                actor.getEnergy() + getEnergyChange(),
-                ((RuleBasedPixel)actor).getRuleSet());
+
+        Pixel newPixel = new RuleBasedPixel(((RuleBasedPixel)actor));
+        newPixel.setLocation(new AbsoluteCoordinate(actor.getLocation(), direction, configuration.world));
         configuration.world.set(newPixel);
 
         return energyChange;

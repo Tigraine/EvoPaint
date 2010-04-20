@@ -21,17 +21,10 @@ package evopaint.pixel.rulebased.targeting;
 
 import evopaint.Configuration;
 import evopaint.pixel.Pixel;
-import evopaint.pixel.rulebased.interfaces.ICopyable;
 import evopaint.pixel.rulebased.interfaces.IHTML;
 import evopaint.pixel.rulebased.interfaces.INamed;
 import evopaint.pixel.rulebased.interfaces.IParameterized;
-import evopaint.util.ExceptionHandler;
 import evopaint.util.mapping.RelativeCoordinate;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -42,23 +35,7 @@ import javax.swing.JComponent;
  *
  * @author Markus Echterhoff <tam@edu.uni-klu.ac.at>
  */
-public abstract class Qualifier implements INamed, IHTML, IParameterized, ICopyable, Serializable {
-
-    public Qualifier getCopy() {
-        Qualifier newQualifier = null;
-        try {
-            ByteArrayOutputStream outByteStream = new ByteArrayOutputStream();
-            ObjectOutputStream out = new ObjectOutputStream(outByteStream);
-            out.writeObject(this);
-            ObjectInputStream in = new ObjectInputStream(new ByteArrayInputStream(outByteStream.toByteArray()));
-            newQualifier = (Qualifier) in.readObject();
-        } catch (ClassNotFoundException ex) {
-            ExceptionHandler.handle(ex, true);
-        } catch (IOException ex) {
-            ExceptionHandler.handle(ex, true);
-        }
-        return newQualifier;
-    }
+public abstract class Qualifier implements INamed, IHTML, IParameterized, Serializable {
 
     public String toHTML() {
         return getName();

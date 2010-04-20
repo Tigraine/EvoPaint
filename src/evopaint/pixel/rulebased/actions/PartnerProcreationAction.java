@@ -129,7 +129,7 @@ public class PartnerProcreationAction extends Action {
         newPixelColor.mixWith(actor.getPixelColor(), ((float)ourSharePercent) / 100, dimensions);
 
         // mix the rule sets
-        RuleSet newRuleSet = ((RuleBasedPixel)actor).getRuleSet().getCopy();
+        RuleSet newRuleSet = new RuleSet(((RuleBasedPixel)actor).getRuleSet());
         if (mixRuleSet) {
             newRuleSet.mixWith(((RuleBasedPixel)partner).getRuleSet(), ourSharePercent, configuration.rng);
         }

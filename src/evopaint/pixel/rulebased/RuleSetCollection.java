@@ -19,22 +19,15 @@
 
 package evopaint.pixel.rulebased;
 
-import evopaint.pixel.rulebased.interfaces.ICopyable;
 import evopaint.pixel.rulebased.interfaces.IDescribable;
 import evopaint.pixel.rulebased.interfaces.INameable;
-import evopaint.util.ExceptionHandler;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
 /**
  *
  * @author Markus Echterhoff <tam@edu.uni-klu.ac.at>
  */
-public class RuleSetCollection implements Serializable, INameable, IDescribable, ICopyable {
+public class RuleSetCollection implements Serializable, INameable, IDescribable {
     private String name;
     private String description;
 
@@ -53,25 +46,15 @@ public class RuleSetCollection implements Serializable, INameable, IDescribable,
     public String getName() {
         return name;
     }
-    public RuleSetCollection getCopy() {
-        RuleSetCollection newRuleSetCollection = null;
-        try {
-            ByteArrayOutputStream outByteStream = new ByteArrayOutputStream();
-            ObjectOutputStream out = new ObjectOutputStream(outByteStream);
-            out.writeObject(this);
-            ObjectInputStream in = new ObjectInputStream(new ByteArrayInputStream(outByteStream.toByteArray()));
-            newRuleSetCollection = (RuleSetCollection) in.readObject();
-        } catch (ClassNotFoundException ex) {
-            ExceptionHandler.handle(ex, true);
-        } catch (IOException ex) {
-            ExceptionHandler.handle(ex, true);
-        }
-        return newRuleSetCollection;
-    }
 
     public RuleSetCollection(String name, String description) {
         this.name = name;
         this.description = description;
+    }
+
+    public RuleSetCollection(RuleSetCollection collection) {
+        this.name = collection.name;
+        this.description = collection.description;
     }
 
 }

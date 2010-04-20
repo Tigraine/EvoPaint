@@ -60,7 +60,6 @@ public class FillSelectionCommand extends AbstractCommand {
         this.configuration = showcase.getConfiguration();
 
         this.energy = configuration.startingEnergy;
-        //this.ruleSet = configuration.paint.getCurrentRuleSet().getCopy();
     }
 
     public void setLocation(Point location) {

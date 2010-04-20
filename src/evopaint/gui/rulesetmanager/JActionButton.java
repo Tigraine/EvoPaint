@@ -52,7 +52,7 @@ public class JActionButton extends JButton {
 
     public JActionButton(Configuration configuration, Action actionArg) {
         this.configuration = configuration;
-        this.createdAction = actionArg.getCopy();
+        this.createdAction = actionArg;
 
         this.dialog = new JDialog((JFrame)SwingUtilities.getWindowAncestor(this), "Edit Action", true);
         dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);

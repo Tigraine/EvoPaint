@@ -28,7 +28,6 @@ import evopaint.pixel.rulebased.actions.MoveAction;
 import evopaint.pixel.rulebased.actions.SetColorAction;
 import evopaint.pixel.rulebased.conditions.TrueCondition;
 import evopaint.pixel.rulebased.interfaces.IRule;
-import evopaint.pixel.rulebased.interfaces.ICopyable;
 import evopaint.pixel.rulebased.interfaces.IHTML;
 import evopaint.pixel.rulebased.targeting.ActionMetaTarget;
 import evopaint.pixel.rulebased.targeting.Qualifier;
@@ -41,12 +40,6 @@ import evopaint.pixel.rulebased.targeting.qualifiers.ColorLikenessQualifierMyCol
 import evopaint.pixel.rulebased.targeting.qualifiers.EnergyQualifier;
 import evopaint.pixel.rulebased.targeting.qualifiers.ExistenceQualifier;
 import evopaint.pixel.rulebased.util.ObjectComparisonOperator;
-import evopaint.util.ExceptionHandler;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -55,7 +48,7 @@ import java.util.List;
  *
  * @author Markus Echterhoff <tam@edu.uni-klu.ac.at>
  */
-public class Rule implements IRule, IHTML, ICopyable {
+public class Rule implements IRule, IHTML {
     private List<Condition> conditions;
     private Action action;
 
@@ -135,22 +128,6 @@ public class Rule implements IRule, IHTML, ICopyable {
         return true;
     }
 
-    public Rule getCopy() {
-        Rule newRule = null;
-        try {
-            ByteArrayOutputStream outByteStream = new ByteArrayOutputStream();
-            ObjectOutputStream out = new ObjectOutputStream(outByteStream);
-            out.writeObject(this);
-            ObjectInputStream in = new ObjectInputStream(new ByteArrayInputStream(outByteStream.toByteArray()));
-            newRule = (Rule) in.readObject();
-        } catch (ClassNotFoundException ex) {
-            ExceptionHandler.handle(ex, true);
-        } catch (IOException ex) {
-            ExceptionHandler.handle(ex, true);
-        }
-        return newRule;
-    }
-
     public Rule(List<Condition> conditions, Action action) {
         this.conditions = conditions;
         this.action = action;
@@ -160,6 +137,11 @@ public class Rule implements IRule, IHTML, ICopyable {
         this.conditions = new ArrayList<Condition>();
         this.conditions.add(new TrueCondition());
         this.action = new ChangeEnergyAction();
+    }
+
+    public Rule(Rule rule) {
+        this.conditions = new ArrayList(rule.conditions);
+        this.action = rule.action;
     }
 
     public String validate() {
@@ -356,7 +338,7 @@ public class Rule implements IRule, IHTML, ICopyable {
             action.mixWith(theirRule.action, theirShare, rng);
         } else {
             if (rng.nextFloat() < theirShare) {
-                action = theirRule.action.getCopy();
+                action = theirRule.action;
             }
         }
     }

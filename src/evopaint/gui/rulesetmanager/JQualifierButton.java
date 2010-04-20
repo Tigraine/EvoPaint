@@ -46,7 +46,7 @@ public class JQualifierButton extends JButton {
     private JPanel container;
     
     public JQualifierButton(final JQualifierList jQualifierList, Qualifier qualifierArg) {
-        this.createdQualifier = (Qualifier)qualifierArg.getCopy();
+        this.createdQualifier = qualifierArg;
 
         this.dialog = new JDialog((JFrame)SwingUtilities.getWindowAncestor(this), "Edit Qualifier", true);
         dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);

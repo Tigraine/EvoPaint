@@ -37,16 +37,24 @@ public abstract class Pixel {
         return pixelColor;
     }
 
-    public void setPixelColor(float [] hsb) {
-        this.pixelColor.setHSB(hsb);
+    public void setPixelColor(PixelColor pixelColor) {
+        this.pixelColor = pixelColor;
     }
 
     public AbsoluteCoordinate getLocation() {
         return location;
     }
 
+    public void setLocation(AbsoluteCoordinate location) {
+        this.location = location;
+    }
+
     public int getEnergy() {
         return energy;
+    }
+
+    public void setEnergy(int energy) {
+        this.energy = energy;
     }
 
     public boolean isAlive() {
@@ -85,9 +93,9 @@ public abstract class Pixel {
     }
 
     public Pixel(Pixel pixel) {
-        this.pixelColor = new PixelColor(pixel.pixelColor); // colors can be changed
-        this.location = new AbsoluteCoordinate(pixel.location); // ACs can be moved
-        this.energy = pixel.energy; // primitive
+        this.pixelColor = pixel.pixelColor;
+        this.location = pixel.location;
+        this.energy = pixel.energy;
     }
 
 	public void kill() {

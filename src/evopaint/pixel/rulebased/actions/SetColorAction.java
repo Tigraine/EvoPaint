@@ -78,7 +78,9 @@ public class SetColorAction extends Action {
         if (target == null) {
             return 0;
         }
-        target.setPixelColor(color.getHSB());
+        
+        target.setPixelColor(color);
+
         return energyChange;
     }
 

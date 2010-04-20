@@ -32,7 +32,7 @@ import java.util.List;
  *
  * @author Markus Echterhoff <tam@edu.uni-klu.ac.at>
  */
-public interface IRule extends IHTML, Serializable, ICopyable {
+public interface IRule extends IHTML, Serializable {
 
     public Action getAction();
     public void setAction(Action action);

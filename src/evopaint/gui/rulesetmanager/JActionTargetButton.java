@@ -45,7 +45,7 @@ public class JActionTargetButton extends JButton {
     private ITarget createdTarget;
 
     public JActionTargetButton(final ITarget targetArg, final JQualifierList qualifierList) {
-        this.createdTarget = (ITarget)targetArg.getCopy();
+        this.createdTarget = targetArg;
         this.dialog = new JDialog((JFrame)SwingUtilities.getWindowAncestor(this), "Choose Target", true);
         dialog.setUndecorated(true);
 

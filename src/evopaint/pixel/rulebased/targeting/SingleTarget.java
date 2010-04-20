@@ -42,6 +42,10 @@ public class SingleTarget implements ITarget {
     public SingleTarget() {
     }
 
+    public SingleTarget(SingleTarget target) {
+        this.direction = target.direction;
+    }
+
     public int getType() {
         return Target.SINGLE_TARGET;
     }
@@ -50,22 +54,6 @@ public class SingleTarget implements ITarget {
         if (rng.nextFloat() < theirShare) {
             direction = ((SingleTarget)theirTarget).direction;
         }
-    }
-
-    public SingleTarget getCopy() {
-        SingleTarget newTarget = null;
-        try {
-            ByteArrayOutputStream outByteStream = new ByteArrayOutputStream();
-            ObjectOutputStream out = new ObjectOutputStream(outByteStream);
-            out.writeObject(this);
-            ObjectInputStream in = new ObjectInputStream(new ByteArrayInputStream(outByteStream.toByteArray()));
-            newTarget = (SingleTarget) in.readObject();
-        } catch (ClassNotFoundException ex) {
-            ExceptionHandler.handle(ex, true);
-        } catch (IOException ex) {
-            ExceptionHandler.handle(ex, true);
-        }
-        return newTarget;
     }
 
     @Override

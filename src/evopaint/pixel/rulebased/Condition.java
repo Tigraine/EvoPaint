@@ -23,23 +23,16 @@ import evopaint.pixel.rulebased.targeting.IHaveTarget;
 import evopaint.Configuration;
 import evopaint.interfaces.IRandomNumberGenerator;
 import evopaint.pixel.Pixel;
-import evopaint.pixel.rulebased.interfaces.ICopyable;
 import evopaint.pixel.rulebased.targeting.ConditionTarget;
 import evopaint.pixel.rulebased.targeting.IConditionTarget;
 import evopaint.pixel.rulebased.targeting.ITarget;
-import evopaint.util.ExceptionHandler;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.util.Map;
 
 /**
  *
  * @author Markus Echterhoff <tam@edu.uni-klu.ac.at>
  */
-public abstract class Condition implements IHaveTarget, ICopyable {
+public abstract class Condition implements IHaveTarget {
 
     protected static final int COLOR_LIKENESS_CONDITION_COLOR = 0;
     protected static final int COLOR_LIKENESS_CONDITION_MY_COLOR = 1;
@@ -56,7 +49,7 @@ public abstract class Condition implements IHaveTarget, ICopyable {
             target.mixWith(theirCondition.target, theirShare, rng);
         } else {
             if (rng.nextFloat() < theirShare) {
-                target = (IConditionTarget)theirCondition.target.getCopy();
+               target = theirCondition.target;
             }
         }
     }
@@ -69,28 +62,16 @@ public abstract class Condition implements IHaveTarget, ICopyable {
         this.target = new ConditionTarget();
     }
 
+    public Condition(Condition condition) {
+        this.target = condition.target;
+    }
+
     public IConditionTarget getTarget() {
         return target;
     }
 
     public void setTarget(ITarget target) {
         this.target = (IConditionTarget)target;
-    }
-
-    public Condition getCopy() {
-        Condition newCondition = null;
-        try {
-            ByteArrayOutputStream outByteStream = new ByteArrayOutputStream();
-            ObjectOutputStream out = new ObjectOutputStream(outByteStream);
-            out.writeObject(this);
-            ObjectInputStream in = new ObjectInputStream(new ByteArrayInputStream(outByteStream.toByteArray()));
-            newCondition = (Condition) in.readObject();
-        } catch (ClassNotFoundException ex) {
-            ExceptionHandler.handle(ex, true);
-        } catch (IOException ex) {
-            ExceptionHandler.handle(ex, true);
-        }
-        return newCondition;
     }
 
     public Map<String, String>addParametersString(Map<String, String> parametersMap) {

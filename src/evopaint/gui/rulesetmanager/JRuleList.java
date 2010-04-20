@@ -235,8 +235,8 @@ public class JRuleList extends JPanel implements TreeSelectionListener, ListData
                     return;
                 }
                 int index = list.getSelectedIndex();
-                final IRule protoRule = (IRule)model.get(index);
-                IRule newRule = (IRule)protoRule.getCopy();
+                final Rule protoRule = (Rule)model.get(index);
+                IRule newRule = new Rule(protoRule);
                 model.addElement(newRule);
                 
             }

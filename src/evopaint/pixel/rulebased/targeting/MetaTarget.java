@@ -20,13 +20,7 @@
 package evopaint.pixel.rulebased.targeting;
 
 import evopaint.interfaces.IRandomNumberGenerator;
-import evopaint.util.ExceptionHandler;
 import evopaint.util.mapping.RelativeCoordinate;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -44,6 +38,10 @@ public class MetaTarget implements ITarget {
 
     public MetaTarget() {
         this.directions = new ArrayList<RelativeCoordinate>();
+    }
+
+    public MetaTarget(MetaTarget target) {
+        this.directions = new ArrayList(target.directions);
     }
 
     public int getType() {
@@ -101,22 +99,6 @@ public class MetaTarget implements ITarget {
 
     public void setDirections(List<RelativeCoordinate> directions) {
         this.directions = directions;
-    }
-
-    public MetaTarget getCopy() {
-        MetaTarget newTarget = null;
-        try {
-            ByteArrayOutputStream outByteStream = new ByteArrayOutputStream();
-            ObjectOutputStream out = new ObjectOutputStream(outByteStream);
-            out.writeObject(this);
-            ObjectInputStream in = new ObjectInputStream(new ByteArrayInputStream(outByteStream.toByteArray()));
-            newTarget = (MetaTarget) in.readObject();
-        } catch (ClassNotFoundException ex) {
-            ExceptionHandler.handle(ex, true);
-        } catch (IOException ex) {
-            ExceptionHandler.handle(ex, true);
-        }
-        return newTarget;
     }
 
     @Override

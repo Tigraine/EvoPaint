@@ -25,19 +25,11 @@ import evopaint.Configuration;
 import evopaint.gui.util.AutoSelectOnFocusSpinner;
 import evopaint.interfaces.IRandomNumberGenerator;
 import evopaint.pixel.Pixel;
-import evopaint.pixel.rulebased.interfaces.ICopyable;
 import evopaint.pixel.rulebased.targeting.ActionMetaTarget;
 import evopaint.pixel.rulebased.targeting.ActionTarget;
 import evopaint.pixel.rulebased.targeting.IActionTarget;
-import evopaint.pixel.rulebased.targeting.IConditionTarget;
 import evopaint.pixel.rulebased.targeting.ITarget;
-import evopaint.util.ExceptionHandler;
 import evopaint.util.mapping.RelativeCoordinate;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -51,7 +43,7 @@ import javax.swing.event.ChangeListener;
  *
  * @author Markus Echterhoff <tam@edu.uni-klu.ac.at>
  */
-public abstract class Action implements IHaveTarget, ICopyable {
+public abstract class Action implements IHaveTarget {
 
     protected final static int ASSIMILATION = 0;
     protected final static int CHANGE_ENERGY = 1;
@@ -72,6 +64,11 @@ public abstract class Action implements IHaveTarget, ICopyable {
         this.target = new ActionTarget();
     }
 
+    protected Action(Action action) {
+        this.energyChange = action.energyChange;
+        this.target = action.target;
+    }
+
     public abstract int getType();
 
     public void mixWith(Action theirAction, float theirShare, IRandomNumberGenerator rng) {
@@ -79,7 +76,7 @@ public abstract class Action implements IHaveTarget, ICopyable {
             target.mixWith(theirAction.target, theirShare, rng);
         } else {
             if (rng.nextFloat() < theirShare) {
-                target = (IActionTarget)theirAction.target.getCopy();
+                target = theirAction.target;
             }
         }
     }
@@ -98,22 +95,6 @@ public abstract class Action implements IHaveTarget, ICopyable {
 
     public void setTarget(ITarget target) {
         this.target = (IActionTarget)target;
-    }
-
-    public Action getCopy() {
-        Action newAction = null;
-        try {
-            ByteArrayOutputStream outByteStream = new ByteArrayOutputStream();
-            ObjectOutputStream out = new ObjectOutputStream(outByteStream);
-            out.writeObject(this);
-            ObjectInputStream in = new ObjectInputStream(new ByteArrayInputStream(outByteStream.toByteArray()));
-            newAction = (Action) in.readObject();
-        } catch (ClassNotFoundException ex) {
-            ExceptionHandler.handle(ex, true);
-        } catch (IOException ex) {
-            ExceptionHandler.handle(ex, true);
-        }
-        return newAction;
     }
 
     @Override

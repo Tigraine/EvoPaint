@@ -20,24 +20,18 @@
 package evopaint.pixel.rulebased;
 
 import evopaint.interfaces.IRandomNumberGenerator;
-import evopaint.pixel.rulebased.interfaces.ICopyable;
 import evopaint.pixel.rulebased.interfaces.IDescribable;
 import evopaint.pixel.rulebased.interfaces.INameable;
 import evopaint.pixel.rulebased.interfaces.IRule;
-import evopaint.util.ExceptionHandler;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  *
  * @author Markus Echterhoff <tam@edu.uni-klu.ac.at>
  */
-public class RuleSet implements Serializable, INameable, IDescribable, ICopyable {
+public class RuleSet implements Serializable, INameable, IDescribable {
     private String name;
     private String description;
     private List<IRule> rules;
@@ -73,22 +67,6 @@ public class RuleSet implements Serializable, INameable, IDescribable, ICopyable
 
     public void setRules(List<IRule> rules) {
         this.rules = rules;
-    }
-
-    public RuleSet getCopy() {
-        RuleSet newRuleSet = null;
-        try {
-            ByteArrayOutputStream outByteStream = new ByteArrayOutputStream();
-            ObjectOutputStream out = new ObjectOutputStream(outByteStream);
-            out.writeObject(this);
-            ObjectInputStream in = new ObjectInputStream(new ByteArrayInputStream(outByteStream.toByteArray()));
-            newRuleSet = (RuleSet) in.readObject();
-        } catch (ClassNotFoundException ex) {
-            ExceptionHandler.handle(ex, true);
-        } catch (IOException ex) {
-            ExceptionHandler.handle(ex, true);
-        }
-        return newRuleSet;
     }
 
     public void mixWith(RuleSet theirRuleSet, float theirShare, IRandomNumberGenerator rng) {
@@ -138,7 +116,7 @@ public class RuleSet implements Serializable, INameable, IDescribable, ICopyable
     public RuleSet(RuleSet ruleSet) {
         this.name = ruleSet.name;
         this.description = ruleSet.description;
-        this.rules = ruleSet.rules; // TODO copy mich
+        this.rules = new ArrayList(ruleSet.rules);
     }
     
 }
