@@ -53,26 +53,26 @@ public class AssimilationAction extends Action {
 
     private ColorDimensions dimensions;
     private float ourShare;
-    private boolean mixRuleSet;
+    //private boolean mixRuleSet;
 
-    public AssimilationAction(int energyChange, ActionMetaTarget target, ColorDimensions dimensions, float ourShare, boolean mixRuleSet) {
+    public AssimilationAction(int energyChange, ActionMetaTarget target, ColorDimensions dimensions, float ourShare) {//, boolean mixRuleSet) {
         super(energyChange, target);
         this.dimensions = dimensions;
         this.ourShare = ourShare;
-        this.mixRuleSet = mixRuleSet;
+        //this.mixRuleSet = mixRuleSet;
     }
 
     public AssimilationAction() {
         this.dimensions = new ColorDimensions(true, true, true);
         this.ourShare = 0.5f;
-        this.mixRuleSet = true;
+        //this.mixRuleSet = true;
     }
 
     public AssimilationAction(AssimilationAction assimilationAction) {
         super(assimilationAction);
         this.dimensions = new ColorDimensions(assimilationAction.dimensions);
         this.ourShare = assimilationAction.ourShare;
-        this.mixRuleSet = assimilationAction.mixRuleSet;
+        //this.mixRuleSet = assimilationAction.mixRuleSet;
     }
 
     public int getType() {
@@ -234,6 +234,7 @@ public class AssimilationAction extends Action {
         });
         parametersMap.put("Our share (0-1)", ourSharePercentSpinner);
 
+/*
         final JCheckBox mixRuleSetCheckBox = new JCheckBox();
         mixRuleSetCheckBox.setSelected(mixRuleSet);
         mixRuleSetCheckBox.addActionListener(new ActionListener() {
@@ -243,7 +244,7 @@ public class AssimilationAction extends Action {
             }
         });
         parametersMap.put("Also mix rule sets:", mixRuleSetCheckBox);
-
+*/
         return parametersMap;
     }
 }
