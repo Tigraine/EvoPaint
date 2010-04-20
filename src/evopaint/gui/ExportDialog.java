@@ -11,6 +11,7 @@ import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import evopaint.EvoPaint;
+import evopaint.Perception;
 
 public class ExportDialog implements ActionListener {
         private Configuration configuration;
@@ -29,7 +30,7 @@ public class ExportDialog implements ActionListener {
     public void actionPerformed(java.awt.event.ActionEvent e) {
     	
     	configuration.runLevel = Configuration.RUNLEVEL_STOP;
-    	BufferedImage img = evopaint.getPerception().getImage();
+    	BufferedImage img = evopaint.getFrame().getShowcase().scaleAndTranslate(evopaint.getPerception().getImage());
     	
 
     	try{

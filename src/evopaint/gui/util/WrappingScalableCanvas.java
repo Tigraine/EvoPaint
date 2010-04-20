@@ -418,4 +418,43 @@ public class WrappingScalableCanvas extends JComponent implements IOverlayable {
         transform.translate(imageWidth, 0);
         g2.drawRenderedImage(image, transform);
     }
+
+    public BufferedImage scaleAndTranslate(BufferedImage image) {
+        BufferedImage ret = new BufferedImage((int)(imageWidth * scale), (int)(imageHeight * scale), BufferedImage.TYPE_INT_RGB);
+        
+        Graphics2D g2 = ret.createGraphics();
+        
+        g2.clip(scaleToUserSpace(new Rectangle(imageWidth, imageHeight)));
+
+        // paint NW
+        transform.translate((-1) * imageWidth, (-1) * imageHeight);
+        g2.drawRenderedImage(image, transform);
+        // paint N
+        transform.translate(imageWidth, 0);
+        g2.drawRenderedImage(image, transform);
+        // paint NE
+        transform.translate(imageWidth, 0);
+        g2.drawRenderedImage(image, transform);
+        // paint E
+        transform.translate(0, imageHeight);
+        g2.drawRenderedImage(image, transform);
+        // paint SE
+        transform.translate(0, imageHeight);
+        g2.drawRenderedImage(image, transform);
+        // paint S
+        transform.translate((-1) * imageWidth, 0);
+        g2.drawRenderedImage(image, transform);
+        // paint SW
+        transform.translate((-1) * imageWidth, 0);
+        g2.drawRenderedImage(image, transform);
+        // paint W
+        transform.translate(0, (-1) * imageHeight);
+        g2.drawRenderedImage(image, transform);
+        // back to normal
+        transform.translate(imageWidth, 0);
+        g2.drawRenderedImage(image, transform);
+
+        return ret;
+    }
+    
 }
