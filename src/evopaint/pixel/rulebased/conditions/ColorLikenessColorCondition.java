@@ -51,28 +51,29 @@ public class ColorLikenessColorCondition extends Condition {
 
     private PixelColor comparedColor;
     private ColorDimensions dimensions;
-    private int compareToLikenessPercentage;
+    private float compareToLikeness;
     private NumberComparisonOperator comparisonOperator;
 
-    public ColorLikenessColorCondition(IConditionTarget target, PixelColor comparedColor, ColorDimensions dimensions, int compareToLikenessPercentage, NumberComparisonOperator comparisonOperator) {
+    public ColorLikenessColorCondition(IConditionTarget target, PixelColor comparedColor, ColorDimensions dimensions, float compareToLikeness, NumberComparisonOperator comparisonOperator) {
         super(target);
         this.comparedColor = comparedColor;
         this.dimensions = dimensions;
-        this.compareToLikenessPercentage = compareToLikenessPercentage;
+        this.compareToLikeness = compareToLikeness;
         this.comparisonOperator = comparisonOperator;
     }
 
     public ColorLikenessColorCondition() {
         comparedColor = new PixelColor(0);
         dimensions = new ColorDimensions(true, true, true);
-        comparisonOperator = NumberComparisonOperator.GREATER_OR_EQUAL;
+        comparisonOperator = NumberComparisonOperator.EQUAL;
+        compareToLikeness = 1f;
     }
 
     public ColorLikenessColorCondition(ColorLikenessColorCondition colorLikenessConditionColor) {
         super(colorLikenessConditionColor);
         this.comparedColor = colorLikenessConditionColor.comparedColor;
         this.dimensions = new ColorDimensions(colorLikenessConditionColor.dimensions);
-        this.compareToLikenessPercentage = colorLikenessConditionColor.compareToLikenessPercentage;
+        this.compareToLikeness = colorLikenessConditionColor.compareToLikeness;
         this.comparisonOperator = colorLikenessConditionColor.comparisonOperator;
     }
 
@@ -93,19 +94,19 @@ public class ColorLikenessColorCondition extends Condition {
             comparedColor.mixWith(c.comparedColor, theirShare, dimensions); // uses mixed dimensions for new color
         }
         if (rng.nextFloat() < theirShare) {
-            compareToLikenessPercentage = c.compareToLikenessPercentage;
+            compareToLikeness = c.compareToLikeness;
         }
         if (rng.nextFloat() < theirShare) {
             comparisonOperator = c.comparisonOperator;
         }
     }
 
-    public int getCompareToLikenessPercentage() {
-        return compareToLikenessPercentage;
+    public float getCompareToLikeness() {
+        return compareToLikeness;
     }
 
-    public void setCompareToLikenessPercentage(int compareToLikenessPercentage) {
-        this.compareToLikenessPercentage = compareToLikenessPercentage;
+    public void setCompareToLikeness(float compareToLikeness) {
+        this.compareToLikeness = compareToLikeness;
     }
 
     public PixelColor getComparedColor() {
@@ -142,8 +143,8 @@ public class ColorLikenessColorCondition extends Condition {
         }
         double distance = target.getPixelColor().distanceTo(comparedColor, dimensions);
         //System.out.println("distance: " + distance);
-        int likenessPercentage = (int)((1 - distance) * 100);
-        return comparisonOperator.compare(likenessPercentage, compareToLikenessPercentage);
+        float likenessPercentage = (float)(1 - distance);
+        return comparisonOperator.compare(likenessPercentage, compareToLikeness);
     }
 
     @Override
@@ -154,7 +155,7 @@ public class ColorLikenessColorCondition extends Condition {
         conditionString += " ";
         conditionString += comparisonOperator.toString();
         conditionString += " ";
-        conditionString += compareToLikenessPercentage;
+        conditionString += Math.round(compareToLikeness * 100);
         conditionString += "% like ";
         conditionString += comparedColor.toString();
         conditionString += " (dimensions: ";
@@ -170,7 +171,7 @@ public class ColorLikenessColorCondition extends Condition {
         conditionString += " ";
         conditionString += comparisonOperator.toHTML();
         conditionString += " ";
-        conditionString += compareToLikenessPercentage;
+        conditionString += Math.round(compareToLikeness * 100);
         conditionString += "% like ";
         conditionString += comparedColor.toHTML();
         conditionString += " <span style='color: #777777;'>(dimensions: ";
@@ -216,10 +217,10 @@ public class ColorLikenessColorCondition extends Condition {
         comparisonComboBox.addActionListener(new ComparisonListener());
         parametersMap.put("Comparison", comparisonComboBox);
 
-        SpinnerNumberModel spinnerModel = new SpinnerNumberModel(compareToLikenessPercentage, 0, 100, 1);
+        SpinnerNumberModel spinnerModel = new SpinnerNumberModel(compareToLikeness, 0, 1, 0.01);
         JSpinner likenessPercentageSpinner = new AutoSelectOnFocusSpinner(spinnerModel);
         likenessPercentageSpinner.addChangeListener(new PercentageListener());
-        parametersMap.put("Likeness in %", likenessPercentageSpinner);
+        parametersMap.put("Likeness (0-1)", likenessPercentageSpinner);
 
         return parametersMap;
     }
@@ -234,7 +235,7 @@ public class ColorLikenessColorCondition extends Condition {
     private class PercentageListener implements ChangeListener {
 
         public void stateChanged(ChangeEvent e) {
-            setCompareToLikenessPercentage((Integer)((JSpinner)e.getSource()).getValue());
+            compareToLikeness = ((Double)((JSpinner)e.getSource()).getValue()).floatValue();
         }
     }
 }
