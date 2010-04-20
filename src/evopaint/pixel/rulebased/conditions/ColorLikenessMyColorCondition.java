@@ -191,10 +191,10 @@ public class ColorLikenessMyColorCondition extends Condition {
         comparisonComboBox.addActionListener(new ComparisonListener());
         parametersMap.put("Comparison", comparisonComboBox);
 
-        SpinnerNumberModel spinnerModel = new SpinnerNumberModel(compareToLikeness, 0, 1, 0.01);
+        SpinnerNumberModel spinnerModel = new SpinnerNumberModel(Math.round(compareToLikeness * 100), 0, 100, 1);
         JSpinner likenessPercentageSpinner = new AutoSelectOnFocusSpinner(spinnerModel);
         likenessPercentageSpinner.addChangeListener(new PercentageListener());
-        parametersMap.put("Likeness (0-1)", likenessPercentageSpinner);
+        parametersMap.put("Likeness in %", likenessPercentageSpinner);
 
         return parametersMap;
     }
@@ -209,7 +209,8 @@ public class ColorLikenessMyColorCondition extends Condition {
     private class PercentageListener implements ChangeListener {
 
         public void stateChanged(ChangeEvent e) {
-            compareToLikeness = ((Double)((JSpinner)e.getSource()).getValue()).floatValue();
+            compareToLikeness = 
+                    ((Integer)((JSpinner)e.getSource()).getValue()).floatValue() / 100;
         }
     }
 }

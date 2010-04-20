@@ -59,7 +59,7 @@ public class RuleBasedPixel extends Pixel {
 
     public void mixWith(RuleBasedPixel them, float theirShare, IRandomNumberGenerator rng) {
         super.mixWith(them, theirShare, rng);
-
+     
         // mix rules
         List<Rule> theirRules = them.getRules();
 
@@ -107,6 +107,11 @@ public class RuleBasedPixel extends Pixel {
     public RuleBasedPixel(RuleBasedPixel pixel) {
         super(pixel);
         this.rules = new ArrayList(pixel.rules);
+    }
+
+    public RuleBasedPixel(RuleBasedPixel pixel, List<Rule> useTheseRules) {
+        super(pixel);
+        this.rules = useTheseRules;
     }
 
     public RuleBasedPixel(PixelColor pixelColor, AbsoluteCoordinate location, int energy, List<Rule> rules) {

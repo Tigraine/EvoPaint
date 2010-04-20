@@ -26,15 +26,12 @@ import evopaint.pixel.rulebased.Action;
 import evopaint.interfaces.IRandomNumberGenerator;
 import evopaint.pixel.ColorDimensions;
 import evopaint.pixel.PixelColor;
-import evopaint.pixel.rulebased.Rule;
 import evopaint.pixel.rulebased.RuleBasedPixel;
 import evopaint.pixel.rulebased.targeting.ActionMetaTarget;
 import evopaint.util.mapping.RelativeCoordinate;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 import javax.swing.JCheckBox;
 import javax.swing.JComponent;
@@ -53,26 +50,26 @@ public class AssimilationAction extends Action {
 
     private ColorDimensions dimensions;
     private float ourShare;
-    //private boolean mixRuleSet;
+    private boolean mixRules;
 
-    public AssimilationAction(int energyChange, ActionMetaTarget target, ColorDimensions dimensions, float ourShare) {//, boolean mixRuleSet) {
+    public AssimilationAction(int energyChange, ActionMetaTarget target, ColorDimensions dimensions, float ourShare, boolean mixRuleSet) {
         super(energyChange, target);
         this.dimensions = dimensions;
         this.ourShare = ourShare;
-        //this.mixRuleSet = mixRuleSet;
+        this.mixRules = mixRuleSet;
     }
 
     public AssimilationAction() {
         this.dimensions = new ColorDimensions(true, true, true);
         this.ourShare = 0.5f;
-        //this.mixRuleSet = true;
+        this.mixRules = true;
     }
 
     public AssimilationAction(AssimilationAction assimilationAction) {
         super(assimilationAction);
         this.dimensions = new ColorDimensions(assimilationAction.dimensions);
         this.ourShare = assimilationAction.ourShare;
-        //this.mixRuleSet = assimilationAction.mixRuleSet;
+        this.mixRules = assimilationAction.mixRules;
     }
 
     public int getType() {
@@ -116,67 +113,17 @@ public class AssimilationAction extends Action {
             return 0;
         }
 
-        //if (mixRuleSet) {
-        RuleBasedPixel newPixel = new RuleBasedPixel(target);
-        newPixel.mixWith(actor, ourShare, configuration.rng);
-        configuration.world.set(newPixel);
-        
-        
-
-        // mix rule set
-        
-
-
-
-            
-         /*   List<Rule> ourRules = (actor.getRules());
-            List<Rule> theirNewRules = new ArrayList(target.getRules());
-
-            // cache size() calls for maximum performance
-            int ourSize = ourRules.size();
-            int theirSize = theirNewRules.size();
-
-            // now mix as many rules as we have in common and add the rest depending
-            // on share percentage
-            // we have more rules
-            if (ourSize > theirSize) {
-                int i = 0;
-                while (i < theirSize) {
-                    if (configuration.rng.nextFloat() < ourShare) {
-                        theirNewRules.set(i, ourRules.get(i));
-                    }
-                    i++;
-                }
-                while (i < ourSize) {
-                    if (configuration.rng.nextFloat() < ourShare) {
-                        theirNewRules.add(ourRules.get(i));
-                    }
-                    i++;
-                }
-            } else { // they have more rules or we have an equal number of rules
-               int i = 0;
-                while (i < ourSize) {
-                    if (configuration.rng.nextFloat() < ourShare) {
-                        theirNewRules.set(i, ourRules.get(i));
-                    }
-                    i++;
-                }
-                int removed = 0;
-                while (i < theirSize - removed) {
-                    if (configuration.rng.nextFloat() < ourShare) {
-                        theirNewRules.remove(i);
-                        removed ++;
-                    } else {
-                        i++;
-                    }
-                }
-            }
-
-            target.setRules(theirNewRules);
-             
-             
+        if (mixRules) {
+            RuleBasedPixel newPixel = new RuleBasedPixel(target);
+            newPixel.mixWith(actor, ourShare, configuration.rng);
+            configuration.world.set(newPixel);
         }
-*/
+        else {
+            PixelColor newColor = new PixelColor(target.getPixelColor());
+            newColor.mixWith(actor.getPixelColor(), ourShare, dimensions);
+            target.setPixelColor(newColor);
+        }
+                
         return energyChange;
     }
 
@@ -184,7 +131,8 @@ public class AssimilationAction extends Action {
     public Map<String, String>addParametersString(Map<String, String> parametersMap) {
         parametersMap = super.addParametersString(parametersMap);
         parametersMap.put("dimensions", dimensions.toString());
-        parametersMap.put("our share", Float.toString(ourShare));
+        parametersMap.put("our share in %", Integer.toString(Math.round(ourShare * 100)));
+        parametersMap.put("mode", "color " + (mixRules ? "and rules" : "only"));
         return parametersMap;
     }
 
@@ -192,7 +140,8 @@ public class AssimilationAction extends Action {
     public Map<String, String>addParametersHTML(Map<String, String> parametersMap) {
         parametersMap = super.addParametersHTML(parametersMap);
         parametersMap.put("dimensions", dimensions.toHTML());
-        parametersMap.put("our share", Float.toString(ourShare));
+        parametersMap.put("our share in %", Integer.toString(Math.round(ourShare * 100)));
+        parametersMap.put("mode", "color " + (mixRules ? "and rules" : "only"));
         return parametersMap;
     }
 
@@ -223,28 +172,28 @@ public class AssimilationAction extends Action {
         parametersMap.put("Dimensions", dimensionsPanel);
 
         SpinnerNumberModel ourSharePercentSpinnerModel =
-                new SpinnerNumberModel(ourShare, 0, 1, 0.01);
+                new SpinnerNumberModel(Math.round(ourShare * 100), 0, 100, 1);
         JSpinner ourSharePercentSpinner =
                 new AutoSelectOnFocusSpinner(ourSharePercentSpinnerModel);
         ourSharePercentSpinner.addChangeListener(new ChangeListener() {
             public void stateChanged(ChangeEvent e) {
                 ourShare =
-                        ((Double)((JSpinner)e.getSource()).getValue()).floatValue();
+                        ((Integer)((JSpinner)e.getSource()).getValue()).floatValue() / 100;
             }
         });
-        parametersMap.put("Our share (0-1)", ourSharePercentSpinner);
+        parametersMap.put("Our share in %", ourSharePercentSpinner);
 
-/*
+
         final JCheckBox mixRuleSetCheckBox = new JCheckBox();
-        mixRuleSetCheckBox.setSelected(mixRuleSet);
+        mixRuleSetCheckBox.setSelected(mixRules);
         mixRuleSetCheckBox.addActionListener(new ActionListener() {
 
             public void actionPerformed(ActionEvent e) {
-                mixRuleSet = mixRuleSetCheckBox.isSelected();
+                mixRules = mixRuleSetCheckBox.isSelected();
             }
         });
-        parametersMap.put("Also mix rule sets:", mixRuleSetCheckBox);
-*/
+        parametersMap.put("Mix rules", mixRuleSetCheckBox);
+
         return parametersMap;
     }
 }

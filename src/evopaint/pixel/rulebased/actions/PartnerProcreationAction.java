@@ -29,8 +29,11 @@ import evopaint.pixel.rulebased.RuleBasedPixel;
 import evopaint.pixel.rulebased.targeting.ActionMetaTarget;
 import evopaint.util.mapping.AbsoluteCoordinate;
 import evopaint.util.mapping.RelativeCoordinate;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import javax.swing.JCheckBox;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
@@ -47,27 +50,27 @@ public class PartnerProcreationAction extends Action {
     private int partnerEnergyChange;
     private ColorDimensions dimensions;
     private float ourShare;
-    //private boolean mixRuleSet;
+    private boolean mixRules;
 
-    public PartnerProcreationAction(int energyChange, int partnerEnergyChange, ActionMetaTarget partner, ColorDimensions dimensions, float ourShare) {//, boolean mixRuleSet) {
+    public PartnerProcreationAction(int energyChange, int partnerEnergyChange, ActionMetaTarget partner, ColorDimensions dimensions, float ourShare, boolean mixRuleSet) {
         super(energyChange, partner);
         this.partnerEnergyChange = partnerEnergyChange;
         this.dimensions = dimensions;
         this.ourShare = ourShare;
-        //this.mixRuleSet = mixRuleSet;
+        this.mixRules = mixRuleSet;
     }
 
     public PartnerProcreationAction() {
         this.dimensions = new ColorDimensions(true, true, true);
         ourShare = 0.5f;
-        //this.mixRuleSet = true;
+        this.mixRules = true;
     }
 
     public PartnerProcreationAction(PartnerProcreationAction partnerProcreationAction) {
         super(partnerProcreationAction);
         this.dimensions = new ColorDimensions(partnerProcreationAction.dimensions);
         ourShare = partnerProcreationAction.ourShare;
-        //this.mixRuleSet = partnerProcreationAction.mixRuleSet;
+        this.mixRules = partnerProcreationAction.mixRules;
     }
 
     public int getType() {
@@ -125,8 +128,16 @@ public class PartnerProcreationAction extends Action {
             return 0;
         }
 
-        RuleBasedPixel newPixel = new RuleBasedPixel(partner);
-        newPixel.mixWith(actor, ourShare, configuration.rng);
+        RuleBasedPixel newPixel = null;
+        if (mixRules) {
+            newPixel = new RuleBasedPixel(actor);
+            newPixel.mixWith(partner, 1 - ourShare, configuration.rng);
+        }
+        else {
+            newPixel = new RuleBasedPixel(actor, actor.getRules());
+            newPixel.getPixelColor().mixWith(partner.getPixelColor(), 1 - ourShare, dimensions);
+            
+        }
         newPixel.setLocation(randomFreeSpot);
         configuration.world.set(newPixel);
 
@@ -145,7 +156,8 @@ public class PartnerProcreationAction extends Action {
             parametersMap.put("partner's cost", Integer.toString((-1) * partnerEnergyChange));
         }
         parametersMap.put("dimensions", dimensions.toString());
-        parametersMap.put("our share", Float.toString(ourShare));
+        parametersMap.put("our share in %", Integer.toString(Math.round(ourShare * 100)));
+        parametersMap.put("mode", "color " + (mixRules ? "and rules" : "only"));
         return parametersMap;
     }
 
@@ -159,7 +171,8 @@ public class PartnerProcreationAction extends Action {
             parametersMap.put("partner's cost", Integer.toString((-1) * partnerEnergyChange));
         }
         parametersMap.put("dimensions", dimensions.toHTML());
-        parametersMap.put("our share", Float.toString(ourShare));
+        parametersMap.put("our share in %", Integer.toString(Math.round(ourShare * 100)));
+        parametersMap.put("mode", "color " + (mixRules ? "and rules" : "only"));
         return parametersMap;
     }
 
@@ -199,27 +212,27 @@ public class PartnerProcreationAction extends Action {
         parametersMap.put("Dimensions", dimensionsPanel);
 
         SpinnerNumberModel ourSharePercentSpinnerModel =
-                new SpinnerNumberModel(ourShare, 0, 1, 0.01);
+                new SpinnerNumberModel(Math.round(ourShare * 100), 0, 100, 1);
         JSpinner ourSharePercentSpinner =
                 new AutoSelectOnFocusSpinner(ourSharePercentSpinnerModel);
         ourSharePercentSpinner.addChangeListener(new ChangeListener() {
             public void stateChanged(ChangeEvent e) {
                 ourShare =
-                        ((Double)((JSpinner)e.getSource()).getValue()).floatValue();
+                        ((Integer)((JSpinner)e.getSource()).getValue()).floatValue() / 100;
             }
         });
-        parametersMap.put("Our share (0-1)", ourSharePercentSpinner);
-/*
+        parametersMap.put("Our share in %", ourSharePercentSpinner);
+
         final JCheckBox mixRuleSetCheckBox = new JCheckBox();
-        mixRuleSetCheckBox.setSelected(mixRuleSet);
+        mixRuleSetCheckBox.setSelected(mixRules);
         mixRuleSetCheckBox.addActionListener(new ActionListener() {
 
             public void actionPerformed(ActionEvent e) {
-                mixRuleSet = mixRuleSetCheckBox.isSelected();
+                mixRules = mixRuleSetCheckBox.isSelected();
             }
         });
-        parametersMap.put("Also mix rule sets:", mixRuleSetCheckBox);
-*/
+        parametersMap.put("Mix rules", mixRuleSetCheckBox);
+
         return parametersMap;
     }
 }
