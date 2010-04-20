@@ -13,14 +13,24 @@
         <target class="evopaint.pixel.rulebased.targeting.ActionMetaTarget">
           <directions>
             <evopaint.util.mapping.RelativeCoordinate>
-              <x>-1</x>
-              <y>0</y>
-              <type>7</type>
-            </evopaint.util.mapping.RelativeCoordinate>
-            <evopaint.util.mapping.RelativeCoordinate>
               <x>0</x>
               <y>-1</y>
               <type>1</type>
+            </evopaint.util.mapping.RelativeCoordinate>
+            <evopaint.util.mapping.RelativeCoordinate>
+              <x>1</x>
+              <y>-1</y>
+              <type>2</type>
+            </evopaint.util.mapping.RelativeCoordinate>
+            <evopaint.util.mapping.RelativeCoordinate>
+              <x>1</x>
+              <y>0</y>
+              <type>3</type>
+            </evopaint.util.mapping.RelativeCoordinate>
+            <evopaint.util.mapping.RelativeCoordinate>
+              <x>1</x>
+              <y>1</y>
+              <type>4</type>
             </evopaint.util.mapping.RelativeCoordinate>
             <evopaint.util.mapping.RelativeCoordinate>
               <x>0</x>
@@ -28,9 +38,19 @@
               <type>5</type>
             </evopaint.util.mapping.RelativeCoordinate>
             <evopaint.util.mapping.RelativeCoordinate>
-              <x>1</x>
+              <x>-1</x>
+              <y>1</y>
+              <type>6</type>
+            </evopaint.util.mapping.RelativeCoordinate>
+            <evopaint.util.mapping.RelativeCoordinate>
+              <x>-1</x>
               <y>0</y>
-              <type>3</type>
+              <type>7</type>
+            </evopaint.util.mapping.RelativeCoordinate>
+            <evopaint.util.mapping.RelativeCoordinate>
+              <x>-1</x>
+              <y>-1</y>
+              <type>8</type>
             </evopaint.util.mapping.RelativeCoordinate>
           </directions>
           <qualifiers>
@@ -46,7 +66,8 @@
           <saturation>true</saturation>
           <brightness>true</brightness>
         </dimensions>
-        <ourSharePercent>50</ourSharePercent>
+        <ourShare>0.5</ourShare>
+        <mixRuleSet>false</mixRuleSet>
       </action>
     </evopaint.pixel.rulebased.Rule>
   </rules>

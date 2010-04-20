@@ -53,19 +53,19 @@ import javax.swing.event.ChangeListener;
 public class AssimilationAction extends Action {
 
     private ColorDimensions dimensions;
-    private byte ourSharePercent;
+    private float ourShare;
     private boolean mixRuleSet;
 
-    public AssimilationAction(int energyChange, ActionMetaTarget target, ColorDimensions dimensions, byte ourSharePercent, boolean mixRuleSet) {
+    public AssimilationAction(int energyChange, ActionMetaTarget target, ColorDimensions dimensions, float ourShare, boolean mixRuleSet) {
         super(energyChange, target);
         this.dimensions = dimensions;
-        this.ourSharePercent = ourSharePercent;
+        this.ourShare = ourShare;
         this.mixRuleSet = mixRuleSet;
     }
 
     public AssimilationAction() {
         this.dimensions = new ColorDimensions(true, true, true);
-        ourSharePercent = 50;
+        this.ourShare = 0.5f;
         this.mixRuleSet = true;
     }
 
@@ -79,7 +79,7 @@ public class AssimilationAction extends Action {
         AssimilationAction a = (AssimilationAction)theirAction;
         dimensions.mixWith(a.dimensions, theirShare, rng);
         if (rng.nextFloat() < theirShare) {
-            ourSharePercent = a.ourSharePercent;
+            ourShare = a.ourShare;
         }
     }
     
@@ -91,13 +91,14 @@ public class AssimilationAction extends Action {
         this.dimensions = dimensionsToMix;
     }
 
-    public byte getOurSharePercent() {
-        return ourSharePercent;
+    public float getOurShare() {
+        return ourShare;
     }
 
-    public void setOurSharePercent(byte ourSharePercent) {
-        this.ourSharePercent = ourSharePercent;
+    public void setOurShare(float ourShare) {
+        this.ourShare = ourShare;
     }
+
 
     public String getName() {
         return "assimilate";
@@ -111,8 +112,7 @@ public class AssimilationAction extends Action {
         
         // mix color
         PixelColor newPixelColor = new PixelColor(target.getPixelColor());
-        newPixelColor.mixWith(actor.getPixelColor(),
-                ((float)ourSharePercent) / 100, dimensions);
+        newPixelColor.mixWith(actor.getPixelColor(), ourShare, dimensions);
         target.setPixelColor(newPixelColor);
 
         // mix rule set
@@ -130,13 +130,13 @@ public class AssimilationAction extends Action {
             if (ourSize > theirSize) {
                 int i = 0;
                 while (i < theirSize) {
-                    if (configuration.rng.nextFloat() < ((float)ourSharePercent) / 100) {
+                    if (configuration.rng.nextFloat() < ourShare) {
                         theirNewRules.set(i, ourRules.get(i));
                     }
                     i++;
                 }
                 while (i < ourSize) {
-                    if (configuration.rng.nextFloat() < ((float)ourSharePercent) / 100) {
+                    if (configuration.rng.nextFloat() < ourShare) {
                         theirNewRules.add(ourRules.get(i));
                     }
                     i++;
@@ -144,14 +144,14 @@ public class AssimilationAction extends Action {
             } else { // they have more rules or we have an equal number of rules
                int i = 0;
                 while (i < ourSize) {
-                    if (configuration.rng.nextFloat() < ((float)ourSharePercent) / 100) {
+                    if (configuration.rng.nextFloat() < ourShare) {
                         theirNewRules.set(i, ourRules.get(i));
                     }
                     i++;
                 }
                 int removed = 0;
                 while (i < theirSize - removed) {
-                    if (configuration.rng.nextFloat() < ((float)ourSharePercent) / 100) {
+                    if (configuration.rng.nextFloat() < ourShare) {
                         theirNewRules.remove(i);
                         removed ++;
                     } else {
@@ -170,7 +170,7 @@ public class AssimilationAction extends Action {
     public Map<String, String>addParametersString(Map<String, String> parametersMap) {
         parametersMap = super.addParametersString(parametersMap);
         parametersMap.put("dimensions", dimensions.toString());
-        parametersMap.put("our share in %", Integer.toString(ourSharePercent));
+        parametersMap.put("our share", Float.toString(ourShare));
         return parametersMap;
     }
 
@@ -178,7 +178,7 @@ public class AssimilationAction extends Action {
     public Map<String, String>addParametersHTML(Map<String, String> parametersMap) {
         parametersMap = super.addParametersHTML(parametersMap);
         parametersMap.put("dimensions", dimensions.toHTML());
-        parametersMap.put("our share in %", Integer.toString(ourSharePercent));
+        parametersMap.put("our share", Float.toString(ourShare));
         return parametersMap;
     }
 
@@ -209,16 +209,16 @@ public class AssimilationAction extends Action {
         parametersMap.put("Dimensions", dimensionsPanel);
 
         SpinnerNumberModel ourSharePercentSpinnerModel =
-                new SpinnerNumberModel(ourSharePercent, 0, 100, 1);
+                new SpinnerNumberModel(ourShare, 0, 1, 0.01);
         JSpinner ourSharePercentSpinner =
                 new AutoSelectOnFocusSpinner(ourSharePercentSpinnerModel);
         ourSharePercentSpinner.addChangeListener(new ChangeListener() {
             public void stateChanged(ChangeEvent e) {
-                ourSharePercent =
-                        ((Integer)((JSpinner)e.getSource()).getValue()).byteValue();
+                ourShare =
+                        ((Double)((JSpinner)e.getSource()).getValue()).floatValue();
             }
         });
-        parametersMap.put("Our share in %", ourSharePercentSpinner);
+        parametersMap.put("Our share (0-1)", ourSharePercentSpinner);
 
         final JCheckBox mixRuleSetCheckBox = new JCheckBox();
         mixRuleSetCheckBox.setSelected(mixRuleSet);

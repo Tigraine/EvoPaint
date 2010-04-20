@@ -51,20 +51,20 @@ import javax.swing.event.ChangeListener;
 public class PartnerProcreationAction extends Action {
     private int partnerEnergyChange;
     private ColorDimensions dimensions;
-    private byte ourSharePercent;
+    private float ourShare;
     private boolean mixRuleSet;
 
-    public PartnerProcreationAction(int energyChange, int partnerEnergyChange, ActionMetaTarget partner, ColorDimensions dimensions, byte ourSharePercent, boolean mixRuleSet) {
+    public PartnerProcreationAction(int energyChange, int partnerEnergyChange, ActionMetaTarget partner, ColorDimensions dimensions, float ourShare, boolean mixRuleSet) {
         super(energyChange, partner);
         this.partnerEnergyChange = partnerEnergyChange;
         this.dimensions = dimensions;
-        this.ourSharePercent = ourSharePercent;
+        this.ourShare = ourShare;
         this.mixRuleSet = mixRuleSet;
     }
 
     public PartnerProcreationAction() {
         this.dimensions = new ColorDimensions(true, true, true);
-        ourSharePercent = 50;
+        ourShare = 0.5f;
         this.mixRuleSet = true;
     }
 
@@ -81,7 +81,7 @@ public class PartnerProcreationAction extends Action {
             partnerEnergyChange = a.partnerEnergyChange;
         }
         if (rng.nextFloat() < theirShare) {
-            ourSharePercent = a.ourSharePercent;
+            ourShare = a.ourShare;
         }
     }
 
@@ -93,12 +93,12 @@ public class PartnerProcreationAction extends Action {
         this.dimensions = dimensionsToMix;
     }
 
-    public byte getOurSharePercent() {
-        return ourSharePercent;
+    public float getOurShare() {
+        return ourShare;
     }
 
-    public void setOurSharePercent(byte ourSharePercent) {
-        this.ourSharePercent = ourSharePercent;
+    public void setOurShare(float ourShare) {
+        this.ourShare = ourShare;
     }
 
     public String getName() {
@@ -125,12 +125,12 @@ public class PartnerProcreationAction extends Action {
 
         // mix the colors
         PixelColor newPixelColor = new PixelColor(partner.getPixelColor());
-        newPixelColor.mixWith(actor.getPixelColor(), ((float)ourSharePercent) / 100, dimensions);
+        newPixelColor.mixWith(actor.getPixelColor(), ourShare, dimensions);
 
         // mix the rule sets
         RuleSet newRuleSet = new RuleSet(actor.getRuleSet());
         if (mixRuleSet) {
-            newRuleSet.mixWith(partner.getRuleSet(), ourSharePercent, configuration.rng);
+            newRuleSet.mixWith(partner.getRuleSet(), ourShare, configuration.rng);
         }
 
         RuleBasedPixel newPixel = new RuleBasedPixel(
@@ -156,7 +156,7 @@ public class PartnerProcreationAction extends Action {
             parametersMap.put("partner's cost", Integer.toString((-1) * partnerEnergyChange));
         }
         parametersMap.put("dimensions", dimensions.toString());
-        parametersMap.put("our share in %", Integer.toString(ourSharePercent));
+        parametersMap.put("our share", Float.toString(ourShare));
         return parametersMap;
     }
 
@@ -170,7 +170,7 @@ public class PartnerProcreationAction extends Action {
             parametersMap.put("partner's cost", Integer.toString((-1) * partnerEnergyChange));
         }
         parametersMap.put("dimensions", dimensions.toHTML());
-        parametersMap.put("our share in %", Integer.toString(ourSharePercent));
+        parametersMap.put("our share", Float.toString(ourShare));
         return parametersMap;
     }
 
@@ -210,16 +210,16 @@ public class PartnerProcreationAction extends Action {
         parametersMap.put("Dimensions", dimensionsPanel);
 
         SpinnerNumberModel ourSharePercentSpinnerModel =
-                new SpinnerNumberModel(ourSharePercent, 0, 100, 1);
+                new SpinnerNumberModel(ourShare, 0, 1, 0.01);
         JSpinner ourSharePercentSpinner =
                 new AutoSelectOnFocusSpinner(ourSharePercentSpinnerModel);
         ourSharePercentSpinner.addChangeListener(new ChangeListener() {
             public void stateChanged(ChangeEvent e) {
-                ourSharePercent =
-                        ((Integer)((JSpinner)e.getSource()).getValue()).byteValue();
+                ourShare =
+                        ((Double)((JSpinner)e.getSource()).getValue()).floatValue();
             }
         });
-        parametersMap.put("Our share in %", ourSharePercentSpinner);
+        parametersMap.put("Our share (0-1)", ourSharePercentSpinner);
 
         final JCheckBox mixRuleSetCheckBox = new JCheckBox();
         mixRuleSetCheckBox.setSelected(mixRuleSet);
