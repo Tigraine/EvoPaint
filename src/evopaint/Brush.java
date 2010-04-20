@@ -84,7 +84,7 @@ public class Brush {
                         if (pixie == null) {
                             ruleSet = null;
                         } else {
-                            ruleSet = pixie.getRuleSet();
+                            ruleSet = pixie.createRuleSet();
                         }
                         break;
                     default:
@@ -94,7 +94,7 @@ public class Brush {
                 RuleBasedPixel newPixel = null;
                 switch (configuration.pixelType) {
                     case RuleBasedPixel.RULESET:
-                        newPixel = new RuleBasedPixel(newColor, new AbsoluteCoordinate(x, y, configuration.world), configuration.startingEnergy, ruleSet);
+                        newPixel = new RuleBasedPixel(newColor, new AbsoluteCoordinate(x, y, configuration.world), configuration.startingEnergy, ruleSet.getRules());
                         break;
                     default: assert(false);
                 }

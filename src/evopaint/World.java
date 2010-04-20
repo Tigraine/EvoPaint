@@ -97,9 +97,7 @@ public class World extends ParallaxMap<RuleBasedPixel> implements IChanging {
         for (int i = 0; i < currentData.length; i++) {
             RuleBasedPixel pixie = currentData[i];
             if (pixie != null) {
-                RuleBasedPixel oldPixie = new RuleBasedPixel(
-                        pixie.getPixelColor(), pixie.getLocation(), pixie.getEnergy(),
-                        pixie.getRuleSet());
+                RuleBasedPixel oldPixie = new RuleBasedPixel(pixie);
                 pixie.act(this.configuration);
                 newData[i] = pixie;
                 currentData[i] = oldPixie;

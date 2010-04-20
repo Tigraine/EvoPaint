@@ -148,7 +148,7 @@ public class FillSelectionCommand extends AbstractCommand {
                 if (pixel == null || !(pixel instanceof RuleBasedPixel)) {
                     currentRuleSet = null;
                 } else {
-                    currentRuleSet = pixel.getRuleSet();
+                    currentRuleSet = pixel.createRuleSet();
                 }
                 break;
             default:
@@ -156,7 +156,7 @@ public class FillSelectionCommand extends AbstractCommand {
         }
         RuleBasedPixel newPixel = new RuleBasedPixel(currentColor,
                 new AbsoluteCoordinate(x, y, configuration.world),
-                configuration.startingEnergy, currentRuleSet);
+                configuration.startingEnergy, currentRuleSet.getRules());
         configuration.world.set(newPixel);
     }
 }

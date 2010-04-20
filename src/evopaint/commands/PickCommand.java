@@ -22,7 +22,7 @@ public class PickCommand extends AbstractCommand {
 		config.paint.changeCurrentColor(pixel.getPixelColor());
 		
 		if (pixel instanceof RuleBasedPixel) {
-			RuleSet ruleSet = pixel.getRuleSet();
+			RuleSet ruleSet = pixel.createRuleSet();
 			if (ruleSet != null) {
 				config.paint.changeCurrentRuleSet(ruleSet);
 			}

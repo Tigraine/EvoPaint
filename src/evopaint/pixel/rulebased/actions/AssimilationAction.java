@@ -26,12 +26,15 @@ import evopaint.pixel.rulebased.Action;
 import evopaint.interfaces.IRandomNumberGenerator;
 import evopaint.pixel.ColorDimensions;
 import evopaint.pixel.PixelColor;
+import evopaint.pixel.rulebased.Rule;
 import evopaint.pixel.rulebased.RuleBasedPixel;
 import evopaint.pixel.rulebased.targeting.ActionMetaTarget;
 import evopaint.util.mapping.RelativeCoordinate;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import javax.swing.JCheckBox;
 import javax.swing.JComponent;
@@ -114,9 +117,9 @@ public class AssimilationAction extends Action {
         // mix rule set
         if (mixRuleSet) {
             
-            /*
-            List<IRule> ourRules = (actor.getRuleSet().getRules());
-            List<IRule> theirNewRules = new ArrayList(target.getRuleSet().getRules());
+            
+            List<Rule> ourRules = (actor.getRules());
+            List<Rule> theirNewRules = new ArrayList(target.getRules());
 
             // cache size() calls for maximum performance
             int ourSize = ourRules.size();
@@ -158,9 +161,9 @@ public class AssimilationAction extends Action {
                 }
             }
 
-            target.setRuleSet(new RuleSet(theirNewRules));
-             *
-             */
+            target.setRules(theirNewRules);
+             
+             
         }
 
         return energyChange;

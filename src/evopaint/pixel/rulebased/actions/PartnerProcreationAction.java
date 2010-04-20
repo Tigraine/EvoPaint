@@ -26,14 +26,16 @@ import evopaint.interfaces.IRandomNumberGenerator;
 import evopaint.pixel.ColorDimensions;
 import evopaint.pixel.PixelColor;
 import evopaint.pixel.rulebased.Action;
+import evopaint.pixel.rulebased.Rule;
 import evopaint.pixel.rulebased.RuleBasedPixel;
-import evopaint.pixel.rulebased.RuleSet;
 import evopaint.pixel.rulebased.targeting.ActionMetaTarget;
 import evopaint.util.mapping.AbsoluteCoordinate;
 import evopaint.util.mapping.RelativeCoordinate;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import javax.swing.JCheckBox;
 import javax.swing.JComponent;
@@ -128,16 +130,16 @@ public class PartnerProcreationAction extends Action {
         newPixelColor.mixWith(actor.getPixelColor(), ourShare, dimensions);
 
         // mix the rule sets
-        RuleSet newRuleSet = new RuleSet(actor.getRuleSet());
+        List <Rule> newRules = new ArrayList(actor.getRules());
         if (mixRuleSet) {
-            newRuleSet.mixWith(partner.getRuleSet(), ourShare, configuration.rng);
+            // FIXME newRules.mixWith(partner.getRuleSet(), ourShare, configuration.rng);
         }
 
         RuleBasedPixel newPixel = new RuleBasedPixel(
                 newPixelColor,
                 randomFreeSpot,
                 (actor.getEnergy() + getEnergyChange() + partner.getEnergy() + partnerEnergyChange) / 2,
-                newRuleSet);
+                newRules);
 
         configuration.world.set(newPixel);
 

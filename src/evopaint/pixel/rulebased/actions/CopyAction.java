@@ -57,6 +57,7 @@ public class CopyAction extends Action {
 
         RuleBasedPixel newPixel = new RuleBasedPixel(actor);
         newPixel.setLocation(new AbsoluteCoordinate(actor.getLocation(), direction, configuration.world));
+        //newPixel.setEnergy(actor.getEnergy() + energyChange);
         configuration.world.set(newPixel);
 
         return energyChange;

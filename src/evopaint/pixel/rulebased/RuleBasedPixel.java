@@ -23,27 +23,33 @@ import evopaint.Configuration;
 import evopaint.pixel.Pixel;
 import evopaint.pixel.PixelColor;
 import evopaint.util.mapping.AbsoluteCoordinate;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
  * @author Markus Echterhoff <tam@edu.uni-klu.ac.at>
  */
 public class RuleBasedPixel extends Pixel {
-    private RuleSet ruleSet;
+    private List<Rule> rules;
 
-    public RuleSet getRuleSet() {
-        return ruleSet;
+    public RuleSet createRuleSet() {
+        return new RuleSet(rules);
     }
 
-    public void setRuleSet(RuleSet ruleSet) {
-        this.ruleSet = ruleSet;
+    public List<Rule> getRules() {
+        return rules;
+    }
+
+    public void setRules(List<Rule> rules) {
+        this.rules = rules;
     }
 
     public void act(Configuration configuration) {
-        if (ruleSet == null) {
+        if (rules == null) {
             return;
         }
-        for (Rule rule : ruleSet.getRules()) {
+        for (Rule rule : rules) {
             if (rule.apply(this, configuration)) {
                 break;
             }
@@ -52,11 +58,11 @@ public class RuleBasedPixel extends Pixel {
 
     public RuleBasedPixel(RuleBasedPixel pixel) {
         super(pixel);
-        this.ruleSet = new RuleSet(pixel.ruleSet);
+        this.rules = new ArrayList(pixel.rules);
     }
 
-    public RuleBasedPixel(PixelColor pixelColor, AbsoluteCoordinate location, int energy, RuleSet ruleSet) {
+    public RuleBasedPixel(PixelColor pixelColor, AbsoluteCoordinate location, int energy, List<Rule> rules) {
         super(pixelColor, location, energy);
-        this.ruleSet = ruleSet;
+        this.rules = rules;
     }
 }
