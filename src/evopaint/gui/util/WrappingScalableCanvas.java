@@ -101,6 +101,14 @@ public class WrappingScalableCanvas extends JComponent implements IOverlayable {
         updateScale();
     }
 
+    /**
+     * resets the display of the image to its original size
+     */
+    public void scaleReset() {
+        integerScale = 10;
+        updateScale();
+    }
+
     private void updateScale() {
         scale = integerScale / 10d;
         scaleTransform = AffineTransform.getScaleInstance(scale, scale);

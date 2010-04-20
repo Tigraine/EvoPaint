@@ -175,8 +175,12 @@ public class Showcase extends WrappingScalableCanvas implements MouseInputListen
         		configuration.paint.showHistory(this, e.getPoint());
         	}
         } else if (e.getButton() == MouseEvent.BUTTON2) {
-            toggleMouseButton2Drag = true;
-            moveCommand.setSource(e.getPoint());
+            if (mainFrame.getActiveTool() == ZoomCommand.class){
+                scaleReset();
+            } else {
+                toggleMouseButton2Drag = true;
+                moveCommand.setSource(e.getPoint());
+            }
         }
     }
 
