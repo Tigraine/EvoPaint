@@ -39,11 +39,6 @@ public class TrueCondition extends Condition {
         return Condition.TRUE;
     }
 
-    @Override
-    public void mixWith(Condition theirCondition, float theirShare, IRandomNumberGenerator rng) {
-        // already mixed - I love this condition <3
-    }
-
     @Override // always true condition does not need target checking
     public boolean isMet(RuleBasedPixel actor, Configuration configuration) {
         return true;

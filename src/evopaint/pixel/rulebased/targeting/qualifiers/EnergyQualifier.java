@@ -20,6 +20,8 @@
 package evopaint.pixel.rulebased.targeting.qualifiers;
 
 import evopaint.Configuration;
+import evopaint.interfaces.IRandomNumberGenerator;
+import evopaint.pixel.ColorDimensions;
 import evopaint.pixel.rulebased.RuleBasedPixel;
 import evopaint.pixel.rulebased.targeting.Qualifier;
 import evopaint.util.mapping.RelativeCoordinate;
@@ -45,6 +47,21 @@ public class EnergyQualifier extends Qualifier {
     }
 
     public EnergyQualifier() {
+    }
+
+    public EnergyQualifier(EnergyQualifier energyQualifier) {
+        this.isLeast = energyQualifier.isLeast;
+    }
+
+    public int getType() {
+        return Qualifier.ENERGY;
+    }
+
+    public void mixWith(Qualifier theirQualifier, float theirShare, IRandomNumberGenerator rng) {
+        EnergyQualifier q = (EnergyQualifier)theirQualifier;
+        if (rng.nextFloat() < theirShare) {
+            isLeast = q.isLeast;
+        }
     }
 
     public boolean isLeast() {

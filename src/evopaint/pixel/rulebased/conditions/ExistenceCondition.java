@@ -50,6 +50,11 @@ public class ExistenceCondition extends Condition {
         objectComparisonOperator = ObjectComparisonOperator.EQUAL;
     }
 
+    public ExistenceCondition(ExistenceCondition existenceCondition) {
+        super(existenceCondition);
+        this.objectComparisonOperator = existenceCondition.objectComparisonOperator;
+    }
+
     public int getType() {
         return Condition.EXISTENCE;
     }
@@ -57,8 +62,9 @@ public class ExistenceCondition extends Condition {
     @Override
     public void mixWith(Condition theirCondition, float theirShare, IRandomNumberGenerator rng) {
         super.mixWith(theirCondition, theirShare, rng);
+        ExistenceCondition c = (ExistenceCondition)theirCondition;
         if (rng.nextFloat() < theirShare) {
-            objectComparisonOperator = ((ExistenceCondition)theirCondition).objectComparisonOperator;
+            objectComparisonOperator = c.objectComparisonOperator;
         }
     }
 

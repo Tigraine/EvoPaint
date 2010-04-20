@@ -56,6 +56,12 @@ public class EnergyCondition extends Condition {
         comparisonOperator = NumberComparisonOperator.GREATER_THAN;
     }
 
+    public EnergyCondition(EnergyCondition energyCondition) {
+        super(energyCondition);
+        this.comparisonOperator = energyCondition.comparisonOperator;
+        this.energyValue = energyCondition.energyValue;
+    }
+
     public int getType() {
         return Condition.ENERGY;
     }

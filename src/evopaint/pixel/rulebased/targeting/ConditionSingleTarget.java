@@ -28,14 +28,18 @@ import evopaint.util.mapping.RelativeCoordinate;
  *
  * @author Markus Echterhoff <tam@edu.uni-klu.ac.at>
  */
-public class ConditionTarget
+public class ConditionSingleTarget
         extends SingleTarget implements IConditionTarget {
 
-    public ConditionTarget(RelativeCoordinate direction) {
+    public ConditionSingleTarget(RelativeCoordinate direction) {
         super(direction);
     }
 
-    public ConditionTarget() {
+    public ConditionSingleTarget() {
+    }
+
+    public ConditionSingleTarget(ConditionSingleTarget conditionTarget) {
+        super(conditionTarget);
     }
 
     public boolean meets(Condition condition, RuleBasedPixel actor, Configuration configuration) {

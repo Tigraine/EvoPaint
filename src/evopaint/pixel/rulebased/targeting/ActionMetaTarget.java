@@ -42,6 +42,10 @@ public class ActionMetaTarget extends QualifiedMetaTarget implements IActionTarg
     public ActionMetaTarget() {
     }
 
+    public ActionMetaTarget(ActionMetaTarget actionMetaTarget) {
+        super(actionMetaTarget);
+    }
+
     public int execute(Action action, RuleBasedPixel actor, Configuration configuration) {
         RelativeCoordinate direction = getCandidate(actor, configuration);
         if (direction == null) {

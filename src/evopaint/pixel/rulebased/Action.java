@@ -25,9 +25,10 @@ import evopaint.Configuration;
 import evopaint.gui.util.AutoSelectOnFocusSpinner;
 import evopaint.interfaces.IRandomNumberGenerator;
 import evopaint.pixel.rulebased.targeting.ActionMetaTarget;
-import evopaint.pixel.rulebased.targeting.ActionTarget;
+import evopaint.pixel.rulebased.targeting.ActionSingleTarget;
 import evopaint.pixel.rulebased.targeting.IActionTarget;
 import evopaint.pixel.rulebased.targeting.ITarget;
+import evopaint.pixel.rulebased.targeting.Target;
 import evopaint.util.mapping.RelativeCoordinate;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -60,7 +61,7 @@ public abstract class Action implements IHaveTarget {
     }
 
     protected Action() {
-        this.target = new ActionTarget();
+        this.target = new ActionSingleTarget();
     }
 
     protected Action(Action action) {
@@ -72,7 +73,16 @@ public abstract class Action implements IHaveTarget {
 
     public void mixWith(Action theirAction, float theirShare, IRandomNumberGenerator rng) {
         if (getType() == theirAction.target.getType()) {
-            target.mixWith(theirAction.target, theirShare, rng);
+            Target newTarget = null;
+            switch (getType()) {
+                case Target.META_TARGET: newTarget = new ActionMetaTarget((ActionMetaTarget)target);
+                break;
+                case Target.SINGLE_TARGET: newTarget = new ActionSingleTarget((ActionSingleTarget)target);
+                break;
+                default: assert (false);
+            }
+            newTarget.mixWith((Target)theirAction.target, theirShare, rng);
+            target = (IActionTarget)newTarget;
         } else {
             if (rng.nextFloat() < theirShare) {
                 target = theirAction.target;

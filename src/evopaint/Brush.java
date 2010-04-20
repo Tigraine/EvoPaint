@@ -23,6 +23,7 @@ import evopaint.pixel.PixelColor;
 import evopaint.pixel.rulebased.RuleBasedPixel;
 import evopaint.pixel.rulebased.RuleSet;
 import evopaint.util.mapping.AbsoluteCoordinate;
+import java.util.ArrayList;
 
 /**
  *
@@ -94,7 +95,7 @@ public class Brush {
                 RuleBasedPixel newPixel = null;
                 switch (configuration.pixelType) {
                     case RuleBasedPixel.RULESET:
-                        newPixel = new RuleBasedPixel(newColor, new AbsoluteCoordinate(x, y, configuration.world), configuration.startingEnergy, ruleSet.getRules());
+                        newPixel = new RuleBasedPixel(newColor, new AbsoluteCoordinate(x, y, configuration.world), configuration.startingEnergy, ruleSet != null ? ruleSet.getRules() : new ArrayList());
                         break;
                     default: assert(false);
                 }

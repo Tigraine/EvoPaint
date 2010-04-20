@@ -45,33 +45,43 @@ import javax.swing.event.ChangeListener;
  *
  * @author Markus Echterhoff <tam@edu.uni-klu.ac.at>
  */
-public class ColorLikenessConditionMyColor extends Condition {
+public class ColorLikenessMyColorCondition extends Condition {
 
     private ColorDimensions dimensions;
     private int compareToLikenessPercentage;
     private NumberComparisonOperator comparisonOperator;
 
-    public ColorLikenessConditionMyColor(IConditionTarget target, ColorDimensions dimensions, int compareToLikenessPercentage, NumberComparisonOperator comparisonOperator) {
+    public ColorLikenessMyColorCondition(IConditionTarget target, ColorDimensions dimensions, int compareToLikenessPercentage, NumberComparisonOperator comparisonOperator) {
         super(target);
         this.dimensions = dimensions;
         this.compareToLikenessPercentage = compareToLikenessPercentage;
         this.comparisonOperator = comparisonOperator;
     }
 
-    public ColorLikenessConditionMyColor() {
+    public ColorLikenessMyColorCondition() {
         dimensions = new ColorDimensions(true, true, true);
         comparisonOperator = NumberComparisonOperator.GREATER_OR_EQUAL;
     }
 
+    public ColorLikenessMyColorCondition(ColorLikenessMyColorCondition colorLikenessConditionMyColor) {
+        super(colorLikenessConditionMyColor);
+        this.dimensions = new ColorDimensions(colorLikenessConditionMyColor.dimensions);
+        this.compareToLikenessPercentage = colorLikenessConditionMyColor.compareToLikenessPercentage;
+        this.comparisonOperator = colorLikenessConditionMyColor.comparisonOperator;
+    }
+
     public int getType() {
-        return Condition.COLOR_LIKENESS_CONDITION_MY_COLOR;
+        return Condition.COLOR_LIKENESS_MY_COLOR;
     }
 
     @Override
     public void mixWith(Condition theirCondition, float theirShare, IRandomNumberGenerator rng) {
         super.mixWith(theirCondition, theirShare, rng);
-        ColorLikenessConditionMyColor c = (ColorLikenessConditionMyColor)theirCondition;
-        dimensions.mixWith(c.dimensions, theirShare, rng);
+        ColorLikenessMyColorCondition c = (ColorLikenessMyColorCondition)theirCondition;
+        if (rng.nextFloat() < theirShare) {
+            dimensions = new ColorDimensions(dimensions);
+            dimensions.mixWith(c.dimensions, theirShare, rng);
+        }
         if (rng.nextFloat() < theirShare) {
             compareToLikenessPercentage = c.compareToLikenessPercentage;
         }

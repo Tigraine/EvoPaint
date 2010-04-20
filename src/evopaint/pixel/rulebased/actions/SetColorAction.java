@@ -49,6 +49,11 @@ public class SetColorAction extends Action {
         this.color = new PixelColor(0);
     }
 
+    public SetColorAction(SetColorAction setColorAction) {
+        super(setColorAction);
+        this.color = new PixelColor(setColorAction.color);
+    }
+
     public int getType() {
         return Action.SET_COLOR;
     }

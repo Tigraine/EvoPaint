@@ -22,7 +22,7 @@ package evopaint.gui.rulesetmanager;
 import evopaint.gui.rulesetmanager.util.JRangeSlider;
 import evopaint.pixel.rulebased.targeting.IConditionTarget;
 import evopaint.pixel.rulebased.targeting.ConditionMetaTarget;
-import evopaint.pixel.rulebased.targeting.ConditionTarget;
+import evopaint.pixel.rulebased.targeting.ConditionSingleTarget;
 import evopaint.pixel.rulebased.targeting.ITarget;
 import evopaint.pixel.rulebased.targeting.ITarget;
 import evopaint.pixel.rulebased.targeting.MetaTarget;
@@ -158,7 +158,7 @@ public class JConditionTargetPanel extends JPanel {
         ITarget target = jTarget.createTarget();
 
         if (target == null) {
-            return new ConditionTarget();
+            return new ConditionSingleTarget();
         }
 
         if (target instanceof MetaTarget) {
@@ -167,7 +167,7 @@ public class JConditionTargetPanel extends JPanel {
                     jRangeSlider.getHighValue());
         }
 
-        return new ConditionTarget(((SingleTarget)target).getDirection());
+        return new ConditionSingleTarget(((SingleTarget)target).getDirection());
     }
 
 }

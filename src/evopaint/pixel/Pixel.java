@@ -20,6 +20,7 @@
 package evopaint.pixel;
 
 import evopaint.Configuration;
+import evopaint.interfaces.IRandomNumberGenerator;
 import evopaint.util.mapping.AbsoluteCoordinate;
 
 /**
@@ -87,6 +88,12 @@ public abstract class Pixel {
             }
         }
     }
+
+    public void mixWith(Pixel them, float theirShare, IRandomNumberGenerator rng) {
+        pixelColor = new PixelColor(pixelColor);
+        pixelColor.mixWith(them.getPixelColor(), theirShare, new ColorDimensions(true, true, true));
+    }
+
 
     public abstract void act(Configuration configuration);
 

@@ -40,6 +40,10 @@ public class MoveAction extends Action {
     public MoveAction() {
     }
 
+    public MoveAction(MoveAction moveAction) {
+        super(moveAction);
+    }
+
     public int getType() {
         return Action.MOVE;
     }

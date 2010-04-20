@@ -28,13 +28,17 @@ import evopaint.util.mapping.RelativeCoordinate;
  *
  * @author Markus Echterhoff <tam@edu.uni-klu.ac.at>
  */
-public class ActionTarget extends SingleTarget implements IActionTarget {
+public class ActionSingleTarget extends SingleTarget implements IActionTarget {
 
-    public ActionTarget(RelativeCoordinate direction) {
+    public ActionSingleTarget(RelativeCoordinate direction) {
         super(direction);
     }
 
-    public ActionTarget() {
+    public ActionSingleTarget() {
+    }
+
+    public ActionSingleTarget(ActionSingleTarget actionSingleTarget) {
+        super(actionSingleTarget);
     }
 
     public int execute(Action action, RuleBasedPixel actor, Configuration configuration) {

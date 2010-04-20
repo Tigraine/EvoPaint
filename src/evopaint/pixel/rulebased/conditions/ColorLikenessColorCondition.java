@@ -47,14 +47,14 @@ import javax.swing.event.ChangeListener;
  *
  * @author Markus Echterhoff <tam@edu.uni-klu.ac.at>
  */
-public class ColorLikenessConditionColor extends Condition {
+public class ColorLikenessColorCondition extends Condition {
 
     private PixelColor comparedColor;
     private ColorDimensions dimensions;
     private int compareToLikenessPercentage;
     private NumberComparisonOperator comparisonOperator;
 
-    public ColorLikenessConditionColor(IConditionTarget target, PixelColor comparedColor, ColorDimensions dimensions, int compareToLikenessPercentage, NumberComparisonOperator comparisonOperator) {
+    public ColorLikenessColorCondition(IConditionTarget target, PixelColor comparedColor, ColorDimensions dimensions, int compareToLikenessPercentage, NumberComparisonOperator comparisonOperator) {
         super(target);
         this.comparedColor = comparedColor;
         this.dimensions = dimensions;
@@ -62,24 +62,36 @@ public class ColorLikenessConditionColor extends Condition {
         this.comparisonOperator = comparisonOperator;
     }
 
-    public ColorLikenessConditionColor() {
+    public ColorLikenessColorCondition() {
         comparedColor = new PixelColor(0);
         dimensions = new ColorDimensions(true, true, true);
         comparisonOperator = NumberComparisonOperator.GREATER_OR_EQUAL;
     }
 
+    public ColorLikenessColorCondition(ColorLikenessColorCondition colorLikenessConditionColor) {
+        super(colorLikenessConditionColor);
+        this.comparedColor = colorLikenessConditionColor.comparedColor;
+        this.dimensions = new ColorDimensions(colorLikenessConditionColor.dimensions);
+        this.compareToLikenessPercentage = colorLikenessConditionColor.compareToLikenessPercentage;
+        this.comparisonOperator = colorLikenessConditionColor.comparisonOperator;
+    }
+
     public int getType() {
-        return Condition.COLOR_LIKENESS_CONDITION_COLOR;
+        return Condition.COLOR_LIKENESS_COLOR;
     }
 
     @Override
     public void mixWith(Condition theirCondition, float theirShare, IRandomNumberGenerator rng) {
         super.mixWith(theirCondition, theirShare, rng);
-        ColorLikenessConditionColor c = (ColorLikenessConditionColor)theirCondition;
+        ColorLikenessColorCondition c = (ColorLikenessColorCondition)theirCondition;
         if (rng.nextFloat() < theirShare) {
-            comparedColor.setColor(c.comparedColor);
+            dimensions = new ColorDimensions(dimensions);
+            dimensions.mixWith(c.dimensions, theirShare, rng);
         }
-        dimensions.mixWith(c.dimensions, theirShare, rng);
+        if (rng.nextFloat() < theirShare) {
+            comparedColor = new PixelColor(comparedColor);
+            comparedColor.mixWith(c.comparedColor, theirShare, dimensions); // uses mixed dimensions for new color
+        }
         if (rng.nextFloat() < theirShare) {
             compareToLikenessPercentage = c.compareToLikenessPercentage;
         }

@@ -29,7 +29,7 @@ import java.util.List;
  *
  * @author Markus Echterhoff <tam@edu.uni-klu.ac.at>
  */
-public class MetaTarget implements ITarget {
+public class MetaTarget extends Target {
     protected List<RelativeCoordinate> directions;
 
     public MetaTarget(List<RelativeCoordinate> directions) {
@@ -48,7 +48,7 @@ public class MetaTarget implements ITarget {
         return Target.META_TARGET;
     }
 
-    public void mixWith(ITarget theirTarget, float theirShare, IRandomNumberGenerator rng) {
+    public void mixWith(Target theirTarget, float theirShare, IRandomNumberGenerator rng) {
         
         MetaTarget theirMetaTarget = (MetaTarget)theirTarget;
 

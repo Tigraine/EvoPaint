@@ -33,14 +33,14 @@ import evopaint.pixel.rulebased.actions.ChangeEnergyAction;
 import evopaint.pixel.rulebased.actions.MoveAction;
 import evopaint.pixel.rulebased.actions.SetColorAction;
 import evopaint.pixel.rulebased.actions.PartnerProcreationAction;
-import evopaint.pixel.rulebased.conditions.ColorLikenessConditionColor;
-import evopaint.pixel.rulebased.conditions.ColorLikenessConditionMyColor;
+import evopaint.pixel.rulebased.conditions.ColorLikenessColorCondition;
+import evopaint.pixel.rulebased.conditions.ColorLikenessMyColorCondition;
 import evopaint.pixel.rulebased.conditions.EnergyCondition;
 import evopaint.pixel.rulebased.conditions.ExistenceCondition;
 import evopaint.pixel.rulebased.conditions.TrueCondition;
 import evopaint.pixel.rulebased.targeting.Qualifier;
-import evopaint.pixel.rulebased.targeting.qualifiers.ColorLikenessQualifierColor;
-import evopaint.pixel.rulebased.targeting.qualifiers.ColorLikenessQualifierMyColor;
+import evopaint.pixel.rulebased.targeting.qualifiers.ColorLikenessColorQualifier;
+import evopaint.pixel.rulebased.targeting.qualifiers.ColorLikenessMyColorQualifier;
 import evopaint.pixel.rulebased.targeting.qualifiers.ExistenceQualifier;
 import evopaint.pixel.rulebased.targeting.qualifiers.EnergyQualifier;
 import evopaint.util.FileHandler;
@@ -72,8 +72,8 @@ public class Configuration {
         add(new TrueCondition());
         add(new ExistenceCondition());
         add(new EnergyCondition());
-        add(new ColorLikenessConditionColor());
-        add(new ColorLikenessConditionMyColor());
+        add(new ColorLikenessColorCondition());
+        add(new ColorLikenessMyColorCondition());
     }};
 
     public static final List<Action> AVAILABLE_ACTIONS = new ArrayList<Action>() {{
@@ -88,8 +88,8 @@ public class Configuration {
     public static final List<Qualifier> AVAILABLE_QUALIFIERS = new ArrayList<Qualifier>() {{
         add(new ExistenceQualifier());
         add(new EnergyQualifier());
-        add(new ColorLikenessQualifierColor());
-        add(new ColorLikenessQualifierMyColor());
+        add(new ColorLikenessColorQualifier());
+        add(new ColorLikenessMyColorQualifier());
     }};
 
     public IRandomNumberGenerator rng;

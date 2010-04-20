@@ -20,7 +20,7 @@
 package evopaint.gui.rulesetmanager;
 
 import evopaint.pixel.rulebased.targeting.ActionMetaTarget;
-import evopaint.pixel.rulebased.targeting.ActionTarget;
+import evopaint.pixel.rulebased.targeting.ActionSingleTarget;
 import evopaint.pixel.rulebased.targeting.ITarget;
 import evopaint.pixel.rulebased.targeting.MetaTarget;
 import evopaint.pixel.rulebased.targeting.SingleTarget;
@@ -43,14 +43,14 @@ public class JActionTargetPanel extends JPanel {
         ITarget target = jTarget.createTarget();
 
         if (target == null) {
-            return new ActionTarget();
+            return new ActionSingleTarget();
         }
 
         if (target instanceof MetaTarget) {
             return new ActionMetaTarget(((MetaTarget)target).getDirections());
         }
 
-        return new ActionTarget(((SingleTarget)target).getDirection());
+        return new ActionSingleTarget(((SingleTarget)target).getDirection());
     }
 
 }

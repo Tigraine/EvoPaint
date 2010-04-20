@@ -19,6 +19,8 @@
 
 package evopaint.pixel.rulebased.targeting;
 
+import evopaint.interfaces.IRandomNumberGenerator;
+
 /**
  *
  * @author Markus Echterhoff <tam@edu.uni-klu.ac.at>
@@ -27,4 +29,6 @@ public abstract class Target implements ITarget {
 
     public static final int SINGLE_TARGET = 0;
     public static final int META_TARGET = 1;
+
+    public abstract void mixWith(Target target, float theirShare, IRandomNumberGenerator rng);
 }

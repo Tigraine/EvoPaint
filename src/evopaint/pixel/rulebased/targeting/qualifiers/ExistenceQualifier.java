@@ -21,6 +21,7 @@ package evopaint.pixel.rulebased.targeting.qualifiers;
 
 import evopaint.Configuration;
 import evopaint.gui.rulesetmanager.util.NamedObjectListCellRenderer;
+import evopaint.interfaces.IRandomNumberGenerator;
 import evopaint.pixel.rulebased.RuleBasedPixel;
 import evopaint.pixel.rulebased.targeting.Qualifier;
 import evopaint.pixel.rulebased.util.ObjectComparisonOperator;
@@ -48,6 +49,21 @@ public class ExistenceQualifier extends Qualifier {
 
     public ExistenceQualifier() {
         this.objectComparisonOperator = ObjectComparisonOperator.EQUAL;
+    }
+
+    public ExistenceQualifier(ExistenceQualifier existenceQualifier) {
+        this.objectComparisonOperator = existenceQualifier.objectComparisonOperator;
+    }
+
+    public int getType() {
+        return Qualifier.EXISTENCE;
+    }
+
+    public void mixWith(Qualifier theirQualifier, float theirShare, IRandomNumberGenerator rng) {
+        ExistenceQualifier q = (ExistenceQualifier)theirQualifier;
+        if (rng.nextFloat() < theirShare) {
+            objectComparisonOperator = q.objectComparisonOperator;
+        }
     }
 
     public ObjectComparisonOperator getObjectComparisonOperator() {

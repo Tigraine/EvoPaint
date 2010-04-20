@@ -98,4 +98,11 @@ public class ColorDimensions implements IHTML, Serializable {
         this.saturation = saturation;
         this.brightness = brightness;
     }
+
+    public ColorDimensions(ColorDimensions colorDimensions) {
+        this.hue = colorDimensions.hue;
+        this.saturation = colorDimensions.saturation;
+        this.brightness = colorDimensions.brightness;
+    }
+    
 }

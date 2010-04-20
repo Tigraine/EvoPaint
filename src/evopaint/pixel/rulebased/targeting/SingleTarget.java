@@ -32,7 +32,7 @@ import java.io.ObjectOutputStream;
  *
  * @author Markus Echterhoff <tam@edu.uni-klu.ac.at>
  */
-public class SingleTarget implements ITarget {
+public class SingleTarget extends Target {
     protected RelativeCoordinate direction;
 
     public SingleTarget(RelativeCoordinate direction) {
@@ -50,7 +50,7 @@ public class SingleTarget implements ITarget {
         return Target.SINGLE_TARGET;
     }
 
-    public void mixWith(ITarget theirTarget, float theirShare, IRandomNumberGenerator rng) {
+    public void mixWith(Target theirTarget, float theirShare, IRandomNumberGenerator rng) {
         if (rng.nextFloat() < theirShare) {
             direction = ((SingleTarget)theirTarget).direction;
         }

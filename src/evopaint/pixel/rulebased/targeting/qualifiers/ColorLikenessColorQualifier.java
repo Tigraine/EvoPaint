@@ -22,6 +22,7 @@ package evopaint.pixel.rulebased.targeting.qualifiers;
 import evopaint.Configuration;
 import evopaint.gui.rulesetmanager.util.ColorChooserLabel;
 import evopaint.gui.rulesetmanager.util.DimensionsListener;
+import evopaint.interfaces.IRandomNumberGenerator;
 import evopaint.pixel.ColorDimensions;
 import evopaint.pixel.PixelColor;
 import evopaint.pixel.rulebased.RuleBasedPixel;
@@ -42,21 +43,46 @@ import javax.swing.JToggleButton;
  *
  * @author Markus Echterhoff <tam@edu.uni-klu.ac.at>
  */
-public class ColorLikenessQualifierColor extends Qualifier {
+public class ColorLikenessColorQualifier extends Qualifier {
 
     private boolean isLeast;
     private PixelColor comparedColor;
     private ColorDimensions dimensions;
 
-    public ColorLikenessQualifierColor(boolean isLeast, PixelColor comparedColor, ColorDimensions dimensions) {
+    public ColorLikenessColorQualifier(boolean isLeast, PixelColor comparedColor, ColorDimensions dimensions) {
         this.isLeast = isLeast;
         this.comparedColor = comparedColor;
         this.dimensions = dimensions;
     }
 
-    public ColorLikenessQualifierColor() {
+    public ColorLikenessColorQualifier() {
         this.comparedColor = new PixelColor(0);
         this.dimensions = new ColorDimensions(true, true, true);
+    }
+
+    public ColorLikenessColorQualifier(ColorLikenessColorQualifier colorLikenessColorQualifier) {
+        this.isLeast = colorLikenessColorQualifier.isLeast;
+        this.comparedColor = new PixelColor(colorLikenessColorQualifier.comparedColor);
+        this.dimensions = new ColorDimensions(colorLikenessColorQualifier.dimensions);
+    }
+
+    public int getType() {
+        return Qualifier.COLOR_LIKENESS_COLOR;
+    }
+
+    public void mixWith(Qualifier theirQualifier, float theirShare, IRandomNumberGenerator rng) {
+        ColorLikenessColorQualifier q = (ColorLikenessColorQualifier)theirQualifier;
+        if (rng.nextFloat() < theirShare) {
+            isLeast = q.isLeast;
+        }
+        if (rng.nextFloat() < theirShare) {
+            dimensions = new ColorDimensions(dimensions);
+            dimensions.mixWith(q.dimensions, theirShare, rng);
+        }
+        if (rng.nextFloat() < theirShare) {
+            comparedColor = new PixelColor(comparedColor);
+            comparedColor.mixWith(q.comparedColor, theirShare, dimensions); // uses mixed dimensions for new color
+        }
     }
 
     public boolean isLeast() {
@@ -83,7 +109,7 @@ public class ColorLikenessQualifierColor extends Qualifier {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final ColorLikenessQualifierColor other = (ColorLikenessQualifierColor) obj;
+        final ColorLikenessColorQualifier other = (ColorLikenessColorQualifier) obj;
         if (this.isLeast != other.isLeast) {
             return false;
         }

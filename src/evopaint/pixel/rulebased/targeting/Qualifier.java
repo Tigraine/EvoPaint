@@ -20,6 +20,7 @@
 package evopaint.pixel.rulebased.targeting;
 
 import evopaint.Configuration;
+import evopaint.interfaces.IRandomNumberGenerator;
 import evopaint.pixel.rulebased.RuleBasedPixel;
 import evopaint.pixel.rulebased.interfaces.IHTML;
 import evopaint.pixel.rulebased.interfaces.INamed;
@@ -36,6 +37,15 @@ import javax.swing.JComponent;
  * @author Markus Echterhoff <tam@edu.uni-klu.ac.at>
  */
 public abstract class Qualifier implements INamed, IHTML, IParameterized, Serializable {
+
+    public static final int COLOR_LIKENESS_COLOR = 0;
+    public static final int COLOR_LIKENESS_MY_COLOR = 1;
+    public static final int ENERGY = 2;
+    public static final int EXISTENCE = 3;
+
+    public abstract int getType();
+
+    public abstract void mixWith(Qualifier theirQualifier, float theirShare, IRandomNumberGenerator rng);
 
     public String toHTML() {
         return getName();

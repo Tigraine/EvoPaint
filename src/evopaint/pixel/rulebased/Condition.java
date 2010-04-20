@@ -22,9 +22,11 @@ package evopaint.pixel.rulebased;
 import evopaint.pixel.rulebased.targeting.IHaveTarget;
 import evopaint.Configuration;
 import evopaint.interfaces.IRandomNumberGenerator;
-import evopaint.pixel.rulebased.targeting.ConditionTarget;
+import evopaint.pixel.rulebased.targeting.ConditionMetaTarget;
+import evopaint.pixel.rulebased.targeting.ConditionSingleTarget;
 import evopaint.pixel.rulebased.targeting.IConditionTarget;
 import evopaint.pixel.rulebased.targeting.ITarget;
+import evopaint.pixel.rulebased.targeting.Target;
 import java.util.Map;
 
 /**
@@ -33,8 +35,8 @@ import java.util.Map;
  */
 public abstract class Condition implements IHaveTarget {
 
-    protected static final int COLOR_LIKENESS_CONDITION_COLOR = 0;
-    protected static final int COLOR_LIKENESS_CONDITION_MY_COLOR = 1;
+    protected static final int COLOR_LIKENESS_COLOR = 0;
+    protected static final int COLOR_LIKENESS_MY_COLOR = 1;
     protected static final int ENERGY = 2;
     protected static final int EXISTENCE = 3;
     protected static final int TRUE = 4;
@@ -45,7 +47,16 @@ public abstract class Condition implements IHaveTarget {
 
     public void mixWith(Condition theirCondition, float theirShare, IRandomNumberGenerator rng) {
         if (getType() == theirCondition.target.getType()) {
-            target.mixWith(theirCondition.target, theirShare, rng);
+            Target newTarget = null;
+            switch (getType()) {
+                case Target.META_TARGET: newTarget = new ConditionMetaTarget((ConditionMetaTarget)target);
+                break;
+                case Target.SINGLE_TARGET: newTarget = new ConditionSingleTarget((ConditionSingleTarget)target);
+                break;
+                default: assert (false);
+            }
+            newTarget.mixWith((Target)theirCondition.target, theirShare, rng);
+            target = (IConditionTarget)newTarget;
         } else {
             if (rng.nextFloat() < theirShare) {
                target = theirCondition.target;
@@ -58,7 +69,7 @@ public abstract class Condition implements IHaveTarget {
     }
 
     public Condition() {
-        this.target = new ConditionTarget();
+        this.target = new ConditionSingleTarget();
     }
 
     public Condition(Condition condition) {

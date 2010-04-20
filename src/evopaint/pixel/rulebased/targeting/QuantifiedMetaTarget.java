@@ -19,6 +19,7 @@
 
 package evopaint.pixel.rulebased.targeting;
 
+import evopaint.interfaces.IRandomNumberGenerator;
 import evopaint.util.mapping.RelativeCoordinate;
 import java.util.List;
 
@@ -38,6 +39,24 @@ public abstract class QuantifiedMetaTarget extends MetaTarget {
     }
 
     public QuantifiedMetaTarget() {
+    }
+
+    public QuantifiedMetaTarget(QuantifiedMetaTarget quantifiedMetaTarget) {
+        super(quantifiedMetaTarget);
+        this.min = quantifiedMetaTarget.min;
+        this.max = quantifiedMetaTarget.max;
+    }
+
+    @Override
+    public void mixWith(Target theirTarget, float theirShare, IRandomNumberGenerator rng) {
+        QuantifiedMetaTarget q = (QuantifiedMetaTarget)theirTarget;
+        super.mixWith(theirTarget, theirShare, rng);
+        if (rng.nextFloat() < theirShare) {
+            min = q.min;
+        }
+        if (rng.nextFloat() < theirShare) {
+            max = q.max;
+        }
     }
 
     public String getName() {

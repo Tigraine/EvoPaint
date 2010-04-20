@@ -70,6 +70,13 @@ public class PartnerProcreationAction extends Action {
         this.mixRuleSet = true;
     }
 
+    public PartnerProcreationAction(PartnerProcreationAction partnerProcreationAction) {
+        super(partnerProcreationAction);
+        this.dimensions = new ColorDimensions(partnerProcreationAction.dimensions);
+        ourShare = partnerProcreationAction.ourShare;
+        this.mixRuleSet = partnerProcreationAction.mixRuleSet;
+    }
+
     public int getType() {
         return Action.PARTNER_PROCREATION;
     }
@@ -125,22 +132,9 @@ public class PartnerProcreationAction extends Action {
             return 0;
         }
 
-        // mix the colors
-        PixelColor newPixelColor = new PixelColor(partner.getPixelColor());
-        newPixelColor.mixWith(actor.getPixelColor(), ourShare, dimensions);
-
-        // mix the rule sets
-        List <Rule> newRules = new ArrayList(actor.getRules());
-        if (mixRuleSet) {
-            // FIXME newRules.mixWith(partner.getRuleSet(), ourShare, configuration.rng);
-        }
-
-        RuleBasedPixel newPixel = new RuleBasedPixel(
-                newPixelColor,
-                randomFreeSpot,
-                (actor.getEnergy() + getEnergyChange() + partner.getEnergy() + partnerEnergyChange) / 2,
-                newRules);
-
+        RuleBasedPixel newPixel = new RuleBasedPixel(partner);
+        newPixel.mixWith(actor, ourShare, configuration.rng);
+        newPixel.setLocation(randomFreeSpot);
         configuration.world.set(newPixel);
 
         partner.changeEnergy(partnerEnergyChange);

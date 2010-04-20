@@ -21,10 +21,17 @@ package evopaint.pixel.rulebased;
 
 import evopaint.Configuration;
 import evopaint.interfaces.IRandomNumberGenerator;
+import evopaint.pixel.rulebased.actions.AssimilationAction;
 import evopaint.pixel.rulebased.actions.ChangeEnergyAction;
 import evopaint.pixel.rulebased.actions.CopyAction;
 import evopaint.pixel.rulebased.actions.MoveAction;
+import evopaint.pixel.rulebased.actions.PartnerProcreationAction;
 import evopaint.pixel.rulebased.actions.SetColorAction;
+import evopaint.pixel.rulebased.conditions.ColorLikenessColorCondition;
+import evopaint.pixel.rulebased.conditions.ColorLikenessMyColorCondition;
+import evopaint.pixel.rulebased.conditions.EnergyCondition;
+import evopaint.pixel.rulebased.conditions.EnergyCondition;
+import evopaint.pixel.rulebased.conditions.ExistenceCondition;
 import evopaint.pixel.rulebased.conditions.TrueCondition;
 import evopaint.pixel.rulebased.interfaces.IHTML;
 import evopaint.pixel.rulebased.targeting.ActionMetaTarget;
@@ -33,8 +40,8 @@ import evopaint.pixel.rulebased.targeting.ITarget;
 import evopaint.pixel.rulebased.targeting.MetaTarget;
 import evopaint.pixel.rulebased.targeting.QualifiedMetaTarget;
 import evopaint.pixel.rulebased.targeting.SingleTarget;
-import evopaint.pixel.rulebased.targeting.qualifiers.ColorLikenessQualifierColor;
-import evopaint.pixel.rulebased.targeting.qualifiers.ColorLikenessQualifierMyColor;
+import evopaint.pixel.rulebased.targeting.qualifiers.ColorLikenessColorQualifier;
+import evopaint.pixel.rulebased.targeting.qualifiers.ColorLikenessMyColorQualifier;
 import evopaint.pixel.rulebased.targeting.qualifiers.EnergyQualifier;
 import evopaint.pixel.rulebased.targeting.qualifiers.ExistenceQualifier;
 import evopaint.pixel.rulebased.util.ObjectComparisonOperator;
@@ -221,16 +228,16 @@ public class Rule implements IHTML {
                     foundHasMostEnergy = true;
                 }
             }
-            else if (q instanceof ColorLikenessQualifierColor) {
-                if (((ColorLikenessQualifierColor)q).isLeast()) {
+            else if (q instanceof ColorLikenessColorQualifier) {
+                if (((ColorLikenessColorQualifier)q).isLeast()) {
                     foundHasColorLeastLikeColor = true;
                 }
                 else {
                     foundHasColorMostLikeColor = true;
                 }
             }
-            else if (q instanceof ColorLikenessQualifierMyColor) {
-                if (((ColorLikenessQualifierMyColor)q).isLeast()) {
+            else if (q instanceof ColorLikenessMyColorQualifier) {
+                if (((ColorLikenessMyColorQualifier)q).isLeast()) {
                     foundHasColorLeastLikeMe = true;
                 }
                 else {
@@ -293,7 +300,31 @@ public class Rule implements IHTML {
                 Condition ourCondition = conditions.get(i);
                 Condition theirCondition = theirRule.conditions.get(i);
                 if (ourCondition.getType() == theirCondition.getType()) {
-                    ourCondition.mixWith(theirCondition, theirShare, rng);
+                    Condition newCondition = null;
+                    int type = ourCondition.getType();
+                    switch (type) {
+                        case Condition.COLOR_LIKENESS_COLOR:
+                            newCondition = new ColorLikenessColorCondition(
+                                    (ColorLikenessColorCondition)theirCondition);
+                            break;
+                        case Condition.COLOR_LIKENESS_MY_COLOR:
+                            newCondition = new ColorLikenessMyColorCondition(
+                                    (ColorLikenessMyColorCondition)theirCondition);
+                            break;
+                        case Condition.ENERGY:
+                            newCondition = new EnergyCondition(
+                                    (EnergyCondition)theirCondition);
+                            break;
+                        case Condition.EXISTENCE:
+                            newCondition = new ExistenceCondition(
+                                    (ExistenceCondition)theirCondition);
+                        case Condition.TRUE:
+                            newCondition = theirCondition;
+                            break;
+                        default: assert (false);
+                    }
+                    newCondition.mixWith(theirCondition, theirShare, rng);
+                    conditions.set(i, newCondition);
                 } else {
                     if (rng.nextFloat() < theirShare) {
                         conditions.set(i, theirCondition);
@@ -316,7 +347,31 @@ public class Rule implements IHTML {
                 Condition ourCondition = conditions.get(i);
                 Condition theirCondition = theirRule.conditions.get(i);
                 if (ourCondition.getType() == theirCondition.getType()) {
-                    ourCondition.mixWith(theirCondition, theirShare, rng);
+                    Condition newCondition = null;
+                    int type = ourCondition.getType();
+                    switch (type) {
+                        case Condition.COLOR_LIKENESS_COLOR:
+                            newCondition = new ColorLikenessColorCondition(
+                                    (ColorLikenessColorCondition)theirCondition);
+                            break;
+                        case Condition.COLOR_LIKENESS_MY_COLOR:
+                            newCondition = new ColorLikenessMyColorCondition(
+                                    (ColorLikenessMyColorCondition)theirCondition);
+                            break;
+                        case Condition.ENERGY:
+                            newCondition = new EnergyCondition(
+                                    (EnergyCondition)theirCondition);
+                            break;
+                        case Condition.EXISTENCE:
+                            newCondition = new ExistenceCondition(
+                                    (ExistenceCondition)theirCondition);
+                        case Condition.TRUE:
+                            newCondition = theirCondition;
+                            break;
+                        default: assert (false);
+                    }
+                    newCondition.mixWith(theirCondition, theirShare, rng);
+                    conditions.set(i, newCondition);
                 } else {
                     if (rng.nextFloat() < theirShare) {
                         conditions.set(i, theirCondition);
@@ -333,6 +388,34 @@ public class Rule implements IHTML {
         }
 
         if (action.getType() == theirRule.action.getType()) {
+            int type = action.getType();
+            switch (type) {
+                case Action.ASSIMILATION:
+                    action = new AssimilationAction(
+                            (AssimilationAction)theirRule.action);
+                    break;
+                case Action.CHANGE_ENERGY:
+                    action = new ChangeEnergyAction(
+                            (ChangeEnergyAction)theirRule.action);
+                    break;
+                case Action.COPY:
+                    action = new CopyAction(
+                            (CopyAction)theirRule.action);
+                    break;
+                case Action.MOVE:
+                    action = new MoveAction(
+                            (MoveAction)theirRule.action);
+                    break;
+                case Action.PARTNER_PROCREATION:
+                    action = new PartnerProcreationAction(
+                            (PartnerProcreationAction)theirRule.action);
+                    break;
+                case Action.SET_COLOR:
+                    action = new SetColorAction(
+                            (SetColorAction)theirRule.action);
+                    break;
+                default: assert (false);
+            }
             action.mixWith(theirRule.action, theirShare, rng);
         } else {
             if (rng.nextFloat() < theirShare) {

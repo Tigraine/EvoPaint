@@ -20,6 +20,7 @@
 package evopaint.pixel.rulebased;
 
 import evopaint.Configuration;
+import evopaint.interfaces.IRandomNumberGenerator;
 import evopaint.pixel.Pixel;
 import evopaint.pixel.PixelColor;
 import evopaint.util.mapping.AbsoluteCoordinate;
@@ -52,6 +53,53 @@ public class RuleBasedPixel extends Pixel {
         for (Rule rule : rules) {
             if (rule.apply(this, configuration)) {
                 break;
+            }
+        }
+    }
+
+    public void mixWith(RuleBasedPixel them, float theirShare, IRandomNumberGenerator rng) {
+        super.mixWith(them, theirShare, rng);
+
+        // mix rules
+        List<Rule> theirRules = them.getRules();
+
+        // cache size() calls for maximum performance
+        int ourSize = rules.size();
+        int theirSize = theirRules.size();
+
+        // now mix as many rules as we have in common and add the rest depending
+        // on share percentage
+        // we have more rules
+        if (ourSize > theirSize) {
+            int i = 0;
+            while (i < theirSize) {
+                Rule newRule = new Rule(rules.get(i));
+                newRule.mixWith(theirRules.get(i), theirShare, rng);
+                rules.set(i, newRule);
+                i++;
+            }
+            int removed = 0;
+            while (i < ourSize - removed) {
+                if (rng.nextFloat() < theirShare) {
+                    rules.remove(i);
+                    removed ++;
+                } else {
+                    i++;
+                }
+            }
+        } else { // they have more rules or we have an equal number of rules
+           int i = 0;
+            while (i < ourSize) {
+                Rule newRule = new Rule(rules.get(i));
+                newRule.mixWith(theirRules.get(i), theirShare, rng);
+                rules.set(i, newRule);
+                i++;
+            }
+            while (i < theirSize) {
+                if (rng.nextFloat() < theirShare) {
+                    rules.add(theirRules.get(i));
+                }
+                i++;
             }
         }
     }

@@ -45,6 +45,10 @@ public class CopyAction extends Action {
     public CopyAction() {
     }
 
+    public CopyAction(CopyAction copyAction) {
+        super(copyAction);
+    }
+
     public String getName() {
         return "copy";
     }

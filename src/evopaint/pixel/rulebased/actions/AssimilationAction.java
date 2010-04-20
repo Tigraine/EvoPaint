@@ -68,6 +68,13 @@ public class AssimilationAction extends Action {
         this.mixRuleSet = true;
     }
 
+    public AssimilationAction(AssimilationAction assimilationAction) {
+        super(assimilationAction);
+        this.dimensions = new ColorDimensions(assimilationAction.dimensions);
+        this.ourShare = assimilationAction.ourShare;
+        this.mixRuleSet = assimilationAction.mixRuleSet;
+    }
+
     public int getType() {
         return Action.ASSIMILATION;
     }
@@ -108,17 +115,21 @@ public class AssimilationAction extends Action {
         if (target == null) {
             return 0;
         }
+
+        //if (mixRuleSet) {
+        RuleBasedPixel newPixel = new RuleBasedPixel(target);
+        newPixel.mixWith(actor, ourShare, configuration.rng);
+        configuration.world.set(newPixel);
         
-        // mix color
-        PixelColor newPixelColor = new PixelColor(target.getPixelColor());
-        newPixelColor.mixWith(actor.getPixelColor(), ourShare, dimensions);
-        target.setPixelColor(newPixelColor);
+        
 
         // mix rule set
-        if (mixRuleSet) {
+        
+
+
+
             
-            
-            List<Rule> ourRules = (actor.getRules());
+         /*   List<Rule> ourRules = (actor.getRules());
             List<Rule> theirNewRules = new ArrayList(target.getRules());
 
             // cache size() calls for maximum performance
@@ -165,7 +176,7 @@ public class AssimilationAction extends Action {
              
              
         }
-
+*/
         return energyChange;
     }
 

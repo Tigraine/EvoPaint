@@ -19,7 +19,6 @@
 
 package evopaint.pixel.rulebased.targeting;
 
-import evopaint.interfaces.IRandomNumberGenerator;
 import evopaint.pixel.rulebased.interfaces.IHTML;
 import java.io.Serializable;
 
@@ -29,5 +28,4 @@ import java.io.Serializable;
  */
 public interface ITarget extends IHTML, Serializable {
     public int getType();
-    public void mixWith(ITarget theirTarget, float theirShare, IRandomNumberGenerator rng);
 }

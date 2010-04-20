@@ -39,6 +39,10 @@ public class ConditionMetaTarget
     public ConditionMetaTarget() {
     }
 
+    public ConditionMetaTarget(ConditionMetaTarget conditionMetaTarget) {
+        super(conditionMetaTarget);
+    }
+
     public boolean meets(Condition condition, RuleBasedPixel actor, Configuration configuration) {
         int metCounter = 0;
         for (RelativeCoordinate direction : directions) {

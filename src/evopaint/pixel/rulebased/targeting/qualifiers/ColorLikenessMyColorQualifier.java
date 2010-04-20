@@ -21,7 +21,9 @@ package evopaint.pixel.rulebased.targeting.qualifiers;
 
 import evopaint.Configuration;
 import evopaint.gui.rulesetmanager.util.DimensionsListener;
+import evopaint.interfaces.IRandomNumberGenerator;
 import evopaint.pixel.ColorDimensions;
+import evopaint.pixel.PixelColor;
 import evopaint.pixel.rulebased.RuleBasedPixel;
 import evopaint.pixel.rulebased.targeting.Qualifier;
 import evopaint.util.mapping.RelativeCoordinate;
@@ -40,18 +42,38 @@ import javax.swing.JToggleButton;
  *
  * @author Markus Echterhoff <tam@edu.uni-klu.ac.at>
  */
-public class ColorLikenessQualifierMyColor extends Qualifier {
+public class ColorLikenessMyColorQualifier extends Qualifier {
 
     private boolean isLeast;
     private ColorDimensions dimensions;
 
-    public ColorLikenessQualifierMyColor(boolean isLeast, ColorDimensions dimensions) {
+    public ColorLikenessMyColorQualifier(boolean isLeast, ColorDimensions dimensions) {
         this.isLeast = isLeast;
         this.dimensions = dimensions;
     }
 
-    public ColorLikenessQualifierMyColor() {
+    public ColorLikenessMyColorQualifier() {
         this.dimensions = new ColorDimensions(true, true, true);
+    }
+
+    public ColorLikenessMyColorQualifier(ColorLikenessMyColorQualifier colorLikenessMyColorQualifier) {
+        this.isLeast = colorLikenessMyColorQualifier.isLeast;
+        this.dimensions = new ColorDimensions(colorLikenessMyColorQualifier.dimensions);
+    }
+
+    public int getType() {
+        return Qualifier.COLOR_LIKENESS_MY_COLOR;
+    }
+
+    public void mixWith(Qualifier theirQualifier, float theirShare, IRandomNumberGenerator rng) {
+        ColorLikenessMyColorQualifier q = (ColorLikenessMyColorQualifier)theirQualifier;
+        if (rng.nextFloat() < theirShare) {
+            isLeast = q.isLeast;
+        }
+        if (rng.nextFloat() < theirShare) {
+            dimensions = new ColorDimensions(dimensions);
+            dimensions.mixWith(q.dimensions, theirShare, rng);
+        }
     }
 
     public boolean isLeast() {
@@ -70,7 +92,7 @@ public class ColorLikenessQualifierMyColor extends Qualifier {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final ColorLikenessQualifierMyColor other = (ColorLikenessQualifierMyColor) obj;
+        final ColorLikenessMyColorQualifier other = (ColorLikenessMyColorQualifier) obj;
         if (this.isLeast != other.isLeast) {
             return false;
         }

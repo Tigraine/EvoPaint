@@ -68,6 +68,11 @@ public class ChangeEnergyAction extends Action {
     public ChangeEnergyAction() {
     }
 
+    public ChangeEnergyAction(ChangeEnergyAction changeEnergyAction) {
+        super(changeEnergyAction);
+        this.amount = changeEnergyAction.amount;
+    }
+
     public String getName() {
         return "change energy";
     }
