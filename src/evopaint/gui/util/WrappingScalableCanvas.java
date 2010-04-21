@@ -61,6 +61,7 @@ public class WrappingScalableCanvas extends JComponent implements IOverlayable {
     private double scale;
     private Point translation;
     private AffineTransform scaleTransform;
+    private AffineTransform translationTransform;
     private AffineTransform transform;
     private List<IOverlay> overlays;
 
@@ -76,6 +77,7 @@ public class WrappingScalableCanvas extends JComponent implements IOverlayable {
         this.integerScale = 10;
         this.scale = 1;
         this.translation = new Point(0, 0);
+        this.translationTransform = new AffineTransform();
         this.overlays = new ArrayList<IOverlay>();
         updateScale();
         updateComponentSize();
@@ -113,7 +115,7 @@ public class WrappingScalableCanvas extends JComponent implements IOverlayable {
         scale = integerScale / 10d;
         scaleTransform = AffineTransform.getScaleInstance(scale, scale);
         transform = new AffineTransform(scaleTransform);
-        transform.translate(translation.x, translation.y);
+        transform.concatenate(translationTransform);
         updateComponentSize();
         revalidate();
     }
@@ -147,8 +149,9 @@ public class WrappingScalableCanvas extends JComponent implements IOverlayable {
         } else if (translation.y > imageHeight) {
             translation.y -= imageHeight;
         }
+        translationTransform = AffineTransform.getTranslateInstance(translation.x, translation.y);
         transform = new AffineTransform(scaleTransform);
-        transform.translate(translation.x, translation.y);
+        transform.concatenate(translationTransform);
     }
 
     /**
@@ -461,6 +464,44 @@ public class WrappingScalableCanvas extends JComponent implements IOverlayable {
         // back to normal
         transform.translate(imageWidth, 0);
         g2.drawRenderedImage(image, transform);
+
+        return ret;
+    }
+
+    public BufferedImage translate(BufferedImage image) {
+        BufferedImage ret = new BufferedImage((int)(imageWidth), (int)(imageHeight), BufferedImage.TYPE_INT_RGB);
+
+        Graphics2D g2 = ret.createGraphics();
+
+        g2.clip(new Rectangle(imageWidth, imageHeight));
+
+        // paint NW
+        translationTransform.translate((-1) * imageWidth, (-1) * imageHeight);
+        g2.drawRenderedImage(image, translationTransform);
+        // paint N
+        translationTransform.translate(imageWidth, 0);
+        g2.drawRenderedImage(image, translationTransform);
+        // paint NE
+        translationTransform.translate(imageWidth, 0);
+        g2.drawRenderedImage(image, translationTransform);
+        // paint E
+        translationTransform.translate(0, imageHeight);
+        g2.drawRenderedImage(image, translationTransform);
+        // paint SE
+        translationTransform.translate(0, imageHeight);
+        g2.drawRenderedImage(image, translationTransform);
+        // paint S
+        translationTransform.translate((-1) * imageWidth, 0);
+        g2.drawRenderedImage(image, translationTransform);
+        // paint SW
+        translationTransform.translate((-1) * imageWidth, 0);
+        g2.drawRenderedImage(image, translationTransform);
+        // paint W
+        translationTransform.translate(0, (-1) * imageHeight);
+        g2.drawRenderedImage(image, translationTransform);
+        // back to normal
+        translationTransform.translate(imageWidth, 0);
+        g2.drawRenderedImage(image, translationTransform);
 
         return ret;
     }

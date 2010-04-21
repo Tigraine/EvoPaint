@@ -23,8 +23,6 @@ package evopaint.gui;
 import evopaint.Configuration;
 import evopaint.commands.*;
 import evopaint.Selection;
-import evopaint.World;
-import evopaint.Perception;
 import evopaint.gui.util.WrappingScalableCanvas;
 import evopaint.util.logging.Logger;
 
@@ -52,8 +50,6 @@ import javax.swing.event.MouseInputListener;
 public class Showcase extends WrappingScalableCanvas implements MouseInputListener, MouseWheelListener, Observer, SelectionManager {
     private Configuration configuration;
 
-    private MainFrame mainFrame;
-
     private boolean leftButtonPressed = false;
     private boolean toggleMouseButton2Drag = false;
 
@@ -76,11 +72,10 @@ public class Showcase extends WrappingScalableCanvas implements MouseInputListen
     
     private SelectionIndicatorOverlay draggingSelectionOverlay;
 
-    public Showcase(Configuration configuration, MainFrame mf, World world, Perception perception, CommandFactory commandFactory) {
-        super(perception.getImage());
+    public Showcase(Configuration configuration, CommandFactory commandFactory) {
+        super(configuration.perception.getImage());
 
         this.configuration = configuration;
-        this.mainFrame = mf;
         this.paintCommand = new PaintCommand(configuration, this);
         this.moveCommand = new MoveCommand(configuration);
         this.moveCommand.setCanvas(this);
@@ -119,7 +114,7 @@ public class Showcase extends WrappingScalableCanvas implements MouseInputListen
 
     public void mouseWheelMoved(MouseWheelEvent e) {
         // needs to be checked _before_ zooming
-        if (e.getSource() == this && mainFrame.getActiveTool() == PaintCommand.class) {
+        if (e.getSource() == this && configuration.mainFrame.getActiveTool() == PaintCommand.class) {
             brushIndicatorOverlay.setBounds(new Rectangle(
                     transformToImageSpace(e.getPoint()),
                     new Dimension(configuration.brush.size, configuration.brush.size)));
@@ -137,36 +132,36 @@ public class Showcase extends WrappingScalableCanvas implements MouseInputListen
     public void mousePressed(MouseEvent e) {
         if (e.getButton() == MouseEvent.BUTTON1) {
             leftButtonPressed = true;
-            if (mainFrame.getActiveTool() == PaintCommand.class) {
+            if (configuration.mainFrame.getActiveTool() == PaintCommand.class) {
                 painter.setLocation(e.getPoint());
                 paintingTimer.start();
                 configuration.paint.rememberCurrent();
-            } else if (mainFrame.getActiveTool() == MoveCommand.class) {
+            } else if (configuration.mainFrame.getActiveTool() == MoveCommand.class) {
                 moveCommand.setSource(e.getPoint());
                 //moveCommand.setScale(this.scale);
-            } else if (mainFrame.getActiveTool() == SelectCommand.class) {
+            } else if (configuration.mainFrame.getActiveTool() == SelectCommand.class) {
                 this.selectionStartPoint = transformToImageSpace(e.getPoint());
                 draggingSelectionOverlay = new SelectionIndicatorOverlay(this, new Rectangle());
                 subscribe(draggingSelectionOverlay);
                 selectCommand.setLocation(this.selectionStartPoint);
                 selectCommand.execute();
-            } else if (mainFrame.getActiveTool() == ZoomCommand.class) {
+            } else if (configuration.mainFrame.getActiveTool() == ZoomCommand.class) {
             	ZoomInCommand zoomInCommand = new ZoomInCommand(this);	
             	zoomInCommand.execute();
             	this.setCursor(new Cursor(Cursor.N_RESIZE_CURSOR));
-            } else if (mainFrame.getActiveTool() == FillSelectionCommand.class) {
+            } else if (configuration.mainFrame.getActiveTool() == FillSelectionCommand.class) {
             	fillCommand.setLocation(transformToImageSpace(e.getPoint()));
             	fillCommand.execute();
-            } else if (mainFrame.getActiveTool() == PickCommand.class) {
+            } else if (configuration.mainFrame.getActiveTool() == PickCommand.class) {
             	PickCommand pickCommand = new PickCommand(configuration);
             	pickCommand.setLocation(transformToImageSpace(e.getPoint()));
             	pickCommand.execute();
-            } else if (mainFrame.getActiveTool() == EraseCommand.class) {
+            } else if (configuration.mainFrame.getActiveTool() == EraseCommand.class) {
             	eraseCommand.setLocation(transformToImageSpace(e.getPoint()));
             	eraseCommand.execute();
             }
         } else if (e.getButton() == MouseEvent.BUTTON3) {
-        	if (mainFrame.getActiveTool() == ZoomCommand.class){
+        	if (configuration.mainFrame.getActiveTool() == ZoomCommand.class){
             	ZoomOutCommand zoomOutCommand = new ZoomOutCommand(this);
             	zoomOutCommand.execute();
             	this.setCursor(new Cursor(Cursor.N_RESIZE_CURSOR));
@@ -175,7 +170,7 @@ public class Showcase extends WrappingScalableCanvas implements MouseInputListen
         		configuration.paint.showHistory(this, e.getPoint());
         	}
         } else if (e.getButton() == MouseEvent.BUTTON2) {
-            if (mainFrame.getActiveTool() == ZoomCommand.class){
+            if (configuration.mainFrame.getActiveTool() == ZoomCommand.class){
                 scaleReset();
             } else {
                 toggleMouseButton2Drag = true;
@@ -188,7 +183,7 @@ public class Showcase extends WrappingScalableCanvas implements MouseInputListen
         if (e.getButton() == MouseEvent.BUTTON1) {
             leftButtonPressed = false;
             paintingTimer.stop();
-            if (mainFrame.getActiveTool() == SelectCommand.class) {
+            if (configuration.mainFrame.getActiveTool() == SelectCommand.class) {
                 this.isDrawingSelection = false;
                 selectCommand.setLocation(transformToImageSpace(e.getPoint()));
                 selectCommand.execute();
@@ -203,16 +198,16 @@ public class Showcase extends WrappingScalableCanvas implements MouseInputListen
     public void mouseDragged(MouseEvent e) {
     	this.currentMouseDragPosition = e.getPoint();
         if (leftButtonPressed == true) {
-        	if (mainFrame.getActiveTool() == SelectCommand.class) {
+        	if (configuration.mainFrame.getActiveTool() == SelectCommand.class) {
         		Point pointInImageSpace = transformToImageSpace(currentMouseDragPosition);
         		draggingSelectionOverlay.setBounds(new Rectangle(selectionStartPoint, new Dimension(pointInImageSpace.x - selectionStartPoint.x, pointInImageSpace.y - selectionStartPoint.y)));
         	}
-            else if (mainFrame.getActiveTool() == PaintCommand.class) {
+            else if (configuration.mainFrame.getActiveTool() == PaintCommand.class) {
                 painter.setLocation(currentMouseDragPosition);
-            } else if (mainFrame.getActiveTool() == MoveCommand.class) {
+            } else if (configuration.mainFrame.getActiveTool() == MoveCommand.class) {
                 moveCommand.setDestination(e.getPoint());
                 moveCommand.execute();
-            } else if (mainFrame.getActiveTool() == EraseCommand.class) {
+            } else if (configuration.mainFrame.getActiveTool() == EraseCommand.class) {
             	eraseCommand.setLocation(currentMouseDragPosition);
             	eraseCommand.execute();
             }
@@ -220,7 +215,7 @@ public class Showcase extends WrappingScalableCanvas implements MouseInputListen
             moveCommand.setDestination(e.getPoint());
             moveCommand.execute();
         }
-        if (mainFrame.getActiveTool() == PaintCommand.class) {
+        if (configuration.mainFrame.getActiveTool() == PaintCommand.class) {
             brushIndicatorOverlay.setBounds(new Rectangle(
             		transformToImageSpace(e.getPoint()),
                     new Dimension(configuration.brush.size, configuration.brush.size)));
@@ -231,7 +226,7 @@ public class Showcase extends WrappingScalableCanvas implements MouseInputListen
     }
 
     public void mouseEntered(MouseEvent e) {
-        if (mainFrame.getActiveTool() == PaintCommand.class) {
+        if (configuration.mainFrame.getActiveTool() == PaintCommand.class) {
             subscribe(brushIndicatorOverlay);
         }
     }
@@ -241,7 +236,7 @@ public class Showcase extends WrappingScalableCanvas implements MouseInputListen
     }
 
     public void mouseMoved(MouseEvent e) {
-        if (mainFrame.getActiveTool() == PaintCommand.class) {
+        if (configuration.mainFrame.getActiveTool() == PaintCommand.class) {
             brushIndicatorOverlay.setBounds(new Rectangle(
                     transformToImageSpace(e.getPoint()),
                     new Dimension(configuration.brush.size, configuration.brush.size)));

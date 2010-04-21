@@ -36,7 +36,7 @@ public class World extends ParallaxMap<RuleBasedPixel> implements IChanging {
     private Configuration configuration;
     private final List<IChangeListener> pendingOperations = new ArrayList();
 
-    public World(RuleBasedPixel [] pixels, Configuration configuration) {
+    public World(Configuration configuration, RuleBasedPixel [] pixels) {
         super(pixels, configuration.dimension.width, configuration.dimension.height);
         this.configuration = configuration;
     }

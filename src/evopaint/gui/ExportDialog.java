@@ -10,27 +10,22 @@ import javax.imageio.ImageIO;
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
-import evopaint.EvoPaint;
-import evopaint.Perception;
 
 public class ExportDialog implements ActionListener {
         private Configuration configuration;
 	private MainFrame frame;
-	private EvoPaint evopaint;
 	File file;
 	String path;
 	
-	public ExportDialog(Configuration configuration, EvoPaint evopaint){
+	public ExportDialog(Configuration configuration){
             this.configuration = configuration;
-            this.frame = evopaint.getFrame();
-            this.evopaint = evopaint;
 	}
 	
 	
     public void actionPerformed(java.awt.event.ActionEvent e) {
     	
     	configuration.runLevel = Configuration.RUNLEVEL_STOP;
-    	BufferedImage img = evopaint.getFrame().getShowcase().scaleAndTranslate(evopaint.getPerception().getImage());
+    	BufferedImage img = configuration.mainFrame.getShowcase().scaleAndTranslate(configuration.perception.getImage());
     	
 
     	try{

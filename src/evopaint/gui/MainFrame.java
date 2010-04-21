@@ -77,7 +77,7 @@ public class MainFrame extends JFrame {
         return configuration;
     }
 
-    public MainFrame(final Configuration configuration, EvoPaint evopaint) {
+    public MainFrame(final Configuration configuration) {
         this.configuration = configuration;
         this.contentPane = getContentPane();
 
@@ -117,8 +117,8 @@ public class MainFrame extends JFrame {
         add(jRuleSetManager, "rule manager");
 
         this.jOptionsPanel = new JOptionsPanel(configuration);
-        this.showcase = new Showcase(configuration, this, configuration.world, evopaint.getPerception(), commandFactory);
-        this.menuBar = new MenuBar(configuration, evopaint, new SelectionListenerFactory(showcase), showcase);
+        this.showcase = new Showcase(configuration, commandFactory);
+        this.menuBar = new MenuBar(configuration, new SelectionListenerFactory(showcase), showcase);
         setJMenuBar(menuBar);
 
         addKeyListener(new MainFrameKeyListener());

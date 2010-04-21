@@ -22,12 +22,9 @@
 package evopaint.gui;
 
 import evopaint.Configuration;
-import evopaint.EvoPaint;
 import evopaint.Manifest;
 import evopaint.Selection;
 import evopaint.commands.DeleteCurrentSelectionCommand;
-import evopaint.commands.FillSelectionCommand;
-import evopaint.commands.FillSelectionCommandScattered;
 import evopaint.commands.SelectAllCommand;
 import evopaint.gui.listeners.SelectionListenerFactory;
 import evopaint.interfaces.IChangeListener;
@@ -55,16 +52,14 @@ import java.util.Observer;
  */
 public class MenuBar extends JMenuBar implements Observer {
     private Configuration configuration;
-    private EvoPaint evopaint;
     private Showcase showcase;
     private JMenu selectionMenu;
     private JMenu activeSelections;
     private Wizard nw;
     private MenuBar mb;
 
-    public MenuBar(final Configuration configuration, final EvoPaint evopaint, SelectionListenerFactory listenerFactory, Showcase showcase) {
+    public MenuBar(final Configuration configuration, SelectionListenerFactory listenerFactory, Showcase showcase) {
         this.configuration = configuration;
-        this.evopaint = evopaint;
         this.showcase = showcase;
         this.mb=this;
 
@@ -100,7 +95,7 @@ public class MenuBar extends JMenuBar implements Observer {
              
         JMenuItem exportItem = new JMenuItem();
         exportItem.setText("Export");
-        exportItem.addActionListener(new ExportDialog(configuration, evopaint));
+        exportItem.addActionListener(new ExportDialog(configuration));
         
         worldMenu.add(exportItem);
         
@@ -124,7 +119,7 @@ public class MenuBar extends JMenuBar implements Observer {
 
 
         JMenuItem selectAll = new JMenuItem("Select All");
-        selectAll.addActionListener(new SelectAllCommand(showcase, evopaint.getConfiguration()));
+        selectAll.addActionListener(new SelectAllCommand(showcase, configuration));
         selectionMenu.add(selectAll);
 
         JMenuItem selectionSetName = new JMenuItem("Set Name...");

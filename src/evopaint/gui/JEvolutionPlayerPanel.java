@@ -53,7 +53,7 @@ public class JEvolutionPlayerPanel extends JPanel {
         recordButton.setPressedIcon(new ImageIcon(getClass().getResource("icons/evolution-record-pressed.png")));
         recordButton.setSelectedIcon(new ImageIcon(getClass().getResource("icons/evolution-record-selected.png")));
         recordButton.setRolloverSelectedIcon(new ImageIcon(getClass().getResource("icons/evolution-record-rollover-selected.png")));
-        recordButton.setToolTipText("NOT WORKING YET: Records a video of your evolution");
+        recordButton.setToolTipText("Records a video of your evolution");
         add(recordButton);
 
         JToggleButton playButton = new JToggleButton();
@@ -77,7 +77,7 @@ public class JEvolutionPlayerPanel extends JPanel {
         pauseButton.setPressedIcon(new ImageIcon(getClass().getResource("icons/evolution-pause-pressed.png")));
         pauseButton.setSelectedIcon(new ImageIcon(getClass().getResource("icons/evolution-pause-selected.png")));
         pauseButton.setRolloverSelectedIcon(new ImageIcon(getClass().getResource("icons/evolution-pause-rollover-selected.png")));
-        pauseButton.setToolTipText("Pauses evolution, but keeps painting");
+        pauseButton.setToolTipText("Pauses evolution, but keeps painting and recording");
         add(pauseButton);
 
         JToggleButton stopButton = new JToggleButton(new ImageIcon(getClass().getResource("icons/evolution-stop.png")));
@@ -89,7 +89,7 @@ public class JEvolutionPlayerPanel extends JPanel {
         stopButton.setPressedIcon(new ImageIcon(getClass().getResource("icons/evolution-stop-pressed.png")));
         stopButton.setSelectedIcon(new ImageIcon(getClass().getResource("icons/evolution-stop-selected.png")));
         stopButton.setRolloverSelectedIcon(new ImageIcon(getClass().getResource("icons/evolution-stop-rollover-selected.png")));
-        stopButton.setToolTipText("Pauses evolution and painting alltogether in case you need your CPU");
+        stopButton.setToolTipText("Pauses evolution, painting and recording alltogether in case you need your CPU");
         add(stopButton);
 
         ButtonGroup group = new ButtonGroup();
@@ -108,6 +108,21 @@ public class JEvolutionPlayerPanel extends JPanel {
         add(ejectButton);
 
         playButton.setSelected(true);
+
+        recordButton.addActionListener(new ActionListener() {
+
+            public void actionPerformed(ActionEvent e) {
+                JToggleButton source = ((JToggleButton)e.getSource());
+                if (source.isSelected()) {
+                    if (false == configuration.perception.startRecording()) {
+                        source.setSelected(false);
+                    }
+                } else {
+                    configuration.perception.stopRecording();
+                }
+
+            }
+        });
 
         playButton.addActionListener(new ActionListener() {
 

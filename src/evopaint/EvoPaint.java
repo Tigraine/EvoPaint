@@ -20,7 +20,6 @@
 package evopaint;
 
 import evopaint.gui.MainFrame;
-import evopaint.pixel.rulebased.RuleBasedPixel;
 import evopaint.util.ExceptionHandler;
 
 /**
@@ -30,28 +29,14 @@ import evopaint.util.ExceptionHandler;
 public class EvoPaint {
 
     private Configuration configuration;
-    private Perception perception;
-    MainFrame frame;
 
-    public MainFrame getFrame() {
-        return frame;
-    }
-
-    public void setFrame(MainFrame frame) {
-        this.frame = frame;
-    }
-
-    public Perception getPerception() {
-        return perception;
-    }
-
-    public void setConfiguration(Configuration configuration) {
-        this.configuration = configuration;
+    public EvoPaint() {
+        this.configuration = new Configuration();
     }
 
     public void work() {
-        this.perception.createImage();
-        frame.getShowcase().repaint();
+        configuration.perception.createImage();
+        configuration.mainFrame.getShowcase().repaint();
         long timeStamp = System.currentTimeMillis();
 
         while (true) {
@@ -61,8 +46,8 @@ public class EvoPaint {
             long currentTime = System.currentTimeMillis();
             if (currentTime - timeStamp > 1000 / configuration.fps) {
                 timeStamp = currentTime;
-                this.perception.createImage();
-                frame.getShowcase().repaint();
+                configuration.perception.createImage();
+                configuration.mainFrame.getShowcase().repaint();
             }
             else if (configuration.runLevel == Configuration.RUNLEVEL_PAINTING_ONLY) {
                 try {
@@ -73,31 +58,14 @@ public class EvoPaint {
         }
     }
 
-    public Configuration getConfiguration() {
-        return configuration;
-    }
-
     public static void main(String args[]) {
         System.setProperty("sun.awt.exception.handler", ExceptionHandler.class.getName());
         try {
             EvoPaint evopaint = new EvoPaint();
-            
             evopaint.work();
         } catch (Throwable t) {
             ExceptionHandler.handle(t, true);
         }
     }
-    
-    public EvoPaint() {
-        this.configuration = new Configuration();
 
-        // create empty world
-        this.configuration.world = new World(
-                new RuleBasedPixel[configuration.dimension.width * configuration.dimension.height],
-                configuration);
-
-        this.perception = new Perception(configuration);
-
-        this.frame = new MainFrame(configuration, this);
-    }
 }
