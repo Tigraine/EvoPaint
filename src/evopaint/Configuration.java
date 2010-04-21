@@ -101,13 +101,15 @@ public class Configuration {
     public ITool activeTool; // TODO make use of me
 
     // BEGIN user configurable
+    public int runLevel = Configuration.RUNLEVEL_RUNNING;
     public int operationMode = OPERATIONMODE_AGENT_SIMULATION;
+    // BEGIN options dialog
     public int fps = 30;
     public Dimension dimension = new Dimension(300, 300);
     public int backgroundColor = 0;
     public int startingEnergy = 100;
-    public int runLevel = Configuration.RUNLEVEL_RUNNING;
     public int paintHistorySize = 7;
+    // END options dialog
     // END user configurable
 
     private IRandomNumberGenerator createRNG() {
