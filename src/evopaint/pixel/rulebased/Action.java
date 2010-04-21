@@ -24,6 +24,12 @@ import evopaint.pixel.rulebased.targeting.IHaveTarget;
 import evopaint.Configuration;
 import evopaint.gui.util.AutoSelectOnFocusSpinner;
 import evopaint.interfaces.IRandomNumberGenerator;
+import evopaint.pixel.rulebased.actions.AssimilationAction;
+import evopaint.pixel.rulebased.actions.ChangeEnergyAction;
+import evopaint.pixel.rulebased.actions.CopyAction;
+import evopaint.pixel.rulebased.actions.MoveAction;
+import evopaint.pixel.rulebased.actions.PartnerProcreationAction;
+import evopaint.pixel.rulebased.actions.SetColorAction;
 import evopaint.pixel.rulebased.targeting.ActionMetaTarget;
 import evopaint.pixel.rulebased.targeting.ActionSingleTarget;
 import evopaint.pixel.rulebased.targeting.IActionTarget;
@@ -52,6 +58,8 @@ public abstract class Action implements IHaveTarget {
     protected final static int PARTNER_PROCREATION = 4;
     protected final static int SET_COLOR = 5;
 
+    private static final int NUM_ACTIONS = 6;
+
     protected int energyChange;
     private IActionTarget target;
 
@@ -69,12 +77,55 @@ public abstract class Action implements IHaveTarget {
         this.target = action.target;
     }
 
+    public static Action copy(Action action) {
+        int type = action.getType();
+        switch (type) {
+            case Action.ASSIMILATION:
+                return new AssimilationAction(
+                        (AssimilationAction)action);
+            case Action.CHANGE_ENERGY:
+                return new ChangeEnergyAction(
+                        (ChangeEnergyAction)action);
+            case Action.COPY:
+                return new CopyAction(
+                        (CopyAction)action);
+            case Action.MOVE:
+                return new MoveAction(
+                        (MoveAction)action);
+            case Action.PARTNER_PROCREATION:
+                return new PartnerProcreationAction(
+                        (PartnerProcreationAction)action);
+            case Action.SET_COLOR:
+                return new SetColorAction(
+                        (SetColorAction)action);
+            default: assert (false);
+                return null;
+        }
+    }
+
     public abstract int getType();
 
+    public int countGenes() {
+        return target.countGenes(); // energy change is not mutable, so not counted
+    }
+
+    public void mutate(int mutatedGene, IRandomNumberGenerator rng) {
+        int targetType = target.getType();
+        switch (targetType) {
+            case Target.META_TARGET: target = new ActionMetaTarget((ActionMetaTarget)target);
+            break;
+            case Target.SINGLE_TARGET: target = new ActionSingleTarget((ActionSingleTarget)target);
+            break;
+            default: assert (false);
+        }
+        target.mutate(mutatedGene, rng);
+    }
+
     public void mixWith(Action theirAction, float theirShare, IRandomNumberGenerator rng) {
-        if (getType() == theirAction.target.getType()) {
+        if (target.getType() == theirAction.target.getType()) {
             Target newTarget = null;
-            switch (getType()) {
+            int targetType = target.getType();
+            switch (targetType) {
                 case Target.META_TARGET: newTarget = new ActionMetaTarget((ActionMetaTarget)target);
                 break;
                 case Target.SINGLE_TARGET: newTarget = new ActionSingleTarget((ActionSingleTarget)target);

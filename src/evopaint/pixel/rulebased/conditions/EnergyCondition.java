@@ -62,8 +62,38 @@ public class EnergyCondition extends Condition {
         this.energyValue = energyCondition.energyValue;
     }
 
+    public EnergyCondition(IRandomNumberGenerator rng) {
+        super(rng);
+        this.comparisonOperator = NumberComparisonOperator.getRandom(rng);
+        this.energyValue = rng.nextPositiveInt();
+    }
+
     public int getType() {
         return Condition.ENERGY;
+    }
+
+    @Override
+    public int countGenes() {
+        return super.countGenes() + 2;
+    }
+
+    @Override
+    public void mutate(int mutatedGene, IRandomNumberGenerator rng) {
+        int numGenesSuper = super.countGenes();
+        if (mutatedGene < numGenesSuper) {
+            super.mutate(mutatedGene, rng);
+            return;
+        }
+        mutatedGene -= numGenesSuper;
+
+        switch (mutatedGene) {
+            case 0: comparisonOperator = NumberComparisonOperator.getRandomOtherThan(comparisonOperator, rng);
+            return;
+            case 1: energyValue = rng.nextPositiveInt();
+            return;
+        }
+
+        assert false; // we have an error in the mutatedGene calculation
     }
 
     @Override

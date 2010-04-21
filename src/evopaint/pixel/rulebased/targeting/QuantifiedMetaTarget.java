@@ -47,6 +47,42 @@ public abstract class QuantifiedMetaTarget extends MetaTarget {
         this.max = quantifiedMetaTarget.max;
     }
 
+    public QuantifiedMetaTarget(int numDirections, IRandomNumberGenerator rng) {
+        super(numDirections, rng);
+        
+        if (directions.size() == 0) {
+            this.min = 0;
+            this.max = 0;
+            return;
+        }
+        
+        this.min = rng.nextPositiveInt(directions.size());
+        this.max = rng.nextPositiveInt(directions.size());
+    }
+
+    @Override
+    public int countGenes() {
+        return super.countGenes() + 2;
+    }
+
+    @Override
+    public void mutate(int mutatedGene, IRandomNumberGenerator rng) {
+        int numGenesSuper = super.countGenes();
+        if (mutatedGene < numGenesSuper) {
+            super.mutate(mutatedGene, rng);
+            return;
+        }
+        mutatedGene -= numGenesSuper;
+
+        switch (mutatedGene) {
+            case 0: min = directions.size() == 0 ? 0 : rng.nextPositiveInt(directions.size());
+            return;
+            case 1: max = directions.size() == 0 ? 0 : rng.nextPositiveInt(directions.size());
+            return;
+        }
+        assert false; // we have an error in our mutatedGene calculation
+    }
+
     @Override
     public void mixWith(Target theirTarget, float theirShare, IRandomNumberGenerator rng) {
         QuantifiedMetaTarget q = (QuantifiedMetaTarget)theirTarget;

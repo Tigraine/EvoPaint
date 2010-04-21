@@ -20,6 +20,7 @@
 package evopaint.pixel.rulebased.targeting;
 
 import evopaint.Configuration;
+import evopaint.interfaces.IRandomNumberGenerator;
 import evopaint.pixel.rulebased.Action;
 import evopaint.pixel.rulebased.RuleBasedPixel;
 import evopaint.util.mapping.RelativeCoordinate;
@@ -39,6 +40,10 @@ public class ActionSingleTarget extends SingleTarget implements IActionTarget {
 
     public ActionSingleTarget(ActionSingleTarget actionSingleTarget) {
         super(actionSingleTarget);
+    }
+
+    public ActionSingleTarget(IRandomNumberGenerator rng) {
+        super(rng);
     }
 
     public int execute(Action action, RuleBasedPixel actor, Configuration configuration) {

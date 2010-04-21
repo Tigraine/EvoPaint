@@ -19,6 +19,7 @@
 
 package evopaint.util.mapping;
 
+import evopaint.interfaces.IRandomNumberGenerator;
 import java.io.Serializable;
 
 /**
@@ -75,6 +76,23 @@ public class RelativeCoordinate extends Coordinate implements Serializable {
     // preserve singleton through serialization
     public Object readResolve() {
         switch (type) {
+            case TYPE_SELF: return RelativeCoordinate.CENTER;
+            case TYPE_NORTH: return RelativeCoordinate.NORTH;
+            case TYPE_NORTH_EAST: return RelativeCoordinate.NORTH_EAST;
+            case TYPE_EAST: return RelativeCoordinate.EAST;
+            case TYPE_SOUTH_EAST: return RelativeCoordinate.SOUTH_EAST;
+            case TYPE_SOUTH: return RelativeCoordinate.SOUTH;
+            case TYPE_SOUTH_WEST: return RelativeCoordinate.SOUTH_WEST;
+            case TYPE_WEST: return RelativeCoordinate.WEST;
+            case TYPE_NORTH_WEST: return RelativeCoordinate.NORTH_WEST;
+            default: assert(false);
+        }
+        return null;
+    }
+
+    public static RelativeCoordinate getRandom(IRandomNumberGenerator rng) {
+        int rnd = rng.nextPositiveInt(9);
+        switch (rnd) {
             case TYPE_SELF: return RelativeCoordinate.CENTER;
             case TYPE_NORTH: return RelativeCoordinate.NORTH;
             case TYPE_NORTH_EAST: return RelativeCoordinate.NORTH_EAST;

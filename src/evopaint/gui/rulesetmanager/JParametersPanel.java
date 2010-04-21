@@ -19,7 +19,6 @@
 
 package evopaint.gui.rulesetmanager;
 
-import evopaint.pixel.rulebased.conditions.TrueCondition;
 import evopaint.pixel.rulebased.interfaces.IParameterized;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -37,9 +36,6 @@ import javax.swing.border.TitledBorder;
 public class JParametersPanel extends JPanel {
 
     public JParametersPanel(final IParameterized parameterized) {
-        if (parameterized instanceof TrueCondition) {
-            return;
-        }
         setBorder(new TitledBorder("Parameters"));
         setLayout(new GridBagLayout());
 

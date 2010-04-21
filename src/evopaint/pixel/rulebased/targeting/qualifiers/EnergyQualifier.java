@@ -53,8 +53,25 @@ public class EnergyQualifier extends Qualifier {
         this.isLeast = energyQualifier.isLeast;
     }
 
+    public EnergyQualifier(IRandomNumberGenerator rng) {
+        this.isLeast = rng.nextBoolean();
+    }
+
     public int getType() {
         return Qualifier.ENERGY;
+    }
+
+    public int countGenes() {
+        return 1;
+    }
+
+    public void mutate(int mutatedGene, IRandomNumberGenerator rng) {
+        if (mutatedGene == 0) {
+            isLeast = !isLeast;
+            return;
+        }
+
+        assert false; // we have an error in our mutatedGene calculation
     }
 
     public void mixWith(Qualifier theirQualifier, float theirShare, IRandomNumberGenerator rng) {

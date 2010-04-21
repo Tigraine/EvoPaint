@@ -55,8 +55,35 @@ public class ExistenceCondition extends Condition {
         this.objectComparisonOperator = existenceCondition.objectComparisonOperator;
     }
 
+    public ExistenceCondition(IRandomNumberGenerator rng) {
+        super(rng);
+        this.objectComparisonOperator = ObjectComparisonOperator.getRandom(rng);
+    }
+
     public int getType() {
         return Condition.EXISTENCE;
+    }
+
+    @Override
+    public int countGenes() {
+        return super.countGenes() + 1;
+    }
+
+    @Override
+    public void mutate(int mutatedGene, IRandomNumberGenerator rng) {
+        int numGenesSuper = super.countGenes();
+        if (mutatedGene < numGenesSuper) {
+            super.mutate(mutatedGene, rng);
+            return;
+        }
+        mutatedGene -= numGenesSuper;
+
+        if (mutatedGene == 0) {
+            objectComparisonOperator = ObjectComparisonOperator.getRandomOtherThan(objectComparisonOperator, rng);
+            return;
+        }
+
+        assert false; // we have an error in the mutatedGene calculation
     }
 
     @Override

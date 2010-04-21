@@ -57,6 +57,60 @@ public class RuleBasedPixel extends Pixel {
         }
     }
 
+    public void mutate(Configuration config) {
+        int numGenes = countGenes();
+        int mutatedGene = config.rng.nextPositiveInt(numGenes);
+        mutate(mutatedGene, config);
+    }
+
+    @Override
+    public int countGenes() {
+        int ret = super.countGenes();
+        for (Rule rule : rules) {
+            ret += rule.countGenes();
+        }
+        ret += 1; // this gene causes the removal of a rule;
+        ret += 1; // this gene causes the addition of a rule;
+        return ret;
+    }
+
+    protected void mutate(int mutatedGene, Configuration config) {
+        int numGenesSuper = super.countGenes();
+        if (mutatedGene < numGenesSuper) {
+            super.mutate(mutatedGene, config.rng);
+            return;
+        }
+        mutatedGene -= numGenesSuper;
+
+        for (int i = 0; i < rules.size(); i++) {
+            int numGenesRule = rules.get(i).countGenes();
+            if (mutatedGene < numGenesRule) {
+                Rule newRule = new Rule(rules.get(i));
+                newRule.mutate(mutatedGene, config.rng);
+                rules.set(i, newRule);
+                return;
+            }
+            mutatedGene -= numGenesRule;
+        }
+
+        if (mutatedGene == 0) {
+            if (rules.size() == 0) {
+                return;
+            }
+            rules.remove(config.rng.nextPositiveInt(rules.size()));
+            return;
+        }
+        mutatedGene -= 1;
+
+        if (mutatedGene == 0) {
+            rules.add(new Rule(config.usedActions, config.rng));
+            return;
+        }
+        mutatedGene -= 1;
+
+        assert false;
+    }
+
     public void mixWith(RuleBasedPixel them, float theirShare, IRandomNumberGenerator rng) {
         super.mixWith(them, theirShare, rng);
      
@@ -111,11 +165,11 @@ public class RuleBasedPixel extends Pixel {
 
     public RuleBasedPixel(RuleBasedPixel pixel, List<Rule> useTheseRules) {
         super(pixel);
-        this.rules = useTheseRules;
+        this.rules = new ArrayList(useTheseRules);
     }
 
     public RuleBasedPixel(PixelColor pixelColor, AbsoluteCoordinate location, int energy, List<Rule> rules) {
         super(pixelColor, location, energy);
-        this.rules = rules;
+        this.rules = new ArrayList(rules);
     }
 }

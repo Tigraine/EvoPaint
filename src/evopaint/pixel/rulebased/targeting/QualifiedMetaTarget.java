@@ -53,7 +53,64 @@ public abstract class QualifiedMetaTarget
     }
     
     public QualifiedMetaTarget(QualifiedMetaTarget qualifiedMetaTarget) {
+        super(qualifiedMetaTarget);
         qualifiers = new ArrayList(qualifiedMetaTarget.qualifiers);
+    }
+
+    public QualifiedMetaTarget(int numDirections, IRandomNumberGenerator rng) {
+        super(numDirections, rng);
+        this.qualifiers = new ArrayList();
+        this.qualifiers.add(Qualifier.createRandom(rng));
+    }
+
+    @Override
+    public int countGenes() {
+        int ret = super.countGenes();
+        for (Qualifier q : qualifiers) {
+            ret += q.countGenes();
+        }
+        ret += 1; // to remove a qualifier
+        ret += 1; // to add a qualifier
+        
+        return ret;
+    }
+
+    @Override
+    public void mutate(int mutatedGene, IRandomNumberGenerator rng) {
+        int numGenesSuper = super.countGenes();
+        if (mutatedGene < numGenesSuper) {
+            super.mutate(mutatedGene, rng);
+            return;
+        }
+        mutatedGene -= numGenesSuper;
+        
+        for (int i = 0; i < qualifiers.size(); i++) {
+            int numGenesQualifier = qualifiers.get(i).countGenes();
+            if (mutatedGene < numGenesQualifier) {
+                Qualifier newQualifier = Qualifier.copy(qualifiers.get(i));
+                newQualifier.mutate(mutatedGene, rng);
+                qualifiers.set(i, newQualifier);
+                return;
+            }
+            mutatedGene -= numGenesQualifier;
+        }
+        
+        if (mutatedGene == 0) {
+            if (qualifiers.size() == 0) {
+                return;
+            }
+            qualifiers.remove(rng.nextPositiveInt(qualifiers.size()));
+            return;
+        }
+        mutatedGene -= 1;
+
+        if (mutatedGene == 0) {
+            qualifiers.add(Qualifier.createRandom(rng));
+            return;
+        }
+        mutatedGene -= 1;
+        
+        assert false; // we have an error in our mutatedGene calculation
     }
 
     public void mixWith(QualifiedMetaTarget theirTarget, float theirShare, IRandomNumberGenerator rng) {
@@ -72,26 +129,7 @@ public abstract class QualifiedMetaTarget
                 Qualifier ourQualifier = qualifiers.get(i);
                 Qualifier theirQualifier = theirTarget.qualifiers.get(i);
                 if (ourQualifier.getType() == theirQualifier.getType()) {
-                    Qualifier newQualifier = null;
-                    int type = ourQualifier.getType();
-                    switch (type) {
-                        case Qualifier.COLOR_LIKENESS_COLOR:
-                            newQualifier = new ColorLikenessColorQualifier(
-                                    (ColorLikenessColorQualifier)theirQualifier);
-                            break;
-                        case Qualifier.COLOR_LIKENESS_MY_COLOR:
-                            newQualifier = new ColorLikenessMyColorQualifier(
-                                    (ColorLikenessMyColorQualifier)theirQualifier);
-                            break;
-                        case Qualifier.ENERGY:
-                            newQualifier = new EnergyQualifier(
-                                    (EnergyQualifier)theirQualifier);
-                            break;
-                        case Qualifier.EXISTENCE:
-                            newQualifier = new ExistenceQualifier(
-                                    (ExistenceQualifier)theirQualifier);
-                        default: assert (false);
-                    }
+                    Qualifier newQualifier = Qualifier.copy(qualifiers.get(i));
                     newQualifier.mixWith(theirQualifier, theirShare, rng);
                     qualifiers.set(i, newQualifier);
                 } else {

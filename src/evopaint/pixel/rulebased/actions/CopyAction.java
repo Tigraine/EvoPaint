@@ -64,6 +64,10 @@ public class CopyAction extends Action {
         //newPixel.setEnergy(actor.getEnergy() + energyChange);
         configuration.world.set(newPixel);
 
+        if (configuration.rng.nextDouble() <= configuration.mutationRate) {
+            newPixel.mutate(configuration);
+        }
+
         return energyChange;
     }
 

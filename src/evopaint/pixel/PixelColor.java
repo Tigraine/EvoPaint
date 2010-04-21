@@ -19,6 +19,7 @@
 
 package evopaint.pixel;
 
+import evopaint.interfaces.IRandomNumberGenerator;
 import evopaint.pixel.rulebased.interfaces.IHTML;
 import java.awt.Color;
 import java.io.Serializable;
@@ -93,7 +94,7 @@ public class PixelColor implements IHTML, Serializable {
     }
 
     public double distanceTo(PixelColor theirColor, ColorDimensions dimensions) {
-        double distance = 1;
+        double distance = 0;
 
         if (dimensions.hue && dimensions.saturation && dimensions.brightness) {
                 // this is difficult. we need to come up with a distance that
@@ -198,9 +199,11 @@ public class PixelColor implements IHTML, Serializable {
         } else if (dimensions.brightness) {
             distance = distanceLinear(brightness, theirColor.brightness);
 
-        } else {
-            assert(false);
-        }
+        } //else { // cannot assert anymore, because mutation will produce
+                    // no-dimension comparisons. so.. a distance is always 0 in
+                    // that case. worx4me
+          //  assert(false);
+        //}
         
         return distance > 1d ? 1d : distance; // we have some rounding problems
     }
@@ -214,6 +217,33 @@ public class PixelColor implements IHTML, Serializable {
 
     private static double distanceLinear(double a, double b) {
         return Math.abs(a - b);
+    }
+
+    public int countGenes() {
+        return 3;
+    }
+
+    public void mutate(IRandomNumberGenerator rng) {
+        switch (rng.nextPositiveInt(3)) {
+            case 0: hue = rng.nextFloat();
+            break;
+            case 1: saturation = rng.nextFloat();
+            break;
+            case 2: brightness = rng.nextFloat();
+            break;
+        }
+    }
+
+    public void mutate(int mutatedGene, IRandomNumberGenerator rng) {
+        assert (mutatedGene >= 0 && mutatedGene <= 2);
+        switch (mutatedGene) {
+            case 0: hue = rng.nextFloat();
+            break;
+            case 1: saturation = rng.nextFloat();
+            break;
+            case 2: brightness = rng.nextFloat();
+            break;
+        }
     }
 
     public void mixWith(PixelColor theirColor, float theirShare, ColorDimensions dimensions) {
@@ -272,9 +302,9 @@ public class PixelColor implements IHTML, Serializable {
         } else if (dimensions.brightness) {
             brightness = (float)mixLinear(brightness, theirColor.brightness, theirShare);
 
-        } else {
-            assert(false);
-        }
+        } // else { if we mix in no dimensions, we do not mix at all
+            // assert(false);
+        //}
         
         //System.out.println(toString());
     }
@@ -354,5 +384,9 @@ public class PixelColor implements IHTML, Serializable {
         this.hue = pixelColor.hue;
         this.saturation = pixelColor.saturation;
         this.brightness = pixelColor.brightness;
+    }
+
+    public PixelColor(IRandomNumberGenerator rng) {
+        this(rng.nextPositiveInt());
     }
 }

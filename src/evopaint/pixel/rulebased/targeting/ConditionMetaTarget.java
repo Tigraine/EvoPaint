@@ -20,6 +20,7 @@
 package evopaint.pixel.rulebased.targeting;
 
 import evopaint.Configuration;
+import evopaint.interfaces.IRandomNumberGenerator;
 import evopaint.pixel.rulebased.Condition;
 import evopaint.pixel.rulebased.RuleBasedPixel;
 import evopaint.util.mapping.RelativeCoordinate;
@@ -41,6 +42,10 @@ public class ConditionMetaTarget
 
     public ConditionMetaTarget(ConditionMetaTarget conditionMetaTarget) {
         super(conditionMetaTarget);
+    }
+
+    public ConditionMetaTarget(int numDirections, IRandomNumberGenerator rng) {
+        super(numDirections, rng);
     }
 
     public boolean meets(Condition condition, RuleBasedPixel actor, Configuration configuration) {

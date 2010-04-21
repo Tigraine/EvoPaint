@@ -58,11 +58,37 @@ public class ColorLikenessMyColorQualifier extends Qualifier {
 
     public ColorLikenessMyColorQualifier(ColorLikenessMyColorQualifier colorLikenessMyColorQualifier) {
         this.isLeast = colorLikenessMyColorQualifier.isLeast;
-        this.dimensions = new ColorDimensions(colorLikenessMyColorQualifier.dimensions);
+        this.dimensions = colorLikenessMyColorQualifier.dimensions;
+    }
+
+    public ColorLikenessMyColorQualifier(IRandomNumberGenerator rng) {
+        this.isLeast = rng.nextBoolean();
+        this.dimensions = new ColorDimensions(rng);
     }
 
     public int getType() {
         return Qualifier.COLOR_LIKENESS_MY_COLOR;
+    }
+
+    public int countGenes() {
+        return 1 + dimensions.countGenes();
+    }
+
+    public void mutate(int mutatedGene, IRandomNumberGenerator rng) {
+        if (mutatedGene == 0) {
+            isLeast = !isLeast;
+            return;
+        }
+        mutatedGene -= 1;
+
+        int numGenesDimensions = dimensions.countGenes();
+        if (mutatedGene < numGenesDimensions) {
+            dimensions = new ColorDimensions(dimensions);
+            dimensions.mutate(mutatedGene, rng);
+            return;
+        }
+
+        assert false; // we have an error in our mutatedGene calculation
     }
 
     public void mixWith(Qualifier theirQualifier, float theirShare, IRandomNumberGenerator rng) {

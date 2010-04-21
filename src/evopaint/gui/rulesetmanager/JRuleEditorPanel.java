@@ -24,7 +24,7 @@ import evopaint.pixel.rulebased.Action;
 import evopaint.pixel.rulebased.Condition;
 import evopaint.pixel.rulebased.Rule;
 import evopaint.pixel.rulebased.actions.ChangeEnergyAction;
-import evopaint.pixel.rulebased.conditions.TrueCondition;
+import evopaint.pixel.rulebased.conditions.ExistenceCondition;
 import evopaint.pixel.rulebased.targeting.ActionMetaTarget;
 import evopaint.pixel.rulebased.targeting.ITarget;
 import evopaint.pixel.rulebased.targeting.QualifiedMetaTarget;
@@ -63,7 +63,7 @@ public class JRuleEditorPanel extends JPanel {
 
         if (rule == null) {
             rule = new Rule(new ArrayList(){{
-                add(new TrueCondition());
+                add(new ExistenceCondition());
             }},
             new ChangeEnergyAction(0));
         }

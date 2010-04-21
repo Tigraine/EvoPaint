@@ -24,6 +24,8 @@ import evopaint.gui.util.FairyDustIcon;
 import evopaint.interfaces.IChanging;
 import evopaint.interfaces.IChangeListener;
 import evopaint.pixel.PixelColor;
+import evopaint.pixel.rulebased.Action;
+import evopaint.pixel.rulebased.Rule;
 import evopaint.pixel.rulebased.RuleSet;
 import java.awt.Color;
 import java.awt.Component;
@@ -131,6 +133,9 @@ public class Paint implements IChanging {
     }
 
     public void changeCurrentRuleSet(RuleSet ruleSet) {
+        for (Rule rule : ruleSet.getRules()) {
+            configuration.usedActions.add(rule.getAction()); // they will never be modified or deleted, so no synchronization necessary
+        }
         changePaint(new Paint(configuration, currentPaint.colorMode,
                 Paint.RULE_SET, currentPaint.color, ruleSet));
     }
@@ -158,11 +163,6 @@ public class Paint implements IChanging {
                 paintHistory.removeLast();
             }
         }
-    }
-
-    public void changePaint(int colorMode, int ruleSetMode, PixelColor color, RuleSet ruleSet) {
-        assert(configuration != null);
-        changePaint(new Paint(configuration, colorMode, ruleSetMode, color, ruleSet));
     }
 
     private void changePaint(Paint newPaint) {

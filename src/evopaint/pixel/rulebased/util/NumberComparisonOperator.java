@@ -19,9 +19,11 @@
 
 package evopaint.pixel.rulebased.util;
 
+import evopaint.interfaces.IRandomNumberGenerator;
 import evopaint.pixel.rulebased.interfaces.IHTML;
 import evopaint.pixel.rulebased.interfaces.INamed;
 import java.io.Serializable;
+import java.util.ArrayList;
 import javax.swing.DefaultComboBoxModel;
 
 /**
@@ -112,6 +114,36 @@ public class NumberComparisonOperator implements INamed, IHTML, Serializable {
             default: assert(false);
         }
         return null;
+    }
+
+    public static NumberComparisonOperator getRandom(IRandomNumberGenerator rng) {
+        int rnd = rng.nextPositiveInt(6);
+        switch (rnd) {
+            case TYPE_EQUAL: return NumberComparisonOperator.EQUAL;
+            case TYPE_NOT_EQUAL: return NumberComparisonOperator.NOT_EQUAL;
+            case TYPE_GREATER_THAN: return NumberComparisonOperator.GREATER_THAN;
+            case TYPE_LESS_THAN: return NumberComparisonOperator.LESS_THAN;
+            case TYPE_GREATER_OR_EQUAL: return NumberComparisonOperator.GREATER_OR_EQUAL;
+            case TYPE_LESS_OR_EQUAL: return NumberComparisonOperator.LESS_OR_EQUAL;
+            default: assert(false);
+        }
+        return null;
+    }
+
+    public static NumberComparisonOperator getRandomOtherThan(
+            NumberComparisonOperator nco, IRandomNumberGenerator rng) {
+
+        ArrayList<NumberComparisonOperator> unusedOperators = new ArrayList<NumberComparisonOperator>() {{
+            add(EQUAL);
+            add(NOT_EQUAL);
+            add(GREATER_THAN);
+            add(LESS_THAN);
+            add(GREATER_OR_EQUAL);
+            add(LESS_OR_EQUAL);
+        }};
+        unusedOperators.remove(nco);
+        
+        return unusedOperators.get(rng.nextPositiveInt(unusedOperators.size()));
     }
 
     private NumberComparisonOperator(int type) {

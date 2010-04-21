@@ -66,13 +66,52 @@ public class ColorLikenessMyColorCondition extends Condition {
 
     public ColorLikenessMyColorCondition(ColorLikenessMyColorCondition colorLikenessConditionMyColor) {
         super(colorLikenessConditionMyColor);
-        this.dimensions = new ColorDimensions(colorLikenessConditionMyColor.dimensions);
+        this.dimensions = colorLikenessConditionMyColor.dimensions;
         this.compareToLikeness = colorLikenessConditionMyColor.compareToLikeness;
         this.comparisonOperator = colorLikenessConditionMyColor.comparisonOperator;
     }
 
+    public ColorLikenessMyColorCondition(IRandomNumberGenerator rng) {
+        super(rng);
+        this.dimensions = new ColorDimensions(rng);
+        this.compareToLikeness = rng.nextFloat();
+        this.comparisonOperator = NumberComparisonOperator.getRandom(rng);
+    }
+
     public int getType() {
         return Condition.COLOR_LIKENESS_MY_COLOR;
+    }
+
+    @Override
+    public int countGenes() {
+        return super.countGenes() + dimensions.countGenes() + 2;
+    }
+
+    @Override
+    public void mutate(int mutatedGene, IRandomNumberGenerator rng) {
+        int numGenesSuper = super.countGenes();
+        if (mutatedGene < numGenesSuper) {
+            super.mutate(mutatedGene, rng);
+            return;
+        }
+        mutatedGene -= numGenesSuper;
+
+        int numGenesDimensions = dimensions.countGenes();
+        if (mutatedGene < numGenesDimensions) {
+            dimensions = new ColorDimensions(dimensions);
+            dimensions.mutate(mutatedGene, rng);
+            return;
+        }
+        mutatedGene -= numGenesDimensions;
+
+        switch (mutatedGene) {
+            case 0: comparisonOperator = NumberComparisonOperator.getRandomOtherThan(comparisonOperator, rng);
+            return;
+            case 1: compareToLikeness = rng.nextFloat();
+            return;
+        }
+
+        assert false; // we have an error in the mutatedGene calculation
     }
 
     @Override

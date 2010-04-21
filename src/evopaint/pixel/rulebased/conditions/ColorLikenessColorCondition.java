@@ -72,13 +72,62 @@ public class ColorLikenessColorCondition extends Condition {
     public ColorLikenessColorCondition(ColorLikenessColorCondition colorLikenessConditionColor) {
         super(colorLikenessConditionColor);
         this.comparedColor = colorLikenessConditionColor.comparedColor;
-        this.dimensions = new ColorDimensions(colorLikenessConditionColor.dimensions);
+        this.dimensions = colorLikenessConditionColor.dimensions;
         this.compareToLikeness = colorLikenessConditionColor.compareToLikeness;
         this.comparisonOperator = colorLikenessConditionColor.comparisonOperator;
     }
 
+    public ColorLikenessColorCondition(IRandomNumberGenerator rng) {
+        super(rng);
+        this.comparedColor = new PixelColor(rng);
+        this.dimensions = new ColorDimensions(rng);
+        this.compareToLikeness = rng.nextFloat();
+        this.comparisonOperator = NumberComparisonOperator.getRandom(rng);
+    }
+
     public int getType() {
         return Condition.COLOR_LIKENESS_COLOR;
+    }
+
+    @Override
+    public int countGenes() {
+        return super.countGenes() + comparedColor.countGenes() +
+                dimensions.countGenes() + 2;
+    }
+
+    @Override
+    public void mutate(int mutatedGene, IRandomNumberGenerator rng) {
+        int numGenesSuper = super.countGenes();
+        if (mutatedGene < numGenesSuper) {
+            super.mutate(mutatedGene, rng);
+            return;
+        }
+        mutatedGene -= numGenesSuper;
+
+        int numGenesComparedColor = comparedColor.countGenes();
+        if (mutatedGene < numGenesComparedColor) {
+            comparedColor = new PixelColor(comparedColor);
+            comparedColor.mutate(mutatedGene, rng);
+            return;
+        }
+        mutatedGene -= numGenesComparedColor;
+
+        int numGenesDimensions = dimensions.countGenes();
+        if (mutatedGene < numGenesDimensions) {
+            dimensions = new ColorDimensions(dimensions);
+            dimensions.mutate(mutatedGene, rng);
+            return;
+        }
+        mutatedGene -= numGenesDimensions;
+
+        switch (mutatedGene) {
+            case 0: comparisonOperator = NumberComparisonOperator.getRandomOtherThan(comparisonOperator, rng);
+            return;
+            case 1: compareToLikeness = rng.nextFloat();
+            return;
+        }
+
+        assert false; // we have an error in the mutatedGene calculation
     }
 
     @Override

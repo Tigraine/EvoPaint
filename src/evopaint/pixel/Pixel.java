@@ -89,7 +89,16 @@ public abstract class Pixel {
         }
     }
 
-    public void mixWith(Pixel them, float theirShare, IRandomNumberGenerator rng) {
+    protected int countGenes() {
+        return pixelColor.countGenes();
+    }
+
+    protected void mutate(int mutatedGene, IRandomNumberGenerator rng) {
+        pixelColor = new PixelColor(pixelColor);
+        pixelColor.mutate(mutatedGene, rng);
+    }
+
+    protected void mixWith(Pixel them, float theirShare, IRandomNumberGenerator rng) {
         pixelColor = new PixelColor(pixelColor);
         pixelColor.mixWith(them.getPixelColor(), theirShare, new ColorDimensions(true, true, true));
     }

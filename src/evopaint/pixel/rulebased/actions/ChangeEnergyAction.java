@@ -46,6 +46,25 @@ public class ChangeEnergyAction extends Action {
     }
 
     @Override
+    public int countGenes() {
+        return super.countGenes(); // amount is not mutable because it is an energy changing operation
+    }
+
+    /* amount is not mutable
+    @Override
+    public void mutate(int mutatedGene, IRandomNumberGenerator rng) {
+        int numGenesSuper = super.countGenes();
+        if (mutatedGene < numGenesSuper) {
+            super.mutate(mutatedGene, rng);
+            return;
+        }
+        mutatedGene -= numGenesSuper;
+
+        assert false; // we have an error in our mutatedGene calculation
+    }
+    */
+
+    @Override
     public void mixWith(Action theirAction, float theirShare, IRandomNumberGenerator rng) {
         super.mixWith(theirAction, theirShare, rng);
         if (rng.nextFloat() < theirShare) {

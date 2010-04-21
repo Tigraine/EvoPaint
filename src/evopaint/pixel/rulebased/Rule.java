@@ -21,18 +21,11 @@ package evopaint.pixel.rulebased;
 
 import evopaint.Configuration;
 import evopaint.interfaces.IRandomNumberGenerator;
-import evopaint.pixel.rulebased.actions.AssimilationAction;
 import evopaint.pixel.rulebased.actions.ChangeEnergyAction;
 import evopaint.pixel.rulebased.actions.CopyAction;
 import evopaint.pixel.rulebased.actions.MoveAction;
-import evopaint.pixel.rulebased.actions.PartnerProcreationAction;
 import evopaint.pixel.rulebased.actions.SetColorAction;
-import evopaint.pixel.rulebased.conditions.ColorLikenessColorCondition;
-import evopaint.pixel.rulebased.conditions.ColorLikenessMyColorCondition;
-import evopaint.pixel.rulebased.conditions.EnergyCondition;
-import evopaint.pixel.rulebased.conditions.EnergyCondition;
 import evopaint.pixel.rulebased.conditions.ExistenceCondition;
-import evopaint.pixel.rulebased.conditions.TrueCondition;
 import evopaint.pixel.rulebased.interfaces.IHTML;
 import evopaint.pixel.rulebased.targeting.ActionMetaTarget;
 import evopaint.pixel.rulebased.targeting.Qualifier;
@@ -140,13 +133,19 @@ public class Rule implements IHTML {
 
     public Rule() {
         this.conditions = new ArrayList<Condition>();
-        this.conditions.add(new TrueCondition());
+        this.conditions.add(new ExistenceCondition());
         this.action = new ChangeEnergyAction();
     }
 
     public Rule(Rule rule) {
         this.conditions = new ArrayList(rule.conditions);
         this.action = rule.action;
+    }
+
+    public Rule(List<Action>usableActions, IRandomNumberGenerator rng) {
+        this.conditions = new ArrayList<Condition>();
+        this.conditions.add(Condition.createRandom(rng));
+        this.action = usableActions.get(rng.nextPositiveInt(usableActions.size()));
     }
 
     public String validate() {
@@ -162,9 +161,6 @@ public class Rule implements IHTML {
 
     private String validateTargetsNotEmpty() {
         for (Condition c : conditions) {
-            if (c instanceof TrueCondition) {
-                continue;
-            }
             if (c.getTarget() instanceof SingleTarget) {
                 if (((SingleTarget)c.getTarget()).getDirection() == null) {
                     return "A condition has no target, please review your rule!";
@@ -285,6 +281,55 @@ public class Rule implements IHTML {
         return null;
     }
 
+    public int countGenes() {
+        int ret = 0;
+        for (Condition condition : conditions) {
+            ret += condition.countGenes();
+        }
+        ret += 1; // a gene to remove a condition
+        ret += 1; // a gene to add a condition;
+        ret += action.countGenes();
+        return ret;
+    }
+
+    public void mutate(int mutatedGene, IRandomNumberGenerator rng) {
+        for (int i = 0; i < conditions.size(); i++) {
+            int conditionGeneCount = conditions.get(i).countGenes();
+            if (mutatedGene < conditionGeneCount) {
+                Condition newCondition = Condition.copy(conditions.get(i));
+                newCondition.mutate(mutatedGene, rng);
+                conditions.set(i, newCondition);
+                return;
+            }
+            mutatedGene -= conditionGeneCount;
+        }
+
+        if (mutatedGene == 0) {
+            if (conditions.size() == 0) {
+                return;
+            }
+            conditions.remove(rng.nextPositiveInt(conditions.size()));
+            return;
+        }
+        mutatedGene -= 1;
+
+        if (mutatedGene == 0) {
+            conditions.add(Condition.createRandom(rng));
+            return;
+        }
+        mutatedGene -= 1;
+
+        int actionGenes = action.countGenes();
+        if (mutatedGene < actionGenes) {
+            action = Action.copy(action);
+            action.mutate(mutatedGene, rng);
+            return;
+        }
+        mutatedGene -= actionGenes;
+
+        assert false; // we have an error in the mutatedGene calculation
+    }
+
     public void mixWith(Rule theirRule, float theirShare, IRandomNumberGenerator rng) {
         // conditions
         // cache size() calls for maximum performance
@@ -300,29 +345,7 @@ public class Rule implements IHTML {
                 Condition ourCondition = conditions.get(i);
                 Condition theirCondition = theirRule.conditions.get(i);
                 if (ourCondition.getType() == theirCondition.getType()) {
-                    Condition newCondition = null;
-                    int type = ourCondition.getType();
-                    switch (type) {
-                        case Condition.COLOR_LIKENESS_COLOR:
-                            newCondition = new ColorLikenessColorCondition(
-                                    (ColorLikenessColorCondition)theirCondition);
-                            break;
-                        case Condition.COLOR_LIKENESS_MY_COLOR:
-                            newCondition = new ColorLikenessMyColorCondition(
-                                    (ColorLikenessMyColorCondition)theirCondition);
-                            break;
-                        case Condition.ENERGY:
-                            newCondition = new EnergyCondition(
-                                    (EnergyCondition)theirCondition);
-                            break;
-                        case Condition.EXISTENCE:
-                            newCondition = new ExistenceCondition(
-                                    (ExistenceCondition)theirCondition);
-                        case Condition.TRUE:
-                            newCondition = theirCondition;
-                            break;
-                        default: assert (false);
-                    }
+                    Condition newCondition = Condition.copy(ourCondition);
                     newCondition.mixWith(theirCondition, theirShare, rng);
                     conditions.set(i, newCondition);
                 } else {
@@ -347,29 +370,7 @@ public class Rule implements IHTML {
                 Condition ourCondition = conditions.get(i);
                 Condition theirCondition = theirRule.conditions.get(i);
                 if (ourCondition.getType() == theirCondition.getType()) {
-                    Condition newCondition = null;
-                    int type = ourCondition.getType();
-                    switch (type) {
-                        case Condition.COLOR_LIKENESS_COLOR:
-                            newCondition = new ColorLikenessColorCondition(
-                                    (ColorLikenessColorCondition)theirCondition);
-                            break;
-                        case Condition.COLOR_LIKENESS_MY_COLOR:
-                            newCondition = new ColorLikenessMyColorCondition(
-                                    (ColorLikenessMyColorCondition)theirCondition);
-                            break;
-                        case Condition.ENERGY:
-                            newCondition = new EnergyCondition(
-                                    (EnergyCondition)theirCondition);
-                            break;
-                        case Condition.EXISTENCE:
-                            newCondition = new ExistenceCondition(
-                                    (ExistenceCondition)theirCondition);
-                        case Condition.TRUE:
-                            newCondition = theirCondition;
-                            break;
-                        default: assert (false);
-                    }
+                    Condition newCondition = Condition.copy(ourCondition);
                     newCondition.mixWith(theirCondition, theirShare, rng);
                     conditions.set(i, newCondition);
                 } else {
@@ -388,34 +389,7 @@ public class Rule implements IHTML {
         }
 
         if (action.getType() == theirRule.action.getType()) {
-            int type = action.getType();
-            switch (type) {
-                case Action.ASSIMILATION:
-                    action = new AssimilationAction(
-                            (AssimilationAction)theirRule.action);
-                    break;
-                case Action.CHANGE_ENERGY:
-                    action = new ChangeEnergyAction(
-                            (ChangeEnergyAction)theirRule.action);
-                    break;
-                case Action.COPY:
-                    action = new CopyAction(
-                            (CopyAction)theirRule.action);
-                    break;
-                case Action.MOVE:
-                    action = new MoveAction(
-                            (MoveAction)theirRule.action);
-                    break;
-                case Action.PARTNER_PROCREATION:
-                    action = new PartnerProcreationAction(
-                            (PartnerProcreationAction)theirRule.action);
-                    break;
-                case Action.SET_COLOR:
-                    action = new SetColorAction(
-                            (SetColorAction)theirRule.action);
-                    break;
-                default: assert (false);
-            }
+            action = Action.copy(action);
             action.mixWith(theirRule.action, theirShare, rng);
         } else {
             if (rng.nextFloat() < theirShare) {

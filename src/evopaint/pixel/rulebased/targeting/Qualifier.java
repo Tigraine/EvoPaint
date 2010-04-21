@@ -25,6 +25,10 @@ import evopaint.pixel.rulebased.RuleBasedPixel;
 import evopaint.pixel.rulebased.interfaces.IHTML;
 import evopaint.pixel.rulebased.interfaces.INamed;
 import evopaint.pixel.rulebased.interfaces.IParameterized;
+import evopaint.pixel.rulebased.targeting.qualifiers.ColorLikenessColorQualifier;
+import evopaint.pixel.rulebased.targeting.qualifiers.ColorLikenessMyColorQualifier;
+import evopaint.pixel.rulebased.targeting.qualifiers.EnergyQualifier;
+import evopaint.pixel.rulebased.targeting.qualifiers.ExistenceQualifier;
 import evopaint.util.mapping.RelativeCoordinate;
 import java.io.Serializable;
 import java.util.LinkedHashMap;
@@ -43,9 +47,46 @@ public abstract class Qualifier implements INamed, IHTML, IParameterized, Serial
     public static final int ENERGY = 2;
     public static final int EXISTENCE = 3;
 
+    private static final int NUM_QUALIFIERS = 4;
+
     public abstract int getType();
 
+    public abstract int countGenes();
+
+    public abstract void mutate(int mutatedGene, IRandomNumberGenerator rng);
+
     public abstract void mixWith(Qualifier theirQualifier, float theirShare, IRandomNumberGenerator rng);
+
+    public static Qualifier copy(Qualifier qualifier) {
+        int type = qualifier.getType();
+        switch (type) {
+            case Qualifier.COLOR_LIKENESS_COLOR:
+                return new ColorLikenessColorQualifier(
+                        (ColorLikenessColorQualifier)qualifier);
+            case Qualifier.COLOR_LIKENESS_MY_COLOR:
+                return new ColorLikenessMyColorQualifier(
+                        (ColorLikenessMyColorQualifier)qualifier);
+            case Qualifier.ENERGY:
+                return new EnergyQualifier(
+                        (EnergyQualifier)qualifier);
+            case Qualifier.EXISTENCE:
+                return new ExistenceQualifier(
+                        (ExistenceQualifier)qualifier);
+            default: assert (false);
+                return null;
+        }
+    }
+
+    public static Qualifier createRandom(IRandomNumberGenerator rng) {
+        switch (rng.nextPositiveInt(NUM_QUALIFIERS)) {
+            case COLOR_LIKENESS_COLOR: return new ColorLikenessColorQualifier(rng);
+            case COLOR_LIKENESS_MY_COLOR: return new ColorLikenessColorQualifier(rng);
+            case ENERGY: return new ColorLikenessColorQualifier(rng);
+            case EXISTENCE: return new ColorLikenessColorQualifier(rng);
+        }
+        assert false;
+        return null;
+    }
 
     public String toHTML() {
         return getName();

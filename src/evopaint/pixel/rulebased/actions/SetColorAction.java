@@ -22,11 +22,13 @@ package evopaint.pixel.rulebased.actions;
 import evopaint.Configuration;
 import evopaint.gui.rulesetmanager.util.ColorChooserLabel;
 import evopaint.interfaces.IRandomNumberGenerator;
+import evopaint.pixel.ColorDimensions;
 import evopaint.pixel.rulebased.Action;
 import evopaint.pixel.PixelColor;
 import evopaint.pixel.rulebased.RuleBasedPixel;
 import evopaint.pixel.rulebased.targeting.ActionMetaTarget;
 import evopaint.util.mapping.RelativeCoordinate;
+import java.awt.Dimension;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import javax.swing.JComponent;
@@ -51,7 +53,7 @@ public class SetColorAction extends Action {
 
     public SetColorAction(SetColorAction setColorAction) {
         super(setColorAction);
-        this.color = new PixelColor(setColorAction.color);
+        this.color = setColorAction.color;
     }
 
     public int getType() {
@@ -59,10 +61,37 @@ public class SetColorAction extends Action {
     }
 
     @Override
+    public int countGenes() {
+        return super.countGenes() + color.countGenes();
+    }
+
+    @Override
+    public void mutate(int mutatedGene, IRandomNumberGenerator rng) {
+        int numGenesSuper = super.countGenes();
+        if (mutatedGene < numGenesSuper) {
+            super.mutate(mutatedGene, rng);
+            return;
+        }
+        mutatedGene -= numGenesSuper;
+
+        int numGenesColor = color.countGenes();
+        if (mutatedGene < numGenesColor) {
+            color = new PixelColor(color);
+            color.mutate(mutatedGene, rng);
+            return;
+        }
+        mutatedGene -= numGenesColor;
+
+        assert false; // we have an error in our mutatedGene calculation
+    }
+
+    @Override
     public void mixWith(Action theirAction, float theirShare, IRandomNumberGenerator rng) {
         super.mixWith(theirAction, theirShare, rng);
         if (rng.nextFloat() < theirShare) {
-            color.setColor(((SetColorAction)theirAction).color);
+            color = new PixelColor(color);
+            color.mixWith(((SetColorAction)theirAction).color, theirShare,
+                    new ColorDimensions(true, true, true));
         }
     }
 

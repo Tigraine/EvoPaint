@@ -22,6 +22,7 @@ package evopaint.pixel.rulebased.targeting;
 import evopaint.interfaces.IRandomNumberGenerator;
 import evopaint.util.mapping.RelativeCoordinate;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
@@ -44,8 +45,91 @@ public class MetaTarget extends Target {
         this.directions = new ArrayList(target.directions);
     }
 
+    public MetaTarget(int numDirections, IRandomNumberGenerator rng) {
+        this.directions = new ArrayList<RelativeCoordinate>() {{
+                add(RelativeCoordinate.CENTER);
+                add(RelativeCoordinate.NORTH);
+                add(RelativeCoordinate.NORTH_EAST);
+                add(RelativeCoordinate.EAST);
+                add(RelativeCoordinate.SOUTH_EAST);
+                add(RelativeCoordinate.SOUTH);
+                add(RelativeCoordinate.SOUTH_WEST);
+                add(RelativeCoordinate.WEST);
+                add(RelativeCoordinate.NORTH_WEST);
+            }};
+        Collections.shuffle(directions, rng.getRandom());
+        for (int i = 0; i < 1 - numDirections; i++) {
+            directions.remove(directions.size() - 1);
+        }
+    }
+
     public int getType() {
         return Target.META_TARGET;
+    }
+
+    public int countGenes() {
+        return directions.size() + 1; // the 1 is for adding a direction
+    }
+
+    public void mutate(int mutatedGene, IRandomNumberGenerator rng) {
+        if (mutatedGene < directions.size()) {
+            ArrayList<RelativeCoordinate> unusedDirections = new ArrayList<RelativeCoordinate>() {{
+                add(RelativeCoordinate.CENTER);
+                add(RelativeCoordinate.NORTH);
+                add(RelativeCoordinate.NORTH_EAST);
+                add(RelativeCoordinate.EAST);
+                add(RelativeCoordinate.SOUTH_EAST);
+                add(RelativeCoordinate.SOUTH);
+                add(RelativeCoordinate.SOUTH_WEST);
+                add(RelativeCoordinate.WEST);
+                add(RelativeCoordinate.NORTH_WEST);
+            }};
+            unusedDirections.removeAll(directions);
+
+            // if we used up all directions, we remove the mutated one
+            if (unusedDirections.size() == 0) {
+                directions.remove(mutatedGene);
+            } else {
+                // else we give removal and each unused direction an equal chance
+                // to replace this one.
+                int chosenUnused = rng.nextPositiveInt(unusedDirections.size() + 1);
+                if (chosenUnused == unusedDirections.size()) { // the "removal" one
+                    directions.remove(mutatedGene);
+                } else { // a real direction
+                    directions.set(mutatedGene, unusedDirections.get(chosenUnused));
+                }
+            }
+            return;
+        }
+        mutatedGene -= directions.size();
+
+        if (mutatedGene == 0) {
+            if (directions.size() < 9) {
+                ArrayList<RelativeCoordinate> unusedDirections =
+                        new ArrayList<RelativeCoordinate>() {{
+                        add(RelativeCoordinate.CENTER);
+                        add(RelativeCoordinate.NORTH);
+                        add(RelativeCoordinate.NORTH_EAST);
+                        add(RelativeCoordinate.EAST);
+                        add(RelativeCoordinate.SOUTH_EAST);
+                        add(RelativeCoordinate.SOUTH);
+                        add(RelativeCoordinate.SOUTH_WEST);
+                        add(RelativeCoordinate.WEST);
+                        add(RelativeCoordinate.NORTH_WEST);
+                }};
+                unusedDirections.removeAll(directions);
+
+                if (unusedDirections.size() == 0) {
+                    return;
+                }
+                
+                directions.add(unusedDirections.get(
+                        rng.nextPositiveInt(unusedDirections.size())));
+            }
+            return;
+        }
+
+        assert false; // we have an error in our mutatedGene calculation
     }
 
     public void mixWith(Target theirTarget, float theirShare, IRandomNumberGenerator rng) {

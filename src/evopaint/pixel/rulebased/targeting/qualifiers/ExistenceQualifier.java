@@ -55,8 +55,25 @@ public class ExistenceQualifier extends Qualifier {
         this.objectComparisonOperator = existenceQualifier.objectComparisonOperator;
     }
 
+    public ExistenceQualifier(IRandomNumberGenerator rng) {
+        this.objectComparisonOperator = ObjectComparisonOperator.getRandom(rng);
+    }
+
     public int getType() {
         return Qualifier.EXISTENCE;
+    }
+
+    public int countGenes() {
+        return 1;
+    }
+
+    public void mutate(int mutatedGene, IRandomNumberGenerator rng) {
+        if (mutatedGene == 0) {
+            objectComparisonOperator = ObjectComparisonOperator.getRandomOtherThan(objectComparisonOperator, rng);
+            return;
+        }
+
+        assert false; // we have an error in our mutatedGene calculation
     }
 
     public void mixWith(Qualifier theirQualifier, float theirShare, IRandomNumberGenerator rng) {

@@ -67,7 +67,7 @@ public class AssimilationAction extends Action {
 
     public AssimilationAction(AssimilationAction assimilationAction) {
         super(assimilationAction);
-        this.dimensions = new ColorDimensions(assimilationAction.dimensions);
+        this.dimensions = assimilationAction.dimensions;
         this.ourShare = assimilationAction.ourShare;
         this.mixRules = assimilationAction.mixRules;
     }
@@ -77,10 +77,45 @@ public class AssimilationAction extends Action {
     }
 
     @Override
+    public int countGenes() {
+        // mixing color or rules is not a genetic information, it's an option
+        return super.countGenes() + dimensions.countGenes() + 1;
+    }
+
+    @Override
+    public void mutate(int mutatedGene, IRandomNumberGenerator rng) {
+        int numGenesSuper = super.countGenes();
+        if (mutatedGene < numGenesSuper) {
+            super.mutate(mutatedGene, rng);
+            return;
+        }
+        mutatedGene -= numGenesSuper;
+
+        int numGenesDimensions = dimensions.countGenes();
+        if (mutatedGene < numGenesDimensions) {
+            dimensions = new ColorDimensions(dimensions);
+            dimensions.mutate(mutatedGene, rng);
+            return;
+        }
+        mutatedGene -= numGenesDimensions;
+
+        if (mutatedGene == 0) {
+            ourShare = rng.nextFloat();
+            return;
+        }
+
+        assert false; // we have an error in our mutatedGene calculation
+    }
+
+    @Override
     public void mixWith(Action theirAction, float theirShare, IRandomNumberGenerator rng) {
         super.mixWith(theirAction, theirShare, rng);
+
         AssimilationAction a = (AssimilationAction)theirAction;
+
+        dimensions = new ColorDimensions(dimensions);
         dimensions.mixWith(a.dimensions, theirShare, rng);
+        
         if (rng.nextFloat() < theirShare) {
             ourShare = a.ourShare;
         }
@@ -117,13 +152,19 @@ public class AssimilationAction extends Action {
             RuleBasedPixel newPixel = new RuleBasedPixel(target);
             newPixel.mixWith(actor, ourShare, configuration.rng);
             configuration.world.set(newPixel);
+            if (configuration.rng.nextDouble() <= configuration.mutationRate) {
+                newPixel.mutate(configuration);
+            }
         }
         else {
             PixelColor newColor = new PixelColor(target.getPixelColor());
             newColor.mixWith(actor.getPixelColor(), ourShare, dimensions);
             target.setPixelColor(newColor);
+            if (configuration.rng.nextDouble() <= configuration.mutationRate) {
+                newColor.mutate(configuration.rng);
+            }
         }
-                
+
         return energyChange;
     }
 

@@ -20,13 +20,8 @@
 package evopaint.pixel.rulebased.targeting;
 
 import evopaint.interfaces.IRandomNumberGenerator;
-import evopaint.util.ExceptionHandler;
 import evopaint.util.mapping.RelativeCoordinate;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import java.util.ArrayList;
 
 /**
  *
@@ -46,8 +41,35 @@ public class SingleTarget extends Target {
         this.direction = target.direction;
     }
 
+    public SingleTarget(IRandomNumberGenerator rng) {
+        this.direction = RelativeCoordinate.getRandom(rng);
+    }
+
     public int getType() {
         return Target.SINGLE_TARGET;
+    }
+
+    public int countGenes() {
+        return 1;
+    }
+
+    public void mutate(int mutatedGene, IRandomNumberGenerator rng) {
+        assert mutatedGene == 0;
+        ArrayList<RelativeCoordinate> unusedDirections =
+                new ArrayList<RelativeCoordinate>() {{
+                add(RelativeCoordinate.CENTER);
+                add(RelativeCoordinate.NORTH);
+                add(RelativeCoordinate.NORTH_EAST);
+                add(RelativeCoordinate.EAST);
+                add(RelativeCoordinate.SOUTH_EAST);
+                add(RelativeCoordinate.SOUTH);
+                add(RelativeCoordinate.SOUTH_WEST);
+                add(RelativeCoordinate.WEST);
+                add(RelativeCoordinate.NORTH_WEST);
+        }};
+        unusedDirections.remove(direction);
+        this.direction = unusedDirections.get(rng.nextPositiveInt(unusedDirections.size()));
+        return;
     }
 
     public void mixWith(Target theirTarget, float theirShare, IRandomNumberGenerator rng) {

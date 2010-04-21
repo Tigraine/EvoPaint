@@ -50,6 +50,24 @@ public class ColorDimensions implements IHTML, Serializable {
         ret += "]";
         return ret;
     }
+
+    public int countGenes() {
+        return 3;
+    }
+
+    public void mutate(int mutatedGene, IRandomNumberGenerator rng) {
+        assert mutatedGene >= 0 && mutatedGene <= 2;
+        int rnd = rng.nextPositiveInt(3);
+        switch (rnd) {
+            case 0: hue = !hue;
+            return;
+            case 1: saturation = !saturation;
+            return;
+            case 2: brightness = !brightness;
+            return;
+        }
+        assert false;
+    }
     
     public void mixWith(ColorDimensions theirColorDimensions, float theirShare, IRandomNumberGenerator rng) {
         if (rng.nextFloat() < theirShare) {
@@ -103,6 +121,12 @@ public class ColorDimensions implements IHTML, Serializable {
         this.hue = colorDimensions.hue;
         this.saturation = colorDimensions.saturation;
         this.brightness = colorDimensions.brightness;
+    }
+
+    public ColorDimensions(IRandomNumberGenerator rng) {
+        this.hue = rng.nextBoolean();
+        this.saturation = rng.nextBoolean();
+        this.brightness = rng.nextBoolean();
     }
     
 }

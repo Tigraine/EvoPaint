@@ -68,8 +68,8 @@ public class PartnerProcreationAction extends Action {
 
     public PartnerProcreationAction(PartnerProcreationAction partnerProcreationAction) {
         super(partnerProcreationAction);
-        this.dimensions = new ColorDimensions(partnerProcreationAction.dimensions);
-        ourShare = partnerProcreationAction.ourShare;
+        this.dimensions = partnerProcreationAction.dimensions;
+        this.ourShare = partnerProcreationAction.ourShare;
         this.mixRules = partnerProcreationAction.mixRules;
     }
 
@@ -78,13 +78,49 @@ public class PartnerProcreationAction extends Action {
     }
 
     @Override
+    public int countGenes() {
+        // partner energy change and mix rules are not genes, but options
+        return super.countGenes() + dimensions.countGenes() + 1;
+    }
+
+    @Override
+    public void mutate(int mutatedGene, IRandomNumberGenerator rng) {
+        int numGenesSuper = super.countGenes();
+        if (mutatedGene < numGenesSuper) {
+            super.mutate(mutatedGene, rng);
+            return;
+        }
+        mutatedGene -= numGenesSuper;
+
+        int numGenesDimensions = dimensions.countGenes();
+        if (mutatedGene < numGenesDimensions) {
+            dimensions = new ColorDimensions(dimensions);
+            dimensions.mutate(mutatedGene, rng);
+            return;
+        }
+        mutatedGene -= numGenesDimensions;
+
+        if (mutatedGene == 0) {
+            ourShare = rng.nextFloat();
+            return;
+        }
+
+        assert false; // we have an error in our mutatedGene calculation
+    }
+
+    @Override
     public void mixWith(Action theirAction, float theirShare, IRandomNumberGenerator rng) {
         super.mixWith(theirAction, theirShare, rng);
+
         PartnerProcreationAction a = (PartnerProcreationAction)theirAction;
+
+        dimensions = new ColorDimensions(dimensions);
         dimensions.mixWith(a.dimensions, theirShare, rng);
+
         if (rng.nextFloat() < theirShare) {
             partnerEnergyChange = a.partnerEnergyChange;
         }
+
         if (rng.nextFloat() < theirShare) {
             ourShare = a.ourShare;
         }
@@ -132,11 +168,16 @@ public class PartnerProcreationAction extends Action {
         if (mixRules) {
             newPixel = new RuleBasedPixel(actor);
             newPixel.mixWith(partner, 1 - ourShare, configuration.rng);
+            if (configuration.rng.nextDouble() <= configuration.mutationRate) {
+                newPixel.mutate(configuration);
+            }
         }
         else {
             newPixel = new RuleBasedPixel(actor, actor.getRules());
             newPixel.getPixelColor().mixWith(partner.getPixelColor(), 1 - ourShare, dimensions);
-            
+            if (configuration.rng.nextDouble() <= configuration.mutationRate) {
+                newPixel.getPixelColor().mutate(configuration.rng);
+            }
         }
         newPixel.setLocation(randomFreeSpot);
         configuration.world.set(newPixel);

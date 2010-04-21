@@ -19,6 +19,7 @@
 
 package evopaint.pixel.rulebased.util;
 
+import evopaint.interfaces.IRandomNumberGenerator;
 import evopaint.pixel.rulebased.interfaces.IHTML;
 import evopaint.pixel.rulebased.interfaces.INamed;
 import java.io.Serializable;
@@ -81,7 +82,25 @@ public class ObjectComparisonOperator implements INamed, IHTML, Serializable {
             case TYPE_EQUAL: return ObjectComparisonOperator.EQUAL;
             case TYPE_NOT_EQUAL: return ObjectComparisonOperator.NOT_EQUAL;
         }
+        assert false;
         return null;
+    }
+
+    public static ObjectComparisonOperator getRandom(IRandomNumberGenerator rng) {
+        if (rng.nextBoolean()) {
+            return EQUAL;
+        } else {
+            return NOT_EQUAL;
+        }
+    }
+
+    public static ObjectComparisonOperator getRandomOtherThan(
+            ObjectComparisonOperator oco, IRandomNumberGenerator rng) {
+        if (oco == EQUAL) {
+            return NOT_EQUAL;
+        } else {
+            return EQUAL;
+        }
     }
 
     private ObjectComparisonOperator(int type) {
