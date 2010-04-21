@@ -213,7 +213,7 @@ public class MenuBar extends JMenuBar implements Observer {
                     public void changed() {
                         configuration.operationMode = Configuration.OPERATIONMODE_AGENT_SIMULATION;
                         modeMenu.setText("Mode: Agent Simulation");
-                        configuration.world.recount();
+                        configuration.world.reset();
                     }
                 });
             }
@@ -229,6 +229,7 @@ public class MenuBar extends JMenuBar implements Observer {
                     public void changed() {
                         configuration.operationMode = Configuration.OPERATIONMODE_CELLULAR_AUTOMATON;
                         modeMenu.setText("Mode: Cellular Automaton");
+                        configuration.world.reset();
                     }
                 });
             }

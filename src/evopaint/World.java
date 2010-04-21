@@ -44,7 +44,7 @@ public class World extends ParallaxMap<RuleBasedPixel> implements IChanging {
     public void step() {
 
         if (pendingOperations.size() > 0) {
-            synchronized(pendingOperations) {
+            synchronized(pendingOperations) { // synched because the awt thread adds elements and this one deletes
                 for (IChangeListener listener : pendingOperations) {
                     listener.changed();
                 }
