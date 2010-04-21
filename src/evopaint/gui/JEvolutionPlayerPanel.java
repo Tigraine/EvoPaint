@@ -20,6 +20,8 @@
 package evopaint.gui;
 
 import evopaint.Configuration;
+import evopaint.interfaces.IChangeListener;
+import evopaint.util.ExceptionHandler;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
@@ -27,8 +29,11 @@ import java.awt.event.ActionListener;
 import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
 import javax.swing.JToggleButton;
+import javax.swing.SwingUtilities;
 
 /**
  *
@@ -97,14 +102,14 @@ public class JEvolutionPlayerPanel extends JPanel {
         group.add(pauseButton);
         group.add(stopButton);
 
-        JButton ejectButton = new JButton(new ImageIcon(getClass().getResource("icons/evolution-eject.png")));
+        final JButton ejectButton = new JButton(new ImageIcon(getClass().getResource("icons/evolution-eject.png")));
         ejectButton.setRolloverEnabled(true);
         ejectButton.setPreferredSize(new Dimension(24, 24));
         ejectButton.setContentAreaFilled(false);
         ejectButton.setIcon(new ImageIcon(getClass().getResource("icons/evolution-eject.png")));
         ejectButton.setRolloverIcon(new ImageIcon(getClass().getResource("icons/evolution-eject-rollover.png")));
         ejectButton.setPressedIcon(new ImageIcon(getClass().getResource("icons/evolution-eject-pressed.png")));
-        ejectButton.setToolTipText("NOT WORKING YET: Lets you choose to open/create an evolution or reset your current one");
+        ejectButton.setToolTipText("Lets you choose to open/create an evolution or reset your current one");
         add(ejectButton);
 
         playButton.setSelected(true);
@@ -142,6 +147,51 @@ public class JEvolutionPlayerPanel extends JPanel {
 
             public void actionPerformed(ActionEvent e) {
                 configuration.runLevel = Configuration.RUNLEVEL_STOP;
+            }
+        });
+
+        ejectButton.addActionListener(new ActionListener() {
+
+            public void actionPerformed(ActionEvent e) {
+                JPopupMenu ejectMenu = new JPopupMenu();
+                ejectMenu.add(new JMenuItem("Reset") {{
+                    addActionListener(new ActionListener() {
+
+                            public void actionPerformed(ActionEvent e) {
+                                SwingUtilities.invokeLater(new Runnable() {
+
+                                    public void run() {
+
+                                        configuration.world.addChangeListener(new IChangeListener() {
+
+                                            public void changed() {
+                                                configuration.world.reset();
+                                            }
+                                        });
+                                    }
+                                });
+                            }
+                        });
+                }});
+                ejectMenu.add(new JMenuItem("New") {{
+                    addActionListener(new ActionListener() {
+
+                            public void actionPerformed(ActionEvent e) {
+                                // TODO implement me
+                                ExceptionHandler.handle(new Throwable(), false, "relax, this will be implemented soon");
+                            }
+                        });
+                }});
+                ejectMenu.add(new JMenuItem("Open") {{
+                    addActionListener(new ActionListener() {
+
+                            public void actionPerformed(ActionEvent e) {
+                                // TODO implement me
+                                ExceptionHandler.handle(new Throwable(), false, "relax, this will be implemented soon");
+                            }
+                        });
+                }});
+                ejectMenu.show(ejectButton, 0, 25);
             }
         });
     }
