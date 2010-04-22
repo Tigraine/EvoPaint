@@ -40,6 +40,11 @@ import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import javax.swing.ButtonGroup;
@@ -397,7 +402,19 @@ public class JRuleSetBrowser extends JPanel implements TreeSelectionListener {
                 RuleSetCollection collection = (RuleSetCollection)
                         collectionNode.getUserObject();
                 RuleSet ruleSet = (RuleSet)selectedNode.getUserObject();
-                RuleSet newRuleSet = new RuleSet(ruleSet);
+
+                RuleSet newRuleSet = null;
+                try {
+                    ByteArrayOutputStream outByteStream = new ByteArrayOutputStream();
+                    ObjectOutputStream out = new ObjectOutputStream(outByteStream);
+                    out.writeObject(ruleSet);
+                    ObjectInputStream in = new ObjectInputStream(new ByteArrayInputStream(outByteStream.toByteArray()));
+                    newRuleSet = (RuleSet) in.readObject();
+                } catch (ClassNotFoundException ex) {
+                    ExceptionHandler.handle(ex, true);
+                } catch (IOException ex) {
+                    ExceptionHandler.handle(ex, true);
+                }
 
                 // make sure the name of the copy is unique
                 String originalName = ruleSet.getName().replaceAll(" *\\(\\d+\\)", "");

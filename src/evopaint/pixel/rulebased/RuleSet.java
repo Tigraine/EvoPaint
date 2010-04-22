@@ -19,7 +19,6 @@
 
 package evopaint.pixel.rulebased;
 
-import evopaint.interfaces.IRandomNumberGenerator;
 import evopaint.pixel.rulebased.interfaces.IDescribable;
 import evopaint.pixel.rulebased.interfaces.INameable;
 import java.io.Serializable;
