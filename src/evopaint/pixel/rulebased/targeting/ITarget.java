@@ -21,12 +21,13 @@ package evopaint.pixel.rulebased.targeting;
 
 import evopaint.interfaces.IRandomNumberGenerator;
 import evopaint.pixel.rulebased.interfaces.IHTML;
+import java.io.Serializable;
 
 /**
  *
  * @author Markus Echterhoff <tam@edu.uni-klu.ac.at>
  */
-public interface ITarget extends IHTML {
+public interface ITarget extends IHTML, Serializable {
     public int getType();
     public int countGenes();
     public void mutate(int mutatedGene, IRandomNumberGenerator rng);

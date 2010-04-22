@@ -24,6 +24,7 @@ import evopaint.gui.util.DragDropList;
 import evopaint.pixel.rulebased.Rule;
 import evopaint.pixel.rulebased.RuleSet;
 import evopaint.util.CollectionNode;
+import evopaint.util.ExceptionHandler;
 import evopaint.util.RuleSetNode;
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -32,6 +33,11 @@ import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseListener;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.DefaultListCellRenderer;
@@ -233,9 +239,22 @@ public class JRuleList extends JPanel implements TreeSelectionListener, ListData
                 if (list.isSelectionEmpty()) {
                     return;
                 }
+                
                 int index = list.getSelectedIndex();
                 final Rule protoRule = (Rule)model.get(index);
-                Rule newRule = new Rule(protoRule);
+                Rule newRule = null;
+                try {
+                    ByteArrayOutputStream outByteStream = new ByteArrayOutputStream();
+                    ObjectOutputStream out = new ObjectOutputStream(outByteStream);
+                    out.writeObject(protoRule);
+                    ObjectInputStream in = new ObjectInputStream(new ByteArrayInputStream(outByteStream.toByteArray()));
+                    newRule = (Rule) in.readObject();
+                } catch (ClassNotFoundException ex) {
+                    ExceptionHandler.handle(ex, true);
+                } catch (IOException ex) {
+                    ExceptionHandler.handle(ex, true);
+                }
+
                 model.addElement(newRule);
                 
             }

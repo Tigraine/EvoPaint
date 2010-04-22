@@ -38,6 +38,7 @@ import evopaint.pixel.rulebased.targeting.qualifiers.ColorLikenessMyColorQualifi
 import evopaint.pixel.rulebased.targeting.qualifiers.EnergyQualifier;
 import evopaint.pixel.rulebased.targeting.qualifiers.ExistenceQualifier;
 import evopaint.pixel.rulebased.util.ObjectComparisonOperator;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -46,7 +47,7 @@ import java.util.List;
  *
  * @author Markus Echterhoff <tam@edu.uni-klu.ac.at>
  */
-public class Rule implements IHTML {
+public class Rule implements IHTML, Serializable {
     private List<Condition> conditions;
     private Action action;
 
