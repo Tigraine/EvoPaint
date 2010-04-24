@@ -80,7 +80,6 @@ public class MenuBar extends JMenuBar implements Observer {
 		
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				// TODO Auto-generated method stub
 				nw = new Wizard(mb);
 			}
 		});

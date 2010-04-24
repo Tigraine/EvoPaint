@@ -78,7 +78,6 @@ public class Wizard extends JFrame{
 			
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				// TODO Auto-generated method stub
 				jf.setVisible(false);
 				menubar.newEvolution(Integer.parseInt(xTf.getText()),Integer.parseInt(yTf.getText()));
 			}
@@ -88,7 +87,6 @@ public class Wizard extends JFrame{
 			
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				// TODO Auto-generated method stub
 				jf.setVisible(false);
 			}
 		});

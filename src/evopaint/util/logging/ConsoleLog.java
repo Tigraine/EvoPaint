@@ -25,7 +25,7 @@ public class ConsoleLog extends Log {
 
     @Override
     protected void writeError(String message) {
-        System.err.println("[ERR]  " + message); // XXX needs unbuffered stream
+        System.err.println("[ERR]  " + message);
     }
 
     @Override
