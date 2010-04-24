@@ -26,6 +26,7 @@ import evopaint.Selection;
 import evopaint.gui.Showcase;
 import evopaint.interfaces.IChangeListener;
 import evopaint.pixel.PixelColor;
+import evopaint.pixel.rulebased.Rule;
 import evopaint.pixel.rulebased.RuleBasedPixel;
 import evopaint.pixel.rulebased.RuleSet;
 import evopaint.util.mapping.AbsoluteCoordinate;
@@ -33,6 +34,9 @@ import evopaint.util.mapping.AbsoluteCoordinate;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.geom.AffineTransform;
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.swing.SwingUtilities;
 
 /*
@@ -154,9 +158,16 @@ public class FillSelectionCommand extends AbstractCommand {
             default:
                 break;
         }
-        RuleBasedPixel newPixel = new RuleBasedPixel(currentColor,
-                new AbsoluteCoordinate(x, y, configuration.world),
-                configuration.startingEnergy, currentRuleSet.getRules());
+        AbsoluteCoordinate coordinate = new AbsoluteCoordinate(x, y, configuration.world);
+		int startingEnergy = configuration.startingEnergy;
+		List<Rule> rules;
+		if (currentRuleSet == null)
+			rules = new ArrayList<Rule>();
+		else 
+			rules = currentRuleSet.getRules();
+		RuleBasedPixel newPixel = new RuleBasedPixel(currentColor,
+                coordinate,
+                startingEnergy, rules);
         configuration.world.set(newPixel);
     }
 }
