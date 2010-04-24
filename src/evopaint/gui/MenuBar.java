@@ -25,6 +25,7 @@ import evopaint.Configuration;
 import evopaint.Manifest;
 import evopaint.Selection;
 import evopaint.commands.DeleteCurrentSelectionCommand;
+import evopaint.commands.ImportCommand;
 import evopaint.commands.SelectAllCommand;
 import evopaint.gui.listeners.SelectionListenerFactory;
 import evopaint.interfaces.IChangeListener;
@@ -90,7 +91,9 @@ public class MenuBar extends JMenuBar implements Observer {
         worldMenu.add(new JMenuItem("Open..."));
         worldMenu.add(new JMenuItem("Save"));
         worldMenu.add(new JMenuItem("Save as..."));
-        worldMenu.add(new JMenuItem("Import..."));
+        JMenuItem importMenu = new JMenuItem("Import...");
+        importMenu.addActionListener(new ImportCommand(configuration));
+		worldMenu.add(importMenu);
              
         JMenuItem exportItem = new JMenuItem();
         exportItem.setText("Export");
