@@ -208,7 +208,7 @@ public class Showcase extends WrappingScalableCanvas implements MouseInputListen
                 moveCommand.setDestination(e.getPoint());
                 moveCommand.execute();
             } else if (configuration.mainFrame.getActiveTool() == EraseCommand.class) {
-            	eraseCommand.setLocation(currentMouseDragPosition);
+            	eraseCommand.setLocation(transformToImageSpace(currentMouseDragPosition));
             	eraseCommand.execute();
             }
         } else if (toggleMouseButton2Drag == true) {
