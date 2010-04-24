@@ -77,7 +77,7 @@ public class EraseCommand extends AbstractCommand {
                             }
                         }
                         Rectangle rectangle = new Rectangle(new Point(location.x - brushSize, location.y - brushSize),
-                                new Dimension(brushSize, brushSize));
+                                new Dimension(configuration.brush.size, configuration.brush.size));
                         for (int x = rectangle.x; x < rectangle.x + rectangle.width; x++) {
                             for (int y = rectangle.y; y < rectangle.y + rectangle.height; y++) {
                                 RuleBasedPixel pixel = configuration.world.get(x, y);
