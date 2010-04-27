@@ -9,12 +9,15 @@ import evopaint.Configuration;
 import evopaint.Selection;
 import evopaint.gui.util.IOverlay;
 import evopaint.pixel.Pixel;
+import evopaint.pixel.rulebased.RuleBasedPixel;
 
 public class CopySelectionCommand extends AbstractCommand {
 
 	private final Configuration config;
 	private SelectionCopyOverlay overlay;
 	private Point location;
+	private boolean dragging = false;
+	private Rectangle rect;
 	
 	public CopySelectionCommand(Configuration config) {
 		this.config = config;
@@ -26,18 +29,34 @@ public class CopySelectionCommand extends AbstractCommand {
 	
 	@Override
 	public void execute() {
-		Selection activeSelection = config.mainFrame.getShowcase().getActiveSelection();
-		Rectangle rect = activeSelection.getRectangle();
-		overlay = new SelectionCopyOverlay(rect.width, rect.height);
-		for(int x = rect.x; x < rect.x + rect.width; x++) {
-			for (int y = rect.y; y < rect.y + rect.width; y++) {
-				Pixel pixel = config.world.get(x, y);
-				if (pixel == null) continue;
+		if (config.mainFrame.getShowcase().getActiveSelection() == null) return;
+		if (dragging == false) {
+			Selection activeSelection = config.mainFrame.getShowcase().getActiveSelection();
+			rect = activeSelection.getRectangle();
+			overlay = new SelectionCopyOverlay(rect.width, rect.height);
+			for(int x = 0; x < rect.width; x++) {
+				for (int y = 0; y < rect.height; y++) {
+					Pixel pixel = config.world.get(rect.x + x, rect.y + y);
+					if (pixel == null) continue;
 					overlay.setRGB(x, y, pixel.getPixelColor().getInteger());
+				}
 			}
+			
+			config.mainFrame.getShowcase().subscribe(overlay);
+			dragging = true;
 		}
-		
-		config.mainFrame.getShowcase().subscribe(overlay);
+		else {
+			config.mainFrame.getShowcase().unsubscribe(overlay);
+			
+			for(int x = 0; x < overlay.getWidth(); x++) {
+				for (int y = 0; y < overlay.getHeight(); y++) {
+					RuleBasedPixel pixel = config.world.get(location.x + x, location.y + y);
+					if (pixel != null)
+						pixel.getPixelColor().setInteger(overlay.getRGB(x, y));
+				}
+			}
+			dragging = false;
+		}
 	}
 	
 		

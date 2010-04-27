@@ -24,6 +24,7 @@ package evopaint.gui;
 import evopaint.Configuration;
 import evopaint.Manifest;
 import evopaint.Selection;
+import evopaint.commands.CopySelectionCommand;
 import evopaint.commands.DeleteCurrentSelectionCommand;
 import evopaint.commands.ImportCommand;
 import evopaint.commands.SelectAllCommand;
@@ -144,6 +145,13 @@ public class MenuBar extends JMenuBar implements Observer {
         JMenuItem clearSelections = new JMenuItem("Clear Selections");
         clearSelections.addActionListener(listenerFactory.CreateClearSelectionsListener());
         selectionMenu.add(clearSelections);
+        JMenuItem copySelection = new JMenuItem("Copy Selection");
+        copySelection.addActionListener(new ActionListener() {
+        	public void actionPerformed(ActionEvent e) {
+        		configuration.mainFrame.setActiveTool(CopySelectionCommand.class);
+        	}
+        });
+        selectionMenu.add(copySelection);
 
         // info menu
         JMenu infoMenu = new JMenu();
